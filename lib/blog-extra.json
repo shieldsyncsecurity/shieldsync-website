@@ -1,0 +1,1388 @@
+[
+  {
+    "slug": "imdsv2-ssrf-credential-theft",
+    "title": "From SSRF to Stolen EC2 Role Credentials: Killing the IMDSv1 Attack Chain",
+    "excerpt": "How an SSRF bug becomes full IAM-role credential theft through the instance metadata service, and how to enforce IMDSv2 org-wide with SCPs, condition keys, and GuardDuty detection.",
+    "category": "Cloud / AWS",
+    "date": "Jun 6, 2026",
+    "read": "9 min",
+    "image": "/blog/imdsv2-ssrf-credential-theft.webp",
+    "body": [
+      {
+        "t": "p",
+        "text": "The single most reliable cloud privilege-escalation primitive of the last decade is still a server-side request forgery bug pointed at 169.254.169.254. One unvalidated URL fetch on an EC2 instance, and an attacker walks away with the temporary credentials of the instance profile role. The 2019 Capital One breach was this exact chain, and despite IMDSv2 shipping that same year, fleets full of IMDSv1-reachable instances are still the norm in audits today. This article walks the full chain from the attacker's perspective, then shows the concrete controls that break it: IMDSv2 enforcement, the hop limit, organization-wide SCPs keyed on ec2:MetadataHttpTokens, and the GuardDuty finding that catches credential exfiltration when prevention fails."
+      },
+      {
+        "t": "h2",
+        "text": "The Instance Metadata Service and why v1 is exploitable"
+      },
+      {
+        "t": "p",
+        "text": "Every EC2 instance can query a link-local endpoint at 169.254.169.254 to retrieve its own metadata, including the temporary STS credentials minted for its attached IAM role under /latest/meta-data/iam/security-credentials/. IMDSv1 is a plain request/response protocol: any process that can make an outbound HTTP GET to that IP gets the credentials back, no authentication, no headers required. That property is exactly what makes it a perfect SSRF target. An attacker who can coerce a vulnerable application into fetching an attacker-controlled URL simply points it at the metadata endpoint and reads the role's AccessKeyId, SecretAccessKey, and SessionToken out of the response body."
+      },
+      {
+        "t": "p",
+        "text": "IMDSv2 closes the SSRF path by requiring a session-oriented, two-step exchange. The client first does a PUT to /latest/api/token with a TTL header to obtain a session token, then passes that token in the X-aws-ec2-metadata-token header on every subsequent GET. Most SSRF primitives can only issue a GET with attacker-influenced URL and cannot set arbitrary request headers or change the HTTP method, so they cannot complete the PUT-then-GET handshake. IMDSv2 also defaults the response hop limit (TTL) to 1, so the metadata reply is dropped if it has to traverse a container network hop or an open proxy, neutralizing a whole class of pivot."
+      },
+      {
+        "t": "h2",
+        "text": "The offensive chain, step by step"
+      },
+      {
+        "t": "p",
+        "text": "With IMDSv1 still enabled (HttpTokens=optional), the chain is short and dependable:"
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Find an SSRF: an image-fetcher, webhook validator, PDF renderer, or any feature that fetches a user-supplied URL server-side.",
+          "Pivot to metadata: coerce a GET to http://169.254.169.254/latest/meta-data/iam/security-credentials/ to list the role name, then GET that role name to retrieve the JSON credential document.",
+          "Exfiltrate the temporary credentials (AccessKeyId, SecretAccessKey, Token) off-host.",
+          "Use the credentials from attacker infrastructure with the AWS CLI or SDK. sts get-caller-identity confirms the role; from there the attacker enumerates and abuses whatever the instance profile policy permits, commonly s3:GetObject, s3:ListBucket, or worse."
+        ]
+      },
+      {
+        "t": "p",
+        "text": "The tell-tale signal of the final step is that role credentials minted for an instance are suddenly called from an IP outside the VPC. That is the exact behavior the defense side keys on for detection. Note the hop limit also matters offensively: if you do force IMDSv2 but leave the hop limit high, an SSRF that traverses a sidecar or proxy on a multi-hop path can still reach the endpoint."
+      },
+      {
+        "t": "h2",
+        "text": "Enforcing IMDSv2 on the instance and in launch templates"
+      },
+      {
+        "t": "p",
+        "text": "For a running instance, set HttpTokens to required (which disables IMDSv1) and clamp the hop limit to 1. Bake the same settings into every Launch Template so new capacity is born compliant. For ECS on EC2 and EKS managed node groups, set the same metadata options on the node launch template; for tasks that legitimately need a network hop to reach IMDS, raise the hop limit to 2 deliberately rather than leaving it open."
+      },
+      {
+        "t": "code",
+        "code": "# Harden a running instance: require IMDSv2, hop limit 1, keep endpoint on\naws ec2 modify-instance-metadata-options \\\n  --instance-id i-0abc123def4567890 \\\n  --http-tokens required \\\n  --http-put-response-hop-limit 1 \\\n  --http-endpoint enabled\n\n# Audit the whole region for instances still allowing IMDSv1\naws ec2 describe-instances \\\n  --filters \"Name=metadata-options.http-tokens,Values=optional\" \\\n  --query \"Reservations[].Instances[].InstanceId\" \\\n  --output text"
+      },
+      {
+        "t": "h2",
+        "text": "Org-wide prevention with an SCP and account defaults"
+      },
+      {
+        "t": "p",
+        "text": "Per-instance fixes do not scale and drift the moment someone launches outside your pipeline. The durable control is a Service Control Policy at the organization (or OU) level that denies ec2:RunInstances unless IMDSv2 is required and the hop limit is constrained, and that blocks anyone from weakening the metadata options on an existing instance. The relevant condition keys are ec2:MetadataHttpTokens, ec2:MetadataHttpPutResponseHopLimit, and ec2:MetadataHttpEndpoint. Pair the SCP with the account-level default that forces new instances to IMDSv2 even when a request omits metadata options: aws ec2 modify-instance-metadata-defaults --http-tokens required --http-put-response-hop-limit 2 --http-endpoint enabled."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"DenyRunInstancesWithoutIMDSv2\",\n      \"Effect\": \"Deny\",\n      \"Action\": \"ec2:RunInstances\",\n      \"Resource\": \"arn:aws:ec2:*:*:instance/*\",\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"ec2:MetadataHttpTokens\": \"required\"\n        }\n      }\n    },\n    {\n      \"Sid\": \"DenyHighHopLimit\",\n      \"Effect\": \"Deny\",\n      \"Action\": \"ec2:RunInstances\",\n      \"Resource\": \"arn:aws:ec2:*:*:instance/*\",\n      \"Condition\": {\n        \"NumericGreaterThan\": {\n          \"ec2:MetadataHttpPutResponseHopLimit\": \"2\"\n        }\n      }\n    },\n    {\n      \"Sid\": \"DenyWeakeningMetadataOptions\",\n      \"Effect\": \"Deny\",\n      \"Action\": \"ec2:ModifyInstanceMetadataOptions\",\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"ec2:MetadataHttpTokens\": \"required\"\n        }\n      }\n    }\n  ]\n}"
+      },
+      {
+        "t": "callout",
+        "text": "Key takeaway: IMDSv1 turns any SSRF into IAM credential theft. Set HttpTokens=required with a hop limit of 1, bake it into every launch template, and enforce it org-wide with an SCP keyed on ec2:MetadataHttpTokens. Prevention is the control; GuardDuty is the safety net, not the plan."
+      },
+      {
+        "t": "h2",
+        "text": "Detection: GuardDuty and a CloudTrail backstop"
+      },
+      {
+        "t": "p",
+        "text": "Even with enforcement, assume some legacy instance slips through. GuardDuty's UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration.OutsideAWS and .InsideAWS findings fire when credentials created for an EC2 instance role are used from an IP address that does not belong to that instance, which is the precise signature of stolen IMDS credentials being replayed from attacker infrastructure. Route these findings through EventBridge to an automated response: revoke the session, isolate the instance with a quarantine security group, and rotate. As an independent backstop, query CloudTrail in CloudWatch Logs Insights for assumed-role sessions whose source IP falls outside your known VPC and NAT ranges."
+      },
+      {
+        "t": "code",
+        "code": "fields @timestamp, userIdentity.arn, sourceIPAddress, eventName\n| filter userIdentity.type = \"AssumedRole\"\n| filter userIdentity.sessionContext.sessionIssuer.userName like /instance/\n| filter not (sourceIPAddress like /^10\\./\n    or sourceIPAddress like /^172\\.(1[6-9]|2[0-9]|3[01])\\./\n    or sourceIPAddress like /^192\\.168\\./)\n| stats count(*) as calls by userIdentity.arn, sourceIPAddress\n| sort calls desc"
+      },
+      {
+        "t": "h2",
+        "text": "Operational rollout without breaking workloads"
+      },
+      {
+        "t": "p",
+        "text": "The reason IMDSv1 lingers is fear of breaking SDK calls. In practice every current AWS SDK and CLI speaks IMDSv2 transparently, so the real risk is old, pinned SDK versions and homegrown metadata clients that hardcode a bare GET. Roll out safely by measuring first: CloudWatch publishes the per-instance MetadataNoToken metric, which counts IMDSv1 calls. Drive that metric to zero on every instance before flipping HttpTokens to required, then enable the SCP in the organization once the fleet is clean. Sequence it as: audit with describe-instances, watch MetadataNoToken, remediate stragglers, set account defaults, then enforce the SCP last so you never lock out a workload you have not already migrated."
+      }
+    ]
+  },
+  {
+    "slug": "cloudtrail-athena-breach-timeline",
+    "title": "Reconstructing a Data-Exfiltration Breach from CloudTrail with Athena",
+    "excerpt": "When an S3 bucket leaks, your CloudTrail logs already hold the full story. Here is how to query them with Athena, pivot across identity and network signals, and rebuild the attacker's timeline from first API call to final GetObject.",
+    "category": "Detection & Response",
+    "date": "Jun 1, 2026",
+    "read": "10 min",
+    "image": "/blog/cloudtrail-athena-breach-timeline.webp",
+    "body": [
+      {
+        "t": "p",
+        "text": "You get the call at 02:00: a customer dataset is for sale on a forum, and the only thing anyone knows is that it lived in an S3 bucket. No detection rule fired, no dashboard exists, no SIEM is ingesting your AWS logs. What you do have is a CloudTrail trail writing to S3, and that is enough. With Amazon Athena you can turn months of gzipped JSON log objects into a queryable table and reconstruct exactly what the attacker did, when, from where, and with which credentials. This walkthrough shows the method end to end: standing up the table, pivoting across identity and network fields, separating enumeration from exfiltration, and assembling a defensible timeline."
+      },
+      {
+        "t": "h2",
+        "text": "Step 1: Make CloudTrail queryable in Athena"
+      },
+      {
+        "t": "p",
+        "text": "Athena reads CloudTrail objects in place via the purpose-built CloudTrail SerDe, so you never move or duplicate data. One detail decides whether the case is winnable: management events alone are not enough. By default CloudTrail records the control plane (CreateAccessKey, AssumeRole, PutBucketPolicy) but NOT object-level reads (GetObject, PutObject). Those are data events, and you must have had S3 data event logging enabled before the incident to see the actual exfiltration. Create the management-events table first; if you captured data events, point a second table at that prefix. Partition both with projection on region and date, a flat scan over a year of org-wide CloudTrail reads terabytes and costs real money per query, while bounding to the relevant region and dates typically cuts scan volume 90 percent or more."
+      },
+      {
+        "t": "code",
+        "code": "CREATE EXTERNAL TABLE cloudtrail_logs (\n  eventTime STRING,\n  eventSource STRING,\n  eventName STRING,\n  awsRegion STRING,\n  sourceIPAddress STRING,\n  userAgent STRING,\n  errorCode STRING,\n  requestParameters STRING,\n  responseElements STRING,\n  userIdentity STRUCT<\n    type: STRING,\n    arn: STRING,\n    accountId: STRING,\n    accessKeyId: STRING,\n    userName: STRING,\n    sessionContext: STRUCT<\n      attributes: STRUCT<creationDate: STRING, mfaAuthenticated: STRING>>>,\n  resources ARRAY<STRUCT<arn: STRING, accountId: STRING, type: STRING>>\n)\nROW FORMAT SERDE 'com.amazon.emr.hive.serde.CloudTrailSerde'\nSTORED AS INPUTFORMAT 'com.amazon.emr.cloudtrail.CloudTrailInputFormat'\nOUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'\nLOCATION 's3://my-org-cloudtrail/AWSLogs/123456789012/CloudTrail/';"
+      },
+      {
+        "t": "h2",
+        "text": "Step 2: Find the principal, then split recon from theft"
+      },
+      {
+        "t": "p",
+        "text": "Start from what you know, the bucket name, and collapse to the distinct identities that touched it. The userIdentity.arn tells you who, accessKeyId tells you which credential, and sourceIPAddress plus userAgent fingerprint the actor, the tell being a legitimate principal acting from an IP and user agent it has never used, often a generic aws-cli or SDK string from a hosting-provider or Tor-exit address rather than your corporate ranges. Then read the shape of the activity. Real intrusions orient before they steal, and CloudTrail makes each phase loud, especially the errorCode field, because enumeration probes things the principal cannot access and throws a wall of AccessDenied that legitimate automation almost never produces."
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Enumeration: clustered GetCallerIdentity, ListBuckets, ListObjectsV2, GetBucketPolicy and ListRoles in minutes, with many AccessDenied errorCodes as the actor maps blast radius.",
+          "Persistence / escalation: CreateAccessKey, AttachUserPolicy, PutUserPolicy, or AssumeRole into a more privileged role.",
+          "Exfiltration: a sustained run of successful GetObject calls (errorCode is null) against one bucket prefix, from the same anomalous sourceIPAddress.",
+          "Anti-forensics: StopLogging, DeleteTrail, PutBucketPolicy or DeleteBucketEncryption to blind defenders and broaden public access."
+        ]
+      },
+      {
+        "t": "code",
+        "code": "SELECT\n  eventTime,\n  userIdentity.arn               AS principal,\n  userIdentity.accessKeyId       AS access_key,\n  eventName,\n  sourceIPAddress,\n  userAgent,\n  errorCode\nFROM cloudtrail_logs\nWHERE eventName IN (\n        'ListBuckets', 'GetBucketPolicy', 'ListObjectsV2', 'GetObject',\n        'CreateAccessKey', 'GetCallerIdentity', 'AssumeRole')\n  AND eventTime >= '2026-05-28T00:00:00Z'\n  AND eventTime <  '2026-05-31T00:00:00Z'\nORDER BY eventTime;"
+      },
+      {
+        "t": "h2",
+        "text": "Step 3: Quantify the theft, then pivot into a timeline"
+      },
+      {
+        "t": "p",
+        "text": "This is where S3 data events earn their keep: management events show the door opening, data events show what walked out. Query the data-event table for GetObject by the suspect key, count distinct objects, and group by hour to bound the window and see the burst. Then widen back out. Take your three high-confidence indicators, the access key, the source IP, and the anomalous user agent, and pivot on each independently across the full management table. The access key reveals everything that credential touched; the source IP catches activity even after the actor rotated to a freshly minted key; the user agent links sessions across both. Stitched together and ordered by eventTime they produce the canonical narrative: initial access, enumeration, key creation, the GetObject run, and any StopLogging or DeleteTrail at the end, the attacker trying to cut the very telemetry you are reading."
+      },
+      {
+        "t": "code",
+        "code": "SELECT\n  date_trunc('hour', from_iso8601_timestamp(eventTime)) AS hour_bucket,\n  userIdentity.accessKeyId       AS access_key,\n  sourceIPAddress,\n  count(*)                       AS get_object_calls,\n  count(DISTINCT json_extract_scalar(requestParameters, '$.key')) AS distinct_objects\nFROM cloudtrail_data_events\nWHERE eventSource = 's3.amazonaws.com'\n  AND eventName = 'GetObject'\n  AND errorCode IS NULL\n  AND json_extract_scalar(requestParameters, '$.bucketName') = 'acme-customer-pii'\n  AND eventTime >= '2026-05-30T00:00:00Z'\nGROUP BY 1, 2, 3\nORDER BY get_object_calls DESC;"
+      },
+      {
+        "t": "callout",
+        "text": "If you run CloudTrail Lake instead of raw S3 plus Athena, the same investigation collapses into native SQL against an immutable event data store, no table DDL or SerDe required, with retention configurable up to ten years. Lake removes the table-management toil and resists exactly the StopLogging and DeleteTrail tampering you are hunting for during a live breach. Whichever you use, centralize trails into a logging account the workload role cannot delete, enable log file validation, turn on S3 data events for sensitive buckets before you need them, and rehearse these queries, so at 02:00 you are running a known playbook, not writing SQL from scratch against an unfamiliar schema."
+      }
+    ]
+  },
+  {
+    "slug": "guardduty-findings-that-matter",
+    "title": "Which GuardDuty Findings Actually Matter, and How to Auto-Respond",
+    "excerpt": "GuardDuty emits hundreds of finding types, but only a handful warrant a pager. A working engineer's guide to separating high-signal compromise indicators from recon noise, writing suppression rules that don't blind you, and wiring EventBridge to Lambda and SSM for automated containment.",
+    "category": "Detection & Response",
+    "date": "May 27, 2026",
+    "image": "/blog/guardduty-findings-that-matter.webp",
+    "read": "9 min",
+    "body": [
+      {
+        "t": "p",
+        "text": "Amazon GuardDuty will happily generate thousands of findings in an account that has never been touched by an attacker. Internet background radiation hits your public IPs, your own scanners trip Recon findings, and a developer running kubectl from a coffee shop lights up a PenTest finding. If your team treats every finding as an incident, you will burn out and miss the one that matters. The job is not to look at everything; it is to know which finding types are reliable signals of an active compromise, route those to a response, and aggressively suppress the rest. Severity is a coarse pre-filter calibrated for a generic account, not yours: a High Recon finding against a host you deliberately expose is often noise, while a Medium IAM finding can be the first link in a credential-theft chain. The real signal lives in the finding type string, which encodes ThreatPurpose:ResourceType/ThreatFamilyName.DetectionMechanism!Artifact."
+      },
+      {
+        "t": "h2",
+        "text": "Signal versus noise"
+      },
+      {
+        "t": "p",
+        "text": "The findings that actually matter describe an outcome of compromise rather than an attempt at one. UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration.OutsideAWS is among the highest-fidelity findings GuardDuty produces: role credentials issued to an EC2 instance are being used from an IP outside AWS, meaning the SSRF or host compromise already happened and the attacker is now wielding stolen credentials from their own infrastructure. Page on it every time. Backdoor:EC2/C&CActivity.B!DNS (an instance querying a known command-and-control domain) and Trojan:EC2/DNSDataExfiltration (data tunneled out over DNS) are strong evidence of an active implant. CryptoCurrency:EC2/BitcoinTool.B!DNS is rarely a false positive outside a developer deliberately running a miner. Stealth:IAMUser/CloudTrailLoggingDisabled is a classic anti-forensics move; if it was not your pipeline, assume compromise. Policy:S3/BucketPublicAccessGranted means a bucket was just opened to the world and needs eyes within minutes. The usually-noisy findings, by contrast, describe attempts that happen millions of times a day. Do not page on them; aggregate, dashboard, and review in bulk:"
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Recon:IAMUser/MaliciousIPCaller and Recon:EC2/PortProbeUnprotectedPort - someone on a threat-intel list touched your API or scanned an open port. If the port is meant to be open, this is background radiation: high volume, low value individually.",
+          "UnauthorizedAccess:EC2/SSHBruteForce and RDPBruteForce - public endpoints are brute-forced constantly. The finding matters only when paired with a successful login; on its own it is a reason to close the port, not an incident.",
+          "Recon:IAMUser/TorIPCaller and UnauthorizedAccess:IAMUser/ConsoleLoginSuccess.B from an unusual location - frequently a privacy-conscious engineer, a VPN, or a traveling employee. Correlate with your IdP before reacting."
+        ]
+      },
+      {
+        "t": "callout",
+        "text": "Rule of thumb: findings about credentials being used somewhere they should not be (InstanceCredentialExfiltration, C&CActivity, anomalous AssumeRole) are high-fidelity because they describe an outcome of compromise. Findings about someone trying something (BruteForce, PortProbe, MaliciousIPCaller) describe attempts. Build your alerting around outcomes, not attempts."
+      },
+      {
+        "t": "h2",
+        "text": "Suppression rules without blinding yourself"
+      },
+      {
+        "t": "p",
+        "text": "GuardDuty suppression rules auto-archive matching findings so they never reach EventBridge or your inbox, while preserving them for audit. The trap is writing rules so broad they hide a real attack. Scope every suppression to a specific finding type plus a tight attribute filter, never to severity alone. Good examples: suppress Recon:EC2/PortProbeUnprotectedPort where the local port is 443 on your known public ALB security group, or suppress UnauthorizedAccess:EC2/SSHBruteForce against a bastion whose risk you have formally accepted. Never suppress an entire ThreatPurpose like UnauthorizedAccess wholesale, and always suppress your own vulnerability scanners by source IP, or they will drown the real signal during pentests. Review the rules quarterly, because an instance that was safe to ignore last quarter may now hold sensitive data."
+      },
+      {
+        "t": "h2",
+        "text": "Auto-response with EventBridge"
+      },
+      {
+        "t": "p",
+        "text": "GuardDuty publishes every non-suppressed finding to the default EventBridge bus with a detail-type of GuardDuty Finding. You match on finding type and severity in the event pattern, then target a Lambda (for IAM/S3 containment) or an SSM Automation document (for EC2 isolation). Operationally, enable GuardDuty across every region and account through delegated administration, because attackers will pick the region you forgot, and pipe all findings to a central security account so this one rule governs the whole org. The pattern below fires only on the high-fidelity EC2 compromise types at Medium severity or above, deliberately excluding the noisy Recon and BruteForce families, and the prefix matcher catches every detection-mechanism variant of a family without enumerating each one:"
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"source\": [\"aws.guardduty\"],\n  \"detail-type\": [\"GuardDuty Finding\"],\n  \"detail\": {\n    \"severity\": [{ \"numeric\": [\">=\", 4] }],\n    \"type\": [\n      { \"prefix\": \"UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration\" },\n      { \"prefix\": \"Backdoor:EC2/C&CActivity\" },\n      { \"prefix\": \"CryptoCurrency:EC2/BitcoinTool\" },\n      { \"prefix\": \"Trojan:EC2/DNSDataExfiltration\" }\n    ]\n  }\n}"
+      },
+      {
+        "t": "p",
+        "text": "Wire that rule to a Lambda target. The handler reads the instance ID from detail.resource.instanceDetails.instanceId, swaps the instance into a locked-down quarantine security group with no egress, tags it for the incident, and snapshots its volumes for forensics before any human touches it. Keep it idempotent: GuardDuty re-emits the same finding as activity continues, and you do not want to re-quarantine or duplicate snapshots on every update. For account-level findings with no instance to isolate, branch the response - on Stealth:IAMUser/CloudTrailLoggingDisabled call StartLogging and notify on-call via SNS; on Policy:S3/BucketPublicAccessGranted target an SSM Automation document that re-applies BlockPublicAccess. Every containment action stays small, reversible, and well-logged, because automation will occasionally fire on a false positive, and a quarantine you can undo in one click is far cheaper than a terminated production instance. Everything outside this high-fidelity set goes to a dashboard your team reviews on a cadence, not a pager, so that every alert reaching a human is worth their time and the machine has already contained the threats that could not wait:"
+      },
+      {
+        "t": "code",
+        "code": "import boto3\n\nec2 = boto3.client(\"ec2\")\nQUARANTINE_SG = \"sg-0quarantine0noegress\"\n\ndef handler(event, context):\n    detail = event[\"detail\"]\n    instance_id = detail[\"resource\"][\"instanceDetails\"][\"instanceId\"]\n    finding_type = detail[\"type\"]\n\n    # Idempotency: skip if already quarantined\n    tags = ec2.describe_tags(Filters=[\n        {\"Name\": \"resource-id\", \"Values\": [instance_id]},\n        {\"Name\": \"key\", \"Values\": [\"gd:quarantined\"]}\n    ])[\"Tags\"]\n    if tags:\n        return {\"status\": \"already-contained\", \"instance\": instance_id}\n\n    ec2.modify_instance_attribute(\n        InstanceId=instance_id, Groups=[QUARANTINE_SG]\n    )\n    ec2.create_tags(Resources=[instance_id], Tags=[\n        {\"Key\": \"gd:quarantined\", \"Value\": \"true\"},\n        {\"Key\": \"gd:finding\", \"Value\": finding_type}\n    ])\n\n    for v in ec2.describe_volumes(Filters=[{\n        \"Name\": \"attachment.instance-id\", \"Values\": [instance_id]\n    }])[\"Volumes\"]:\n        ec2.create_snapshot(\n            VolumeId=v[\"VolumeId\"],\n            Description=f\"forensic-{instance_id}-{finding_type}\"\n        )\n\n    return {\"status\": \"contained\", \"instance\": instance_id}"
+      }
+    ]
+  },
+  {
+    "slug": "kms-key-policies-cross-account",
+    "title": "KMS Key Policies, Grants, and Secure Cross-Account Encryption",
+    "excerpt": "A deep, practical guide to AWS KMS authorization: how key policies, IAM, and grants actually interact, and how to build least-privilege cross-account encryption that holds up under review.",
+    "category": "Cloud / AWS",
+    "date": "May 22, 2026",
+    "read": "10 min",
+    "image": "/blog/kms-key-policies-cross-account.webp",
+    "body": [
+      {
+        "t": "p",
+        "text": "AWS KMS is deceptively simple to call and genuinely hard to secure. The cryptographic operations are a thin surface; almost every real-world KMS incident is an authorization failure, not a cryptographic one. An over-broad key policy, a forgotten grant, or a cross-account trust that never narrowed past the account root is what turns an encrypted data store into a compliance finding. This article walks through how KMS authorization actually resolves, why the default key policy is a trap, and how to build cross-account encryption patterns that survive a hostile review."
+      },
+      {
+        "t": "h2",
+        "text": "The default key policy trap"
+      },
+      {
+        "t": "p",
+        "text": "When you create a customer managed key (CMK) in the console or with default settings, KMS attaches a policy whose first statement grants the AWS account root principal full access via kms:* with Resource set to *. AWS documents this as enabling IAM policies to control the key, and that framing is accurate, but it is widely misread. The statement does not merely \"allow IAM to work\" — it delegates all authorization decisions for that key to IAM in the account. Any principal with a sufficiently broad IAM policy (think a wildcard kms:* or an attached AdministratorAccess) can now administer and use the key, even though they were never named on the key. The blast radius of an over-permissioned IAM role silently extends to every key that carries this default statement."
+      },
+      {
+        "t": "callout",
+        "text": "Treat the root-account statement as a deliberate decision, not a default. If you keep it, your key's security is only as tight as the loosest IAM policy in the account. If you remove or scope it, you must enumerate key administrators explicitly in the key policy — otherwise you can lock yourself out, because KMS will not let you save a policy that has no path to administer the key."
+      },
+      {
+        "t": "h2",
+        "text": "Key policy vs IAM vs grants: how access actually resolves"
+      },
+      {
+        "t": "p",
+        "text": "Three mechanisms can authorize a KMS request, and engineers routinely get their precedence wrong. There is no priority ordering where one \"wins\" over another — KMS evaluates the union. A request is allowed if ANY of these grants it and NOTHING explicitly denies it:"
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Key policy: the resource policy attached to the key. It is the root of trust. For a principal in the SAME account, the key policy alone can authorize a request. For a principal in a DIFFERENT account, the key policy is necessary but never sufficient — see the cross-account section.",
+          "IAM policy: an identity policy in the key's account. It only grants KMS access if the key policy enables IAM to do so (the root-account statement, or a statement naming the account/principal). IAM cannot grant access to a key whose policy does not delegate to IAM.",
+          "Grants: a programmatic, temporary delegation created by kms:CreateGrant. Grants allow a principal (the grantee) a specific subset of operations, optionally constrained by encryption context and resource conditions. AWS services like EBS, RDS, and Lambda create grants on your behalf so they can decrypt on your resources without you widening the key policy."
+        ]
+      },
+      {
+        "t": "p",
+        "text": "The mental model: key policy and IAM are evaluated like any other resource-policy/identity-policy pair, and an explicit Deny anywhere overrides every Allow. Grants are additive on top — they can broaden but never override a Deny. Because grants are created via API and not visible in the key policy document, they are the most commonly overlooked path to a key. If you audit only the key policy and IAM, you have not audited the key."
+      },
+      {
+        "t": "h2",
+        "text": "A least-privilege key policy"
+      },
+      {
+        "t": "p",
+        "text": "The following policy separates key administrators (who can manage the key but cannot use it cryptographically) from key users (who can encrypt/decrypt but cannot change the policy or schedule deletion). It scopes service usage with kms:ViaService, lets AWS resource integrations create grants while blocking arbitrary grant creation via kms:GrantIsForAWSResource, and pins an encryption context so a stolen ciphertext cannot be decrypted out of context."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Id\": \"key-least-privilege\",\n  \"Statement\": [\n    {\n      \"Sid\": \"KeyAdministrators\",\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"AWS\": \"arn:aws:iam::111122223333:role/kms-key-admins\"\n      },\n      \"Action\": [\n        \"kms:Create*\",\n        \"kms:Describe*\",\n        \"kms:Enable*\",\n        \"kms:List*\",\n        \"kms:Put*\",\n        \"kms:Update*\",\n        \"kms:Revoke*\",\n        \"kms:Disable*\",\n        \"kms:Get*\",\n        \"kms:Delete*\",\n        \"kms:TagResource\",\n        \"kms:UntagResource\",\n        \"kms:ScheduleKeyDeletion\",\n        \"kms:CancelKeyDeletion\"\n      ],\n      \"Resource\": \"*\"\n    },\n    {\n      \"Sid\": \"KeyUsersViaS3Only\",\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"AWS\": \"arn:aws:iam::111122223333:role/app-data-plane\"\n      },\n      \"Action\": [\n        \"kms:Encrypt\",\n        \"kms:Decrypt\",\n        \"kms:ReEncrypt*\",\n        \"kms:GenerateDataKey\",\n        \"kms:GenerateDataKey*\",\n        \"kms:DescribeKey\"\n      ],\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"kms:ViaService\": \"s3.ap-south-1.amazonaws.com\",\n          \"kms:EncryptionContext:project\": \"shieldsync-prod\"\n        }\n      }\n    },\n    {\n      \"Sid\": \"AllowAWSResourceGrantsOnly\",\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"AWS\": \"arn:aws:iam::111122223333:role/app-data-plane\"\n      },\n      \"Action\": [\n        \"kms:CreateGrant\",\n        \"kms:ListGrants\",\n        \"kms:RevokeGrant\"\n      ],\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"Bool\": {\n          \"kms:GrantIsForAWSResource\": \"true\"\n        }\n      }\n    }\n  ]\n}"
+      },
+      {
+        "t": "p",
+        "text": "Note what is absent: there is no kms:* for the users, no Decrypt for the administrators, and no unconditional CreateGrant. The kms:ViaService condition means the app role can only invoke the key through S3 — a leaked credential cannot call kms:Decrypt directly against the KMS API to dump ciphertext. The kms:EncryptionContext:project condition binds every operation to a named context, and the GrantIsForAWSResource condition lets EBS, RDS, or S3 set up the grants they need while preventing the role from minting an arbitrary grant to an attacker-controlled principal."
+      },
+      {
+        "t": "h2",
+        "text": "The data-plane operations that matter"
+      },
+      {
+        "t": "p",
+        "text": "Most workloads never call Encrypt with raw plaintext. They use envelope encryption: kms:GenerateDataKey returns a plaintext data key plus an encrypted copy; the application encrypts the payload locally with the plaintext key, discards it, and stores the ciphertext blob alongside the encrypted data key. On read, kms:Decrypt unwraps the data key. This is why GenerateDataKey and Decrypt are the operations to guard most tightly — Decrypt is the one that turns ciphertext back into plaintext, and a principal with Decrypt on a key can read everything that key protects. Grant or deny these per the principle that read access to plaintext is the crown jewel, not the ability to write new ciphertext."
+      },
+      {
+        "t": "h2",
+        "text": "Encryption context as an authorization control"
+      },
+      {
+        "t": "p",
+        "text": "Encryption context is a set of non-secret key/value pairs bound into the AEAD additional authenticated data of every ciphertext. It is not encrypted, but it is integrity-protected: a ciphertext encrypted with context {tenant: A} cannot be decrypted by a request that supplies {tenant: B}, and KMS logs the context in CloudTrail. Used in a key policy condition (kms:EncryptionContext:key or kms:EncryptionContextKeys), it becomes a real authorization boundary — for example, forcing a multi-tenant service to prove which tenant a decrypt is for, so a confused-deputy bug cannot cross tenants on a shared key. Treat encryption context as mandatory metadata for any shared key, and assert it in both your application code and your key policy."
+      },
+      {
+        "t": "h2",
+        "text": "Cross-account encryption done right"
+      },
+      {
+        "t": "p",
+        "text": "Cross-account KMS access has a rule with no exceptions: the key policy in the key's owner account must explicitly allow the external principal, AND that principal must have an IAM policy in its own account allowing the same KMS actions. Both halves are required. The key policy alone never grants cross-account access, and IAM in the caller's account obviously cannot grant access to a key it does not own. A frequent mistake is to name only the external account root (Principal: {AWS: arn:aws:iam::444455556666:root}) in the key policy and stop there — that delegates the decision to the OTHER account's IAM, meaning any sufficiently-privileged role over there can use your key. Pin the specific role ARN when you can, and pair it with conditions:"
+      },
+      {
+        "t": "ul",
+        "items": [
+          "In the key owner account, add a key policy statement naming arn:aws:iam::444455556666:role/cross-account-reader with only kms:Decrypt and kms:DescribeKey, plus a kms:ViaService or encryption-context condition.",
+          "In the consumer account (444455556666), attach an IAM policy to that role allowing kms:Decrypt on the specific key ARN — not Resource: *.",
+          "For S3 cross-account reads, remember the request reaches KMS via the S3 service principal context; verify the kms:ViaService value matches the bucket's region, and that bucket policy plus key policy agree on the same external principal.",
+          "Never use Resource: * in the consumer's IAM policy for KMS unless you intend that role to use every key it is ever granted on; scope to explicit key ARNs so a future cross-account grant does not silently widen reach."
+        ]
+      },
+      {
+        "t": "h2",
+        "text": "The danger of broad kms:* and detecting risky grants"
+      },
+      {
+        "t": "p",
+        "text": "A single kms:* on a key or in IAM collapses the administrator/user separation entirely: the same principal can read plaintext (Decrypt), rewrite the policy (PutKeyPolicy), and schedule the key for deletion. That last one is a denial-of-data risk — anyone with ScheduleKeyDeletion can render every object encrypted under the key permanently unrecoverable after the waiting period. Always enumerate actions; reserve deletion and policy-write actions for a small admin role; and consider an explicit Deny on kms:ScheduleKeyDeletion for everyone except a break-glass identity. For grants, audit continuously: list grants on every key with kms:ListGrants, flag any whose GranteePrincipal is outside your expected service principals or accounts, watch CloudTrail for CreateGrant events that lack the GrantIsForAWSResource constraint, and revoke orphaned grants left behind by deleted resources. Because grants live outside the key policy, a key that looks locked down in its policy can still be wide open through a stale grant — make grant inventory a first-class part of your KMS review, not an afterthought."
+      },
+      {
+        "t": "p",
+        "text": "Pull these together and the pattern is consistent: name principals explicitly, split administration from use, constrain every statement with kms:ViaService and encryption context, require both sides of any cross-account trust, and treat grants as a tracked, expiring delegation rather than fire-and-forget. KMS gives you the controls; least privilege is the discipline of actually using all of them."
+      }
+    ]
+  },
+  {
+    "slug": "scp-guardrail-library",
+    "title": "A Practical SCP Guardrail Library for AWS Organizations",
+    "excerpt": "A field-tested set of Service Control Policies that cap what any account can do, with exception patterns that survive break-glass and CI/CD reality. Copy, scope, deploy.",
+    "category": "Cloud / AWS",
+    "date": "May 17, 2026",
+    "read": "11 min",
+    "image": "/blog/scp-guardrail-library.webp",
+    "body": [
+      {
+        "t": "p",
+        "text": "Service Control Policies are the only control in AWS that can stop a principal an attacker has fully compromised, including one wielding AdministratorAccess. IAM policies grant; SCPs cap. If a credential is exfiltrated and the actor tries to disable CloudTrail or pivot into an unused region, a well-placed SCP turns that from a breach into a denied API call in your event log. This article is a working guardrail library: each section is one policy you can lift, scope to your Organizational Units, and ship. The guardrails are organized as a small number of broad deny policies rather than dozens of narrow ones, because the per-account SCP size budget is finite and you will hit it faster than you expect."
+      },
+      {
+        "t": "callout",
+        "text": "Before you deploy anything: SCPs never grant permissions, they only set the maximum available. An action is allowed only if both an IAM policy AND every SCP in the account's path allow it. SCPs do NOT apply to the management (payer) account, so never rely on them to constrain the org root, and never run workloads there. Prefer explicit Deny with NotAction over Allow-list SCPs, because Allow SCPs silently shrink the permission ceiling for every service you forgot to list. Test in a sandbox OU first, and always carve out a break-glass role in your Deny conditions before you attach to production."
+      },
+      {
+        "t": "h2",
+        "text": "Guardrail 1: Protect the security telemetry plane"
+      },
+      {
+        "t": "p",
+        "text": "The first move in most cloud intrusions after credential theft is to blind the defenders. Deny the API calls that stop, delete, or tamper with CloudTrail, GuardDuty, AWS Config, and Security Hub across the whole org. The exception is a dedicated security-automation role identified by aws:PrincipalArn, so your detective-control pipeline can still manage these services. Keep that role's ARN identical in every account (same path and name) so one condition block covers the fleet."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"DenyTamperWithSecurityTelemetry\",\n      \"Effect\": \"Deny\",\n      \"Action\": [\n        \"cloudtrail:StopLogging\",\n        \"cloudtrail:DeleteTrail\",\n        \"cloudtrail:UpdateTrail\",\n        \"cloudtrail:PutEventSelectors\",\n        \"guardduty:DeleteDetector\",\n        \"guardduty:DisassociateFromMasterAccount\",\n        \"guardduty:UpdateDetector\",\n        \"guardduty:StopMonitoringMembers\",\n        \"config:DeleteConfigurationRecorder\",\n        \"config:StopConfigurationRecorder\",\n        \"config:DeleteDeliveryChannel\",\n        \"securityhub:DisableSecurityHub\",\n        \"securityhub:DeleteMembers\"\n      ],\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"ArnNotLike\": {\n          \"aws:PrincipalArn\": \"arn:aws:iam::*:role/SecurityAutomationRole\"\n        }\n      }\n    }\n  ]\n}"
+      },
+      {
+        "t": "h2",
+        "text": "Guardrail 2: Neutralize the root user"
+      },
+      {
+        "t": "p",
+        "text": "Member-account root credentials should never be used for daily work, yet they retain powers no IAM policy can revoke. Since 2024 AWS Organizations supports centralized root access management, but an SCP is still your belt-and-suspenders. The aws:PrincipalIsAWSService key lets legitimate service-linked calls through, while the root principal itself is blocked from doing anything. Note that this does not affect the management account's root, which SCPs never reach."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"DenyRootUserActions\",\n      \"Effect\": \"Deny\",\n      \"Action\": \"*\",\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"StringLike\": { \"aws:PrincipalArn\": \"arn:aws:iam::*:root\" },\n        \"BoolIfExists\": { \"aws:PrincipalIsAWSService\": \"false\" }\n      }\n    }\n  ]\n}"
+      },
+      {
+        "t": "h2",
+        "text": "Guardrail 3: Region lock"
+      },
+      {
+        "t": "p",
+        "text": "Region lock shrinks your attack surface and your bill at once: an attacker cannot spin up crypto-mining fleets in af-south-1 if no principal can call EC2 there. Use aws:RequestedRegion in a Deny, and exempt the genuinely global services (IAM, Organizations, CloudFront, Route 53, WAF for CloudFront, Support, Artifact) with NotAction, since their endpoints resolve to us-east-1 regardless of where the caller sits. Add aws:PrincipalArn carve-outs for any platform role that legitimately operates cross-region."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"RegionLock\",\n      \"Effect\": \"Deny\",\n      \"NotAction\": [\n        \"iam:*\",\n        \"organizations:*\",\n        \"cloudfront:*\",\n        \"route53:*\",\n        \"route53domains:*\",\n        \"waf:*\",\n        \"wafv2:*\",\n        \"support:*\",\n        \"artifact:*\",\n        \"sts:*\",\n        \"globalaccelerator:*\",\n        \"shield:*\"\n      ],\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"aws:RequestedRegion\": [ \"ap-south-1\", \"eu-west-1\" ]\n        },\n        \"ArnNotLike\": {\n          \"aws:PrincipalArn\": \"arn:aws:iam::*:role/PlatformGlobalRole\"\n        }\n      }\n    }\n  ]\n}"
+      },
+      {
+        "t": "h2",
+        "text": "Guardrail 4: Prevent accounts from leaving the org"
+      },
+      {
+        "t": "p",
+        "text": "Every SCP in this library is enforced only while the account is a member of your organization. The moment a compromised admin calls LeaveOrganization, all of these guardrails evaporate and the account becomes a standalone billing entity under the attacker's control. Deny the escape hatch outright, and pair it with a deny on disabling the org-managed integrations a member account could use to detach itself from delegated administration."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"DenyLeaveOrganization\",\n      \"Effect\": \"Deny\",\n      \"Action\": [\n        \"organizations:LeaveOrganization\",\n        \"organizations:DeleteOrganization\",\n        \"organizations:RemoveAccountFromOrganization\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}"
+      },
+      {
+        "t": "h2",
+        "text": "Guardrail 5: Keep S3 buckets private"
+      },
+      {
+        "t": "p",
+        "text": "Public S3 buckets remain a leading cause of data exposure. Rather than chase individual ACL and bucket-policy permutations, lock the account-level and bucket-level Block Public Access settings so no principal can weaken them, and deny the ACL and policy calls that would open a bucket. Scope the exception to your storage-platform role via aws:PrincipalArn, and add aws:PrincipalOrgID so the condition only relaxes for principals that are genuinely part of your organization, never an externally assumed role."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"DenyWeakeningS3PublicAccessBlock\",\n      \"Effect\": \"Deny\",\n      \"Action\": [\n        \"s3:PutBucketPublicAccessBlock\",\n        \"s3:PutAccountPublicAccessBlock\",\n        \"s3:PutBucketAcl\",\n        \"s3:PutBucketPolicy\",\n        \"s3:PutObjectAcl\"\n      ],\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"ArnNotLike\": {\n          \"aws:PrincipalArn\": \"arn:aws:iam::*:role/StoragePlatformRole\"\n        },\n        \"StringEquals\": {\n          \"aws:PrincipalOrgID\": \"o-exampleorgid\"\n        }\n      }\n    }\n  ]\n}"
+      },
+      {
+        "t": "p",
+        "text": "A note on the logic above: the Deny fires when the principal is NOT the storage role AND the call is made by a member of your org. If you want to also block any cross-account principal from these calls, drop the aws:PrincipalOrgID condition entirely so the Deny applies regardless of org membership, and rely solely on the ArnNotLike exception."
+      },
+      {
+        "t": "h2",
+        "text": "Guardrail 6: Require IMDSv2 on every instance"
+      },
+      {
+        "t": "p",
+        "text": "The 2019 Capital One breach hinged on a server-side request forgery that read instance credentials from IMDSv1. IMDSv2's session-token requirement defeats that class of attack. Deny RunInstances and ModifyInstanceMetadataOptions whenever the request does not set the metadata mode to required, using the ec2:MetadataHttpTokens and ec2:MetadataHttpEndpoint condition keys. This forces the secure default at the API boundary instead of hoping every launch template gets it right."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"DenyRunInstancesWithoutIMDSv2\",\n      \"Effect\": \"Deny\",\n      \"Action\": \"ec2:RunInstances\",\n      \"Resource\": \"arn:aws:ec2:*:*:instance/*\",\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"ec2:MetadataHttpTokens\": \"required\"\n        }\n      }\n    },\n    {\n      \"Sid\": \"DenyWeakeningInstanceMetadata\",\n      \"Effect\": \"Deny\",\n      \"Action\": \"ec2:ModifyInstanceMetadataOptions\",\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"ec2:MetadataHttpEndpoint\": \"disabled\"\n        },\n        \"ArnNotLike\": {\n          \"aws:PrincipalArn\": \"arn:aws:iam::*:role/PlatformGlobalRole\"\n        }\n      }\n    }\n  ]\n}"
+      },
+      {
+        "t": "h2",
+        "text": "Deployment and operating notes"
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Attach broad deny policies high in the OU tree (for example a Sandbox vs Production split), and reserve account-level attachment for genuine exceptions. The effective ceiling is the intersection of every policy on the path.",
+          "Mind the quotas: a maximum of 5 SCPs attach directly to any single entity, and each policy document is capped at 5,120 characters after whitespace is removed. Consolidate related denies into one statement array rather than spreading them thin.",
+          "Keep break-glass role ARNs out of every Deny condition and protect those roles with their own monitoring, because they are the keys that bypass the entire library.",
+          "Stand up the org-managed CloudTrail and a delegated-admin security account first; an SCP that protects CloudTrail is worthless if the trail it protects does not exist or logs to a deletable bucket in the same account.",
+          "Roll out in audit mode by attaching to a single test OU, replaying real CI/CD and human workflows, and watching for AccessDenied events before you widen the blast radius.",
+          "Version-control every policy and deploy through your IaC pipeline so changes are reviewed; a fat-fingered Allow SCP can lock an entire OU out of a service in seconds."
+        ]
+      },
+      {
+        "t": "p",
+        "text": "None of these guardrails replaces least-privilege IAM, but together they form a floor that holds even when an identity is fully compromised. Start with telemetry protection and the leave-organization deny, since those two preserve your ability to detect and to keep enforcing everything else, then layer in region lock, root denial, S3 hardening, and IMDSv2 as you validate each against your real workloads."
+      }
+    ]
+  },
+  {
+    "slug": "cross-account-roles-confused-deputy",
+    "title": "Cross-Account IAM Roles Done Right: ExternalId, aws:SourceArn, and the Confused Deputy",
+    "excerpt": "A working engineer's guide to hardening cross-account trust policies against the confused-deputy problem, with the exact conditions that separate a safe vendor integration from a tenant-isolation breach.",
+    "category": "Cloud / AWS",
+    "date": "May 12, 2026",
+    "read": "9 min",
+    "image": "/blog/cross-account-roles-confused-deputy.webp",
+    "body": [
+      {
+        "t": "p",
+        "text": "Cross-account IAM roles are the connective tissue of modern AWS. Your monitoring vendor, your CSPM, your data pipeline, and half your internal automation all reach into your account by assuming a role you created and trusting a principal in someone else's account. That trust is one JSON document deep, and getting it wrong does not throw an error or fail a deploy. It silently widens your blast radius until the day an attacker, or a careless multi-tenant vendor, walks through it. This article is about writing that document correctly."
+      },
+      {
+        "t": "h2",
+        "text": "The confused deputy, concretely"
+      },
+      {
+        "t": "p",
+        "text": "The confused deputy is a privilege-escalation pattern where a trusted intermediary is tricked into using its authority on an attacker's behalf. Picture a SaaS vendor, AcmeCSPM, that scans customer accounts. Every customer creates a role that trusts AcmeCSPM's single AWS account (their 'deputy'), and AcmeCSPM stores each customer's role ARN and calls sts:AssumeRole when it runs a scan. Now an attacker signs up for AcmeCSPM and, during onboarding, supplies your role ARN instead of their own. If your trust policy says nothing more than 'I trust the AcmeCSPM account,' AcmeCSPM's backend will happily assume your role on the attacker's request. AcmeCSPM is the confused deputy: it has legitimate authority to assume your role and was tricked into exercising it for the wrong party. Nothing it did was unauthorized by your policy, which is exactly the problem."
+      },
+      {
+        "t": "h2",
+        "text": "ExternalId: the shared secret that names the caller"
+      },
+      {
+        "t": "p",
+        "text": "The fix for third-party access is sts:ExternalId. The vendor generates a unique, unpredictable value per customer and you bake it into your trust policy as a Condition. The vendor must pass the matching ExternalId on every AssumeRole call, or STS denies it. Because the attacker cannot learn the ExternalId the vendor assigned to your tenant, they cannot make the deputy assume your role even if they know its ARN. Crucially, the customer sets the condition and the vendor supplies the value, so a malicious vendor employee cannot quietly drop the check; it lives in your account. ExternalId is for separate-organization access, not for your own accounts where you control both ends. Make it unpredictable: an ExternalId equal to your AWS account number defeats the purpose, since anyone who knows your account ID can guess it."
+      },
+      {
+        "t": "h2",
+        "text": "aws:SourceArn and aws:SourceAccount for AWS services"
+      },
+      {
+        "t": "p",
+        "text": "ExternalId does not exist when an AWS service assumes a role on your behalf. When CloudWatch, S3, CloudTrail, SNS, or Lambda calls into a role you granted to a service principal (for example lambda.amazonaws.com or s3.amazonaws.com), there is no ExternalId to pass. Here the confused deputy is the AWS service itself, which could be induced to act on a resource in another account. The defense is the aws:SourceArn and aws:SourceAccount global condition keys, which pin the trust to the specific resource and account that legitimately triggers the service. Use aws:SourceArn when you can name the exact triggering resource (a specific bucket, trail, topic, or distribution) and aws:SourceAccount as the broader fallback when the ARN is opaque or not known ahead of time. Prefer ArnLike to scope to a resource pattern, and use the IfExists variant when a service may not populate SourceArn on every call path. The principle is identical to ExternalId: do not trust the principal alone, trust the principal plus proof of which resource invoked it. The two trust policies below show each guard in place."
+      },
+      {
+        "t": "code",
+        "code": "// 1) THIRD-PARTY VENDOR ROLE -- guard with sts:ExternalId\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowAcmeCSPMWithExternalId\",\n      \"Effect\": \"Allow\",\n      \"Principal\": { \"AWS\": \"arn:aws:iam::210987654321:root\" },\n      \"Action\": \"sts:AssumeRole\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"sts:ExternalId\": \"acme-cspm-7Qd2-Kx91-Tn4v-Z0bL\"\n        }\n      }\n    }\n  ]\n}\n\n// 2) AWS SERVICE ROLE -- guard with aws:SourceArn / aws:SourceAccount\n// Pin the trust to ONE specific triggering resource.\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowServiceForOneResourceOnly\",\n      \"Effect\": \"Allow\",\n      \"Principal\": { \"Service\": \"sns.amazonaws.com\" },\n      \"Action\": \"sts:AssumeRole\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"aws:SourceAccount\": \"123456789012\"\n        },\n        \"ArnLike\": {\n          \"aws:SourceArn\": \"arn:aws:sns:us-east-1:123456789012:alerts-topic\"\n        }\n      }\n    }\n  ]\n}"
+      },
+      {
+        "t": "callout",
+        "text": "Rule of thumb: if the Principal is an AWS account or IAM principal you do not own, reach for sts:ExternalId. If the Principal is an AWS service (a *.amazonaws.com service principal), reach for aws:SourceArn and aws:SourceAccount. Never ship a trust policy whose only gate is the Principal."
+      },
+      {
+        "t": "h2",
+        "text": "Session policies, AssumeRole conditions, and detection"
+      },
+      {
+        "t": "p",
+        "text": "The trust policy is only the door. What the assumed session can actually do is the intersection of the role's identity policies with any session policy passed at assume time. When you delegate, pass a tightly scoped session policy or a permissions boundary so a compromised vendor session cannot exercise the role's full grant. Other conditions worth enforcing on the AssumeRole statement: aws:PrincipalOrgID to constrain trust to your AWS Organization, sts:RoleSessionName patterns for CloudTrail attribution, aws:SourceIp or aws:VpcSourceIp where the caller's network is predictable, and DurationSeconds limits to shrink the window of a leaked session token. Tag-based access control (aws:RequestTag and aws:PrincipalTag with sts:TagSession) lets you do ABAC across the boundary instead of minting a separate role per tenant. For detection at scale, the single highest-value audit is hunting wildcards and unconditioned trust. Inventory every role's AssumeRolePolicyDocument, flag the dangerous shapes below, and back the static scan with IAM Access Analyzer external-access findings, which specifically surface roles reachable from outside your trust zone. Encode these patterns as a recurring check and gate new roles in CI before they ever reach an account. The confused-deputy problem is not exotic; it is the default outcome of a trust policy that names a principal and stops there. Add the condition that proves who is really calling, scope the session to least privilege, and the door only opens for the caller you meant."
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Principal '*' on sts:AssumeRole with no Condition: anyone, anywhere can assume the role. Treat as critical.",
+          "Cross-account root Principal with no sts:ExternalId and no aws:PrincipalOrgID: the classic confused-deputy gap.",
+          "Service principal (lambda/s3/sns/cloudtrail.amazonaws.com) with no aws:SourceArn or aws:SourceAccount: a service-side confused deputy.",
+          "ExternalId equal to the account ID, sequential, or otherwise guessable: present but ineffective.",
+          "Overlong DurationSeconds or no session policy on a high-privilege delegated role: a blast-radius amplifier even when trust is correct."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "vpc-network-security-deep-dive",
+    "title": "VPC Network Security Deep-Dive: Flow Logs, Security Groups vs NACLs, and Egress Filtering",
+    "excerpt": "A working engineer's guide to locking down VPC traffic: where stateful security groups beat stateless NACLs, why default-allow egress is a data-exfiltration liability, and how to hunt anomalous outbound flows in CloudWatch Logs Insights.",
+    "category": "Cloud / AWS",
+    "date": "May 7, 2026",
+    "read": "10 min",
+    "image": "/blog/vpc-network-security-deep-dive.webp",
+    "body": [
+      {
+        "t": "p",
+        "text": "Most VPC breakdowns happen on the way out, not the way in. Attackers who land on an instance, a compromised dependency in your build pipeline, or a leaky Lambda all need the same thing next: a path to the internet to stage tooling, beacon to command-and-control, and exfiltrate data. The default AWS VPC posture quietly gives them that path. This article walks through the three controls that actually constrain east-west and outbound traffic at the network layer: security groups, network ACLs, and VPC Flow Logs, and how to wire them into a default-deny egress design that you can verify rather than assume."
+      },
+      {
+        "t": "h2",
+        "text": "Stateful security groups vs stateless NACLs"
+      },
+      {
+        "t": "p",
+        "text": "Security groups are stateful and attach to elastic network interfaces (ENIs), not subnets. When an allowed connection is established outbound, the return traffic is permitted automatically regardless of inbound rules, because the connection is tracked. Security groups are allow-only: there is no deny rule, and rules are evaluated as a union across all groups attached to the ENI. This is why they are the right place to express application intent (this ENI may talk to that ENI on 5432) and the wrong place to express broad blocklists."
+      },
+      {
+        "t": "p",
+        "text": "Network ACLs are stateless and attach to subnets. Statelessness is the detail that bites people: a NACL that allows inbound 443 will still drop the response to an outbound request unless you also open the ephemeral return range (typically 1024-65535) in the opposite direction. NACLs evaluate numbered rules in order, first match wins, and they support explicit DENY. That makes them useful as a coarse, subnet-wide guardrail, blocking a known-bad CIDR, or hard-stopping a port across an entire tier, that no single team can accidentally punch a hole through with a security group."
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Use security groups for the 95 percent case: per-workload, intent-based allow rules referencing other security group IDs rather than CIDRs.",
+          "Use NACLs as a blast-radius backstop: explicit subnet-wide denies, RFC1918 boundary enforcement, and quarantine of a compromised subnet during incident response.",
+          "Remember the connection-tracking nuance: security groups exempt some flows (and very-high-rate flows) from tracking, which can surprise you when you expect automatic return traffic. NACLs always need both directions stated explicitly."
+        ]
+      },
+      {
+        "t": "h2",
+        "text": "The open-egress problem"
+      },
+      {
+        "t": "p",
+        "text": "Every default security group ships with an outbound rule of 0.0.0.0/0 on all ports, and most teams never touch it. That single rule is the difference between a contained compromise and a full exfiltration event. With open egress, a compromised process can resolve an arbitrary domain, open 443 to an attacker-controlled host, and stream your database out over TLS that looks indistinguishable from normal API traffic. C2 frameworks lean on exactly this: long-lived outbound 443 or 53 sessions to hosts you never intended to reach. Ingress filtering does nothing to stop it, because the instance initiated the connection."
+      },
+      {
+        "t": "callout",
+        "text": "Default-deny egress is the single highest-leverage VPC control most teams skip. Replace the 0.0.0.0/0 outbound rule with an explicit allowlist of destinations your workload actually needs, prefix lists for AWS service ranges, peered VPC CIDRs, and a short set of known partner endpoints. Everything else should be denied by default and surfaced as a Flow Log REJECT you can alert on."
+      },
+      {
+        "t": "h2",
+        "text": "VPC endpoints: take the internet out of the path"
+      },
+      {
+        "t": "p",
+        "text": "You cannot allowlist what you do not have to reach. Gateway endpoints for S3 and DynamoDB, and interface endpoints (AWS PrivateLink) for services like Secrets Manager, KMS, ECR, STS, and CloudWatch Logs, keep that traffic on the AWS network and off the internet entirely. The security win is structural: with endpoints in place you can drop the NAT gateway for those flows, shrink your egress allowlist to almost nothing, and attach endpoint policies that restrict which principals and resources are reachable. An attacker on a private-subnet instance with no NAT route and only S3/KMS/ECR endpoints has no general internet path to beacon over. That is defense-in-depth the network enforces for you, not a control someone has to remember to configure per workload."
+      },
+      {
+        "t": "h2",
+        "text": "Flow Logs: fields, limits, and what to capture"
+      },
+      {
+        "t": "p",
+        "text": "VPC Flow Logs are your record of what actually traversed the network, independent of whether a rule allowed it. Publish them to CloudWatch Logs or S3 (and consider Parquet on S3 for cost-efficient querying at scale). Capture the ACCEPT and REJECT actions both, REJECT tells you what your rules stopped, ACCEPT tells you what they let through, which is where exfiltration hides. Use a custom format to add fields beyond the v2 default: pkt-srcaddr and pkt-dstaddr (the real endpoints behind NAT), flow-direction, tcp-flags, and the traffic-path field that distinguishes internet egress from PrivateLink and intra-VPC paths."
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Flow Logs are aggregated over an interval (default 10 minutes, or 1 minute) and sampled at the metadata level, they are not a full packet capture and will not show payload.",
+          "Some traffic is never logged: link-local 169.254.x.x, Amazon DNS at the .2 resolver, DHCP, and Windows license activation. Do not build detections that assume their absence is suspicious.",
+          "srcaddr/dstaddr reflect the NAT or endpoint-facing address, use pkt-srcaddr/pkt-dstaddr to attribute a flow back to the originating instance behind a NAT gateway.",
+          "Bytes and packets are per-flow within the aggregation window, ideal for spotting a single talker moving gigabytes that a connection count alone would miss."
+        ]
+      },
+      {
+        "t": "h2",
+        "text": "Hunting anomalous egress in CloudWatch Logs Insights"
+      },
+      {
+        "t": "p",
+        "text": "The query below surfaces accepted outbound flows that moved large volumes of data or used unusual destination ports, the two cheapest signals for exfiltration and C2. Sort by bytes, group by the talking pair, and the top of the result set is your candidate list. Run it over a private-subnet log group where outbound internet traffic should be rare to begin with."
+      },
+      {
+        "t": "code",
+        "code": "fields srcAddr, dstAddr, dstPort, bytes\n| filter action = \"ACCEPT\"\n| filter dstAddr not like /^10\\./ and dstAddr not like /^172\\.(1[6-9]|2[0-9]|3[01])\\./ and dstAddr not like /^192\\.168\\./\n| filter bytes > 10000000\n      or (dstPort != 443 and dstPort != 80 and dstPort != 22 and dstPort != 53)\n| stats sum(bytes) as totalBytes, count(*) as flows by srcAddr, dstAddr, dstPort\n| sort totalBytes desc\n| limit 50"
+      },
+      {
+        "t": "p",
+        "text": "Read the output as a triage funnel. A private instance pushing tens of gigabytes to a single external IP on 443 is a classic staged exfiltration, the volume is the tell, not the port. A low-byte, high-flow-count pattern to one destination on an odd port (say repeated short sessions to 4444 or 8443) looks like beaconing. Cross-reference the top dstAddr values against your egress allowlist: anything not on it is, by definition, traffic your default-deny posture should have stopped. For continuous coverage, promote the same logic into a metric filter or a scheduled query and alert when totalBytes per pair crosses a threshold, then enrich with pkt-srcaddr to name the real source instance."
+      },
+      {
+        "t": "h2",
+        "text": "Putting it together"
+      },
+      {
+        "t": "p",
+        "text": "The controls reinforce each other. Default-deny egress on security groups shrinks the set of destinations an attacker can reach; VPC endpoints remove the internet from the common paths so the allowlist stays small; NACLs give you a subnet-wide kill switch for incident response; and Flow Logs make the whole thing observable so deny is a fact you verify, not a hope. Start by turning on Flow Logs with a custom format everywhere, then walk one workload from open egress to an explicit allowlist and watch the REJECT lines appear. Each one is a path you just closed."
+      }
+    ]
+  },
+  {
+    "slug": "ecs-eks-container-security",
+    "title": "Container Security on AWS: ECR Scanning, ECS Hardening, and EKS Controls",
+    "excerpt": "A practitioner's walkthrough of locking down the container lifecycle on AWS, from Inspector-backed ECR scanning and image signing to ECS task-role isolation, IMDS exposure, EKS IRSA and Pod Identity, and GuardDuty Runtime Monitoring.",
+    "category": "Cloud / AWS",
+    "date": "May 2, 2026",
+    "read": "11 min",
+    "image": "/blog/ecs-eks-container-security.webp",
+    "body": [
+      {
+        "t": "p",
+        "text": "Containers collapse three trust boundaries that used to be separate: the image supply chain, the workload identity, and the host. On AWS, ECR, ECS, and EKS each give you controls for one of those boundaries, but the defaults lean toward convenience. An image pushes whether or not it has been scanned, a task can inherit a wildly over-privileged instance role, and a pod can reach the node's instance metadata service and walk away with the node IAM credentials. This article walks the lifecycle end to end and shows the specific knobs that matter for working engineers in 2026."
+      },
+      {
+        "t": "h2",
+        "text": "ECR: enhanced scanning, provenance, and signing"
+      },
+      {
+        "t": "p",
+        "text": "ECR offers two scan tiers. Basic scanning runs the open-source Clair-derived engine on push and only covers OS packages. Enhanced scanning delegates to Amazon Inspector, which continuously rescans pushed images as new CVEs are published and, critically, reaches into language package layers: npm, PyPI, Go modules, Gem, Maven, and more. Continuous rescan is the differentiator. A clean scan at push time means nothing a week later when a new critical CVE drops against a library you already shipped. Turn on enhanced scanning at the registry level and set a scan-on-push plus continuous frequency so Inspector keeps evaluating images that are still in use."
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Enable Inspector enhanced scanning at the registry scope, not per-repository, so new repos are covered by default.",
+          "Gate deployments on findings: query Inspector for CRITICAL/HIGH findings and fail the pipeline rather than trusting a stale push-time result.",
+          "Set image tag immutability on production repos so a tag like prod cannot be silently overwritten with a different digest.",
+          "Attach lifecycle policies to expire untagged and old images so vulnerable layers do not linger in the registry indefinitely."
+        ]
+      },
+      {
+        "t": "p",
+        "text": "Provenance is the other half. Pin deployments to image digests (sha256:...), never to mutable tags, so what you tested is byte-for-byte what runs. Sign images with AWS Signer container image signing (Notation, the CNCF Notary Project format) and verify signatures at admission. On EKS you can enforce verification with a Kyverno or Ratify admission policy that rejects any image lacking a trusted signature; on ECS, enforce it as a hard gate in the deploy pipeline before the task definition is registered."
+      },
+      {
+        "t": "h2",
+        "text": "ECS: the task-role vs instance-role boundary"
+      },
+      {
+        "t": "p",
+        "text": "The single most common ECS misconfiguration is conflating the container instance role with the task role. The instance role (or the Fargate-managed equivalent) exists so the ECS agent can talk to the control plane, pull images, and ship logs. Your application should never use it. Application permissions belong on the task role, which is scoped per task definition and delivered to the container through a credential endpoint the agent injects. If your app reads from one S3 bucket, the task role grants exactly that and nothing else, independent of what the host can do."
+      },
+      {
+        "t": "p",
+        "text": "Hardening the task definition is equally important. Drop the privileged flag, run a read-only root filesystem, run as a non-root user, and drop Linux capabilities you do not need. The snippet below shows a hardened Fargate task definition with a dedicated task role, an execution role kept separate, a read-only root filesystem, and no privileged escalation."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"family\": \"payments-api\",\n  \"requiresCompatibilities\": [\"FARGATE\"],\n  \"networkMode\": \"awsvpc\",\n  \"cpu\": \"512\",\n  \"memory\": \"1024\",\n  \"taskRoleArn\": \"arn:aws:iam::111122223333:role/payments-api-task\",\n  \"executionRoleArn\": \"arn:aws:iam::111122223333:role/payments-api-exec\",\n  \"containerDefinitions\": [\n    {\n      \"name\": \"app\",\n      \"image\": \"111122223333.dkr.ecr.us-east-1.amazonaws.com/payments-api@sha256:9f2c...\",\n      \"essential\": true,\n      \"readonlyRootFilesystem\": true,\n      \"privileged\": false,\n      \"user\": \"10001:10001\",\n      \"linuxParameters\": {\n        \"capabilities\": { \"drop\": [\"ALL\"] },\n        \"initProcessEnabled\": true\n      },\n      \"mountPoints\": [\n        { \"sourceVolume\": \"tmp\", \"containerPath\": \"/tmp\", \"readOnly\": false }\n      ],\n      \"logConfiguration\": {\n        \"logDriver\": \"awslogs\",\n        \"options\": {\n          \"awslogs-group\": \"/ecs/payments-api\",\n          \"awslogs-region\": \"us-east-1\",\n          \"awslogs-stream-prefix\": \"app\"\n        }\n      }\n    }\n  ],\n  \"volumes\": [ { \"name\": \"tmp\" } ]\n}"
+      },
+      {
+        "t": "p",
+        "text": "A read-only root filesystem breaks code that expects to write to the image. The fix is not to disable the flag but to mount a small writable volume (here /tmp) for the few paths that genuinely need it. This blocks an attacker who lands code execution from dropping a persistent binary into the image filesystem."
+      },
+      {
+        "t": "h2",
+        "text": "ECS task access to instance metadata"
+      },
+      {
+        "t": "p",
+        "text": "On EC2-backed ECS, the most dangerous default is that a task on the host network, or any task that can reach 169.254.169.254, can query the node's instance metadata service and retrieve the container instance role credentials, bypassing the task-role scoping entirely. The controls are layered. Enforce IMDSv2 (session-token required) on the launch template so simple SSRF cannot grab credentials with a single GET. Set the IMDS hop limit to 1 so a packet originating inside a container, which adds a network hop, cannot reach metadata. And use awsvpc network mode rather than host so each task gets its own ENI and does not share the host's metadata path. On Fargate there is no host metadata endpoint to reach in the first place, which is one more reason to prefer it for sensitive workloads."
+      },
+      {
+        "t": "callout",
+        "text": "Rule of thumb: if a workload only needs AWS API permissions, it should get them from a task role or IRSA/Pod Identity, never from the node. Set the IMDS hop limit to 1 and require IMDSv2 everywhere, then treat any process reaching 169.254.169.254 from inside a container as an incident, not a feature."
+      },
+      {
+        "t": "h2",
+        "text": "EKS: IRSA, Pod Identity, and the IMDS hop limit for pods"
+      },
+      {
+        "t": "p",
+        "text": "EKS gives each pod its own AWS identity through one of two mechanisms. IRSA (IAM Roles for Service Accounts) federates the cluster's OIDC provider with IAM: the pod's projected service-account token is exchanged for role credentials, and the role's trust policy pins the exact namespace and service account allowed to assume it. EKS Pod Identity is the newer, simpler option that drops the per-cluster OIDC setup and manages the mapping through an EKS API and the Pod Identity Agent; prefer it for new clusters unless you need cross-account assumption patterns that IRSA still handles more directly. Either way, the goal is the same: the pod, not the node, holds least-privilege credentials. Below is an IRSA trust policy scoped to one service account so no other pod in the cluster can assume the role."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"Federated\": \"arn:aws:iam::111122223333:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/EXAMPLE1A2B3C\"\n      },\n      \"Action\": \"sts:AssumeRoleWithWebIdentity\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"oidc.eks.us-east-1.amazonaws.com/id/EXAMPLE1A2B3C:aud\": \"sts.amazonaws.com\",\n          \"oidc.eks.us-east-1.amazonaws.com/id/EXAMPLE1A2B3C:sub\": \"system:serviceaccount:payments:payments-api\"\n        }\n      }\n    }\n  ]\n}"
+      },
+      {
+        "t": "p",
+        "text": "Pinning the sub claim to system:serviceaccount:payments:payments-api is what makes this least-privilege. A common mistake is matching only the aud claim or using a wildcard sub, which lets any pod in any namespace assume the role. As with ECS, set the IMDS hop limit on the EKS node group launch template to 1. Without that, a pod can still bypass IRSA entirely by reaching the node's metadata service and assuming the node instance role, which typically has the broad CNI, ECR, and worker permissions. Hop limit 1 closes that path because the pod's traffic crosses an extra hop and is dropped before it reaches metadata."
+      },
+      {
+        "t": "h2",
+        "text": "Kubernetes RBAC and runtime detection"
+      },
+      {
+        "t": "p",
+        "text": "AWS identity is only half of EKS authorization; Kubernetes RBAC governs what an identity can do inside the cluster. Bind subjects to namespaced Roles instead of cluster-wide ClusterRoles wherever possible, and never grant cluster-admin to CI or application service accounts. Audit for the dangerous verbs: a principal with escalate, bind, or impersonate can grant itself more than it appears to have, and broad pods/exec or secrets get is effectively node-level access. EKS access entries replaced the old aws-auth ConfigMap as the supported way to map IAM principals to Kubernetes groups, so manage cluster access through access entries and keep those group bindings tight."
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Enable GuardDuty EKS Protection (audit-log analysis) plus Runtime Monitoring, which deploys an eBPF agent to ECS Fargate, EKS, and EC2 to flag process- and network-level threats like a container spawning a reverse shell or querying the metadata endpoint.",
+          "Turn on EKS control-plane audit logging to CloudWatch so RBAC denials and anomalous API calls are recorded for investigation.",
+          "Use a managed admission policy (Pod Security Admission at the restricted level, or Kyverno/Ratify) to reject privileged pods, hostPath mounts, and unsigned images at the door.",
+          "Scope network policy so pods cannot reach 169.254.169.254 or each other unless explicitly allowed, reinforcing the IMDS hop-limit control at the network layer."
+        ]
+      },
+      {
+        "t": "p",
+        "text": "None of these controls is exotic, but they only work as a set. Inspector scanning plus signing protects the image, task roles and IRSA/Pod Identity protect the workload identity, the IMDS hop limit and IMDSv2 protect the host boundary, and GuardDuty Runtime Monitoring plus RBAC catch what slips through. Configure them together and an attacker who compromises one container finds no node credentials to steal, no broader role to assume, and a detection agent watching every syscall."
+      }
+    ]
+  },
+  {
+    "slug": "lambda-serverless-security",
+    "title": "Serverless Security: Least-Privilege Lambda, Event Injection, and Secrets Handling",
+    "excerpt": "Serverless removes the host you used to patch, but it does not remove the attack surface. This is how working engineers harden Lambda execution roles, untrusted event sources, secrets, and Function URLs against real exploitation.",
+    "category": "Cloud / AWS",
+    "date": "Apr 27, 2026",
+    "read": "9 min",
+    "image": "/blog/lambda-serverless-security.webp",
+    "body": [
+      {
+        "t": "p",
+        "text": "Lambda erases the patchable host, but the blast radius just moves. In a serverless app the real perimeter is the execution role, the event payload, and the secrets a function can reach at runtime. A single over-scoped role attached to a function that parses attacker-controlled input is a straight line from a malformed event to data exfiltration. This is a practitioner walkthrough of the failure modes that actually get exploited in AWS serverless workloads in 2026, and the concrete controls that contain them."
+      },
+      {
+        "t": "h2",
+        "text": "Over-privileged execution roles are the default failure"
+      },
+      {
+        "t": "p",
+        "text": "Every Lambda assumes an execution role, and that role is the identity any code running inside the function inherits, including injected code. The common anti-pattern is a role with managed policies like AmazonDynamoDBFullAccess or s3:* on Resource \"*\", copied from a tutorial and never tightened. When a dependency is compromised or an event is injected, the attacker does not get the function's narrow job; they get everything the role can do across the account. Treat the execution role as the actual security boundary and scope it to exact ARNs and exact actions. One role per function, never a shared role across a fleet, so a compromise of one handler cannot pivot through the permissions of another."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"ReadOrdersTableOnly\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"dynamodb:GetItem\",\n        \"dynamodb:Query\"\n      ],\n      \"Resource\": \"arn:aws:dynamodb:us-east-1:111122223333:table/orders\"\n    },\n    {\n      \"Sid\": \"ReadOneSecretOnly\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"secretsmanager:GetSecretValue\",\n      \"Resource\": \"arn:aws:secretsmanager:us-east-1:111122223333:secret:prod/orders/db-Ab12Cd\"\n    },\n    {\n      \"Sid\": \"ScopedLogsOnly\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"logs:CreateLogStream\",\n        \"logs:PutLogEvents\"\n      ],\n      \"Resource\": \"arn:aws:logs:us-east-1:111122223333:log-group:/aws/lambda/orders-read:*\"\n    }\n  ]\n}"
+      },
+      {
+        "t": "p",
+        "text": "Note what is absent: no wildcard actions, no Resource \"*\", and write access to DynamoDB is simply not granted because this handler only reads. The log permissions are scoped to this function's own log group rather than the account-wide logs:* that the default policy hands out. If you must allow a broad action, constrain it with a condition key instead of leaving Resource open."
+      },
+      {
+        "t": "h2",
+        "text": "Event injection from untrusted sources"
+      },
+      {
+        "t": "p",
+        "text": "Lambda's event object is attacker-influenced far more often than teams assume. An API Gateway or Function URL request, an SQS message, an S3 object key, an SNS notification, a DynamoDB Stream record, an EventBridge event, an SES inbound email, an IoT message: every one of these can carry data shaped by an external party. The handler that blindly interpolates event fields into a database query, a shell command, an S3 key, or a downstream HTTP call is the serverless equivalent of classic injection. The fact that there is no long-lived server does not make string concatenation of untrusted input safe."
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Validate and type-check every event against a strict schema at the top of the handler; reject anything that does not match rather than coercing it.",
+          "Never pass event-derived strings into os.system, child_process, eval, or dynamic import paths.",
+          "Use parameterized queries and SDK parameter objects, never string-built query expressions, for DynamoDB, RDS Data API, or Athena.",
+          "Treat object keys, file names, and S3 paths from events as hostile; canonicalize and allowlist before using them in further API calls.",
+          "Set a conservative function timeout and reserved or maximum concurrency so an injection cannot be amplified into runaway invocation cost or downstream overload."
+        ]
+      },
+      {
+        "t": "h2",
+        "text": "Secrets: environment variables are not a vault"
+      },
+      {
+        "t": "p",
+        "text": "Plaintext secrets in Lambda environment variables remain one of the most common findings in serverless audits. Environment variables are visible to anyone with lambda:GetFunctionConfiguration, they are captured in CloudFormation and Terraform state, they leak into logs and error traces, and any code running in the function (including an injected dependency) can read the entire process environment in one line. Encrypting them with a customer-managed KMS key helps at rest but does nothing once the value is decrypted into the runtime environment. Fetch secrets at runtime from Secrets Manager or SSM Parameter Store SecureString instead, scope GetSecretValue to the single secret ARN as shown above, and cache the result for the lifetime of the execution environment to avoid per-invocation API calls and throttling. The AWS Parameters and Secrets Lambda Extension gives you a local cache without writing the caching logic yourself."
+      },
+      {
+        "t": "callout",
+        "text": "Rule of thumb: if a value would cause an incident when leaked, it does not belong in a Lambda environment variable. Resolve it at runtime from Secrets Manager or Parameter Store, grant access to exactly one secret ARN, and rotate on a schedule. Encrypted env vars still end up in plaintext in the running process."
+      },
+      {
+        "t": "h2",
+        "text": "Function URLs, auth, and the public-by-mistake trap"
+      },
+      {
+        "t": "p",
+        "text": "Lambda Function URLs give a function a dedicated HTTPS endpoint with no API Gateway in front. They have two auth modes, and the dangerous one is easy to pick by accident. AuthType NONE makes the endpoint publicly invokable by anyone on the internet, which is appropriate only for a genuinely public, well-validated handler and never for anything touching internal data. AuthType AWS_IAM requires the caller to sign the request with SigV4 and to hold lambda:InvokeFunctionUrl permission. If you do expose a NONE endpoint, you own all of authentication, authorization, input validation, and abuse protection inside the function, and you should front it with WAF and tight throttling. For invocation by another AWS service or account, control access with a resource-based policy that pins the source, rather than opening the function up."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Id\": \"restrict-invoke-by-source\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowS3BucketInvokeOnly\",\n      \"Effect\": \"Allow\",\n      \"Principal\": { \"Service\": \"s3.amazonaws.com\" },\n      \"Action\": \"lambda:InvokeFunction\",\n      \"Resource\": \"arn:aws:lambda:us-east-1:111122223333:function:orders-read\",\n      \"Condition\": {\n        \"StringEquals\": { \"aws:SourceAccount\": \"111122223333\" },\n        \"ArnLike\": {\n          \"aws:SourceArn\": \"arn:aws:s3:::orders-intake-bucket\"\n        }\n      }\n    }\n  ]\n}"
+      },
+      {
+        "t": "p",
+        "text": "The aws:SourceArn condition is what stops a confused-deputy invocation: even though the S3 service principal is allowed to invoke, only events originating from that one bucket in that one account are permitted. Apply the same pattern for SNS, EventBridge, and cross-account callers, always pinning aws:SourceArn and aws:SourceAccount."
+      },
+      {
+        "t": "h2",
+        "text": "Dependency and supply-chain risk"
+      },
+      {
+        "t": "p",
+        "text": "A serverless function is mostly third-party code. Layers and the deployment package pull in dozens of transitive npm or PyPI dependencies, any of which can be typosquatted, hijacked, or backdoored, and that code runs with the function's execution role. Pin exact versions and commit a lockfile; do not float on latest. Generate an SBOM and scan the package and any layers in CI, for example with Amazon Inspector, which covers Lambda functions and layers for known CVEs. Vet shared layers like any other dependency, since a single poisoned layer is inherited by every function that attaches it. Build in a clean CI pipeline rather than from a developer laptop, and prefer minimal runtimes so there is less code to audit and exploit. Combined with a tightly scoped role, supply-chain compromise is contained: malicious code still cannot exceed the function's permissions."
+      },
+      {
+        "t": "h2",
+        "text": "Detection: CloudTrail Invoke and GuardDuty Lambda Protection"
+      },
+      {
+        "t": "p",
+        "text": "Least privilege limits the blast radius; detection tells you when someone is testing its edges. Lambda management-plane calls (CreateFunction, UpdateFunctionCode, UpdateFunctionConfiguration, AddPermission) are logged by CloudTrail management events by default, and unexpected UpdateFunctionCode or AddPermission outside a deploy pipeline is a strong tamper signal worth alerting on. The Invoke API itself is a data event, so you must explicitly enable Lambda data events in CloudTrail to see who is invoking which function and how often. Turn on GuardDuty Lambda Protection, which analyzes VPC flow telemetry from your functions to flag behavior such as a function beaconing to a known command-and-control endpoint or performing crypto-mining DNS lookups, a strong indicator of post-exploitation. Wire those findings into EventBridge and an automated response so a compromised function can be throttled to zero concurrency or have its role detached quickly."
+      },
+      {
+        "t": "p",
+        "text": "None of these controls is exotic; the discipline is applying all of them together, per function, on every deploy. Scope each execution role to exact ARNs, validate every event as hostile input, pull secrets at runtime instead of baking them into the environment, lock down Function URLs and resource-based policies with source conditions, scan your dependencies and layers, and watch CloudTrail and GuardDuty for the moment an attacker starts probing. Do that and a single compromised function stays a single compromised function instead of an account-wide breach."
+      }
+    ]
+  },
+  {
+    "slug": "aws-detection-engineering",
+    "title": "AWS Detection Engineering: High-Signal Rules from CloudTrail and GuardDuty",
+    "excerpt": "A practical method for turning CloudTrail and GuardDuty into detections that fire on real attacker behavior, not noise. We map TTPs to ATT&CK, baseline normal, enrich for context, and wire findings to automated response.",
+    "category": "Detection & Response",
+    "date": "Apr 22, 2026",
+    "read": "10 min",
+    "image": "/blog/aws-detection-engineering.webp",
+    "body": [
+      {
+        "t": "p",
+        "text": "Most AWS detection programs drown in their own telemetry. A single busy account emits tens of thousands of CloudTrail events an hour, and the naive instinct is to alert on anything that looks scary: a DeleteBucket here, an AttachUserPolicy there. The result is an alert queue nobody trusts and analysts who mute the channel by week two. Detection engineering is the discipline of inverting that: you start from how an attacker actually operates in AWS, express that behavior as a precise query over the right log source, and ruthlessly tune until the rule only fires when something is genuinely worth waking a human for."
+      },
+      {
+        "t": "p",
+        "text": "This article walks the full loop for AWS-native detection: choosing CloudTrail management versus data events as your substrate, treating GuardDuty as a high-confidence signal rather than a raw feed, building rules from TTPs mapped loosely to MITRE ATT&CK for cloud, baselining and enriching to kill false positives, and finally turning a validated detection into automated response with EventBridge and Lambda. No third-party SIEM required, everything here is AWS-native."
+      },
+      {
+        "t": "h2",
+        "text": "Know your substrate: CloudTrail management vs data events"
+      },
+      {
+        "t": "p",
+        "text": "CloudTrail records two broad classes of activity, and conflating them is the most common reason detections are either blind or unaffordable. Management events capture control-plane operations: IAM changes, security group edits, CreateAccessKey, AttachUserPolicy, UpdateAssumeRolePolicy, ConsoleLogin. These are low-volume, high-value, and on by default in every account, this is where identity and persistence attacks surface. Data events capture object-level activity: S3 GetObject, Lambda Invoke, DynamoDB item access. They are where exfiltration shows up, but they are high-volume and billed per event, so you enable them surgically on sensitive buckets and tables rather than account-wide."
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Management events: identity abuse, persistence, defense evasion, privilege escalation. Always on, cheap, your detection bread and butter.",
+          "Data events: exfiltration and access-to-data TTPs. Enable selectively via advanced event selectors scoped to crown-jewel resources to control cost and noise.",
+          "Organization trails: aggregate every member account into one S3 bucket so a compromised account cannot simply stop its own local trail and go dark.",
+          "Centralize into a security-tooling account with the trail bucket locked down by SCP and an immutable Object Lock policy so an attacker who lands in prod cannot delete the evidence."
+        ]
+      },
+      {
+        "t": "p",
+        "text": "For querying, you have two AWS-native paths. CloudWatch Logs Insights works well for near-real-time hunting if you ship the trail to a log group. For historical hunting over the S3 archive at scale, Athena over the CloudTrail table is the cost-effective choice. The detection logic is the same, only the dialect changes."
+      },
+      {
+        "t": "h2",
+        "text": "Build from TTPs, not from event names"
+      },
+      {
+        "t": "p",
+        "text": "A good detection encodes a behavior, not a single API call. AttachUserPolicy on its own is routine, platform teams do it constantly. What is anomalous is a principal that was created minutes ago immediately minting itself an access key and attaching AdministratorAccess. That sequence maps to ATT&CK Persistence (T1098 Account Manipulation) and Privilege Escalation, and it is the combination plus the newness of the actor that makes it high-signal. The query below hunts exactly that pattern over CloudTrail in CloudWatch Logs Insights."
+      },
+      {
+        "t": "code",
+        "code": "fields @timestamp, userIdentity.arn as actor, eventName, requestParameters.policyArn as policy, sourceIPAddress\n| filter eventSource = \"iam.amazonaws.com\"\n| filter eventName in [\"CreateAccessKey\", \"AttachUserPolicy\", \"AttachRolePolicy\", \"PutUserPolicy\", \"CreateLoginProfile\"]\n| filter errorCode not in [\"AccessDenied\", \"UnauthorizedOperation\"]\n| parse requestParameters.policyArn /(?<scope>Administrator|PowerUser|FullAccess|\\*)/\n| filter eventName = \"CreateAccessKey\" or ispresent(scope)\n| stats count() as actions,\n        earliest(@timestamp) as firstSeen,\n        latest(@timestamp) as lastSeen,\n        values(eventName) as apis,\n        values(policy) as policies\n        by actor, sourceIPAddress\n| filter actions >= 2\n| sort lastSeen desc"
+      },
+      {
+        "t": "p",
+        "text": "The shape matters more than the exact lines. We scope to the IAM event source, whitelist only the privilege-granting and credential-creating calls, drop AccessDenied so failed probes do not flood the rule (track those separately as a recon signal), and require at least two correlated actions by the same actor and source IP inside the window. That correlation is what converts a noisy single-event alert into something an analyst will believe. Run the same pattern in Athena against the CloudTrail S3 table for retrospective hunts when a new IOC drops."
+      },
+      {
+        "t": "h2",
+        "text": "The other high-signal classics"
+      },
+      {
+        "t": "p",
+        "text": "A handful of management-event patterns deserve a dedicated rule in every environment because they are both rare in normal operations and central to real intrusions. Tune the principal allowlists to your account, but the events themselves are the canonical ones to watch."
+      },
+      {
+        "t": "ul",
+        "items": [
+          "DeleteTrail, StopLogging, UpdateTrail, and PutEventSelectors that narrow coverage: ATT&CK Defense Evasion (T1562.008 Disable Cloud Logs). Anyone turning off the lights is either an attacker or a misconfiguration you also want to know about.",
+          "PutBucketPolicy, PutBucketAcl, or DeletePublicAccessBlock that introduces a Principal of \"*\" or an allow to a foreign account: resource exposure and potential exfiltration staging.",
+          "ConsoleLogin where additionalEventData.MFAUsed = \"No\" on a human principal, especially from a new ASN or geography: credential abuse.",
+          "UpdateAssumeRolePolicy that adds an external account or overly broad principal to a trust policy: a stealthy cross-account persistence and privilege-escalation path that bypasses key rotation entirely.",
+          "GetSecretValue or kms:Decrypt spikes from a principal that has never touched those secrets before: staging for exfiltration."
+        ]
+      },
+      {
+        "t": "callout",
+        "text": "Treat DeleteTrail and StopLogging as page-immediately, not triage-tomorrow. They are nearly never legitimate in a mature account, and they are the move an attacker makes right before the part you most need logged. Wire them straight to automated response and an on-call notification, skip the queue."
+      },
+      {
+        "t": "h2",
+        "text": "GuardDuty as a signal source, not a firehose"
+      },
+      {
+        "t": "p",
+        "text": "GuardDuty is already a detection engine, it applies ML and threat intel to CloudTrail, VPC Flow Logs, DNS logs, and (with the relevant protection plans) S3, EKS audit logs, Lambda network activity, RDS login activity, and malware scans on EBS. The mistake is treating its findings as raw events to re-detect. Instead, consume findings as enriched, scored signals: each carries a severity, a resource, an actor, and an ATT&CK-aligned finding type such as PrivilegeEscalation:IAMUser/AdministrativePermissions or Exfiltration:S3/AnomalousBehavior. Your job as a detection engineer is to route, enrich, and correlate them, not to rebuild them."
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Use GuardDuty severity as a first-pass filter, but do not blindly trust the band, fold in your own context (is the resource a crown jewel, is the actor a service role) to re-rank.",
+          "Correlate GuardDuty findings with your CloudTrail rules: a GuardDuty UnauthorizedAccess finding plus your own CreateAccessKey rule firing on the same principal is a far stronger signal than either alone.",
+          "Enable GuardDuty at the organization level with auto-enable for new accounts so coverage cannot silently lapse as the org grows.",
+          "Suppress known-benign finding patterns with suppression rules rather than ignoring whole finding types, so you keep the signal while cutting the recurring noise."
+        ]
+      },
+      {
+        "t": "h2",
+        "text": "Baseline, enrich, and kill false positives"
+      },
+      {
+        "t": "p",
+        "text": "A rule that fires correctly but constantly is still a failed detection. Three techniques carry most of the tuning. First, baseline: derive the set of principals, source IPs, and regions that normally perform a sensitive action, and alert on deviation from that learned set rather than on the action itself, a first-seen access key from a known automation role is noise, a first-seen key from a brand-new user from a residential ASN is not. Second, enrich at detection time: join the actor ARN against your IAM inventory to know if it is human or machine, resolve the source IP to an ASN and geo, and tag the resource with its data classification. Enrichment is what lets a rule say administrator policy attached to a new user from an unrecognized ASN instead of just AttachUserPolicy. Third, exclude structurally: filter out your CI/CD and IaC pipeline roles by ARN, since Terraform and CloudFormation legitimately perform the exact privileged actions your rules hunt for, an unexcluded pipeline role is the number-one source of false positives in AWS detections."
+      },
+      {
+        "t": "h2",
+        "text": "Turn detections into automated response"
+      },
+      {
+        "t": "p",
+        "text": "The payoff of a high-signal rule is that you can trust it enough to act automatically. The AWS-native pattern is an EventBridge rule matching either a GuardDuty finding or a CloudTrail event delivered to EventBridge, targeting a Lambda (or a Step Functions workflow for multi-step containment). For the highest-confidence detections, response should be immediate and reversible: for a leaked access key, deactivate the key and attach an explicit deny policy to the principal, for a public-bucket change, re-apply the account public access block, for a disabled trail, re-enable logging and snapshot the actor's recent activity for the responder. Always notify in parallel via SNS so a human is looped in even when the machine acts first, and write every automated action back to a case so containment is auditable. Start by alert-only on a new rule, measure its precision against real incidents for a couple of weeks, and only then promote the trusted ones to auto-remediate."
+      },
+      {
+        "t": "p",
+        "text": "Detection engineering on AWS is not about collecting more, it is about collecting the right plane (management events broadly, data events surgically), expressing attacker behavior as correlated multi-event queries, leaning on GuardDuty for ML-derived signal, and tuning relentlessly with baselining and enrichment until every alert earns its interrupt. Get that loop right and a two-person team can defend an estate of hundreds of accounts, because the system only ever asks for human judgment when it has genuinely earned it."
+      }
+    ]
+  },
+  {
+    "slug": "secrets-management-aws",
+    "title": "Secrets Management on AWS: Secrets Manager vs SSM Parameter Store, Rotation, and Killing Hardcoded Credentials",
+    "excerpt": "A deep, engineer-grade comparison of AWS Secrets Manager and SSM Parameter Store: rotation, KMS, least-privilege retrieval, and how to detect secret access in CloudTrail.",
+    "category": "Cloud / AWS",
+    "date": "Apr 17, 2026",
+    "read": "8 min",
+    "image": "/blog/secrets-management-aws.webp",
+    "body": [
+      {
+        "t": "p",
+        "text": "Every credential your application reads at runtime is a liability you have to govern: where it lives, who can decrypt it, how often it rotates, and whether you can prove who touched it. The two AWS-native answers are Secrets Manager and SSM Parameter Store (SecureString). They overlap enough to confuse, but they differ sharply on rotation, cost, size, and cross-account behavior. This piece is for engineers who already know what a secret is and want the precise trade-offs, the IAM and KMS plumbing that makes retrieval least-privilege, and the CloudTrail signal that tells you when something reads a secret it shouldn't."
+      },
+      {
+        "t": "h2",
+        "text": "Secrets Manager vs Parameter Store: the real trade-offs"
+      },
+      {
+        "t": "p",
+        "text": "Both encrypt at rest with KMS and both gate access with IAM. The decision usually comes down to whether you need managed rotation and resource policies, versus whether you want the cheapest possible store for config that happens to be sensitive. Parameter Store SecureString parameters are free at the Standard tier (up to 4 KB); Secrets Manager bills per secret per month plus per 10,000 API calls. Secrets Manager is the right default for database and third-party API credentials that must rotate; Parameter Store is excellent for hierarchical config and SecureStrings you rotate yourself."
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Rotation: Secrets Manager has built-in, Lambda-driven automatic rotation with versioning (AWSCURRENT / AWSPENDING / AWSPREVIOUS staging labels). Parameter Store has none natively; you script it or trigger a Lambda on a schedule.",
+          "Cost: Parameter Store Standard tier is free for storage and standard-throughput API calls. Secrets Manager charges per secret/month and per API call batch. At thousands of low-churn config values, Parameter Store wins decisively.",
+          "Size and type: Parameter Store Standard caps at 4 KB (Advanced tier and Secrets Manager allow larger payloads, up to 8 KB / 64 KB respectively). Secrets Manager stores arbitrary JSON blobs and is built for structured credential documents.",
+          "Cross-account and policies: Secrets Manager supports resource-based policies, so you can share a secret to another account directly. Parameter Store has no resource policy; cross-account sharing means assuming a role in the owning account.",
+          "Replication: Secrets Manager offers built-in multi-Region replication of a secret. Parameter Store does not replicate for you.",
+          "Integrations: Secrets Manager wires directly into RDS, Redshift, and DocumentDB managed rotation. Parameter Store integrates broadly as a config source (CloudFormation dynamic references, ECS, Lambda extensions)."
+        ]
+      },
+      {
+        "t": "callout",
+        "text": "Rule of thumb: if a value must rotate on a schedule or be shared cross-account by policy, use Secrets Manager. If it is sensitive config you control and rarely change, a Parameter Store SecureString is cheaper and just as encrypted. Mixing both is normal and correct."
+      },
+      {
+        "t": "h2",
+        "text": "KMS is doing the actual encryption, so own the key"
+      },
+      {
+        "t": "p",
+        "text": "Neither service encrypts anything itself; both call KMS. Secrets Manager encrypts with a KMS key (the AWS-managed aws/secretsmanager key by default), and Parameter Store SecureStrings use aws/ssm unless you specify a customer-managed key (CMK). Use a CMK. A CMK lets you write a key policy that scopes kms:Decrypt to specific principals, enables an independent audit trail, and gives you the kill switch of disabling the key. Crucially, a caller needs BOTH the secretsmanager:GetSecretValue (or ssm:GetParameter) permission AND kms:Decrypt on the encrypting key. That double gate is the foundation of least-privilege retrieval, so do not undermine it with a wildcard KMS grant."
+      },
+      {
+        "t": "h2",
+        "text": "Least-privilege retrieval: scope to one ARN and one key"
+      },
+      {
+        "t": "p",
+        "text": "The most common mistake is an identity policy that allows secretsmanager:GetSecretValue on Resource: *. That hands any compromised task the keys to every secret in the account. Scope the permission to the exact secret ARN, and add a KMS condition so the grant only works through your intended key. Note the trailing wildcard on the secret ARN: Secrets Manager appends a random six-character suffix to every secret, so an exact-prefix match with -?????? (or a trailing *) is required."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"ReadOneSecret\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"secretsmanager:GetSecretValue\",\n        \"secretsmanager:DescribeSecret\"\n      ],\n      \"Resource\": \"arn:aws:secretsmanager:us-east-1:111122223333:secret:prod/api/payments-gw-??????\"\n    },\n    {\n      \"Sid\": \"DecryptWithThatKeyOnly\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"kms:Decrypt\",\n      \"Resource\": \"arn:aws:kms:us-east-1:111122223333:key/9f3c0a4e-2b1d-4c8a-bb7e-7d6f5a4c3b2a\",\n      \"Condition\": {\n        \"StringEquals\": {\n          \"kms:ViaService\": \"secretsmanager.us-east-1.amazonaws.com\"\n        }\n      }\n    }\n  ]\n}"
+      },
+      {
+        "t": "p",
+        "text": "The kms:ViaService condition means this Decrypt permission only works when the call comes through Secrets Manager, not if the identity tries to call KMS directly against arbitrary ciphertext. Pair the identity policy above with a resource policy on the secret itself for defense in depth, locking the secret to a specific role and denying anything outside your account or org. Combine that with aws:PrincipalOrgID and a deny on non-TLS calls for a hardened posture."
+      },
+      {
+        "t": "h2",
+        "text": "Automatic rotation with Lambda"
+      },
+      {
+        "t": "p",
+        "text": "Secrets Manager rotation is a four-step Lambda contract invoked with the secret ARN, a client request token, and a Step: createSecret generates a new value and stores it as AWSPENDING; setSecret writes that new credential into the target system (the database, the API provider); testSecret verifies the AWSPENDING value actually works; finishSecret promotes AWSPENDING to AWSCURRENT by moving the staging label. For RDS, Aurora, Redshift, and DocumentDB you can use the AWS-provided rotation templates and never write the Lambda yourself. The single-user versus alternating-users strategy matters: alternating-users (two rotating credentials) gives zero-downtime rotation because the old credential stays valid through the swap, which is what you want for hot production databases. Set RotationRules with a ScheduleExpression cron and let the AWSPREVIOUS label cover in-flight connections."
+      },
+      {
+        "t": "h2",
+        "text": "Retrieving a secret at runtime, the right way"
+      },
+      {
+        "t": "p",
+        "text": "Never read a secret at build time and bake it into an artifact. Fetch it at runtime with the instance/task role, cache it in memory for the credential's lifetime, and handle rotation by catching auth failures and re-fetching. The example below pulls a JSON secret and caches it; in Lambda or ECS, prefer the AWS Parameters and Secrets Lambda Extension / Secrets Manager agent, which adds a local cache layer and cuts both latency and API cost."
+      },
+      {
+        "t": "code",
+        "code": "import json\nimport boto3\nfrom botocore.exceptions import ClientError\n\n_client = boto3.client(\"secretsmanager\", region_name=\"us-east-1\")\n_cache = {}\n\ndef get_secret(secret_id: str) -> dict:\n    if secret_id in _cache:\n        return _cache[secret_id]\n    try:\n        resp = _client.get_secret_value(SecretId=secret_id)\n    except ClientError as e:\n        # AccessDeniedException here often means the KMS key, not the secret\n        raise RuntimeError(f\"could not fetch {secret_id}: {e}\") from e\n    value = json.loads(resp[\"SecretString\"])\n    _cache[secret_id] = value\n    return value\n\n# usage: creds = get_secret(\"prod/api/payments-gw\")"
+      },
+      {
+        "t": "h2",
+        "text": "Kill hardcoded credentials at the source"
+      },
+      {
+        "t": "p",
+        "text": "All of the above is wasted if a long-lived key is sitting in a Git history, a Dockerfile ENV, or an AMI. The fix is structural, not a one-time grep."
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Never bake secrets into AMIs, container images, env vars committed to source, user-data scripts, or CI config. Inject at runtime from Secrets Manager or Parameter Store via the instance/task role.",
+          "Prefer roles over keys: EC2 instance profiles, ECS task roles, EKS IRSA / Pod Identity, and Lambda execution roles give short-lived, auto-rotated STS credentials, so there is no static key to leak.",
+          "Enable push-protection secret scanning in your Git host and run a scanner (such as the open-source gitleaks or trufflehog) as a pre-commit hook and CI gate to block commits containing high-entropy strings or known credential patterns.",
+          "Treat any leaked credential as compromised the instant it hits a remote: rotate or revoke it, do not just delete the commit. Git history and forks keep the old value alive.",
+          "Scan IaC and images too, not just app code. Terraform state, Helm values, and image layers are common leak vectors."
+        ]
+      },
+      {
+        "t": "h2",
+        "text": "Detect secret access in CloudTrail"
+      },
+      {
+        "t": "p",
+        "text": "Every read is logged. Secrets Manager GetSecretValue and SSM GetParameter / GetParameters (with WithDecryption=true) emit CloudTrail management events, and the corresponding KMS Decrypt call shows the encryption context, including the secret ARN. The high-value signals: GetSecretValue from a principal or role that has no business reading that secret, a sudden spike in retrievals (possible exfiltration), reads from an unexpected source IP or Region, and AccessDenied events on a secret (someone probing). Build alerts on the eventName plus the requestParameters.secretId, and join against KMS Decrypt events where the encryption context SecretARN matches. Route these to an alarm so a human sees anomalous secret access in minutes, not at the next audit."
+      },
+      {
+        "t": "p",
+        "text": "None of these controls is exotic. The discipline is in combining them: a CMK you own, an identity policy scoped to one ARN gated by kms:ViaService, a resource policy for cross-account, managed rotation for anything with a schedule, runtime-only injection through roles, scanning that blocks leaks before they land, and CloudTrail alerting that turns every secret read into an observable event. Do that and a hardcoded credential becomes something your pipeline rejects, not something an attacker finds."
+      }
+    ]
+  },
+  {
+    "slug": "aws-incident-response-forensics",
+    "title": "Cloud Incident Response on AWS: Isolation, Snapshots, and Evidence Preservation",
+    "excerpt": "A field-tested AWS incident response playbook for working engineers: contain a compromised instance and credentials, preserve EBS and CloudTrail evidence in a forensic account, and investigate without tipping off the attacker.",
+    "category": "Detection & Response",
+    "date": "Apr 12, 2026",
+    "read": "11 min",
+    "image": "/blog/aws-incident-response-forensics.webp",
+    "body": [
+      {
+        "t": "p",
+        "text": "When an EC2 instance starts beaconing or an access key shows up exfiltrating S3 objects from an unfamiliar ASN, the instinct is to terminate everything and move on. In the cloud that instinct destroys exactly the evidence you need and, worse, tells a competent adversary you have spotted them. AWS incident response is a discipline of careful, ordered moves: contain the blast radius, preserve volatile and durable evidence in a place the attacker cannot reach, reconstruct a timeline, then eradicate and recover. This is the playbook we drill with engineers who run production workloads, and every step below maps to real AWS APIs you can wire into a runbook today."
+      },
+      {
+        "t": "h2",
+        "text": "Before the incident: a forensic account and isolation primitives"
+      },
+      {
+        "t": "p",
+        "text": "You cannot improvise an investigation environment mid-incident. Stand up a dedicated forensics account in your AWS Organization, locked down with an SCP so only the IR role can assume into it, and give it an isolated forensic VPC with no internet gateway and no peering to production. This account is where copied snapshots are decrypted, mounted read-only, and analyzed. Keeping forensics out of the compromised account means the attacker's stolen credentials cannot touch your evidence, and it gives legal a clean chain of custody. Pre-stage the boring primitives too: an empty quarantine security group with no inbound and no outbound rules, a customer-managed KMS key shared with the forensic account, and an SNS-driven runbook so responders are not copy-pasting commands under pressure."
+      },
+      {
+        "t": "callout",
+        "text": "Golden rule of cloud IR: copy before you change, and never act in a way that reveals you are watching. Terminating an instance, deleting a key, or rotating a password the attacker is actively using is a tell. Snapshot and isolate quietly first, then decide on eradication once you understand the full footprint."
+      },
+      {
+        "t": "h2",
+        "text": "Contain: isolate the instance without killing it"
+      },
+      {
+        "t": "p",
+        "text": "Containment is about removing the host's ability to do harm while keeping it running so memory and live state survive. The cleanest move is to swap every network interface to the quarantine security group, which severs the instance's connectivity at the VPC layer without a reboot. Do not detach the volume, do not stop the instance unless you have no choice, and tag it immediately so automation and humans both know it is off-limits."
+      },
+      {
+        "t": "code",
+        "code": "# Replace ALL security groups on the instance with the empty quarantine SG.\n# This severs network access instantly without stopping the instance.\nINSTANCE_ID=i-0abc123def4567890\nQUARANTINE_SG=sg-0quarantine000000\n\naws ec2 modify-instance-attribute \\\n  --instance-id \"$INSTANCE_ID\" \\\n  --groups \"$QUARANTINE_SG\"\n\n# Tag the instance as quarantined so guardrail automation leaves it alone.\naws ec2 create-tags \\\n  --resources \"$INSTANCE_ID\" \\\n  --tags Key=ir:status,Value=quarantined \\\n         Key=ir:case,Value=CASE-2026-0412\n\n# Remove the instance from any Auto Scaling group WITHOUT replacement,\n# so it is not terminated and recycled out from under you.\naws autoscaling detach-instances \\\n  --instance-ids \"$INSTANCE_ID\" \\\n  --auto-scaling-group-name web-asg \\\n  --no-should-decrement-desired-capacity"
+      },
+      {
+        "t": "p",
+        "text": "If the instance has an IAM instance profile, that role's temporary credentials may already be loaded into the attacker's tooling via IMDS. Detaching the profile stops new role calls, but credentials already vended stay valid until they expire, which is why session revocation below matters more than the profile detach alone."
+      },
+      {
+        "t": "h2",
+        "text": "Contain credentials: deactivate keys and revoke live sessions"
+      },
+      {
+        "t": "p",
+        "text": "Long-lived IAM access keys are deactivated, not deleted, so you preserve them as evidence and can correlate the key ID against CloudTrail. The harder problem is temporary STS credentials, which you cannot individually revoke. Instead you attach an inline deny policy to the principal conditioned on aws:TokenIssueTime, which instantly invalidates every session issued before now while letting you mint fresh credentials for legitimate use."
+      },
+      {
+        "t": "code",
+        "code": "# 1. Deactivate (do not delete) the suspect long-lived access key.\naws iam update-access-key \\\n  --user-name svc-deploy \\\n  --access-key-id AKIAEXAMPLE0000000000 \\\n  --status Inactive\n\n# 2. Revoke ALL active STS sessions for a role by denying any request\n#    whose credentials were issued before this moment. Attach as an\n#    inline policy on the role (AWS provides the AWSRevokeOlderSessions\n#    pattern for exactly this).\nNOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)\ncat > revoke.json <<JSON\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [{\n    \"Effect\": \"Deny\",\n    \"Action\": \"*\",\n    \"Resource\": \"*\",\n    \"Condition\": { \"DateLessThan\": { \"aws:TokenIssueTime\": \"$NOW\" } }\n  }]\n}\nJSON\n\naws iam put-role-policy \\\n  --role-name app-server-role \\\n  --policy-name IR-RevokeOlderSessions \\\n  --policy-document file://revoke.json"
+      },
+      {
+        "t": "p",
+        "text": "For a federated or human identity, also disable the IAM Identity Center user and kill their active sessions; for the root account, treat any sign of root use as a top-severity event and rotate root credentials and MFA out of band."
+      },
+      {
+        "t": "h2",
+        "text": "Preserve: snapshot disk, capture memory, freeze the logs"
+      },
+      {
+        "t": "p",
+        "text": "Now copy the evidence. Take an EBS snapshot of every attached volume, tag it to the case, then copy it with your forensic KMS key and share it into the forensic account where it is mounted read-only. Memory is more volatile and more valuable: if the instance is still running and you have SSM access, dump RAM with a tool like AVML to an S3 evidence bucket before you ever consider stopping the host, because a stop wipes it forever."
+      },
+      {
+        "t": "code",
+        "code": "# Snapshot every EBS volume on the instance, tagged to the case.\nfor VOL in $(aws ec2 describe-volumes \\\n      --filters Name=attachment.instance-id,Values=\"$INSTANCE_ID\" \\\n      --query 'Volumes[].VolumeId' --output text); do\n  aws ec2 create-snapshot \\\n    --volume-id \"$VOL\" \\\n    --description \"IR CASE-2026-0412 forensic copy of $VOL\" \\\n    --tag-specifications \\\n      'ResourceType=snapshot,Tags=[{Key=ir:case,Value=CASE-2026-0412},{Key=ir:status,Value=evidence}]'\ndone\n\n# Capture volatile memory via SSM BEFORE any stop, writing to an\n# evidence bucket with Object Lock (WORM) enabled.\naws ssm send-command \\\n  --instance-ids \"$INSTANCE_ID\" \\\n  --document-name \"AWS-RunShellScript\" \\\n  --parameters 'commands=[\"avml /tmp/mem.lime\",\"aws s3 cp /tmp/mem.lime s3://ir-evidence-CASE-2026-0412/ --sse aws:kms\"]'"
+      },
+      {
+        "t": "p",
+        "text": "CloudTrail is your source of truth for who did what, but the management-event trail only retains 90 days in the console history and an attacker with enough access can stop a trail. Treat a CloudTrail Lake event data store as the durable record: it is immutable for the retention period you set, queryable in SQL, and captures management plus data events across the org. Verify log file integrity validation is on so you can prove logs were not tampered with, and confirm your evidence S3 buckets use Object Lock in compliance mode so even an admin cannot delete them during the investigation."
+      },
+      {
+        "t": "h2",
+        "text": "Investigate: build the timeline from CloudTrail Lake"
+      },
+      {
+        "t": "p",
+        "text": "Reconstruct the attack as an ordered timeline keyed on the compromised principal. Query CloudTrail Lake for every action by the suspect access key or role, then pivot on the source IP and user agent to find lateral movement. The questions you are answering: when did the credential first act anomalously, what did it touch, did it create persistence (new IAM users, access keys, login profiles, Lambda functions, or trust policy edits), and did it try to blind you by disabling GuardDuty or stopping a trail."
+      },
+      {
+        "t": "code",
+        "code": "-- CloudTrail Lake: every action by the suspect key, newest first.\nSELECT eventTime, eventName, sourceIPAddress, userAgent,\n       errorCode, requestParameters\nFROM   <event_data_store_id>\nWHERE  userIdentity.accessKeyId = 'AKIAEXAMPLE0000000000'\nAND    eventTime > '2026-04-10 00:00:00'\nORDER  BY eventTime DESC;\n\n-- Hunt for persistence and defense-evasion in the blast window.\nSELECT eventTime, eventName, userIdentity.arn, sourceIPAddress\nFROM   <event_data_store_id>\nWHERE  eventName IN ('CreateAccessKey','CreateUser','CreateLoginProfile',\n                     'PutUserPolicy','AttachRolePolicy','UpdateAssumeRolePolicy',\n                     'StopLogging','DeleteTrail','DeleteDetector')\nAND    eventTime > '2026-04-10 00:00:00'\nORDER  BY eventTime ASC;"
+      },
+      {
+        "t": "p",
+        "text": "Correlate the timeline against GuardDuty findings and VPC Flow Logs for the quarantined ENI to confirm exfiltration destinations and data volumes. The output of this phase is a written narrative with timestamps, the full list of touched resources, and an inventory of attacker-created artifacts. You cannot eradicate what you have not enumerated."
+      },
+      {
+        "t": "h2",
+        "text": "Eradicate and recover"
+      },
+      {
+        "t": "p",
+        "text": "Eradication removes the attacker's footholds in one coordinated move, not piecemeal, so they cannot fall back to a second key while you close the first. Delete every attacker-created IAM principal, access key, and login profile; revert tampered trust and resource policies; remove rogue Lambda functions, scheduled tasks, and any malicious AMIs or snapshots they shared out of the account. Rotate every secret the host could have read, including database credentials, API tokens, and anything in the instance's environment or Secrets Manager, on the assumption it is all burned."
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Rebuild, do not clean: launch replacement instances from a known-good, patched AMI rather than trying to disinfect the compromised host.",
+          "Close the entry vector first: an unpatched CVE, an exposed credential in a repo, or an over-permissive role. Recovering onto the same hole invites a repeat within hours.",
+          "Restore data from a backup taken before the earliest confirmed compromise, not the most recent snapshot, which may already be poisoned.",
+          "Re-enable Auto Scaling and traffic only after the replacement passes validation and detections are tuned to catch a re-entry attempt.",
+          "Keep all evidence snapshots, memory dumps, and the CloudTrail Lake store under Object Lock until the case is formally closed."
+        ]
+      },
+      {
+        "t": "p",
+        "text": "Finally, write the blameless postmortem while the detail is fresh: the detection gap that let dwell time accumulate, the containment steps that worked, and the guardrails (SCPs, automated quarantine, key-age alerts, mandatory IMDSv2) that would have shrunk the blast radius. The goal of every incident is to make the next one smaller, faster to contain, and easier to prove. That is the muscle we build in the AWS security labs at ShieldSync, where engineers run this entire playbook end to end against a live compromised account."
+      }
+    ]
+  },
+  {
+    "slug": "iam-identity-center-attack-defense",
+    "title": "Attacking and Defending IAM Identity Center: Permission Sets, Persistence, and Detection",
+    "excerpt": "How Identity Center maps humans to accounts via permission sets and assignments, what an attacker does with a compromised identity source or delegated admin, and the sso.amazonaws.com and sso-directory events that catch them.",
+    "category": "Detection & Response",
+    "date": "Apr 7, 2026",
+    "read": "9 min",
+    "image": "/blog/iam-identity-center-attack-defense.webp",
+    "body": [
+      {
+        "t": "p",
+        "text": "IAM Identity Center is the front door to most multi-account AWS estates. It federates a workforce directory to every account in the organization and brokers short-lived role sessions through permission sets. That makes it one of the highest-value targets in the environment: an attacker who controls the identity source, a delegated administrator, or the Identity Center instance itself does not need to touch a single IAM user or access key to land administrative sessions across the entire organization. This article walks the mapping model, the blast radius when it is subverted, the persistence techniques that survive a password reset, the session and MFA hardening that shrinks the window, and the exact CloudTrail events from sso.amazonaws.com and sso-directory.amazonaws.com you should be alerting on."
+      },
+      {
+        "t": "h2",
+        "text": "How Identity Center maps users to accounts"
+      },
+      {
+        "t": "p",
+        "text": "Three objects compose every access grant. A permission set is a template that materializes as an IAM role (named AWSReservedSSO_<name>_<suffix>) in each target account, carrying managed policies, inline policy, an optional permissions boundary, and a session duration. A principal is a user or group in the identity store, sourced from the Identity Center directory, an external SAML/SCIM IdP, or AWS Managed Microsoft AD. An account assignment binds a principal to a permission set in a specific account. When a user authenticates to the access portal, Identity Center provisions the role if needed and hands back temporary STS credentials for the AWSReservedSSO role in each account they are entitled to. Access is therefore the product of who is in a group, what the group is assigned, and how long the resulting session lasts. Compromise any one of those three and you have changed who can do what, everywhere. The trust chain only goes as deep as its weakest link, and the blast radius is the whole organization. If the external IdP feeding Identity Center over SAML or SCIM is compromised, the attacker controls authentication outright: they can mint assertions for a privileged user, or use the SCIM provisioning token to push a new user into a group already assigned an administrative permission set, and Identity Center will faithfully federate them. No CreateAccountAssignment ever appears in the victim's CloudTrail because the grouping happened upstream in the IdP. Delegated administration is the second blast door: a member account designated as the Identity Center delegated admin can manage permission sets and assignments for the entire organization, with the sole exception of the management account itself. A foothold in that one delegated account is functionally a foothold in organization-wide access management."
+      },
+      {
+        "t": "callout",
+        "text": "Key takeaway: in a federated setup the real identity perimeter is your IdP and your SCIM token, not AWS. The org trail shows the federated login and the role assumption, but the act of granting access can happen entirely in the IdP where AWS has no visibility. Monitor both planes, and treat the SCIM provisioning token like a root credential."
+      },
+      {
+        "t": "h2",
+        "text": "Persistence techniques an operator leaves behind"
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Create a new permission set with an innocuous name and attach AdministratorAccess (or a custom inline policy with iam:* and sso:*), then provision it so the AWSReservedSSO role lands in target accounts.",
+          "Add an account assignment binding an attacker-controlled or low-profile existing principal to that permission set in production and in the security tooling account.",
+          "Inflate the permission set session duration to the PT12H maximum, so a single portal login yields 12-hour credentials instead of one hour, widening the gap between detection and expiry.",
+          "Assign the admin permission set to a large group rather than a single user, so the grant is harder to spot in per-user access reviews.",
+          "Where the directory is the Identity Center store, create a user or group via sso-directory and add it to an already-privileged group, decoupling persistence from the IdP entirely."
+        ]
+      },
+      {
+        "t": "h2",
+        "text": "Hardening: MFA, session duration, and least privilege"
+      },
+      {
+        "t": "p",
+        "text": "Prevention shrinks both the entry and the dwell time. Enforce phishing-resistant MFA: set the Identity Center MFA policy to require WebAuthn/FIDO2 security keys or passkeys, disallow the email OTP fallback, and set the behavior for users without a registered device to block sign-in rather than allow-and-enroll, closing the self-enrollment hole. Drive permission-set session duration down to the lowest value the workload tolerates (one hour is the default and a sane ceiling for human access; reserve longer durations for narrow, justified cases). Scope permission sets with inline policies and permissions boundaries instead of blanket AdministratorAccess, and put a Service Control Policy in front of the AWSReservedSSO role-naming pattern so even a granted admin set cannot touch specific guardrails. Restrict who can be a delegated administrator, and never delegate Identity Center management into an account with a wide blast radius or weak controls."
+      },
+      {
+        "t": "h2",
+        "text": "Detection: the audit events that matter"
+      },
+      {
+        "t": "p",
+        "text": "Identity Center emits to two CloudTrail sources. sso.amazonaws.com carries the sso-admin management plane: CreatePermissionSet, PutInlinePolicyToPermissionSet, AttachManagedPolicyToPermissionSet, UpdatePermissionSet (session-duration changes live here), ProvisionPermissionSet, CreateAccountAssignment, and DeleteAccountAssignment. sso-directory.amazonaws.com carries identity-store changes: CreateUser, CreateGroup, AddMemberToGroup, and UpdateUser. The highest-signal alerts are an AttachManagedPolicyToPermissionSet referencing AdministratorAccess, any CreateAccountAssignment targeting a sensitive account, an UpdatePermissionSet that raises sessionDuration toward PT12H, and AddMemberToGroup against a known-privileged group. Run the query org-wide from the management or delegated-admin account, since that is where these events surface, and alert on anything whose actor is outside your small allow-list of identity administrators. Wire the same conditions into an EventBridge rule that snapshots the permission set, diffs it against the last known-good provisioned version, and pages when the actor is off the allow-list."
+      },
+      {
+        "t": "code",
+        "code": "-- Athena over the organization CloudTrail trail: high-signal Identity Center changes\nSELECT eventtime,\n       eventname,\n       useridentity.arn        AS actor,\n       sourceipaddress,\n       json_extract_scalar(requestparameters, '$.managedPolicyArn')  AS managed_policy,\n       json_extract_scalar(requestparameters, '$.sessionDuration')   AS session_duration,\n       json_extract_scalar(requestparameters, '$.targetId')          AS target_account,\n       json_extract_scalar(requestparameters, '$.permissionSetArn')  AS permission_set\nFROM cloudtrail_logs\nWHERE eventsource IN ('sso.amazonaws.com', 'sso-directory.amazonaws.com')\n  AND eventtime > to_iso8601(current_timestamp - interval '14' day)\n  AND (\n        eventname IN (\n          'CreatePermissionSet', 'ProvisionPermissionSet', 'UpdatePermissionSet',\n          'PutInlinePolicyToPermissionSet', 'CreateAccountAssignment', 'DeleteAccountAssignment',\n          'CreateUser', 'CreateGroup', 'AddMemberToGroup'\n        )\n        OR (eventname = 'AttachManagedPolicyToPermissionSet'\n            AND json_extract_scalar(requestparameters, '$.managedPolicyArn') LIKE '%AdministratorAccess%')\n        OR (eventname = 'UpdatePermissionSet'\n            AND json_extract_scalar(requestparameters, '$.sessionDuration') IN ('PT8H', 'PT12H'))\n      )\nORDER BY eventtime DESC;"
+      },
+      {
+        "t": "p",
+        "text": "Containment differs from ordinary IAM because AWSReservedSSO roles look like normal IAM roles once assumed and revoking the user is not enough. An AssumedRole session for an AWSReservedSSO role created or assigned within the last hour by a non-administrator is itself a strong incident signal. Delete the rogue assignment, remove the principal from the privileged group (and rotate the SCIM token for an IdP-sourced compromise), then kill live sessions by attaching a deny-all or aws:TokenIssueTime-keyed revocation policy to the affected AWSReservedSSO roles. Finally, reconcile every permission set and assignment against an authoritative baseline such as Terraform state or Organizations exports, because an operator who reached the sso-admin API rarely plants just one grant."
+      }
+    ]
+  },
+  {
+    "slug": "ransomware-in-the-cloud",
+    "title": "Ransomware in the Cloud: S3 and EBS Threat Models, Immutability, and Recovery",
+    "excerpt": "Cloud ransomware rarely encrypts files in place. It re-keys your S3 objects with the attacker's KMS material, deletes your snapshots, and turns off the safety nets first. Here is the threat model and the immutability controls that survive a compromised admin.",
+    "category": "Cloud / AWS",
+    "date": "Apr 2, 2026",
+    "read": "9 min",
+    "image": "/blog/ransomware-in-the-cloud.webp",
+    "body": [
+      {
+        "t": "p",
+        "text": "On-prem ransomware encrypts files on disk. In AWS, the attacker who has stolen an IAM principal with broad data-plane access does not need a payload at all. They have the same APIs your platform team uses, and the cloud gives them primitives that are far more efficient than a binary crawling a filesystem: server-side re-encryption with their own key material, bulk versioned deletes, snapshot deletion, and the scheduling of KMS key deletion as a slow-burn denial mechanism. The control that saves you is not antivirus. It is immutability that holds even when the calling principal is a legitimate, fully-authorized administrator."
+      },
+      {
+        "t": "p",
+        "text": "This article walks the realistic kill chain across S3, EBS, and KMS, then maps each step to a control that an attacker with valid credentials cannot trivially undo. The recurring theme: separate the ability to write data from the ability to destroy its recoverability, and push the immutability boundary into a different account and a different trust domain."
+      },
+      {
+        "t": "h2",
+        "text": "The S3 threat model: re-encryption, not deletion"
+      },
+      {
+        "t": "p",
+        "text": "The headline S3 ransomware technique is SSE-C re-encryption. The attacker reads each object and writes it back with x-amz-server-side-encryption-customer-key set to a key they control. AWS stores the ciphertext but never the SSE-C key, so the object is now unreadable to you and every GET returns 400 unless you supply the attacker's key. No data leaves the bucket; the put looks like ordinary application traffic in CloudTrail data events. A quieter variant uses CopyObject onto itself with the attacker's own customer-managed CMK (SSE-KMS), then revokes your access via a key policy or grant change. Either way the bytes are intact and cryptographically out of reach."
+      },
+      {
+        "t": "p",
+        "text": "The destructive variants are blunter: DeleteObjects in batches of 1000, PutBucketVersioning to suspend versioning so overwrites stop creating recoverable versions, and DeleteObjectVersion against specific version IDs to purge history. A lifecycle rule that expires noncurrent versions after one day is another way to quietly drain your recovery window. The defensive posture has three layers: keep old versions, make deletes require a second factor, and make the retention itself non-negotiable."
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Versioning ON so every overwrite and SSE-C re-encrypt leaves the prior plaintext version recoverable.",
+          "MFA Delete on the bucket so suspending versioning or permanently deleting a version requires the root/owner MFA token, which a compromised IAM role does not hold.",
+          "S3 Object Lock in COMPLIANCE mode so locked object versions cannot be deleted or shortened by anyone, including the account root, until the retention period elapses.",
+          "A bucket policy that denies SSE-C entirely and forces writes through a specific SSE-KMS key, so an attacker cannot introduce key material you do not control."
+        ]
+      },
+      {
+        "t": "h2",
+        "text": "Forcing your encryption and blocking the attacker's key"
+      },
+      {
+        "t": "p",
+        "text": "Object Lock protects versions you already have, but you also want to stop the re-encryption put from succeeding in the first place. A bucket policy can reject any request that carries SSE-C headers and require that every put use a single approved KMS key. Pair this with Block Public Access and a deny on the version-deletion and versioning-toggle calls for everyone except a narrow break-glass principal."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"DenyCustomerProvidedKeys\",\n      \"Effect\": \"Deny\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:PutObject\",\n      \"Resource\": \"arn:aws:s3:::prod-data-vault/*\",\n      \"Condition\": {\n        \"Null\": { \"s3:x-amz-server-side-encryption-customer-algorithm\": \"false\" }\n      }\n    },\n    {\n      \"Sid\": \"RequireApprovedKmsKey\",\n      \"Effect\": \"Deny\",\n      \"Principal\": \"*\",\n      \"Action\": \"s3:PutObject\",\n      \"Resource\": \"arn:aws:s3:::prod-data-vault/*\",\n      \"Condition\": {\n        \"StringNotEquals\": {\n          \"s3:x-amz-server-side-encryption-aws-kms-key-id\": \"arn:aws:kms:us-east-1:111122223333:key/APPROVED-CMK\"\n        }\n      }\n    },\n    {\n      \"Sid\": \"DenyVersioningAndVersionDeletes\",\n      \"Effect\": \"Deny\",\n      \"Principal\": \"*\",\n      \"Action\": [\n        \"s3:PutBucketVersioning\",\n        \"s3:DeleteObjectVersion\",\n        \"s3:PutLifecycleConfiguration\"\n      ],\n      \"Resource\": [\n        \"arn:aws:s3:::prod-data-vault\",\n        \"arn:aws:s3:::prod-data-vault/*\"\n      ],\n      \"Condition\": {\n        \"ArnNotEquals\": {\n          \"aws:PrincipalArn\": \"arn:aws:iam::111122223333:role/BreakGlassDataAdmin\"\n        }\n      }\n    }\n  ]\n}"
+      },
+      {
+        "t": "callout",
+        "text": "Object Lock COMPLIANCE mode is irreversible by design: not even the account root can delete or shorten a retention on a locked version before it expires. Pilot it on a non-production bucket and right-size the retention period before you enable it widely, because the same property that defeats an attacker will also defeat you if you lock terabytes for ten years by mistake. GOVERNANCE mode is bypassable with s3:BypassGovernanceRetention and is therefore not a ransomware control on its own."
+      },
+      {
+        "t": "h2",
+        "text": "EBS, RDS, and the snapshot deletion problem"
+      },
+      {
+        "t": "p",
+        "text": "For block and database storage the ransomware play is deletion, not encryption. An attacker calls DeleteSnapshot across your EBS history, DeleteDBSnapshot and DeleteDBClusterSnapshot for RDS, deregisters AMIs, and where automated backups exist, deletes those too. Because snapshots live in the same account as the workload, a single compromised admin role can erase your entire recovery posture in minutes. Tag-based or resource-policy restrictions inside the same account help against a careless principal but not a determined one who can also retag resources."
+      },
+      {
+        "t": "p",
+        "text": "The durable answer is AWS Backup with Vault Lock, plus copying recovery points to a separate, locked-down backup account. Vault Lock in compliance mode makes the vault write-once-read-many: once the lock is in its enforced state, the minimum and maximum retention are fixed and recovery points cannot be deleted before their retention expires, even by an administrator or AWS support. Copy backups cross-account so that compromise of the production account cannot reach the immutable copy, and ideally cross-Region to survive a Region-scoped blast radius."
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Centralize EBS and RDS backups in AWS Backup and apply a Vault Lock in compliance mode to the destination vault.",
+          "Copy recovery points into a dedicated backup account whose admin credentials are isolated from production identity and SSO.",
+          "Restrict the backup account's KMS keys with a separate key policy so the production blast radius cannot schedule their deletion.",
+          "Test restore, not just backup: a recovery point you have never restored is a hypothesis, not a backup."
+        ]
+      },
+      {
+        "t": "h2",
+        "text": "KMS as the denial weapon"
+      },
+      {
+        "t": "p",
+        "text": "Every server-side-encrypted object, snapshot, and volume ultimately depends on a KMS key. An attacker who cannot delete your locked data can still make it permanently undecryptable by attacking the key: kms:ScheduleKeyDeletion starts a pending-deletion window (7 to 30 days) after which the key material is gone and every dependent ciphertext is unrecoverable. kms:DisableKey and a malicious PutKeyPolicy that strips your access are faster, reversible-looking denials that still break decryption while in effect. Treat key-lifecycle actions as among the most dangerous calls in your account."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"DenyKeyDestructionExceptKeyAdmins\",\n      \"Effect\": \"Deny\",\n      \"Principal\": \"*\",\n      \"Action\": [\n        \"kms:ScheduleKeyDeletion\",\n        \"kms:DisableKey\",\n        \"kms:PutKeyPolicy\",\n        \"kms:DeleteAlias\"\n      ],\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"ArnNotEquals\": {\n          \"aws:PrincipalArn\": \"arn:aws:iam::111122223333:role/KmsKeyAdministrator\"\n        }\n      }\n    }\n  ]\n}"
+      },
+      {
+        "t": "p",
+        "text": "Enforce a guardrail like the above as a Service Control Policy at the organization or OU level so it cannot be edited from inside a compromised member account, and scope the carve-out to a single hardened key-admin role guarded by MFA and session policies. Multi-Region keys and a documented import-key strategy further reduce the chance that one ScheduleKeyDeletion call becomes an extinction event."
+      },
+      {
+        "t": "h2",
+        "text": "Detection: catch the pattern, not the single call"
+      },
+      {
+        "t": "p",
+        "text": "Ransomware in AWS shows up as a behavioral spike, not a signature. The signal is volume and shape: thousands of PutObject calls carrying SSE-C headers in minutes, a burst of DeleteObjects or DeleteObjectVersion, a PutBucketVersioning that suspends versioning, mass DeleteSnapshot and DeleteDBSnapshot, or any ScheduleKeyDeletion at all. Wire CloudTrail (including S3 data events) and GuardDuty findings into automated, near-real-time alerting, and treat the first key-deletion or versioning-suspension event as a page-the-on-call incident rather than a daily-digest line item."
+      },
+      {
+        "t": "ul",
+        "items": [
+          "Alert on any kms:ScheduleKeyDeletion and any s3:PutBucketVersioning that sets status to Suspended.",
+          "Threshold-alert on DeleteObjects, DeleteObjectVersion, DeleteSnapshot, and DeleteDBSnapshot rates well below an attacker's bulk pace.",
+          "Flag PutObject calls that include SSE-C customer-algorithm headers, which legitimate pipelines forced onto your CMK should never send.",
+          "Automate containment: on a high-confidence detection, revoke the offending session, attach a restrictive deny policy, and freeze the principal before triaging."
+        ]
+      },
+      {
+        "t": "p",
+        "text": "The architecture that survives a cloud ransomware event is not the one with the most detections. It is the one where, after an attacker has done their worst with a valid admin credential, your data still exists in a form they could not encrypt, delete, or render undecryptable. Versioning plus Object Lock for S3, AWS Backup with Vault Lock and cross-account copies for EBS and RDS, and an org-level deny on KMS key destruction together give you a recovery path that does not depend on the attacker's cooperation. Build that immutability boundary first, then layer detection on top to shorten the window."
+      }
+    ]
+  },
+  {
+    "slug": "aws-waf-shield-real-protection",
+    "title": "AWS WAF and Shield: Real Application Protection Beyond Default Rules",
+    "excerpt": "Default managed rules and Shield Standard are table stakes, not a strategy. Here is how to design a WAF web ACL that actually blocks attacks without breaking your app or your budget.",
+    "category": "Cloud / AWS",
+    "date": "Mar 28, 2026",
+    "read": "9 min",
+    "image": "/blog/aws-waf-shield-real-protection.webp",
+    "body": [
+      {
+        "t": "p",
+        "text": "Most teams enable AWS WAF the same way: attach the AWSManagedRulesCommonRuleSet to a web ACL, flip everything to block, and declare the application protected. Weeks later they are either fielding tickets because a legitimate POST whose JSON body contains the word \"select\" got blocked, or they are breached anyway because the managed rules never inspected the parameter the attacker actually abused. WAF is a powerful traffic-inspection layer, but it rewards deliberate design and punishes the default-everything approach. This article is about the design."
+      },
+      {
+        "t": "h2",
+        "text": "Web ACL design: managed groups, custom rules, and count mode"
+      },
+      {
+        "t": "p",
+        "text": "A web ACL is an ordered list of rules evaluated by priority until a terminating action fires. AWS-managed rule groups give you broad, maintained coverage (CommonRuleSet, KnownBadInputsRuleSet, SQLiRuleSet, AmazonIpReputationList, plus platform-specific sets) and consume WCUs from your 1,500-WCU default budget, so you cannot stack everything; custom rules then encode what is true about your application: this URI only accepts GET, that header is required, this endpoint should never see foreign traffic. Managed groups handle the generic internet, custom rules handle your app. The single most important habit: never deploy a new rule group straight to block. Add it in count mode, ship it, and read the logs for days first. The override below keeps the group blocking but demotes only the two noisy rules: OverrideAction None preserves each rule's own action while RuleActionOverrides surgically drops the named ones to count, the precise alternative to disabling a group wholesale."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Name\": \"AWS-CommonRuleSet\",\n  \"Priority\": 10,\n  \"Statement\": {\n    \"ManagedRuleGroupStatement\": {\n      \"VendorName\": \"AWS\",\n      \"Name\": \"AWSManagedRulesCommonRuleSet\",\n      \"RuleActionOverrides\": [\n        { \"Name\": \"SizeRestrictions_BODY\", \"ActionToUse\": { \"Count\": {} } },\n        { \"Name\": \"CrossSiteScripting_BODY\", \"ActionToUse\": { \"Count\": {} } }\n      ]\n    }\n  },\n  \"OverrideAction\": { \"None\": {} },\n  \"VisibilityConfig\": {\n    \"SampledRequestsEnabled\": true,\n    \"CloudWatchMetricsEnabled\": true,\n    \"MetricName\": \"AWS-CommonRuleSet\"\n  }\n}"
+      },
+      {
+        "t": "h2",
+        "text": "Rate-based rules, geo, and IP sets"
+      },
+      {
+        "t": "p",
+        "text": "A rate-based rule tracks request counts per aggregation key over a rolling window (60, 120, 300, or 600 seconds) and blocks keys that exceed your threshold. The default key is source IP, but you can aggregate on a header, cookie, query argument, JA3/JA4 TLS fingerprint, or a composite; aggregating on something more specific than IP is what makes rate limiting survive shared NATs and botnets that rotate addresses. Pair the rate statement with a scope-down so it only counts traffic to the endpoint you care about, such as /login, rather than rate-limiting your whole site on one global counter, as the rule below does. Geo matching and IP sets are blunt but useful: reference an IPSet for partner allowlists or known-bad ranges, and prefer geo as a scope-down condition (lock the admin console to your operating regions) over a blanket country block that a VPN trivially defeats. JSON body inspection deserves the same care: use a JsonBody FieldToMatch so WAF parses the structure and inspects specific keys with an explicit fallback for malformed or oversized bodies, rather than a fragile match against the raw body."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Name\": \"RateLimit-Login\",\n  \"Priority\": 5,\n  \"Statement\": {\n    \"RateBasedStatement\": {\n      \"Limit\": 200,\n      \"EvaluationWindowSec\": 300,\n      \"AggregateKeyType\": \"IP\",\n      \"ScopeDownStatement\": {\n        \"ByteMatchStatement\": {\n          \"SearchString\": \"/login\",\n          \"FieldToMatch\": { \"UriPath\": {} },\n          \"TextTransformations\": [ { \"Priority\": 0, \"Type\": \"LOWERCASE\" } ],\n          \"PositionalConstraint\": \"STARTS_WITH\"\n        }\n      }\n    }\n  },\n  \"Action\": { \"Block\": {} },\n  \"VisibilityConfig\": {\n    \"SampledRequestsEnabled\": true,\n    \"CloudWatchMetricsEnabled\": true,\n    \"MetricName\": \"RateLimit-Login\"\n  }\n}"
+      },
+      {
+        "t": "p",
+        "text": "The most powerful WAF pattern is the label: write a rule that does not block but attaches a label when it sees something interesting (an admin role in a JSON body, say), then have a later rule decide what to do based on that label combined with other conditions. Labels turn WAF from a pile of independent rules into a small decision pipeline, and they are also how you tune false positives. AWS managed rules emit labels such as awswaf:managed:aws:sql-database:SQLi_Body, so when a managed rule fires on legitimate traffic you block on its label except where the request matches the one endpoint that genuinely needs SQL-looking content, tuned narrowly by path and method rather than by switching the rule off. AWS WAF Bot Control adds a managed group on top, classifying verified bots, crawlers, and suspected automation; its Targeted tier adds challenge and CAPTCHA actions (non-terminating, far friendlier to real users than a hard block) plus client telemetry. It carries a per-request cost, so scope it to the routes that actually face scraping or credential stuffing. The labeling rule below inspects a specific JSON key and emits a label instead of blocking."
+      },
+      {
+        "t": "code",
+        "code": "{\n  \"Name\": \"Flag-AdminJsonRole\",\n  \"Priority\": 20,\n  \"Statement\": {\n    \"ByteMatchStatement\": {\n      \"SearchString\": \"admin\",\n      \"FieldToMatch\": {\n        \"JsonBody\": {\n          \"MatchPattern\": { \"IncludedPaths\": [ \"/role\" ] },\n          \"MatchScope\": \"VALUE\",\n          \"InvalidFallbackBehavior\": \"MATCH\"\n        }\n      },\n      \"TextTransformations\": [ { \"Priority\": 0, \"Type\": \"LOWERCASE\" } ],\n      \"PositionalConstraint\": \"CONTAINS\"\n    }\n  },\n  \"Action\": { \"Count\": {} },\n  \"RuleLabels\": [ { \"Name\": \"shieldsync:body:role-admin\" } ],\n  \"VisibilityConfig\": {\n    \"SampledRequestsEnabled\": true,\n    \"CloudWatchMetricsEnabled\": true,\n    \"MetricName\": \"Flag-AdminJsonRole\"\n  }\n}"
+      },
+      {
+        "t": "callout",
+        "text": "The hidden cost of running in block mode blindly is not the WAF bill, it is the incident you cause yourself. A single over-eager managed rule blocking a legitimate checkout flow is a self-inflicted outage. Count mode plus logging is not optional caution; it is the only way to know what block mode will do to your traffic before it does it in production."
+      },
+      {
+        "t": "h2",
+        "text": "Shield Standard versus Advanced, and logging the attack"
+      },
+      {
+        "t": "p",
+        "text": "Shield Standard is automatic, free, and always on across CloudFront, Global Accelerator, Route 53, and the AWS edge, defending the common L3/L4 volumetric and state-exhaustion attacks with no configuration; for most apps it is enough at the network layer while your real L7 work happens in WAF. Shield Advanced is a paid subscription (1-year commitment, roughly 3,000 USD per month plus data transfer) and a different product class: 24/7 Shield Response Team access, cost-protection credits that refund attack-driven scaling charges, near-real-time diagnostics, automatic application-layer DDoS mitigation, and centralized management via Firewall Manager. It is worth it when an hour of downtime costs more than the subscription, when you carry a contractual uptime obligation, or when you have already been targeted; for an internal tool, Standard plus a tuned WAF is the honest answer. Underneath all of it, enable full web ACL logging to S3, CloudWatch Logs, or Firehose with redaction on authorization headers. The logs carry the matched rule, the labels, the terminating action, and a request sample, exactly what you need to tune count-mode rules and reconstruct an attack (Athena over S3 is the common query path). You cannot tune what you cannot see. And remember WAF is defense-in-depth, not a fix: a rule that blocks a SQL-injection string buys you time and noise reduction but does not patch the unparameterized query underneath, so route every WAF block to the engineers who own that code as a signal that an exploitable path exists. Build the ACL as a deliberate pipeline (rate and IP rules first, tuned managed groups next, custom labeling and scope-down to encode what your app does, Bot Control where automation is the threat, logging beneath all of it), start in count mode, promote to block only what you have verified. The web ACL is the outer wall, not the lock on the door."
+      }
+    ]
+  }
+]

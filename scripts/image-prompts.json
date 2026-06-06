@@ -1,0 +1,17 @@
+[
+  {
+    "name": "AWS Security Labs",
+    "outFile": "aws.png",
+    "prompt": "an AWS cloud security lab scene: a glowing cloud connected to a shield and a padlock, server racks and IAM key icons, electric blue and cyan neon accents"
+  },
+  {
+    "name": "SIEM Labs",
+    "outFile": "siem.png",
+    "prompt": "a SIEM detection lab scene: floating dashboards with streaming log lines and alert graphs, a magnifier inspecting telemetry, emerald and teal neon accents"
+  },
+  {
+    "name": "SOAR Labs",
+    "outFile": "soar.png",
+    "prompt": "a SOAR automation lab scene: connected nodes forming an automated response playbook flow, gears and a lightning bolt, violet and purple neon accents"
+  }
+]

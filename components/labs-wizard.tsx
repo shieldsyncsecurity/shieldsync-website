@@ -1,0 +1,412 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { Container, Card, Button } from "@/components/ui";
+import { Check, ArrowRight, Shield, Cloud, Radar } from "@/components/icons";
+import { AWS_LABS, SOC_LABS, SITE } from "@/lib/site";
+import { AWS_PRICE, SOC_PRICE, AWS_MONTHLY, SOC_MONTHLY, FREE, formatMoney, type Money, type Currency } from "@/lib/region";
+
+const FREE_SLUG = "s3-misconfiguration-audit";
+const LEVEL_DOT: Record<string, string> = { Beginner: "bg-emerald-500", Intermediate: "bg-amber-500", Advanced: "bg-rose-500" };
+
+type Track = "aws" | "soc" | null;
+type Mode = "per-lab" | "monthly" | null;
+type Item = { slug: string; title: string; desc: string; tags: string[]; badge: string; dot: string; price: Money; free: boolean };
+
+export function LabsWizard({
+  initialCurrency = "USD",
+  serverDetected = false,
+  initialTrack,
+  initialPlan,
+  initialLevel,
+}: {
+  initialCurrency?: Currency;
+  serverDetected?: boolean;
+  initialTrack?: "aws" | "soc";
+  initialPlan?: "per-lab" | "monthly";
+  initialLevel?: string;
+}) {
+  // Deep-links (ads + the "Start here" roadmap) can pre-select a track, plan, and lab level.
+  const startMode: Mode = initialLevel ? "per-lab" : initialPlan ?? null;
+  const startStep = initialTrack ? (initialLevel || initialPlan ? 3 : 2) : 1;
+  const [step, setStep] = useState(startStep);
+  const [track, setTrack] = useState<Track>(initialTrack ?? null);
+  const [mode, setMode] = useState<Mode>(startMode);
+  const [cat, setCat] = useState(initialLevel ?? "All");
+  const [selected, setSelected] = useState<string | null>(null);
+  const [currency, setCurrency] = useState<Currency>(initialCurrency);
+
+  // The edge proxy resolves region from the CDN geo header in production.
+  // If it couldn't (e.g. local dev with no header), fall back to the browser timezone.
+  useEffect(() => {
+    if (serverDetected) return;
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+      if (/Kolkata|Calcutta/i.test(tz)) setCurrency("INR");
+    } catch {
+      /* ignore */
+    }
+  }, [serverDetected]);
+
+  const money = (m: Money) => formatMoney(m, currency);
+
+  const items: Item[] = useMemo(() => {
+    if (track === "soc")
+      return SOC_LABS.map((l) => ({
+        slug: l.slug, title: l.title, desc: l.desc, tags: l.tags,
+        badge: l.product, dot: l.product === "SIEM" ? "bg-emerald-500" : "bg-violet-500",
+        price: SOC_PRICE, free: false,
+      }));
+    return AWS_LABS.map((l) => ({
+      slug: l.slug, title: l.title, desc: l.desc, tags: l.tags,
+      badge: l.level, dot: LEVEL_DOT[l.level],
+      price: l.slug === FREE_SLUG ? FREE : AWS_PRICE[l.level], free: l.slug === FREE_SLUG,
+    }));
+  }, [track]);
+
+  const cats = useMemo(() => ["All", ...Array.from(new Set(items.map((i) => i.badge)))], [items]);
+  const filtered = useMemo(() => (cat === "All" ? items : items.filter((i) => i.badge === cat)), [items, cat]);
+  const lab = useMemo(() => items.find((i) => i.slug === selected) ?? null, [items, selected]);
+
+  const trackName = track === "soc" ? "Security Operations" : "AWS Cloud Security";
+  const accessLabel = track === "soc" ? "full SOC access" : "full AWS access";
+  const monthly = track === "soc" ? SOC_MONTHLY : AWS_MONTHLY;
+  const fromPrice = track === "soc" ? SOC_PRICE : AWS_PRICE.Beginner;
+  const total: Money = mode === "monthly" ? monthly : lab ? lab.price : FREE;
+
+  const labels = ["Track", "Plan", mode === "monthly" ? "Review" : "Pick a lab", "Pay", "Done"];
+  const canContinue = step === 1 ? track !== null : step === 2 ? mode !== null : step === 3 ? mode === "monthly" || selected !== null : true;
+
+  const curBtn = (active: boolean) => `rounded-md px-3 py-1.5 transition ${active ? "bg-brand/10 text-brand-bright" : "text-muted hover:text-fg"}`;
+
+  function chooseTrack(t: Track) {
+    setTrack(t);
+    setSelected(null);
+    setCat("All");
+  }
+  function reset() {
+    setStep(1);
+    setTrack(null);
+    setMode(null);
+    setSelected(null);
+    setCat("All");
+  }
+
+  return (
+    <section className="py-12 sm:py-16">
+      <Container>
+        <div className="mx-auto max-w-3xl">
+          {/* Currency toggle */}
+          <div className="mb-6 flex items-center justify-end gap-3">
+            <span className="text-xs text-muted">Prices shown for your region</span>
+            <div className="inline-flex rounded-lg border border-line bg-panel p-0.5 text-sm font-semibold">
+              <button type="button" onClick={() => setCurrency("INR")} className={curBtn(currency === "INR")}>₹ INR</button>
+              <button type="button" onClick={() => setCurrency("USD")} className={curBtn(currency === "USD")}>$ USD</button>
+            </div>
+          </div>
+
+          {/* Stepper */}
+          <ol className="flex items-center gap-2">
+            {labels.map((l, i) => {
+              const n = i + 1;
+              const done = n < step;
+              const active = n === step;
+              return (
+                <li key={l} className="flex flex-1 items-center gap-2">
+                  <span
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold transition ${
+                      done ? "bg-brand text-white" : active ? "bg-gradient-to-r from-brand to-cyan text-white" : "bg-surface text-muted"
+                    }`}
+                  >
+                    {done ? <Check className="h-4 w-4" /> : n}
+                  </span>
+                  <span className={`hidden text-sm font-semibold sm:inline ${active || done ? "text-fg" : "text-muted"}`}>{l}</span>
+                  {n < labels.length ? <span className={`h-px flex-1 ${done ? "bg-brand" : "bg-line"}`} /> : null}
+                </li>
+              );
+            })}
+          </ol>
+
+          <div className="mt-10">
+            {/* STEP 1 — choose track */}
+            {step === 1 ? (
+              <div>
+                <h1 className="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">Which track?</h1>
+                <p className="mt-3 text-lg text-muted">Start with the skills you want to build.</p>
+                <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-muted">
+                  <span className="rounded-full border border-line bg-surface px-3 py-1">Real AWS console</span>
+                  <span className="rounded-full border border-line bg-surface px-3 py-1">Launches in your browser</span>
+                  <span className="rounded-full border border-line bg-surface px-3 py-1">Auto-cleanup when you&apos;re done</span>
+                </div>
+                <div className="mt-8 grid gap-5 sm:grid-cols-2">
+                  {[
+                    { key: "aws" as const, icon: Cloud, title: "Cloud Security — AWS", desc: "Master cloud security in real AWS environments. Our flagship track.", tag: "Flagship" },
+                    { key: "soc" as const, icon: Radar, title: "Security Operations — SIEM & SOAR", desc: "Detection & response across SIEM and SOAR.", tag: "" },
+                  ].map((o) => {
+                    const Icon = o.icon;
+                    return (
+                      <button
+                        key={o.key}
+                        type="button"
+                        onClick={() => chooseTrack(o.key)}
+                        className={`rounded-2xl border p-7 text-left transition ${
+                          track === o.key ? "border-brand bg-brand/[0.05] ring-2 ring-brand/40" : "border-line bg-panel hover:border-line-strong"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-brand/25 bg-brand/10 text-brand-bright">
+                            <Icon className="h-6 w-6" />
+                          </span>
+                          {o.tag ? <span className="rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-bold text-brand-bright">★ {o.tag}</span> : null}
+                        </div>
+                        <h3 className="mt-5 text-xl font-bold text-fg">{o.title}</h3>
+                        <p className="mt-2 text-base leading-7 text-muted">{o.desc}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+
+            {/* STEP 2 — choose plan */}
+            {step === 2 ? (
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.18em] text-brand-bright">{trackName}</p>
+                <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">How do you want to learn?</h1>
+                <p className="mt-3 text-lg text-muted">Pick what fits — you can change this anytime.</p>
+                <div className="mt-8 grid gap-5 sm:grid-cols-2">
+                  {[
+                    {
+                      key: "per-lab" as const,
+                      title: "Pay per lab",
+                      price: `From ${money(fromPrice)}`,
+                      badge: "",
+                      note: track === "aws" ? "Your first beginner lab is free." : "",
+                      pts: ["Buy only the labs you want", "One-time payment", "Great for targeted practice"],
+                    },
+                    {
+                      key: "monthly" as const,
+                      title: `Monthly — ${accessLabel}`,
+                      price: `${money(monthly)}/mo`,
+                      badge: "Best value",
+                      note: "",
+                      pts: [`Every ${track === "soc" ? "SOC" : "AWS"} lab unlocked`, "New labs included", "Cancel within 24h"],
+                    },
+                  ].map((o) => (
+                    <button
+                      key={o.key}
+                      type="button"
+                      onClick={() => setMode(o.key)}
+                      className={`relative rounded-2xl border p-7 text-left transition ${
+                        mode === o.key ? "border-brand bg-brand/[0.05] ring-2 ring-brand/40" : "border-line bg-panel hover:border-line-strong"
+                      }`}
+                    >
+                      {o.badge ? (
+                        <span className="absolute -top-3 right-5 rounded-full bg-gradient-to-r from-brand to-cyan px-3 py-0.5 text-xs font-bold text-white shadow-sm">
+                          {o.badge}
+                        </span>
+                      ) : null}
+                      <div className="flex items-start justify-between gap-3">
+                        <h3 className="text-xl font-bold text-fg">{o.title}</h3>
+                        <span className="shrink-0 text-lg font-bold text-brand-bright">{o.price}</span>
+                      </div>
+                      <ul className="mt-4 space-y-2">
+                        {o.pts.map((p) => (
+                          <li key={p} className="flex items-center gap-2 text-base text-muted">
+                            <Check className="h-4 w-4 shrink-0 text-brand" /> {p}
+                          </li>
+                        ))}
+                      </ul>
+                      {o.note ? (
+                        <p className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5 text-sm font-bold text-emerald-700">
+                          <Check className="h-3.5 w-3.5 shrink-0" />
+                          {o.note}
+                        </p>
+                      ) : null}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            {/* STEP 3 — pick a lab / review plan */}
+            {step === 3 && mode === "per-lab" ? (
+              <div>
+                <h1 className="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">Pick your lab</h1>
+                <p className="mt-3 text-lg text-muted">Choose one to start — you can buy more later.</p>
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {cats.map((c) => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setCat(c)}
+                      className={`rounded-lg border px-3 py-1.5 text-sm font-semibold transition ${
+                        cat === c ? "border-brand bg-brand/10 text-brand-bright" : "border-line text-muted hover:text-fg"
+                      }`}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                  {filtered.map((l) => {
+                    const sel = selected === l.slug;
+                    return (
+                      <button
+                        key={l.slug}
+                        type="button"
+                        onClick={() => setSelected(l.slug)}
+                        className={`flex flex-col rounded-2xl border p-5 text-left transition ${
+                          sel ? "border-brand bg-brand/[0.05] ring-2 ring-brand/40" : "border-line bg-panel hover:border-line-strong"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className={`h-2 w-2 rounded-full ${l.dot}`} />
+                          <span className="text-xs font-bold uppercase tracking-wide text-muted">{l.badge}</span>
+                          <span className="ml-auto flex items-center gap-2">
+                            {l.free ? <span className="rounded-full bg-brand/10 px-2 py-0.5 text-xs font-bold text-brand-bright">FREE</span> : null}
+                            <span className="text-base font-bold text-fg">{money(l.price)}</span>
+                            {sel ? <Check className="h-4 w-4 text-brand" /> : null}
+                          </span>
+                        </div>
+                        <h3 className="mt-3 font-bold text-fg">{l.title}</h3>
+                        <p className="mt-1 text-sm leading-6 text-muted">{l.desc}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+
+            {step === 3 && mode === "monthly" ? (
+              <div>
+                <h1 className="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">Your plan</h1>
+                <p className="mt-3 text-lg text-muted">Full access to every {track === "soc" ? "SOC" : "AWS"} lab.</p>
+                <Card hover={false} className="mt-6 border-brand/30 bg-gradient-to-br from-brand/[0.08] to-transparent p-8">
+                  <div className="flex items-end gap-2">
+                    <span className="text-5xl font-extrabold text-fg">{money(monthly)}</span>
+                    <span className="pb-1.5 text-lg text-muted">/ month</span>
+                  </div>
+                  <ul className="mt-6 grid gap-3">
+                    {[`Every ${track === "soc" ? "SOC (SIEM + SOAR)" : "AWS security"} lab, unlocked`, "New labs included as we add them", "Launch instantly — no setup", "Cancel anytime (24h window)"].map((f) => (
+                      <li key={f} className="flex items-center gap-3 text-base text-fg/90">
+                        <Check className="h-4 w-4 shrink-0 text-brand" /> {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-5 text-sm text-muted">{track === "soc" ? "AWS cloud security is a separate track." : "SOC labs (SIEM & SOAR) are a separate plan."}</p>
+                </Card>
+              </div>
+            ) : null}
+
+            {/* STEP 4 — pay */}
+            {step === 4 ? (
+              <div>
+                <h1 className="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">Review &amp; pay</h1>
+                <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_0.9fr]">
+                  <Card hover={false} className="p-6">
+                    <div className="flex flex-col gap-4">
+                      <div>
+                        <label className="mb-1.5 block text-sm font-semibold text-fg">Card number</label>
+                        <input disabled placeholder="4242 4242 4242 4242" className="w-full rounded-lg border border-line bg-surface px-4 py-3 text-base text-muted" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="mb-1.5 block text-sm font-semibold text-fg">Expiry</label>
+                          <input disabled placeholder="12 / 28" className="w-full rounded-lg border border-line bg-surface px-4 py-3 text-base text-muted" />
+                        </div>
+                        <div>
+                          <label className="mb-1.5 block text-sm font-semibold text-fg">CVC</label>
+                          <input disabled placeholder="123" className="w-full rounded-lg border border-line bg-surface px-4 py-3 text-base text-muted" />
+                        </div>
+                      </div>
+                      <p className="flex items-center gap-2 text-sm text-muted">
+                        <Shield className="h-4 w-4 text-brand" /> Secure checkout — preview only, you won&apos;t be charged yet.
+                        {currency === "INR" ? " UPI & cards supported in India." : ""}
+                      </p>
+                    </div>
+                  </Card>
+                  <Card hover={false} className="flex h-full flex-col p-6">
+                    <h3 className="text-base font-bold uppercase tracking-wide text-muted">Order summary</h3>
+                    <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-brand-bright">{trackName}</p>
+                    <div className="mt-3 flex items-start justify-between gap-4 border-b border-line pb-4">
+                      <span className="text-base text-fg">{mode === "monthly" ? `Monthly — ${accessLabel}` : lab?.title}</span>
+                      <span className="shrink-0 font-bold text-fg">{mode === "monthly" ? `${money(monthly)}/mo` : money(total)}</span>
+                    </div>
+                    <div className="mt-4 flex items-center justify-between">
+                      <span className="text-lg font-bold text-fg">Total today</span>
+                      <span className="text-2xl font-extrabold text-fg">{money(total)}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setStep(5)}
+                      className="glow-brand mt-6 w-full rounded-xl bg-gradient-to-r from-brand to-cyan px-6 py-3.5 text-base font-bold text-white transition hover:brightness-110"
+                    >
+                      {total.usd === 0 ? "Confirm & launch" : `Pay ${money(total)} →`}
+                    </button>
+                  </Card>
+                </div>
+              </div>
+            ) : null}
+
+            {/* STEP 5 — done */}
+            {step === 5 ? (
+              <div className="text-center">
+                <span className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-full bg-brand/10 text-brand">
+                  <Check className="h-8 w-8" />
+                </span>
+                <h1 className="mt-6 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">You&apos;re in! 🎉</h1>
+                <p className="mx-auto mt-3 max-w-md text-lg text-muted">
+                  {mode === "monthly"
+                    ? `Your monthly access is active — every ${track === "soc" ? "SOC" : "AWS"} lab is unlocked.`
+                    : `"${lab?.title}" is ready. Your environment spins up in your browser.`}
+                </p>
+                <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                  <Button href={SITE.labsUrl} external>
+                    {mode === "monthly" ? `Go to your ${track === "soc" ? "SOC" : "AWS"} labs` : "Launch your lab"}
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                  <button type="button" onClick={reset} className="text-base font-semibold text-brand-bright">
+                    Start over
+                  </button>
+                </div>
+                <p className="mx-auto mt-8 max-w-md rounded-xl border border-line bg-surface px-5 py-3 text-sm text-muted">
+                  💜 Refer a friend — you both get a <span className="font-bold text-brand-bright">free lab</span>.
+                </p>
+              </div>
+            ) : null}
+          </div>
+
+          {/* Nav */}
+          {step < 5 ? (
+            <div className="mt-10 flex items-center justify-between border-t border-line pt-6">
+              <button
+                type="button"
+                onClick={() => setStep((s) => Math.max(1, s - 1))}
+                disabled={step === 1}
+                className={`text-base font-semibold transition ${step === 1 ? "cursor-not-allowed text-muted/40" : "text-muted hover:text-fg"}`}
+              >
+                ← Back
+              </button>
+              {step < 4 ? (
+                <button
+                  type="button"
+                  onClick={() => setStep((s) => s + 1)}
+                  disabled={!canContinue}
+                  className={`inline-flex items-center gap-2 rounded-xl px-6 py-3 text-base font-bold transition ${
+                    canContinue ? "glow-brand bg-gradient-to-r from-brand to-cyan text-white hover:brightness-110" : "cursor-not-allowed bg-surface text-muted"
+                  }`}
+                >
+                  Continue
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              ) : (
+                <span className="text-sm text-muted">Complete payment to finish</span>
+              )}
+            </div>
+          ) : null}
+        </div>
+      </Container>
+    </section>
+  );
+}

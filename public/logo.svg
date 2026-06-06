@@ -1,0 +1,31 @@
+<svg width="820" height="220" viewBox="0 0 820 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="820" height="220" rx="16" fill="transparent"/>
+  <g transform="translate(24 18)">
+    <circle cx="78" cy="70" r="41" stroke="#FFFFFF" stroke-width="5"/>
+    <circle cx="78" cy="70" r="31" stroke="#FFFFFF" stroke-width="2.8"/>
+    <path d="M61 67V56.5C61 46.8 68.6 39 78 39C87.4 39 95 46.8 95 56.5V67" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+    <rect x="55" y="67" width="46" height="39" rx="6" stroke="#FFFFFF" stroke-width="5"/>
+    <circle cx="78" cy="84" r="5" fill="#FFFFFF"/>
+    <path d="M78 89V97" stroke="#FFFFFF" stroke-width="4.6" stroke-linecap="round"/>
+    <path d="M23 70H33" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+    <path d="M123 70H133" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+    <path d="M78 15V25" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+    <path d="M78 115V125" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+    <path d="M41 33L48 40" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+    <path d="M108 100L115 107" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+    <path d="M115 33L108 40" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+    <path d="M48 100L41 107" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="78" cy="8" r="6" fill="#FFFFFF"/>
+    <circle cx="78" cy="132" r="6" fill="#FFFFFF"/>
+    <circle cx="35" cy="27" r="6" fill="#FFFFFF"/>
+    <circle cx="121" cy="27" r="6" fill="#FFFFFF"/>
+    <circle cx="35" cy="113" r="6" fill="#FFFFFF"/>
+    <circle cx="121" cy="113" r="6" fill="#FFFFFF"/>
+    <path d="M15 58V82" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+    <path d="M141 58V82" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+    <path d="M7 64V76" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+    <path d="M149 64V76" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <text x="190" y="112" fill="#FFFFFF" font-family="Arial Black, Arial, sans-serif" font-size="44" letter-spacing="5">SHIELDSYNC SECURITY</text>
+  <text x="202" y="154" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="22" font-weight="700">EMPOWERING CYBERSECURITY FUTURES</text>
+</svg>

@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+/* ----------------------------------------------------------------------------
+   ShieldSync design system (Tailwind v4, CSS-first) — LIGHT theme.
+   Clean enterprise look: white/slate surfaces, indigo→blue accent, dark text.
+   Surfaces/borders are semantic tokens so the theme stays consistent.
+---------------------------------------------------------------------------- */
+
+@theme {
+  /* Surfaces */
+  --color-ink: #f7f9fc;
+  --color-ink-2: #eef2f8;
+  --color-panel: #ffffff;
+
+  /* Semantic hairlines + surface fills (dark-on-light) */
+  --color-line: rgba(15, 23, 42, 0.1);
+  --color-line-strong: rgba(15, 23, 42, 0.2);
+  --color-surface: rgba(15, 23, 42, 0.03);
+  --color-surface-2: rgba(15, 23, 42, 0.06);
+
+  /* Brand accents — indigo primary + blue secondary */
+  --color-brand: #4f46e5;
+  --color-brand-bright: #4338ca;
+  --color-cyan: #2563eb;
+  --color-cyan-bright: #1d4ed8;
+
+  /* Text */
+  --color-fg: #0f172a;
+  --color-muted: #5a6b82;
+}
+
+@theme inline {
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-brand) 22%, transparent);
+  color: var(--color-fg);
+}
+
+:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-brand) 70%, transparent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* --- Utilities --------------------------------------------------------------- */
+
+.text-gradient {
+  background: linear-gradient(100deg, var(--color-brand), var(--color-cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.glow-brand {
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.08),
+    0 16px 38px -14px color-mix(in srgb, var(--color-brand) 55%, transparent);
+}
+
+.cyber-grid {
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.045) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 72%);
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 72%);
+}
+
+.aurora {
+  background:
+    radial-gradient(48% 40% at 12% 0%, color-mix(in srgb, var(--color-brand) 12%, transparent), transparent 70%),
+    radial-gradient(44% 38% at 88% 6%, color-mix(in srgb, var(--color-cyan) 10%, transparent), transparent 70%);
+}
+
+.panel {
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 12px 28px -18px rgba(15, 23, 42, 0.16);
+}
+
+/* Scroll reveal (driven by components/reveal.tsx) */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
