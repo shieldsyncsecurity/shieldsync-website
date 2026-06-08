@@ -1,9 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { Container, Button, SectionHeading, Card, Pill, Eyebrow } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { ArrowRight, Check, Shield, Cap, Globe, Flask } from "@/components/icons";
 import { DOORS, WHY, LAB_TRACKS, SITE, SOCIAL_PROOF } from "@/lib/site";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 // Per-track styling for the lab cards: thumbnail image, category badge, featured flag.
 const LAB_STYLES: Record<string, { img: string; badge: string; featured?: boolean }> = {

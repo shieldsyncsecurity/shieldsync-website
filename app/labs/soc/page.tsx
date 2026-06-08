@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "SOC Labs — SIEM & SOAR, Hands-on (Detection & Response)",
   description:
     "Hands-on SOC labs: build detections, hunt threats, and automate response in managed SIEM and SOAR environments. No account, no setup — just a browser.",
+  alternates: { canonical: "/labs/soc" },
 };
 
 const SOC_START = "/labs-wizard?track=soc";

@@ -8,6 +8,7 @@ import { SITE, CONTACT } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Refund Policy",
   description: "ShieldSync Security's refund and cancellation policy for training, the internship, and labs.",
+  alternates: { canonical: "/refund" },
 };
 
 const PAGE_URL = `${SITE.url}/refund`;

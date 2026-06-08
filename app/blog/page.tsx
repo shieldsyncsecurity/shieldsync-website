@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "Blog — Cloud Security, SOC & Cyber Career",
   description:
     "Hands-on tutorials, career guidance, and cloud / AWS security insight from the ShieldSync Security team.",
+  alternates: { canonical: "/blog" },
 };
 
 const PAGE_URL = `${SITE.url}/blog`;

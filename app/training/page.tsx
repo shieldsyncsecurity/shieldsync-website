@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Cybersecurity Training — Internship, Career Tracks, Cohorts",
   description:
     "Hands-on cybersecurity training that takes you from motivated to job-ready: an 8-week internship, career-transformation tracks, and corporate cohorts. AWS-deep, lab-backed.",
+  alternates: { canonical: "/training" },
 };
 
 const PAGE_URL = `${SITE.url}/training`;

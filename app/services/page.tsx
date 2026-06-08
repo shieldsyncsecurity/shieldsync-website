@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "Cloud Security Services — Assessments, Compliance, Training",
   description:
     "Practitioner-led cloud security for businesses: AWS security assessments, compliance readiness (SOC 2 / ISO 27001 / GDPR), corporate training, and labs-as-a-service.",
+  alternates: { canonical: "/services" },
 };
 
 const PAGE_URL = `${SITE.url}/services`;

@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "Hands-on AWS Security Labs + SOC (SIEM & SOAR)",
   description:
     "Practice cloud security in real, managed AWS environments — our flagship. Plus a full SOC track: SIEM and SOAR. No setup, just a browser.",
+  alternates: { canonical: "/labs" },
 };
 
 const PAGE_URL = `${SITE.url}/labs`;

@@ -8,6 +8,7 @@ import { SITE, CONTACT } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description: "The terms that govern your use of ShieldSync Security's website, training, and labs.",
+  alternates: { canonical: "/terms" },
 };
 
 const PAGE_URL = `${SITE.url}/terms`;

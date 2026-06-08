@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const lab = getLab(slug);
   if (!lab) return { title: "Lab" };
-  return { title: `${lab.title} — Hands-on Lab`, description: lab.desc };
+  return { title: `${lab.title} — Hands-on Lab`, description: lab.desc, alternates: { canonical: `/labs/${slug}` } };
 }
 
 const STEPS = {

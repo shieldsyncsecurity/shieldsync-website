@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "About ShieldSync Security",
   description:
     "ShieldSync Security is a global cybersecurity company — practitioner-led cloud security services and hands-on training. Our mission, values, and team.",
+  alternates: { canonical: "/about" },
 };
 
 const PAGE_URL = `${SITE.url}/about`;

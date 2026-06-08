@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Contact ShieldSync Security",
   description:
     "Talk to ShieldSync Security about cloud security services, corporate training, hands-on labs, or the internship. WhatsApp, email, phone, or the form.",
+  alternates: { canonical: "/contact" },
 };
 
 const PAGE_URL = `${SITE.url}/contact`;

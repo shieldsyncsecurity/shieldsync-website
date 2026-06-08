@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Start Here — Learn Cloud Security (Hands-on Roadmap)",
   description:
     "A clear, hands-on roadmap to learn AWS cloud security from zero to job-ready — every step mapped to a real lab. No overwhelm, no AWS account, no setup. Start free.",
+  alternates: { canonical: "/start-here" },
 };
 
 const PAGE_URL = `${SITE.url}/start-here`;

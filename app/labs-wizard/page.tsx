@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { headers, cookies } from "next/headers";
 import { LabsWizard } from "@/components/labs-wizard";
-import { currencyForCountry, COUNTRY_COOKIE } from "@/lib/region";
 
 export const metadata: Metadata = {
   title: "Start a hands-on lab",
   robots: { index: false, follow: false },
+  alternates: { canonical: "/labs-wizard" },
 };
 
 export default async function LabsWizardPage({
@@ -13,11 +12,10 @@ export default async function LabsWizardPage({
 }: {
   searchParams: Promise<{ track?: string; plan?: string; level?: string }>;
 }) {
-  // Region resolved by proxy.ts (edge geo header / ?country= / cookie).
-  const h = await headers();
-  const c = await cookies();
-  const country = (h.get("x-ss-country") || c.get(COUNTRY_COOKIE)?.value || "").toUpperCase();
-  const detected = country.length === 2;
+  // Region/currency is resolved CLIENT-SIDE in <LabsWizard> (browser timezone →
+  // INR for India, manual ₹/$ toggle otherwise). We dropped the edge middleware
+  // because OpenNext/Cloudflare doesn't support Next 16's Node-runtime "Proxy"
+  // yet — and the binary IN-vs-rest currency logic works fine from the timezone.
 
   // Campaign deep-links (e.g. AWS-labs ads) skip the "which track?" step:
   //   /labs-wizard?track=aws              → opens on the Plan step, AWS pre-selected
@@ -30,8 +28,8 @@ export default async function LabsWizardPage({
 
   return (
     <LabsWizard
-      initialCurrency={currencyForCountry(country)}
-      serverDetected={detected}
+      initialCurrency="USD"
+      serverDetected={false}
       initialTrack={initialTrack}
       initialPlan={initialPlan}
       initialLevel={initialLevel}

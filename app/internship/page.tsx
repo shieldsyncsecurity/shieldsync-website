@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     "ShieldSync Security's hands-on cybersecurity internship. Real cloud security projects, AWS labs, 1:1 mentorship, and a completion certificate. ₹9,999 all-inclusive. Limited seats.",
   // og:image and twitter:image are auto-wired from app/internship/opengraph-image.tsx
+  alternates: { canonical: "/internship" },
 };
 
 const WORK_ICONS = [Cloud, Flask, Radar] as const;

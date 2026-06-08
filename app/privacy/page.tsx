@@ -8,6 +8,7 @@ import { SITE, CONTACT } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "How ShieldSync Security collects, uses, and protects your personal information.",
+  alternates: { canonical: "/privacy" },
 };
 
 const PAGE_URL = `${SITE.url}/privacy`;

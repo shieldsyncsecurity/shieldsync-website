@@ -37,6 +37,9 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   // Don't leak the framework version.
   poweredByHeader: false,
+  // Pin Turbopack's workspace root to THIS app (a sibling package-lock.json
+  // higher up otherwise gets inferred as root and breaks module resolution).
+  turbopack: { root: process.cwd() },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

@@ -1,9 +1,8 @@
 import { ogResponse, OG_SIZE } from "@/lib/og";
 
-export const runtime = "edge";
 export const size = OG_SIZE;
 export const contentType = "image/png";
-export const alt = "ShieldSync Security — Blog";
+export const alt = "ShieldSync Security â€” Blog";
 
 export default function Image() {
   return ogResponse({
