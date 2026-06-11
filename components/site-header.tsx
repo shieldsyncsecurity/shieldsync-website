@@ -69,16 +69,26 @@ export function SiteHeader() {
                             onClick={() => setLabsOpen(false)}
                             className="block rounded-lg px-3 py-2.5 transition hover:bg-surface"
                           >
-                            <p className="text-sm font-semibold text-fg">{m.label}</p>
+                            <p className="flex items-center gap-2 text-sm font-semibold text-fg">
+                              {m.label}
+                              {m.tag ? (
+                                <span className="rounded border border-brand/30 bg-brand/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-bright">
+                                  {m.tag}
+                                </span>
+                              ) : null}
+                            </p>
                             <p className="mt-0.5 text-xs text-muted">{m.desc}</p>
                           </Link>
                         ))}
+                        <div className="my-1 h-px bg-line" />
                         <Link
-                          href={SITE.startUrl}
+                          href="/start-here"
                           onClick={() => setLabsOpen(false)}
-                          className="mt-1 flex items-center justify-between rounded-lg bg-gradient-to-r from-brand to-cyan px-3 py-2.5 text-sm font-bold text-white"
+                          className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-muted transition hover:bg-surface hover:text-fg"
                         >
-                          Start free lab
+                          <span>
+                            New here? <span className="font-semibold text-fg">Start with the roadmap</span>
+                          </span>
                           <span aria-hidden="true">→</span>
                         </Link>
                       </div>
@@ -133,17 +143,44 @@ export function SiteHeader() {
       {open ? (
         <div className="border-t border-line bg-ink md:hidden">
           <nav className="mx-auto flex w-full max-w-7xl flex-col gap-1 px-5 py-4 sm:px-6">
-            {NAV.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`rounded-lg px-3 py-3 text-sm font-medium transition ${
-                  isActive(item.href) ? "bg-surface text-fg" : "text-muted hover:bg-surface hover:text-fg"
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {NAV.map((item) =>
+              item.href === "/labs" ? (
+                <div key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={`block rounded-lg px-3 py-3 text-sm font-medium transition ${
+                      isActive(item.href) ? "bg-surface text-fg" : "text-muted hover:bg-surface hover:text-fg"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                  <div className="ml-3 flex flex-col gap-1 border-l border-line pl-3">
+                    <Link
+                      href="/labs/soc"
+                      className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
+                    >
+                      SOC Labs (SIEM + SOAR)
+                    </Link>
+                    <Link
+                      href="/start-here"
+                      className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
+                    >
+                      New here? Start with the roadmap
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`rounded-lg px-3 py-3 text-sm font-medium transition ${
+                    isActive(item.href) ? "bg-surface text-fg" : "text-muted hover:bg-surface hover:text-fg"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
             <div className="my-2 h-px bg-line" />
             <Button href={SITE.startUrl} variant="primary" className="mt-1">
               Start free lab

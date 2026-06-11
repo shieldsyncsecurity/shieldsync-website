@@ -32,7 +32,6 @@ export const CONTACT = {
 export type NavItem = { label: string; href: string };
 
 export const NAV: NavItem[] = [
-  { label: "Start here", href: "/start-here" },
   { label: "Services", href: "/services" },
   { label: "Training", href: "/training" },
   { label: "Hands-on Labs", href: "/labs" },
@@ -187,8 +186,8 @@ export const LAB_TRACKS: LabTrack[] = [
 
 /* Labs dropdown menu (header) ------------------------------------------------- */
 
-export const LABS_MENU: { label: string; desc: string; href: string }[] = [
-  { label: "AWS Security Labs", desc: "Cloud security in real AWS", href: "/labs" },
+export const LABS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
+  { label: "AWS Security Labs", desc: "Cloud security in real AWS — first lab free", href: "/labs", tag: "Flagship" },
   { label: "SOC Labs (SIEM + SOAR)", desc: "Threat detection & automated response", href: "/labs/soc" },
 ];
 
