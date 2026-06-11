@@ -175,7 +175,7 @@ export default function HomePage() {
             {[
               { n: "1", t: "Pick a lab", d: "Choose an AWS security scenario — start with the free one." },
               { n: "2", t: "Launch in real AWS", d: "A real, isolated AWS console opens right in your browser. Nothing to install." },
-              { n: "3", t: "Learn by doing", d: "Find the weakness, fix it, and verify it like a real defender." },
+              { n: "3", t: "Check your work", d: "Fix the misconfigurations and hit Check my work — we grade against the live AWS account, so you know it's right." },
             ].map((s, i) => (
               <Reveal key={s.n} delay={i * 80}>
                 <div className="h-full rounded-2xl border border-line bg-panel p-6">
@@ -195,6 +195,80 @@ export default function HomePage() {
               Start free lab
             </Button>
           </Reveal>
+        </Container>
+      </section>
+
+      {/* --------------------------------- Never stuck — auto-grader */}
+      <section className="border-b border-line py-14 sm:py-20">
+        <Container>
+          <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+            <Reveal>
+              <span className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-bright">
+                <span className="h-1 w-1 rounded-full bg-brand" />
+                Never stuck
+              </span>
+              <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">
+                Hit <span className="text-gradient">Check my work</span> — we grade the live AWS account.
+              </h2>
+              <p className="mt-5 text-lg leading-8 text-muted">
+                Most lab platforms ship a static checklist you tick yourself. We don&apos;t. Our auto-grader
+                <span className="font-semibold text-fg"> assumes a role in your lab account and verifies real cloud state</span> —
+                S3 Block Public Access, bucket policies, IAM SimulatePrincipalPolicy — and gives you a per-objective verdict.
+              </p>
+              <ul className="mt-6 grid gap-3">
+                {[
+                  "Per-objective ✅ / ⬜ against your live account state",
+                  "Catches half-fixes — no false greens",
+                  "Hints reveal as you go — no dead-ends",
+                ].map((s) => (
+                  <li key={s} className="flex items-start gap-3 text-base leading-7 text-fg/85">
+                    <Check className="mt-1 h-4 w-4 shrink-0 text-brand" />
+                    {s}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-8">
+                <Button href={SITE.startUrl}>
+                  <Flask className="h-4 w-4" />
+                  Try the free lab
+                </Button>
+              </div>
+            </Reveal>
+
+            <Reveal delay={120}>
+              <div className="rounded-3xl border border-line bg-panel p-6 shadow-xl shadow-slate-900/5 sm:p-7">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold uppercase tracking-[0.18em] text-brand-bright">Objectives</span>
+                  <span className="rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-700">3 / 4 PASS</span>
+                </div>
+                <ul className="mt-5 grid gap-3.5">
+                  {[
+                    { ok: true, t: "No public buckets in the account" },
+                    { ok: true, t: "Encryption-at-rest enforced via bucket policy" },
+                    { ok: true, t: "TLS-only requests required" },
+                    { ok: false, t: "Auditor IAM scoped to lab buckets only" },
+                  ].map((c) => (
+                    <li key={c.t} className="flex items-start gap-3 text-base">
+                      {c.ok ? (
+                        <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                          <Check className="h-3.5 w-3.5" />
+                        </span>
+                      ) : (
+                        <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-line bg-surface text-muted" aria-hidden="true" />
+                      )}
+                      <span className={c.ok ? "text-fg" : "text-muted"}>{c.t}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
+                  <span className="font-mono text-xs uppercase tracking-wide text-muted">graded vs live account</span>
+                  <button type="button" disabled className="rounded-lg bg-gradient-to-r from-brand to-cyan px-4 py-2 text-sm font-bold text-white opacity-90">
+                    Check my work
+                  </button>
+                </div>
+              </div>
+            </Reveal>
+          </div>
         </Container>
       </section>
 

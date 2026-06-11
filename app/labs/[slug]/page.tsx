@@ -126,6 +126,25 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
         </Container>
       </section>
 
+      {/* Check my work — never stuck */}
+      <section className="border-b border-line bg-surface/50 py-14 sm:py-18">
+        <Container>
+          <div className="mx-auto max-w-3xl">
+            <span className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-bright">
+              <span className="h-1 w-1 rounded-full bg-brand" />
+              You won&apos;t get stuck
+            </span>
+            <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-fg sm:text-3xl">
+              Hit <span className="text-gradient">Check my work</span> — graded against the live AWS account.
+            </h2>
+            <p className="mt-4 text-base leading-7 text-muted">
+              No static checklist. Our auto-grader assumes a role in your lab account and verifies real cloud state —
+              if you only half-fixed it, you&apos;ll know. Per-objective ✅ / ⬜, instant.
+            </p>
+          </div>
+        </Container>
+      </section>
+
       {/* Related */}
       {related.length > 0 ? (
         <section className="border-b border-line py-14 sm:py-20">
