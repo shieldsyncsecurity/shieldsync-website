@@ -74,7 +74,12 @@ export function LabsWizard({
   const fromPrice = track === "soc" ? SOC_PRICE : AWS_PRICE.Beginner;
   const total: Money = mode === "monthly" ? monthly : lab ? lab.price : FREE;
 
-  const labels = ["Track", "Plan", mode === "monthly" ? "Review" : "Pick a lab", "Pay", "Done"];
+  // Where "Launch your lab" actually sends them. The platform deep-links each AWS
+  // lab at /labs/<slug> (slugs match this catalog). SOC labs aren't on the platform
+  // yet, and monthly has no single lab — both fall back to the catalog root.
+  const launchHref = mode !== "monthly" && track === "aws" && selected ? `${SITE.labsUrl}/labs/${selected}` : SITE.labsUrl;
+
+  const labels = ["Track", "Plan", mode === "monthly" ? "Review" : "Pick a lab", "Confirm", "Launch"];
   const canContinue = step === 1 ? track !== null : step === 2 ? mode !== null : step === 3 ? mode === "monthly" || selected !== null : true;
 
   const curBtn = (active: boolean) => `rounded-md px-3 py-1.5 transition ${active ? "bg-brand/10 text-brand-bright" : "text-muted hover:text-fg"}`;
@@ -299,53 +304,33 @@ export function LabsWizard({
               </div>
             ) : null}
 
-            {/* STEP 4 — pay */}
+            {/* STEP 4 — review order (sign-in, payment & launch all happen on the labs platform) */}
             {step === 4 ? (
               <div>
-                <h1 className="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">Review &amp; pay</h1>
-                <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_0.9fr]">
-                  <Card hover={false} className="p-6">
-                    <div className="flex flex-col gap-4">
-                      <div>
-                        <label className="mb-1.5 block text-sm font-semibold text-fg">Card number</label>
-                        <input disabled placeholder="4242 4242 4242 4242" className="w-full rounded-lg border border-line bg-surface px-4 py-3 text-base text-muted" />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="mb-1.5 block text-sm font-semibold text-fg">Expiry</label>
-                          <input disabled placeholder="12 / 28" className="w-full rounded-lg border border-line bg-surface px-4 py-3 text-base text-muted" />
-                        </div>
-                        <div>
-                          <label className="mb-1.5 block text-sm font-semibold text-fg">CVC</label>
-                          <input disabled placeholder="123" className="w-full rounded-lg border border-line bg-surface px-4 py-3 text-base text-muted" />
-                        </div>
-                      </div>
-                      <p className="flex items-center gap-2 text-sm text-muted">
-                        <Shield className="h-4 w-4 text-brand" /> Secure checkout — preview only, you won&apos;t be charged yet.
-                        {currency === "INR" ? " UPI & cards supported in India." : ""}
-                      </p>
-                    </div>
-                  </Card>
-                  <Card hover={false} className="flex h-full flex-col p-6">
-                    <h3 className="text-base font-bold uppercase tracking-wide text-muted">Order summary</h3>
-                    <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-brand-bright">{trackName}</p>
-                    <div className="mt-3 flex items-start justify-between gap-4 border-b border-line pb-4">
-                      <span className="text-base text-fg">{mode === "monthly" ? `Monthly — ${accessLabel}` : lab?.title}</span>
-                      <span className="shrink-0 font-bold text-fg">{mode === "monthly" ? `${money(monthly)}/mo` : money(total)}</span>
-                    </div>
-                    <div className="mt-4 flex items-center justify-between">
-                      <span className="text-lg font-bold text-fg">Total today</span>
-                      <span className="text-2xl font-extrabold text-fg">{money(total)}</span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setStep(5)}
-                      className="glow-brand mt-6 w-full rounded-xl bg-gradient-to-r from-brand to-cyan px-6 py-3.5 text-base font-bold text-white transition hover:brightness-110"
-                    >
-                      {total.usd === 0 ? "Confirm & launch" : `Pay ${money(total)} →`}
-                    </button>
-                  </Card>
-                </div>
+                <h1 className="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">Review your order</h1>
+                <p className="mt-3 text-lg text-muted">
+                  {total.usd === 0
+                    ? "No payment needed — you'll sign in on ShieldSync Labs and launch."
+                    : mode === "monthly"
+                    ? "You'll sign in and start your subscription securely on ShieldSync Labs."
+                    : "You'll sign in and complete the one-time payment securely on ShieldSync Labs."}
+                </p>
+                <Card hover={false} className="mt-6 max-w-lg p-6">
+                  <h3 className="text-base font-bold uppercase tracking-wide text-muted">Order summary</h3>
+                  <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-brand-bright">{trackName}</p>
+                  <div className="mt-3 flex items-start justify-between gap-4 border-b border-line pb-4">
+                    <span className="text-base text-fg">{mode === "monthly" ? `Monthly — ${accessLabel}` : lab?.title}</span>
+                    <span className="shrink-0 font-bold text-fg">{mode === "monthly" ? `${money(monthly)}/mo` : money(total)}</span>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between">
+                    <span className="text-lg font-bold text-fg">{mode === "monthly" ? "Billed monthly" : "Total"}</span>
+                    <span className="text-2xl font-extrabold text-fg">{mode === "monthly" ? `${money(monthly)}/mo` : money(total)}</span>
+                  </div>
+                  <p className="mt-5 flex items-start gap-2 text-sm text-muted">
+                    <Shield className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
+                    <span>{`Secure sign-in & checkout on ShieldSync Labs.${currency === "INR" ? " UPI & cards supported in India." : ""}`}</span>
+                  </p>
+                </Card>
               </div>
             ) : null}
 
@@ -355,15 +340,19 @@ export function LabsWizard({
                 <span className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-full bg-brand/10 text-brand">
                   <Check className="h-8 w-8" />
                 </span>
-                <h1 className="mt-6 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">You&apos;re in! 🎉</h1>
+                <h1 className="mt-6 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">
+                  {total.usd === 0 ? "Your free lab is ready" : mode === "monthly" ? "You're almost set" : "Your lab is ready"}
+                </h1>
                 <p className="mx-auto mt-3 max-w-md text-lg text-muted">
                   {mode === "monthly"
-                    ? `Your monthly access is active — every ${track === "soc" ? "SOC" : "AWS"} lab is unlocked.`
-                    : `"${lab?.title}" is ready. Your environment spins up in your browser.`}
+                    ? `Sign in on ShieldSync Labs to start your subscription — every ${track === "soc" ? "SOC" : "AWS"} lab unlocks instantly.`
+                    : total.usd === 0
+                    ? `Sign in on ShieldSync Labs and "${lab?.title}" spins up in your own isolated AWS account.`
+                    : `Sign in on ShieldSync Labs to complete checkout and launch "${lab?.title}".`}
                 </p>
                 <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                  <Button href={SITE.labsUrl} external>
-                    {mode === "monthly" ? `Go to your ${track === "soc" ? "SOC" : "AWS"} labs` : "Launch your lab"}
+                  <Button href={launchHref} external>
+                    {mode === "monthly" ? "Continue to subscribe" : total.usd === 0 ? "Launch free lab" : "Continue to checkout"}
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                   <button type="button" onClick={reset} className="text-base font-semibold text-brand-bright">
@@ -388,21 +377,17 @@ export function LabsWizard({
               >
                 ← Back
               </button>
-              {step < 4 ? (
-                <button
-                  type="button"
-                  onClick={() => setStep((s) => s + 1)}
-                  disabled={!canContinue}
-                  className={`inline-flex items-center gap-2 rounded-xl px-6 py-3 text-base font-bold transition ${
-                    canContinue ? "glow-brand bg-gradient-to-r from-brand to-cyan text-white hover:brightness-110" : "cursor-not-allowed bg-surface text-muted"
-                  }`}
-                >
-                  Continue
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-              ) : (
-                <span className="text-sm text-muted">Complete payment to finish</span>
-              )}
+              <button
+                type="button"
+                onClick={() => setStep((s) => s + 1)}
+                disabled={!canContinue}
+                className={`inline-flex items-center gap-2 rounded-xl px-6 py-3 text-base font-bold transition ${
+                  canContinue ? "glow-brand bg-gradient-to-r from-brand to-cyan text-white hover:brightness-110" : "cursor-not-allowed bg-surface text-muted"
+                }`}
+              >
+                Continue
+                <ArrowRight className="h-4 w-4" />
+              </button>
             </div>
           ) : null}
         </div>
