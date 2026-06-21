@@ -75,9 +75,13 @@ export function LabsWizard({
   const total: Money = mode === "monthly" ? monthly : lab ? lab.price : FREE;
 
   // Where "Launch your lab" actually sends them. The platform deep-links each AWS
-  // lab at /labs/<slug> (slugs match this catalog). SOC labs aren't on the platform
-  // yet, and monthly has no single lab — both fall back to the catalog root.
-  const launchHref = mode !== "monthly" && track === "aws" && selected ? `${SITE.labsUrl}/labs/${selected}` : SITE.labsUrl;
+  // lab at /labs/<slug> (slugs match this catalog). `?intent=launch` tells the lab
+  // page to auto-launch right after sign-in (no extra click). SOC labs aren't on the
+  // platform yet, and monthly has no single lab — both fall back to the catalog root.
+  const launchHref =
+    mode !== "monthly" && track === "aws" && selected
+      ? `${SITE.labsUrl}/labs/${selected}?intent=launch`
+      : SITE.labsUrl;
 
   const labels = ["Track", "Plan", mode === "monthly" ? "Review" : "Pick a lab", "Confirm", "Launch"];
   const canContinue = step === 1 ? track !== null : step === 2 ? mode !== null : step === 3 ? mode === "monthly" || selected !== null : true;
@@ -341,18 +345,18 @@ export function LabsWizard({
                   <Check className="h-8 w-8" />
                 </span>
                 <h1 className="mt-6 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">
-                  {total.usd === 0 ? "Your free lab is ready" : mode === "monthly" ? "You're almost set" : "Your lab is ready"}
+                  {total.usd === 0 ? "One step left — sign in to launch" : mode === "monthly" ? "You're almost set" : "Your lab is ready"}
                 </h1>
                 <p className="mx-auto mt-3 max-w-md text-lg text-muted">
                   {mode === "monthly"
                     ? `Sign in on ShieldSync Labs to start your subscription — every ${track === "soc" ? "SOC" : "AWS"} lab unlocks instantly.`
                     : total.usd === 0
-                    ? `Sign in on ShieldSync Labs and "${lab?.title}" spins up in your own isolated AWS account.`
+                    ? `A quick Google sign-in on ShieldSync Labs, then "${lab?.title}" spins up automatically in your own isolated AWS account.`
                     : `Sign in on ShieldSync Labs to complete checkout and launch "${lab?.title}".`}
                 </p>
                 <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                   <Button href={launchHref} external>
-                    {mode === "monthly" ? "Continue to subscribe" : total.usd === 0 ? "Launch free lab" : "Continue to checkout"}
+                    {mode === "monthly" ? "Continue to subscribe" : total.usd === 0 ? "Sign in & launch free lab" : "Continue to checkout"}
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                   <button type="button" onClick={reset} className="text-base font-semibold text-brand-bright">

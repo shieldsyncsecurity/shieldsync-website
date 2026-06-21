@@ -21,6 +21,7 @@ type ButtonProps = {
   variant?: "primary" | "secondary" | "ghost";
   className?: string;
   external?: boolean;
+  newTab?: boolean;
 };
 
 const BUTTON_BASE =
@@ -32,11 +33,11 @@ const BUTTON_VARIANTS: Record<NonNullable<ButtonProps["variant"]>, string> = {
   ghost: "text-muted hover:text-fg",
 };
 
-export function Button({ href, children, variant = "primary", className = "", external }: ButtonProps) {
+export function Button({ href, children, variant = "primary", className = "", external, newTab }: ButtonProps) {
   const cls = `${BUTTON_BASE} ${BUTTON_VARIANTS[variant]} ${className}`;
   if (external) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>
+      <a href={href} {...(newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})} className={cls}>
         {children}
       </a>
     );

@@ -59,7 +59,7 @@ export default function InternshipPage() {
               <p className="mt-5 max-w-xl text-lg leading-8 text-muted">{INTERNSHIP.summary}</p>
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                <Button href={CONTACT.whatsappHref} external>
+                <Button href={CONTACT.whatsappHref} external newTab>
                   <WhatsApp className="h-4 w-4" />
                   Apply on WhatsApp
                 </Button>
