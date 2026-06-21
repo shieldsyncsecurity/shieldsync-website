@@ -361,10 +361,6 @@ export type LabItem = { slug: string; title: string; level: LabLevel; desc: stri
 export const AWS_LABS: LabItem[] = [
   { slug: "s3-misconfiguration-audit", title: "S3 misconfiguration & data exposure", level: "Beginner", desc: "Find and fix public buckets, weak ACLs, and missing encryption in a realistic account.", tags: ["S3", "IAM", "Encryption"], added: "2026-05-28" },
   { slug: "iam-privilege-escalation", title: "IAM privilege-escalation paths", level: "Intermediate", desc: "Trace and break real IAM escalation chains, then apply least-privilege.", tags: ["IAM", "STS"], added: "2026-03-10" },
-  { slug: "kms-data-protection", title: "KMS & data-protection controls", level: "Beginner", desc: "Implement envelope encryption and map controls to GDPR / DPDP outcomes.", tags: ["KMS", "RDS"], added: "2026-02-05" },
-  { slug: "guardduty-security-hub-triage", title: "GuardDuty + Security Hub triage", level: "Intermediate", desc: "Triage live findings, correlate alerts, and wire automated remediation.", tags: ["GuardDuty", "Security Hub"], added: "2026-05-15" },
-  { slug: "cloudtrail-forensics", title: "CloudTrail forensics", level: "Advanced", desc: "Reconstruct an exfiltration attempt with Athena across CloudTrail logs.", tags: ["CloudTrail", "Athena"], added: "2026-01-15" },
-  { slug: "vpc-network-exposure", title: "VPC & network exposure", level: "Intermediate", desc: "Hunt exposed services, tighten security groups, and design safe network paths.", tags: ["VPC", "EC2"], added: "2026-04-20" },
 ];
 
 // SOC track: SIEM + SOAR, under one roof.
