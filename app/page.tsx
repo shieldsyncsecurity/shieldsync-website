@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { Container, Button, SectionHeading, Card, Pill, Eyebrow } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { LabWorkspacePreview } from "@/components/lab-workspace-preview";
+import { LabThumb } from "@/components/lab-thumb";
 import { ArrowRight, Check, Shield, Cap, Globe, Flask } from "@/components/icons";
 import { DOORS, WHY, LAB_TRACKS, SITE, SOCIAL_PROOF } from "@/lib/site";
 
@@ -11,11 +11,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-// Per-track styling for the lab cards: thumbnail image, category badge, featured flag.
-const LAB_STYLES: Record<string, { img: string; badge: string; featured?: boolean }> = {
-  Cloud: { img: "/labs/aws.webp", featured: true, badge: "border-blue-400/50 bg-blue-600/80 text-white" },
-  SIEM: { img: "/labs/siem.webp", badge: "border-emerald-400/50 bg-emerald-600/80 text-white" },
-  SOAR: { img: "/labs/soar.webp", badge: "border-violet-400/50 bg-violet-600/80 text-white" },
+// Per-track styling for the lab cards: category badge + featured flag.
+// (Thumbnails are native <LabThumb> terminals now, not stock images.)
+const LAB_STYLES: Record<string, { badge: string; featured?: boolean }> = {
+  Cloud: { featured: true, badge: "border-blue-400/50 bg-blue-600/80 text-white" },
+  SIEM: { badge: "border-emerald-400/50 bg-emerald-600/80 text-white" },
+  SOAR: { badge: "border-violet-400/50 bg-violet-600/80 text-white" },
 };
 
 const STATUS_STYLES: Record<string, string> = {
@@ -326,14 +327,8 @@ export default function HomePage() {
                         s.featured ? "ring-2 ring-brand/40" : ""
                       }`}
                     >
-                      <div className="relative aspect-video overflow-hidden border-b border-line">
-                        <Image
-                          src={s.img}
-                          alt={`${lab.title} illustration`}
-                          fill
-                          sizes="(min-width: 768px) 33vw, 100vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
+                      <div className="relative aspect-video overflow-hidden border-b border-line transition-transform duration-500 group-hover:scale-[1.02]">
+                        <LabThumb tag={lab.tag} />
                         <span
                           className={`absolute left-3 top-3 inline-flex items-center rounded-md border px-2 py-1 text-[10px] font-bold uppercase tracking-[0.16em] ${s.badge}`}
                         >
