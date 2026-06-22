@@ -87,6 +87,12 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
               <span className="rounded-md border border-line bg-surface px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-fg">
                 {lab.badge}
               </span>
+              <span className="rounded-md border border-line bg-surface px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-muted">
+                ~{lab.minutes} min
+              </span>
+              <span className="rounded-md border border-line bg-surface px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-muted">
+                Browser · no setup
+              </span>
             </div>
             <h1 className="mt-5 text-4xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-5xl">{lab.title}</h1>
             <p className="mt-5 text-lg leading-8 text-muted">{lab.desc}</p>
@@ -122,6 +128,39 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
                 </li>
               ))}
             </ul>
+          </div>
+        </Container>
+      </section>
+
+      {/* Skills you'll gain + roles it maps to */}
+      <section className="border-b border-line py-14 sm:py-20">
+        <Container>
+          <div className="mx-auto grid max-w-3xl gap-10 sm:grid-cols-2">
+            <div>
+              <h2 className="text-2xl font-extrabold tracking-tight text-fg">Skills you&apos;ll gain</h2>
+              <ul className="mt-6 grid gap-3">
+                {lab.skills.map((s) => (
+                  <li key={s} className="flex items-start gap-3 text-base leading-7 text-fg/85">
+                    <Check className="mt-1 h-4 w-4 shrink-0 text-brand" />
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h2 className="text-2xl font-extrabold tracking-tight text-fg">Roles this maps to</h2>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {lab.roles.map((r) => (
+                  <span key={r} className="rounded-full border border-line bg-surface px-3 py-1.5 text-sm font-semibold text-fg">
+                    {r}
+                  </span>
+                ))}
+              </div>
+              <p className="mt-5 text-base leading-7 text-muted">
+                Practical, job-aligned skills you can put on a résumé and demonstrate in interviews — proven against
+                real cloud state, not multiple-choice.
+              </p>
+            </div>
           </div>
         </Container>
       </section>

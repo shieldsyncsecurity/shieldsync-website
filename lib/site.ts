@@ -355,23 +355,63 @@ export const ROADMAP_ROLES = [
 
 export type LabLevel = "Beginner" | "Intermediate" | "Advanced";
 
-export type LabItem = { slug: string; title: string; level: LabLevel; desc: string; tags: string[]; added: string };
+export type LabItem = {
+  slug: string;
+  title: string;
+  level: LabLevel;
+  desc: string;
+  tags: string[];
+  added: string;
+  minutes: number; // typical hands-on time
+  skills: string[]; // concrete skills the learner walks away with
+  roles: string[]; // job roles this lab maps to
+};
 
 // Flagship: AWS security labs (our #1 USP). `added` = date the lab went live (ISO).
 export const AWS_LABS: LabItem[] = [
-  { slug: "s3-misconfiguration-audit", title: "S3 misconfiguration & data exposure", level: "Beginner", desc: "Find and fix public buckets, weak ACLs, and missing encryption in a realistic account.", tags: ["S3", "IAM", "Encryption"], added: "2026-05-28" },
-  { slug: "iam-privilege-escalation", title: "IAM privilege-escalation paths", level: "Intermediate", desc: "Trace and break real IAM escalation chains, then apply least-privilege.", tags: ["IAM", "STS"], added: "2026-03-10" },
+  {
+    slug: "s3-misconfiguration-audit",
+    title: "S3 misconfiguration & data exposure",
+    level: "Beginner",
+    desc: "Find and fix public buckets, weak ACLs, and missing encryption in a realistic account.",
+    tags: ["S3", "IAM", "Encryption"],
+    added: "2026-05-28",
+    minutes: 30,
+    skills: [
+      "S3 Block Public Access & bucket policies",
+      "Default encryption (SSE) enforcement",
+      "TLS-only bucket policies",
+      "Least-privilege IAM remediation",
+    ],
+    roles: ["Cloud Security Engineer", "Cloud Security Analyst", "DevSecOps Engineer"],
+  },
+  {
+    slug: "iam-privilege-escalation",
+    title: "IAM privilege-escalation paths",
+    level: "Intermediate",
+    desc: "Trace and break real IAM escalation chains, then apply least-privilege.",
+    tags: ["IAM", "STS"],
+    added: "2026-03-10",
+    minutes: 75,
+    skills: [
+      "Identifying IAM privilege-escalation paths",
+      "Policy analysis with SimulatePrincipalPolicy",
+      "Least-privilege policy design",
+      "STS & role-assumption controls",
+    ],
+    roles: ["Cloud Security Engineer", "Penetration Tester", "Security Consultant"],
+  },
 ];
 
 // SOC track: SIEM + SOAR, under one roof.
 // NOTE: underlying tool names stay hidden on the public site until a user is inside the lab.
-export type SocLab = { slug: string; product: "SIEM" | "SOAR"; title: string; desc: string; tags: string[] };
+export type SocLab = { slug: string; product: "SIEM" | "SOAR"; title: string; desc: string; tags: string[]; minutes: number; skills: string[]; roles: string[] };
 
 export const SOC_LABS: SocLab[] = [
-  { slug: "siem-detection-engineering", product: "SIEM", title: "Detection engineering", desc: "Build rules, tune noise, and triage alerts across host and cloud telemetry.", tags: ["SIEM", "Detection"] },
-  { slug: "siem-threat-hunting", product: "SIEM", title: "Log analysis & threat hunting", desc: "Pivot through logs to find attacker activity and write durable detections.", tags: ["Hunting", "Logs"] },
-  { slug: "soar-response-playbooks", product: "SOAR", title: "Automated response playbooks", desc: "Wire detections to automated actions and cut mean-time-to-respond.", tags: ["SOAR", "Automation"] },
-  { slug: "soar-enrichment-workflows", product: "SOAR", title: "Enrichment & case workflows", desc: "Auto-enrich alerts and orchestrate end-to-end incident workflows.", tags: ["SOAR", "IR"] },
+  { slug: "siem-detection-engineering", product: "SIEM", title: "Detection engineering", desc: "Build rules, tune noise, and triage alerts across host and cloud telemetry.", tags: ["SIEM", "Detection"], minutes: 60, skills: ["Detection-rule authoring", "Alert tuning & noise reduction", "Host + cloud telemetry triage"], roles: ["SOC Analyst", "Detection Engineer", "Security Analyst"] },
+  { slug: "siem-threat-hunting", product: "SIEM", title: "Log analysis & threat hunting", desc: "Pivot through logs to find attacker activity and write durable detections.", tags: ["Hunting", "Logs"], minutes: 60, skills: ["Log pivoting & threat hunting", "Attacker TTP identification", "Writing durable detections"], roles: ["SOC Analyst", "Threat Hunter", "Incident Responder"] },
+  { slug: "soar-response-playbooks", product: "SOAR", title: "Automated response playbooks", desc: "Wire detections to automated actions and cut mean-time-to-respond.", tags: ["SOAR", "Automation"], minutes: 45, skills: ["SOAR playbook design", "Detection-to-action automation", "Mean-time-to-respond reduction"], roles: ["SOC Analyst", "Security Automation Engineer", "SOAR Engineer"] },
+  { slug: "soar-enrichment-workflows", product: "SOAR", title: "Enrichment & case workflows", desc: "Auto-enrich alerts and orchestrate end-to-end incident workflows.", tags: ["SOAR", "IR"], minutes: 45, skills: ["Alert auto-enrichment", "Case & incident orchestration", "End-to-end IR workflows"], roles: ["SOC Analyst", "Incident Responder", "Security Automation Engineer"] },
 ];
 
 /* Training programs ----------------------------------------------------------- */

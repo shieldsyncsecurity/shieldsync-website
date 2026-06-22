@@ -188,13 +188,6 @@ export default function HomePage() {
               </Reveal>
             ))}
           </div>
-
-          <Reveal className="mt-8 text-center">
-            <Button href={SITE.startUrl}>
-              <Flask className="h-4 w-4" />
-              Start free lab
-            </Button>
-          </Reveal>
         </Container>
       </section>
 
