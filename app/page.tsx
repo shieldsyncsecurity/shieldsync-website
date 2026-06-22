@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Container, Button, SectionHeading, Card, Pill, Eyebrow } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
+import { LabWorkspacePreview } from "@/components/lab-workspace-preview";
 import { ArrowRight, Check, Shield, Cap, Globe, Flask } from "@/components/icons";
 import { DOORS, WHY, LAB_TRACKS, SITE, SOCIAL_PROOF } from "@/lib/site";
 
@@ -83,21 +84,14 @@ export default function HomePage() {
             </div>
           </Reveal>
 
-          {/* Featured AWS lab image */}
+          {/* Featured AWS lab — live workspace + auto-grader preview (real product UI) */}
           <Reveal delay={140}>
             <div className="rounded-3xl border border-line bg-panel p-3 shadow-xl shadow-slate-900/5">
-              <div className="relative aspect-video overflow-hidden rounded-2xl">
-                <Image
-                  src="/labs/aws.webp"
-                  alt="AWS Security Labs"
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 45vw, 100vw"
-                  className="object-cover"
-                />
+              <div className="relative overflow-hidden rounded-2xl border border-line bg-surface px-4 pb-4 pt-11">
                 <span className="absolute left-3 top-3 rounded-md bg-blue-600 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white shadow">
                   ★ Flagship — AWS Security Labs
                 </span>
+                <LabWorkspacePreview />
               </div>
               <div className="flex items-center justify-between px-3 py-4">
                 <p className="text-sm text-muted">Real, hands-on AWS cloud security — our flagship.</p>
