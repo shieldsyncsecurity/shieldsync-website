@@ -84,15 +84,30 @@ export default function HomePage() {
             </div>
           </Reveal>
 
-          {/* Featured AWS lab — live workspace + auto-grader preview (real product UI) */}
+          {/* Featured AWS lab — live workspace + auto-grader preview (real product UI).
+              The whole panel is a link to the free-lab funnel: it LOOKS interactive,
+              so a click should start a real lab, not dead-end on a static mock. */}
           <Reveal delay={140}>
             <div className="rounded-3xl border border-line bg-panel p-3 shadow-xl shadow-slate-900/5">
-              <div className="relative overflow-hidden rounded-2xl border border-line bg-surface px-4 pb-4 pt-11">
+              <Link
+                href={SITE.startUrl}
+                aria-label="Start the free AWS Security lab"
+                className="group relative block overflow-hidden rounded-2xl border border-line bg-surface px-4 pb-4 pt-11 transition hover:border-line-strong hover:shadow-md"
+              >
                 <span className="absolute left-3 top-3 rounded-md bg-blue-600 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white shadow">
                   ★ Flagship — AWS Security Labs
                 </span>
-                <LabWorkspacePreview />
-              </div>
+                <span className="absolute right-3 top-3 rounded-md border border-line bg-panel px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
+                  Preview
+                </span>
+                {/* Decorative — not individually interactive; the whole card starts the lab. */}
+                <div className="pointer-events-none select-none">
+                  <LabWorkspacePreview />
+                </div>
+                <span className="mt-3 flex items-center justify-center gap-1 text-sm font-semibold text-brand-bright opacity-80 transition group-hover:opacity-100">
+                  Start this lab free →
+                </span>
+              </Link>
               <div className="flex items-center justify-between px-3 py-4">
                 <p className="text-sm text-muted">Real, hands-on AWS cloud security — our flagship.</p>
                 <Link href="/labs" className="shrink-0 text-sm font-semibold text-brand-bright">
