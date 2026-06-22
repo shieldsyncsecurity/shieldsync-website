@@ -108,12 +108,16 @@ export default function HomePage() {
                   Start this lab free →
                 </span>
               </Link>
-              <div className="flex items-center justify-between px-3 py-4">
-                <p className="text-sm text-muted">Real, hands-on AWS cloud security — our flagship.</p>
-                <Link href="/labs" className="shrink-0 text-sm font-semibold text-brand-bright">
+              {/* Whole row is the link (big hit target) — a tiny text-only link was easy to mis-click. */}
+              <Link
+                href="/labs"
+                className="group flex items-center justify-between gap-3 rounded-b-2xl px-3 py-4 transition hover:bg-surface"
+              >
+                <span className="text-sm text-muted">Real, hands-on AWS cloud security — our flagship.</span>
+                <span className="shrink-0 text-sm font-semibold text-brand-bright transition group-hover:translate-x-0.5">
                   Explore →
-                </Link>
-              </div>
+                </span>
+              </Link>
             </div>
           </Reveal>
         </Container>
