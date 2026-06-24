@@ -7,7 +7,7 @@ import { CtaBand } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
 import { Check, ArrowRight } from "@/components/icons";
-import { AWS_LABS, SOC_LABS, SITE } from "@/lib/site";
+import { AWS_LABS, SOC_LABS, SITE, launchPolicyText } from "@/lib/site";
 
 export function generateStaticParams() {
   return [...AWS_LABS, ...SOC_LABS].map((l) => ({ slug: l.slug }));
@@ -93,6 +93,12 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
               <span className="rounded-md border border-line bg-surface px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-muted">
                 Browser · no setup
               </span>
+              {lab.kind === "aws" ? (
+                <span className="rounded-md border border-line bg-surface px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-muted">
+                  {lab.free ? "Free · " : ""}
+                  {launchPolicyText(lab.level, lab.free)}
+                </span>
+              ) : null}
             </div>
             <h1 className="mt-5 text-4xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-5xl">{lab.title}</h1>
             <p className="mt-5 text-lg leading-8 text-muted">{lab.desc}</p>

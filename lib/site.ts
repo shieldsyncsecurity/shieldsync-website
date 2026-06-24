@@ -365,7 +365,22 @@ export type LabItem = {
   minutes: number; // typical hands-on time
   skills: string[]; // concrete skills the learner walks away with
   roles: string[]; // job roles this lab maps to
+  free?: boolean; // the first beginner lab is free (tighter launch cap)
 };
+
+// Launch caps surfaced on lab pages so the limit isn't a surprise. MIRRORS
+// labs-platform/app/lib/access-rules.ts (FREE_RULE / ACCESS_RULES) — keep in sync.
+const LAUNCH_RULES: Record<LabLevel, { maxLaunches: number; windowHours: number }> = {
+  Beginner: { maxLaunches: 3, windowHours: 72 },
+  Intermediate: { maxLaunches: 2, windowHours: 48 },
+  Advanced: { maxLaunches: 2, windowHours: 48 },
+};
+const FREE_LAUNCH_RULE = { maxLaunches: 1, windowHours: 48 };
+
+export function launchPolicyText(level: LabLevel, free?: boolean): string {
+  const r = free ? FREE_LAUNCH_RULE : LAUNCH_RULES[level];
+  return `${r.maxLaunches} launch${r.maxLaunches === 1 ? "" : "es"} / ${r.windowHours}h`;
+}
 
 // Flagship: AWS security labs (our #1 USP). `added` = date the lab went live (ISO).
 export const AWS_LABS: LabItem[] = [
@@ -373,6 +388,7 @@ export const AWS_LABS: LabItem[] = [
     slug: "s3-misconfiguration-audit",
     title: "S3 misconfiguration & data exposure",
     level: "Beginner",
+    free: true,
     desc: "Find and fix public buckets, weak ACLs, and missing encryption in a realistic account.",
     tags: ["S3", "IAM", "Encryption"],
     added: "2026-05-28",
