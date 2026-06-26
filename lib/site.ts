@@ -375,7 +375,7 @@ const LAUNCH_RULES: Record<LabLevel, { maxLaunches: number; windowHours: number 
   Intermediate: { maxLaunches: 2, windowHours: 48 },
   Advanced: { maxLaunches: 2, windowHours: 48 },
 };
-const FREE_LAUNCH_RULE = { maxLaunches: 1, windowHours: 48 };
+const FREE_LAUNCH_RULE = { maxLaunches: 1, windowHours: 24 }; // KEEP IN SYNC w/ labs FREE_RULE
 
 export function launchPolicyText(level: LabLevel, free?: boolean): string {
   const r = free ? FREE_LAUNCH_RULE : LAUNCH_RULES[level];
