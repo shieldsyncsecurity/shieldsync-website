@@ -16,7 +16,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/labs/soc" },
 };
 
-const SOC_START = "/labs-wizard?track=soc";
+// SOC (SIEM/SOAR) labs are in development — CTAs point to the notify/contact page,
+// not the (non-functional) SOC wizard funnel.
+const SOC_START = "/contact";
 const PAGE_URL = `${SITE.url}/labs/soc`;
 const PAGE_SCHEMA = [
   webPageSchema({
@@ -114,9 +116,12 @@ export default function SocLabsPage() {
           </div>
 
           <Reveal>
-            <div className="mt-10">
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center rounded-xl border border-amber-400/40 bg-amber-500/10 px-4 py-2.5 text-sm font-bold text-amber-700">
+                Coming soon — in development
+              </span>
               <Button href={SOC_START}>
-                Start SOC labs
+                Get notified
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
@@ -146,9 +151,9 @@ export default function SocLabsPage() {
       </section>
 
       <CtaBand
-        title="Start the SOC track"
-        subtitle="Investigate, detect, and automate your first response — launch a SOC lab from your browser."
-        primary={{ label: "Start SOC labs", href: SOC_START }}
+        title="SOC labs are coming soon"
+        subtitle="Our SIEM & SOAR labs are in development. Want first access when they launch? The AWS track is live now."
+        primary={{ label: "Get notified", href: SOC_START }}
       />
     </>
   );

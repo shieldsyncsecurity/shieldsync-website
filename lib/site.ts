@@ -174,13 +174,13 @@ export const LAB_TRACKS: LabTrack[] = [
     tag: "SIEM",
     title: "SIEM Detection Labs",
     desc: "Build detections, triage alerts, and analyze telemetry in a hands-on SIEM environment.",
-    status: "Live",
+    status: "Coming soon",
   },
   {
     tag: "SOAR",
     title: "SOAR Automation Labs",
     desc: "Wire detections to automated response playbooks and cut mean-time-to-action with SOAR.",
-    status: "Live",
+    status: "Coming soon",
   },
 ];
 

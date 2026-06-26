@@ -27,10 +27,13 @@ export function LabsWizard({
   initialLevel?: string;
 }) {
   // Deep-links (ads + the "Start here" roadmap) can pre-select a track, plan, and lab level.
+  // SOC (SIEM/SOAR) labs are in development — ignore a ?track=soc deep-link so it
+  // can't enter the not-yet-built SOC funnel; land on track selection instead.
+  const safeTrack: Track = initialTrack === "soc" ? null : (initialTrack ?? null);
   const startMode: Mode = initialLevel ? "per-lab" : initialPlan ?? null;
-  const startStep = initialTrack ? (initialLevel || initialPlan ? 3 : 2) : 1;
+  const startStep = safeTrack ? (initialLevel || initialPlan ? 3 : 2) : 1;
   const [step, setStep] = useState(startStep);
-  const [track, setTrack] = useState<Track>(initialTrack ?? null);
+  const [track, setTrack] = useState<Track>(safeTrack);
   const [mode, setMode] = useState<Mode>(startMode);
   const [cat, setCat] = useState(initialLevel ?? "All");
   const [selected, setSelected] = useState<string | null>(null);
@@ -149,27 +152,37 @@ export function LabsWizard({
                 </div>
                 <div className="mt-8 grid gap-5 sm:grid-cols-2">
                   {[
-                    { key: "aws" as const, icon: Cloud, title: "Cloud Security — AWS", desc: "Master cloud security in real AWS environments. Our flagship track.", tag: "Flagship" },
-                    { key: "soc" as const, icon: Radar, title: "Security Operations — SIEM & SOAR", desc: "Detection & response across SIEM and SOAR.", tag: "" },
+                    { key: "aws" as const, icon: Cloud, title: "Cloud Security — AWS", desc: "Master cloud security in real AWS environments. Our flagship track.", tag: "Flagship", soon: false },
+                    { key: "soc" as const, icon: Radar, title: "Security Operations — SIEM & SOAR", desc: "Detection & response across SIEM and SOAR.", tag: "", soon: true },
                   ].map((o) => {
                     const Icon = o.icon;
                     return (
                       <button
                         key={o.key}
                         type="button"
-                        onClick={() => chooseTrack(o.key)}
+                        disabled={o.soon}
+                        aria-disabled={o.soon}
+                        onClick={() => { if (!o.soon) chooseTrack(o.key); }}
                         className={`rounded-2xl border p-7 text-left transition ${
-                          track === o.key ? "border-brand bg-brand/[0.05] ring-2 ring-brand/40" : "border-line bg-panel hover:border-line-strong"
+                          o.soon
+                            ? "cursor-not-allowed border-line bg-panel opacity-60"
+                            : track === o.key
+                            ? "border-brand bg-brand/[0.05] ring-2 ring-brand/40"
+                            : "border-line bg-panel hover:border-line-strong"
                         }`}
                       >
                         <div className="flex items-center justify-between">
                           <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-brand/25 bg-brand/10 text-brand-bright">
                             <Icon className="h-6 w-6" />
                           </span>
-                          {o.tag ? <span className="rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-bold text-brand-bright">★ {o.tag}</span> : null}
+                          {o.soon ? (
+                            <span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-bold text-amber-600">Coming soon</span>
+                          ) : o.tag ? (
+                            <span className="rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-bold text-brand-bright">★ {o.tag}</span>
+                          ) : null}
                         </div>
                         <h3 className="mt-5 text-xl font-bold text-fg">{o.title}</h3>
-                        <p className="mt-2 text-base leading-7 text-muted">{o.desc}</p>
+                        <p className="mt-2 text-base leading-7 text-muted">{o.desc}{o.soon ? " — in development; the AWS track is live now." : ""}</p>
                       </button>
                     );
                   })}

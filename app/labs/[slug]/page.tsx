@@ -49,7 +49,10 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
   if (!lab) notFound();
 
   const url = `${SITE.url}/labs/${slug}`;
-  const startHref = lab.kind === "aws" ? `/labs-wizard?track=aws&level=${lab.level}` : "/labs-wizard?track=soc";
+  // SOC (SIEM/SOAR) labs are advertised but not yet built — show them as "Coming
+  // soon" (no launch CTA, no auto-grader claim) instead of a checkout dead-end.
+  const soon = lab.kind === "soc";
+  const startHref = `/labs-wizard?track=aws&level=${lab.kind === "aws" ? lab.level : "Beginner"}`;
   const related = (lab.kind === "aws" ? AWS_LABS : SOC_LABS).filter((l) => l.slug !== slug).slice(0, 4);
   const schema = [
     webPageSchema({
@@ -103,11 +106,22 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
             <h1 className="mt-5 text-4xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-5xl">{lab.title}</h1>
             <p className="mt-5 text-lg leading-8 text-muted">{lab.desc}</p>
 
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Button href={startHref}>
-                Start this lab
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              {soon ? (
+                <>
+                  <span className="inline-flex items-center rounded-xl border border-amber-400/40 bg-amber-500/10 px-4 py-2.5 text-sm font-bold text-amber-700">
+                    Coming soon — in development
+                  </span>
+                  <Link href="/contact" className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-bright hover:underline">
+                    Get notified when it launches →
+                  </Link>
+                </>
+              ) : (
+                <Button href={startHref}>
+                  Start this lab
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              )}
             </div>
 
             <div className="mt-6 flex flex-wrap gap-2">
@@ -171,24 +185,26 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
         </Container>
       </section>
 
-      {/* Check my work — never stuck */}
-      <section className="border-b border-line bg-surface/50 py-14 sm:py-18">
-        <Container>
-          <div className="mx-auto max-w-3xl">
-            <span className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-bright">
-              <span className="h-1 w-1 rounded-full bg-brand" />
-              You won&apos;t get stuck
-            </span>
-            <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-fg sm:text-3xl">
-              Hit <span className="text-gradient">Check my work</span> — graded against the live AWS account.
-            </h2>
-            <p className="mt-4 text-base leading-7 text-muted">
-              No static checklist. Our auto-grader assumes a role in your lab account and verifies real cloud state —
-              if you only half-fixed it, you&apos;ll know. Per-objective ✅ / ⬜, instant.
-            </p>
-          </div>
-        </Container>
-      </section>
+      {/* Check my work — never stuck (AWS labs only; SOC isn't built yet) */}
+      {!soon ? (
+        <section className="border-b border-line bg-surface/50 py-14 sm:py-18">
+          <Container>
+            <div className="mx-auto max-w-3xl">
+              <span className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-bright">
+                <span className="h-1 w-1 rounded-full bg-brand" />
+                You won&apos;t get stuck
+              </span>
+              <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-fg sm:text-3xl">
+                Hit <span className="text-gradient">Check my work</span> — graded against the live AWS account.
+              </h2>
+              <p className="mt-4 text-base leading-7 text-muted">
+                No static checklist. Our auto-grader assumes a role in your lab account and verifies real cloud state —
+                if you only half-fixed it, you&apos;ll know. Per-objective ✅ / ⬜, instant.
+              </p>
+            </div>
+          </Container>
+        </section>
+      ) : null}
 
       {/* Related */}
       {related.length > 0 ? (
@@ -209,11 +225,19 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
         </section>
       ) : null}
 
-      <CtaBand
-        title="Ready to launch this lab?"
-        subtitle="Spin it up in your browser — no setup. Your first lab is free."
-        primary={{ label: "Start this lab", href: startHref }}
-      />
+      {soon ? (
+        <CtaBand
+          title="This lab is coming soon"
+          subtitle="Our SIEM & SOAR labs are in development. Want first access when they launch?"
+          primary={{ label: "Get notified", href: "/contact" }}
+        />
+      ) : (
+        <CtaBand
+          title="Ready to launch this lab?"
+          subtitle="Spin it up in your browser — no setup. Your first lab is free."
+          primary={{ label: "Start this lab", href: startHref }}
+        />
+      )}
     </>
   );
 }
