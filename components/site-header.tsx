@@ -38,7 +38,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-ink/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 w-full max-w-[1536px] items-center justify-between px-5 sm:px-6 lg:px-8">
         {/* Left: logo + nav */}
         <div className="flex items-center gap-7 lg:gap-9">
           <Logo variant="compact" height={30} />
@@ -142,7 +142,7 @@ export function SiteHeader() {
 
       {open ? (
         <div className="border-t border-line bg-ink md:hidden">
-          <nav className="mx-auto flex w-full max-w-7xl flex-col gap-1 px-5 py-4 sm:px-6">
+          <nav className="mx-auto flex w-full max-w-[1536px] flex-col gap-1 px-5 py-4 sm:px-6">
             {NAV.map((item) =>
               item.href === "/labs" ? (
                 <div key={item.href}>

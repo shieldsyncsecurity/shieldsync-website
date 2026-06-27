@@ -32,7 +32,7 @@ export function CookieConsent() {
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-[60] border-t border-line bg-panel/95 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      <div className="mx-auto flex max-w-[1536px] flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <p className="text-sm leading-6 text-muted">
           We use cookies for analytics and to improve your experience. See our{" "}
           <Link href="/privacy" className="font-semibold text-brand-bright">
