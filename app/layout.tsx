@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { Manrope, JetBrains_Mono, Fraunces } from "next/font/google";
+import { Inter, JetBrains_Mono, Fraunces } from "next/font/google";
 import "./globals.css";
 import { SiteChrome } from "@/components/site-chrome";
 import { SchemaOrg } from "@/components/schema-org";
 import { organizationSchema, webSiteSchema } from "@/lib/schema";
 import { SITE } from "@/lib/site";
 
-const manrope = Manrope({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-manrope",
+  variable: "--font-inter",
   weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
@@ -20,7 +20,7 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
-// v4 enterprise theme — display serif for headings (paired with Manrope for body)
+// v4 enterprise theme — display serif for headings (paired with Inter for body)
 const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
@@ -84,7 +84,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${manrope.variable} ${jetbrains.variable} ${fraunces.variable} h-full antialiased`}>
+    <html lang="en" className={`${inter.variable} ${jetbrains.variable} ${fraunces.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         {/* Global JSON-LD: Organization + WebSite — present on every page */}
         <SchemaOrg schema={[organizationSchema(), webSiteSchema()]} />

@@ -22,7 +22,7 @@
   --v4-text-faint: #94a3b8;
   --v4-green-ok: #15803d;
   --v4-serif: var(--font-fraunces), Georgia, serif;
-  --v4-sans: var(--font-manrope), -apple-system, system-ui, sans-serif;
+  --v4-sans: var(--font-inter), -apple-system, system-ui, sans-serif;
 
   background: var(--v4-bg);
   color: var(--v4-text);
