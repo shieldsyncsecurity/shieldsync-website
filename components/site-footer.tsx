@@ -64,7 +64,9 @@ export function SiteFooter() {
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             <Link href="/privacy" className="transition hover:text-brand-bright">Privacy</Link>
             <Link href="/terms" className="transition hover:text-brand-bright">Terms</Link>
-            <Link href="/refund" className="transition hover:text-brand-bright">Refund</Link>
+            <Link href="/refund" className="transition hover:text-brand-bright">Refund &amp; Cancellation</Link>
+            <Link href="/shipping" className="transition hover:text-brand-bright">Shipping &amp; Delivery</Link>
+            <Link href="/contact" className="transition hover:text-brand-bright">Contact</Link>
           </div>
         </div>
       </div>
