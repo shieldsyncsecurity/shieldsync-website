@@ -123,7 +123,7 @@ export function SiteHeader() {
           <Button href="/contact" variant="secondary" className="px-4 py-2">
             Book a call
           </Button>
-          <Button href={SITE.startUrl} variant="primary" className="px-4 py-2">
+          <Button href={SITE.freeLabUrl} external variant="primary" className="px-4 py-2">
             Start free lab
           </Button>
         </div>
@@ -182,7 +182,7 @@ export function SiteHeader() {
               )
             )}
             <div className="my-2 h-px bg-line" />
-            <Button href={SITE.startUrl} variant="primary" className="mt-1">
+            <Button href={SITE.freeLabUrl} external variant="primary" className="mt-1">
               Start free lab
             </Button>
             <Link

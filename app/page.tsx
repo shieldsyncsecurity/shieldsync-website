@@ -51,7 +51,7 @@ export default function HomePage() {
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button href={SITE.startUrl}>
+              <Button href={SITE.freeLabUrl} external>
                 <Flask className="h-4 w-4" />
                 Start free lab
               </Button>
@@ -91,8 +91,8 @@ export default function HomePage() {
           <Reveal delay={140}>
             <div className="rounded-3xl border border-line bg-panel p-3 shadow-xl shadow-slate-900/5">
               <Link
-                href={SITE.startUrl}
-                aria-label="Start the free AWS Security lab"
+                href="/labs"
+                aria-label="Explore the AWS Security labs"
                 className="group relative block overflow-hidden rounded-2xl border border-line bg-surface px-4 pb-4 pt-11 transition hover:border-line-strong hover:shadow-md"
               >
                 <span className="absolute left-3 top-3 rounded-md bg-blue-600 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white shadow">
@@ -106,7 +106,7 @@ export default function HomePage() {
                   <LabWorkspacePreview />
                 </div>
                 <span className="mt-3 flex items-center justify-center gap-1 text-sm font-semibold text-brand-bright opacity-80 transition group-hover:opacity-100">
-                  Start this lab free →
+                  See how it works →
                 </span>
               </Link>
               {/* Whole row is the link (big hit target) — a tiny text-only link was easy to mis-click. */}
@@ -235,7 +235,7 @@ export default function HomePage() {
                 ))}
               </ul>
               <div className="mt-8">
-                <Button href={SITE.startUrl}>
+                <Button href={SITE.freeLabUrl} external>
                   <Flask className="h-4 w-4" />
                   Try the free lab
                 </Button>
