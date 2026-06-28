@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/brand";
 import { Button } from "@/components/ui";
 import { Menu, Close, ChevronDown } from "@/components/icons";
-import { NAV, LABS_MENU, SITE } from "@/lib/site";
+import { NAV, LABS_MENU } from "@/lib/site";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -120,11 +120,11 @@ export function SiteHeader() {
             Apply for internship
           </Link>
           <span className="hidden h-6 w-px bg-line-strong lg:block" aria-hidden="true" />
-          <Button href="/contact" variant="secondary" className="px-4 py-2">
-            Book a call
+          <Button href="/labs" variant="secondary" className="px-4 py-2">
+            Try a free lab
           </Button>
-          <Button href={SITE.freeLabUrl} external variant="primary" className="px-4 py-2">
-            Start free lab
+          <Button href="/contact" variant="primary" className="px-4 py-2">
+            Book a call
           </Button>
         </div>
 
@@ -182,8 +182,8 @@ export function SiteHeader() {
               )
             )}
             <div className="my-2 h-px bg-line" />
-            <Button href={SITE.freeLabUrl} external variant="primary" className="mt-1">
-              Start free lab
+            <Button href="/contact" variant="primary" className="mt-1">
+              Book a call
             </Button>
             <Link
               href="/internship"
@@ -191,8 +191,8 @@ export function SiteHeader() {
             >
               Apply for internship
             </Link>
-            <Button href="/contact" variant="secondary" className="mt-1">
-              Book a call
+            <Button href="/labs" variant="secondary" className="mt-1">
+              Try a free lab
             </Button>
           </nav>
         </div>
