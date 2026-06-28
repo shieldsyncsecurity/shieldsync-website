@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Container, Button, SectionHeading, Card } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
+import { LabWorkspacePreview } from "@/components/lab-workspace-preview";
 import { ArrowRight, Check, Shield, Cloud, Compliance, Radar, Cap, Flask, Code, Lock } from "@/components/icons";
-import { SERVICES, WHY, SOCIAL_PROOF } from "@/lib/site";
+import { SERVICES, WHY, SOCIAL_PROOF, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -11,14 +13,6 @@ export const metadata: Metadata = {
 const SERVICE_ICONS = { cloud: Cloud, shield: Shield, flask: Flask, compliance: Compliance, cap: Cap, radar: Radar, code: Code, lock: Lock } as const;
 
 const FRAMEWORKS = ["SOC 2", "ISO 27001", "GDPR", "PCI DSS", "DPDP", "NIST CSF"];
-
-// Enterprise engagement journey — replaces the old live-lab preview in the hero.
-const JOURNEY = [
-  { icon: Cloud, t: "Assess", d: "Find the real attack paths in your AWS — IAM, data exposure, logging, and detection gaps." },
-  { icon: Shield, t: "Harden", d: "Fix-first remediation, mapped to the frameworks your customers audit you against." },
-  { icon: Radar, t: "Detect & respond", d: "Stand up detection and response across your cloud — SIEM and SOAR." },
-  { icon: Cap, t: "Upskill", d: "Train your team on your actual stack, so what you fixed stays fixed." },
-];
 
 const TRAINING_VERTICALS = ["Infrastructure", "Endpoint", "Cloud", "SOC — SIEM & SOAR"];
 
@@ -74,29 +68,38 @@ export default function HomePage() {
             </div>
           </Reveal>
 
-          {/* Right: how-we-secure-you engagement journey (enterprise, not a lab demo) */}
+          {/* Right: hands-on AWS labs preview — a real product mock that links into
+              the guided lab picker (wizard). Showcases the hands-on depth behind the
+              services without a wall of text. */}
           <Reveal delay={140}>
-            <div className="rounded-3xl border border-line bg-panel p-6 shadow-xl shadow-slate-900/5 sm:p-7">
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-brand-bright">How we secure you</span>
-              <ol className="mt-5 space-y-4">
-                {JOURNEY.map((s, i) => {
-                  const Icon = s.icon;
-                  return (
-                    <li key={s.t} className="flex items-start gap-4">
-                      <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-brand/25 bg-brand/10 text-brand-bright">
-                        <Icon className="h-5 w-5" />
-                      </span>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs font-bold text-muted">0{i + 1}</span>
-                          <h3 className="text-base font-bold text-fg">{s.t}</h3>
-                        </div>
-                        <p className="mt-1 text-sm leading-6 text-muted">{s.d}</p>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ol>
+            <div className="rounded-3xl border border-line bg-panel p-3 shadow-xl shadow-slate-900/5">
+              <Link
+                href={SITE.startUrl}
+                aria-label="Open the guided lab picker"
+                className="group relative block overflow-hidden rounded-2xl border border-line bg-surface px-4 pb-4 pt-11 transition hover:border-line-strong hover:shadow-md"
+              >
+                <span className="absolute left-3 top-3 rounded-md bg-blue-600 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white shadow">
+                  ★ AWS Security Labs
+                </span>
+                <span className="absolute right-3 top-3 rounded-md border border-line bg-panel px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
+                  Preview
+                </span>
+                <div className="pointer-events-none select-none">
+                  <LabWorkspacePreview />
+                </div>
+                <span className="mt-3 flex items-center justify-center gap-1 text-sm font-semibold text-brand-bright opacity-80 transition group-hover:opacity-100">
+                  Start a hands-on lab →
+                </span>
+              </Link>
+              <Link
+                href="/labs"
+                className="group flex items-center justify-between gap-3 rounded-b-2xl px-3 py-4 transition hover:bg-surface"
+              >
+                <span className="text-sm text-muted">Real, hands-on AWS cloud security in your browser.</span>
+                <span className="shrink-0 text-sm font-semibold text-brand-bright transition group-hover:translate-x-0.5">
+                  Explore →
+                </span>
+              </Link>
             </div>
           </Reveal>
         </Container>
