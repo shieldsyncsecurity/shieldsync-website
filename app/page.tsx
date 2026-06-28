@@ -215,7 +215,7 @@ export default function HomePage() {
                 Never stuck
               </span>
               <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">
-                Hit <span className="text-gradient">Check my work</span> — we grade the live AWS account.
+                We grade your <span className="text-gradient">real work</span> — not a checkbox you tick yourself.
               </h2>
               <p className="mt-5 text-lg leading-8 text-muted">
                 Most lab platforms ship a static checklist you tick yourself. We don&apos;t. Our auto-grader
