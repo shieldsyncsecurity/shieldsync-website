@@ -383,6 +383,9 @@ export function launchPolicyText(level: LabLevel, free?: boolean): string {
 }
 
 // Flagship: AWS security labs (our #1 USP). `added` = date the lab went live (ISO).
+// CANONICAL shared fields (slug/title/level/free/tags/minutes) mirror each lab's
+// labs-platform/app/content/labs/<slug>/lab.json — keep them in sync; `desc`,
+// `added`, `skills`, `roles` are marketing-only and live here.
 export const AWS_LABS: LabItem[] = [
   {
     slug: "s3-misconfiguration-audit",
@@ -390,7 +393,7 @@ export const AWS_LABS: LabItem[] = [
     level: "Beginner",
     free: true,
     desc: "Find and fix public buckets, weak ACLs, and missing encryption in a realistic account.",
-    tags: ["S3", "IAM", "Encryption"],
+    tags: ["S3", "IAM", "Encryption", "CloudTrail"],
     added: "2026-05-28",
     minutes: 30,
     skills: [
@@ -403,10 +406,10 @@ export const AWS_LABS: LabItem[] = [
   },
   {
     slug: "iam-privilege-escalation",
-    title: "IAM privilege-escalation paths",
+    title: "IAM privilege escalation",
     level: "Intermediate",
     desc: "Trace and break real IAM escalation chains, then apply least-privilege.",
-    tags: ["IAM", "STS"],
+    tags: ["IAM", "Privilege Escalation", "Least Privilege", "Policy Analysis"],
     added: "2026-03-10",
     minutes: 75,
     skills: [
