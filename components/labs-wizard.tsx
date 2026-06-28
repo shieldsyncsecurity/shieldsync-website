@@ -190,20 +190,45 @@ export function LabsWizard({
               </div>
             ) : null}
 
-            {/* STEP 2 — choose plan */}
+            {/* STEP 2 — choose plan. The FREE lab is a first-class, DISTINCT green
+                card that launches the free lab straight away (a real navigation to
+                the labs app — so it's obvious you've moved), instead of being buried
+                as a footnote inside "Pay per lab". */}
             {step === 2 ? (
               <div>
                 <p className="text-sm font-bold uppercase tracking-[0.18em] text-brand-bright">{trackName}</p>
                 <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">How do you want to learn?</h1>
-                <p className="mt-3 text-lg text-muted">Pick what fits — you can change this anytime.</p>
-                <div className="mt-8 grid gap-5 sm:grid-cols-2">
+                <p className="mt-3 text-lg text-muted">Start free, or pick a paid plan — you can change this anytime.</p>
+
+                {/* FREE — its own green box; goes straight to launching the free lab. */}
+                {track === "aws" ? (
+                  <a
+                    href={`${SITE.labsUrl}/labs/${FREE_SLUG}?intent=launch`}
+                    className="mt-8 flex flex-col gap-4 rounded-2xl border-2 border-emerald-500/60 bg-emerald-50 p-6 transition hover:border-emerald-500 hover:shadow-md sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-full bg-emerald-600 px-2.5 py-0.5 text-xs font-bold text-white">FREE</span>
+                        <h3 className="text-xl font-bold text-emerald-900">Start with the free lab</h3>
+                      </div>
+                      <p className="mt-2 max-w-xl text-base text-emerald-800/90">
+                        The <strong>S3 misconfiguration audit</strong> — your first beginner lab, on the house. A real, isolated AWS account; no card needed.
+                      </p>
+                    </div>
+                    <span className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-base font-bold text-white transition hover:bg-emerald-700">
+                      Launch free <ArrowRight className="h-4 w-4" />
+                    </span>
+                  </a>
+                ) : null}
+
+                <p className="mt-8 text-sm font-bold uppercase tracking-wide text-muted">{track === "aws" ? "Or go further" : "Choose a plan"}</p>
+                <div className="mt-3 grid gap-5 sm:grid-cols-2">
                   {[
                     {
                       key: "per-lab" as const,
                       title: "Pay per lab",
                       price: `From ${money(fromPrice)}`,
                       badge: "",
-                      note: track === "aws" ? "Your first beginner lab is free." : "",
                       pts: ["Buy only the labs you want", "One-time payment", "Great for targeted practice"],
                     },
                     {
@@ -211,7 +236,6 @@ export function LabsWizard({
                       title: `Monthly — ${accessLabel}`,
                       price: `${money(monthly)}/mo`,
                       badge: "Best value",
-                      note: "",
                       pts: [`Every ${track === "soc" ? "SOC" : "AWS"} lab unlocked`, "New labs included", "Cancel within 24h"],
                     },
                   ].map((o) => (
@@ -239,12 +263,6 @@ export function LabsWizard({
                           </li>
                         ))}
                       </ul>
-                      {o.note ? (
-                        <p className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5 text-sm font-bold text-emerald-700">
-                          <Check className="h-3.5 w-3.5 shrink-0" />
-                          {o.note}
-                        </p>
-                      ) : null}
                     </button>
                   ))}
                 </div>
