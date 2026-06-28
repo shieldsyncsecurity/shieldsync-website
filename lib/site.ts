@@ -100,7 +100,7 @@ export const DOORS: Door[] = [
 /* Services -------------------------------------------------------------------- */
 
 export type Service = {
-  icon: "cloud" | "shield" | "flask" | "compliance" | "cap" | "radar";
+  icon: "cloud" | "shield" | "flask" | "compliance" | "cap" | "radar" | "code" | "lock";
   title: string;
   desc: string;
   points: string[];
@@ -110,27 +110,45 @@ export type Service = {
 export const SERVICES: Service[] = [
   {
     icon: "cloud",
-    title: "Cloud Security Assessments",
-    desc: "Deep, practitioner-led reviews of your AWS environment — IAM, data exposure, network, logging, and detection gaps — mapped to real attack paths.",
-    points: ["AWS misconfiguration & IAM review", "Attack-path analysis", "Prioritized, fix-first reporting"],
+    title: "Cloud & Infrastructure Security",
+    desc: "Practitioner-led security for your cloud and the infrastructure under it — AWS, Azure, and GCP plus on-premise — reviewed and hardened against real attack paths, not checklists.",
+    points: ["Cloud misconfiguration & IAM review", "Network, identity & data-exposure hardening", "Prioritized, fix-first remediation"],
     featured: true,
   },
   {
+    icon: "radar",
+    title: "SOC & Managed Detection",
+    desc: "Around-the-clock threat monitoring, hunting, and incident response — so attacks are detected and contained in real time, not discovered weeks later.",
+    points: ["24/7 threat monitoring & hunting", "SIEM / SOAR detection engineering", "Incident response & containment"],
+  },
+  {
+    icon: "code",
+    title: "Application Security & DevSecOps",
+    desc: "Build security into the SDLC — secure code from design to deploy, with controls wired into your pipelines instead of bolted on at the end.",
+    points: ["Secure SDLC & threat modeling", "SAST / DAST & dependency scanning", "CI/CD pipeline & IaC security"],
+  },
+  {
+    icon: "lock",
+    title: "Advanced & Emerging Security",
+    desc: "Next-generation defense for a shifting threat landscape — AI and LLM security, Zero Trust architecture, and continuous attack-surface management.",
+    points: ["AI & LLM security (security for AI)", "Zero Trust architecture", "Attack-surface management"],
+  },
+  {
     icon: "compliance",
-    title: "Compliance Readiness",
-    desc: "Get audit-ready against the frameworks your customers ask about, without drowning in paperwork.",
-    points: ["SOC 2 & ISO 27001 readiness", "GDPR & DPDP data protection", "Control mapping & evidence"],
+    title: "Governance, Risk & Compliance",
+    desc: "Get audit-ready against the frameworks your customers ask about — with risk assessments, control mapping, and evidence, not paperwork.",
+    points: ["SOC 2 & ISO 27001 readiness", "GDPR & DPDP data protection", "Risk assessments & control mapping"],
   },
   {
     icon: "cap",
     title: "Corporate Training",
-    desc: "Hands-on security training delivered to your team — built around your stack and your real risks, not generic slideware.",
-    points: ["Cloud security upskilling", "Custom team cohorts", "Practical, lab-backed sessions"],
+    desc: "Hands-on security training delivered to your team — built around your stack and real risks, across infrastructure, endpoint, cloud, and SOC.",
+    points: ["À la carte training by domain", "Tailored to your environment", "Practical, scenario-based sessions"],
   },
   {
     icon: "flask",
     title: "Labs-as-a-Service",
-    desc: "Managed, real-world cyber ranges your team or learners launch on demand — cloud security, SIEM, and SOAR.",
+    desc: "Managed, real-world cyber ranges your team launches on demand — cloud security, SIEM, and SOAR scenarios in isolated environments.",
     points: ["AWS security scenarios", "SIEM detection labs", "SOAR automation labs"],
   },
 ];

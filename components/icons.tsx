@@ -123,6 +123,25 @@ export function Laptop(props: IconProps) {
   );
 }
 
+export function Code(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M8 9l-3 3 3 3" />
+      <path d="M16 9l3 3-3 3" />
+      <path d="M13.5 6l-3 12" />
+    </svg>
+  );
+}
+
+export function Lock(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <rect x="4.5" y="10.5" width="15" height="9.5" rx="2" />
+      <path d="M8 10.5V8a4 4 0 018 0v2.5" />
+    </svg>
+  );
+}
+
 export function Mail(props: IconProps) {
   return (
     <svg {...base(props)}>

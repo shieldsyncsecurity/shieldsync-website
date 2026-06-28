@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import { Container, Button, SectionHeading, Card } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { CtaBand } from "@/components/sections";
-import { ArrowRight, Check, Shield, Cloud, Compliance, Radar, Cap, Flask } from "@/components/icons";
+import { ArrowRight, Check, Shield, Cloud, Compliance, Radar, Cap, Flask, Code, Lock } from "@/components/icons";
 import { SERVICES, WHY, SOCIAL_PROOF } from "@/lib/site";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const SERVICE_ICONS = { cloud: Cloud, shield: Shield, flask: Flask, compliance: Compliance, cap: Cap, radar: Radar } as const;
+const SERVICE_ICONS = { cloud: Cloud, shield: Shield, flask: Flask, compliance: Compliance, cap: Cap, radar: Radar, code: Code, lock: Lock } as const;
 
 const FRAMEWORKS = ["SOC 2", "ISO 27001", "GDPR", "PCI DSS", "DPDP", "NIST CSF"];
 
@@ -109,12 +109,12 @@ export default function HomePage() {
           <Reveal>
             <SectionHeading
               eyebrow="What we do"
-              title="Cloud security services, end to end"
-              description="From a first assessment to ongoing detection and team training — practitioner-led work mapped to the attack paths that actually matter to your business."
+              title="Security services, end to end"
+              description="From cloud and application security to 24/7 detection and team training — practitioner-led work mapped to the attack paths that actually matter to your business."
             />
           </Reveal>
           <div className="mt-12 grid gap-6 md:grid-cols-2">
-            {SERVICES.map((s, i) => {
+            {SERVICES.slice(0, 4).map((s, i) => {
               const Icon = SERVICE_ICONS[s.icon];
               return (
                 <Reveal key={s.title} delay={i * 70}>

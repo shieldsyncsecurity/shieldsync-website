@@ -4,7 +4,7 @@ import { Reveal } from "@/components/reveal";
 import { CtaBand, FaqSection, PageHero } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
 import { webPageSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
-import { Cloud, Shield, Flask, Compliance, Cap, Radar, Check } from "@/components/icons";
+import { Cloud, Shield, Flask, Compliance, Cap, Radar, Check, Code, Lock } from "@/components/icons";
 import { SERVICES, FAQS, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -33,7 +33,7 @@ const PAGE_SCHEMA = [
   faqSchema(FAQS.services),
 ];
 
-const ICONS = { cloud: Cloud, shield: Shield, flask: Flask, compliance: Compliance, cap: Cap, radar: Radar } as const;
+const ICONS = { cloud: Cloud, shield: Shield, flask: Flask, compliance: Compliance, cap: Cap, radar: Radar, code: Code, lock: Lock } as const;
 const FRAMEWORKS = ["SOC 2", "ISO 27001", "GDPR", "PCI DSS", "DPDP Act", "NIST CSF"];
 
 export default function ServicesPage() {
