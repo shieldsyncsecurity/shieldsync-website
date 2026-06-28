@@ -198,31 +198,33 @@ export function LabsWizard({
               <div>
                 <p className="text-sm font-bold uppercase tracking-[0.18em] text-brand-bright">{trackName}</p>
                 <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">How do you want to learn?</h1>
-                <p className="mt-3 text-lg text-muted">Start free, or pick a paid plan — you can change this anytime.</p>
-
-                {/* FREE — its own green box; goes straight to launching the free lab. */}
-                {track === "aws" ? (
-                  <a
-                    href={`${SITE.labsUrl}/labs/${FREE_SLUG}?intent=launch`}
-                    className="mt-8 flex flex-col gap-4 rounded-2xl border-2 border-emerald-500/60 bg-emerald-50 p-6 transition hover:border-emerald-500 hover:shadow-md sm:flex-row sm:items-center sm:justify-between"
-                  >
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="rounded-full bg-emerald-600 px-2.5 py-0.5 text-xs font-bold text-white">FREE</span>
-                        <h3 className="text-xl font-bold text-emerald-900">Start with the free lab</h3>
+                <p className="mt-3 text-lg text-muted">Pick what fits — you can change this anytime.</p>
+                <div className={`mt-8 grid gap-5 ${track === "aws" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
+                  {/* FREE — a third box ALONGSIDE the paid plans (AWS track only). It
+                      launches the free lab directly (no further config), so it's an <a>,
+                      not a select-then-continue option. Kept visually equal to the others. */}
+                  {track === "aws" ? (
+                    <a
+                      href={`${SITE.labsUrl}/labs/${FREE_SLUG}?intent=launch`}
+                      className="flex flex-col rounded-2xl border border-line bg-panel p-7 text-left transition hover:border-line-strong"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <h3 className="text-xl font-bold text-fg">Free lab</h3>
+                        <span className="shrink-0 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-700">FREE</span>
                       </div>
-                      <p className="mt-2 max-w-xl text-base text-emerald-800/90">
-                        The <strong>S3 misconfiguration audit</strong> — your first beginner lab, on the house. A real, isolated AWS account; no card needed.
-                      </p>
-                    </div>
-                    <span className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-base font-bold text-white transition hover:bg-emerald-700">
-                      Launch free <ArrowRight className="h-4 w-4" />
-                    </span>
-                  </a>
-                ) : null}
+                      <ul className="mt-4 space-y-2">
+                        {["Your first beginner lab", "Real, isolated AWS account", "No card needed"].map((p) => (
+                          <li key={p} className="flex items-center gap-2 text-base text-muted">
+                            <Check className="h-4 w-4 shrink-0 text-brand" /> {p}
+                          </li>
+                        ))}
+                      </ul>
+                      <span className="mt-5 inline-flex items-center gap-1.5 text-base font-semibold text-brand-bright">
+                        Launch now <ArrowRight className="h-4 w-4" />
+                      </span>
+                    </a>
+                  ) : null}
 
-                <p className="mt-8 text-sm font-bold uppercase tracking-wide text-muted">{track === "aws" ? "Or go further" : "Choose a plan"}</p>
-                <div className="mt-3 grid gap-5 sm:grid-cols-2">
                   {[
                     {
                       key: "per-lab" as const,
