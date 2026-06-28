@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Container, Button, SectionHeading, Card } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
-import { CtaBand } from "@/components/sections";
 import { ArrowRight, Check, Shield, Cloud, Compliance, Radar, Cap, Flask, Code, Lock } from "@/components/icons";
 import { SERVICES, WHY, SOCIAL_PROOF } from "@/lib/site";
 
@@ -113,32 +112,17 @@ export default function HomePage() {
               description="From cloud and application security to 24/7 detection and team training — practitioner-led work mapped to the attack paths that actually matter to your business."
             />
           </Reveal>
-          <div className="mt-12 grid gap-6 md:grid-cols-2">
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {SERVICES.slice(0, 4).map((s, i) => {
               const Icon = SERVICE_ICONS[s.icon];
               return (
                 <Reveal key={s.title} delay={i * 70}>
-                  <Card className={`flex h-full flex-col p-7 ${s.featured ? "ring-2 ring-brand/40" : ""}`}>
-                    <div className="flex items-center gap-3">
-                      <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-brand/25 bg-brand/10 text-brand-bright">
-                        <Icon className="h-5 w-5" />
-                      </span>
-                      <h3 className="text-lg font-semibold text-fg">{s.title}</h3>
-                    </div>
-                    {s.featured ? (
-                      <span className="mt-3 w-fit text-[11px] font-bold uppercase tracking-[0.18em] text-brand-bright">
-                        ★ Flagship service
-                      </span>
-                    ) : null}
-                    <p className="mt-4 text-base leading-7 text-muted">{s.desc}</p>
-                    <ul className="mt-5 grid gap-2.5">
-                      {s.points.map((pt) => (
-                        <li key={pt} className="flex items-center gap-2.5 text-base text-fg/85">
-                          <Check className="h-4 w-4 shrink-0 text-brand" />
-                          {pt}
-                        </li>
-                      ))}
-                    </ul>
+                  <Card className={`flex h-full flex-col p-6 ${s.featured ? "ring-2 ring-brand/40" : ""}`}>
+                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-brand/25 bg-brand/10 text-brand-bright">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <h3 className="mt-4 text-base font-semibold text-fg">{s.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-muted">{s.desc}</p>
                   </Card>
                 </Reveal>
               );
@@ -251,11 +235,6 @@ export default function HomePage() {
           </Reveal>
         </Container>
       </section>
-
-      <CtaBand
-        title="Let's secure your cloud"
-        subtitle="Book a call and we'll scope an assessment or engagement around your environment and goals."
-      />
     </>
   );
 }
