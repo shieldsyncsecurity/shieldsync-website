@@ -168,7 +168,6 @@ export const SERVICES_MENU: { label: string; desc: string; href: string }[] = [
   { label: "Application Security & DevSecOps", desc: "Secure the SDLC, from code to pipeline", href: "/services/application-security-devsecops" },
   { label: "Advanced & Emerging Security", desc: "AI/LLM security, Zero Trust & attack-surface management", href: "/services/advanced-emerging-security" },
   { label: "Governance, Risk & Compliance", desc: "SOC 2, ISO 27001, GDPR & DPDP readiness", href: "/services/governance-risk-compliance" },
-  { label: "Corporate Training", desc: "À la carte team training by domain", href: "/training" },
 ];
 
 /* Why ShieldSync -------------------------------------------------------------- */
