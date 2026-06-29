@@ -70,7 +70,7 @@ const WHO = [
 ];
 
 export default function StartHerePage() {
-  const KW = ["Cloud", "AWS", "Training", "IAM"];
+  const KW = ["Cloud", "AWS", "Training", "IAM", "Career"];
   const matched = KW.length
     ? BLOG_POSTS.filter((p) => KW.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
     : [];

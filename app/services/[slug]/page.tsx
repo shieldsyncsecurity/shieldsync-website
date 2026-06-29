@@ -16,12 +16,11 @@ const WA_BASE = CONTACT.whatsappHref.split("?")[0];
 // Match each service slug to the blog category keyword(s) we want to surface
 // underneath it. Falls back to most-recent posts if nothing matches.
 const SERVICE_BLOG_KEYWORDS: Record<string, string[]> = {
-  "cloud-infrastructure-security": ["Cloud", "AWS"],
-  "application-security": ["AppSec", "Application"],
-  "compliance-readiness": ["Compliance", "ISO", "SOC 2"],
-  "managed-detection-response": ["Detection", "SOC", "SIEM", "IR", "Incident"],
-  "vciso-strategy": ["Strategy", "vCISO", "Leadership"],
-  "training-enablement": ["Training", "Enablement"],
+  "cloud-infrastructure-security": ["Cloud", "AWS", "IAM", "S3", "VPC", "KMS"],
+  "soc-managed-detection": ["Detection", "SOC", "SIEM", "SOAR", "IR", "Incident", "GuardDuty", "CloudTrail"],
+  "application-security-devsecops": ["AppSec", "Application", "DevSecOps", "AI Security"],
+  "advanced-emerging-security": ["AI Security", "AI", "LLM", "Agent", "RAG", "Bedrock", "Zero Trust"],
+  "governance-risk-compliance": ["Compliance", "DPDP", "GDPR", "ISO", "SOC 2"],
 };
 
 function relatedPosts(slug: string, limit = 6) {

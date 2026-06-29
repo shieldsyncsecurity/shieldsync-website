@@ -97,7 +97,7 @@ const DELIVERY = [
 ];
 
 export default function TrainingPage() {
-  const KW = ["Training", "Enablement", "SOC", "SIEM"];
+  const KW = ["Training", "Enablement", "SOC", "SIEM", "Career"];
   const matched = KW.length
     ? BLOG_POSTS.filter((p) => KW.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
     : [];
