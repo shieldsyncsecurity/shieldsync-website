@@ -44,11 +44,9 @@ export function BlogCarousel({ posts }: { posts: BlogPost[] }) {
             className="group snap-start shrink-0 w-[85vw] sm:w-[45vw] lg:w-[calc(33.333%-14px)] rounded-2xl border border-line bg-panel p-6 flex flex-col transition hover:border-line-strong hover:shadow-md"
           >
             <div className="flex flex-wrap items-center gap-2">
-              {post.tags.slice(0, 2).map((t) => (
-                <span key={t} className="rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-semibold text-brand-bright">
-                  {t}
-                </span>
-              ))}
+              <span className="rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-semibold text-brand-bright">
+                {post.category}
+              </span>
               <span className="ml-auto text-xs text-muted">{post.read}</span>
             </div>
             <h3 className="mt-3 text-base font-bold leading-snug text-fg line-clamp-2 group-hover:text-brand-bright transition">

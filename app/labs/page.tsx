@@ -7,7 +7,8 @@ import { SchemaOrg } from "@/components/schema-org";
 import { BlogCarousel } from "@/components/blog-carousel";
 import { webPageSchema, breadcrumbSchema, faqSchema, courseSchema, courseListSchema } from "@/lib/schema";
 import { ArrowRight, Check, Cloud, Radar } from "@/components/icons";
-import { AWS_LABS, SOC_LABS, FAQS, SITE, BLOG_POSTS, AWS_PRICE } from "@/lib/site";
+import { AWS_LABS, SOC_LABS, FAQS, SITE, BLOG_POSTS } from "@/lib/site";
+import { AWS_PRICE } from "@/lib/region";
 
 export const metadata: Metadata = {
   title: "AWS Security Labs — Hands-on Cloud Security in Real AWS",
