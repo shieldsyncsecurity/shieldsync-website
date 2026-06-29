@@ -10,10 +10,31 @@ import { Check, ArrowRight, Shield, Cap } from "@/components/icons";
 import { ROADMAP, ROADMAP_ROLES, SITE, BLOG_POSTS } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Start Here — Learn Cloud Security (Hands-on Roadmap)",
+  title: "Cloud Security Engineer Roadmap — Hands-on AWS Security",
   description:
-    "A clear, hands-on roadmap to learn AWS cloud security from zero to job-ready — every step mapped to a real lab. No overwhelm, no AWS account, no setup. Start free.",
+    "Cloud security engineer roadmap: a step-by-step, hands-on path from zero to job-ready in AWS security. Every step mapped to a real lab — no AWS account, no setup, first lab free.",
+  keywords: [
+    "cloud security engineer roadmap",
+    "AWS security learning path",
+    "how to become cloud security engineer",
+    "AWS security beginner",
+    "learn cloud security",
+    "cybersecurity roadmap india",
+    "SOC analyst roadmap",
+  ],
   alternates: { canonical: "/start-here" },
+  openGraph: {
+    title: "Cloud Security Engineer Roadmap — Hands-on AWS Security",
+    description:
+      "Zero-to-job-ready roadmap for AWS cloud security. Every step mapped to a real lab. First lab free.",
+    url: `${SITE.url}/start-here`,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Cloud Security Engineer Roadmap — Hands-on AWS Security",
+    description: "Zero-to-job-ready AWS security roadmap, every step a real lab.",
+  },
 };
 
 const PAGE_URL = `${SITE.url}/start-here`;

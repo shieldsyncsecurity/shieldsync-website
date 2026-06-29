@@ -9,10 +9,30 @@ import { InternshipApplyForm } from "@/components/internship-apply-form";
 import { INTERNSHIP, SITE, BLOG_POSTS } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Cybersecurity Internship — 8 Weeks, Real AWS Labs, Certificate",
+  title: "Cybersecurity Internship in India — 8 Weeks, AWS Labs, Certificate",
   description:
-    "ShieldSync Security's hands-on cybersecurity internship. Real cloud security projects, AWS labs, 1:1 mentorship, and a completion certificate. ₹9,999 all-inclusive. Limited seats.",
+    "Online cybersecurity internship in India: hands-on AWS security projects, real cloud labs, 1:1 mentorship, and a completion certificate. 8 weeks, ₹9,999 all-inclusive. Open to students and career-changers.",
+  keywords: [
+    "cybersecurity internship india",
+    "cybersecurity internship online",
+    "cloud security internship",
+    "AWS security internship",
+    "cybersecurity internship for students",
+    "online cybersecurity course india",
+  ],
   alternates: { canonical: "/internship" },
+  openGraph: {
+    title: "Cybersecurity Internship in India — 8 Weeks, AWS Labs, Certificate",
+    description:
+      "Online cybersecurity internship: hands-on AWS security projects, 1:1 mentorship, certificate. ₹9,999 all-inclusive.",
+    url: `${SITE.url}/internship`,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Cybersecurity Internship in India — 8 Weeks, AWS Labs",
+    description: "Hands-on AWS security projects + mentorship + certificate. ₹9,999.",
+  },
 };
 
 const WORK_ICONS = [Cloud, Flask, Radar] as const;

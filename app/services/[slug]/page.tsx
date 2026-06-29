@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "cloud-infrastructure-security": "AWS, Cloud & Infrastructure Security Services",
     "soc-managed-detection": "Managed SOC, SIEM & SOAR — 24/7 Detection & Response",
     "application-security-devsecops": "Application Security & DevSecOps Services",
-    "advanced-emerging-security": "AI/LLM Security, Zero Trust & ASM Services",
+    "advanced-emerging-security": "AI & LLM Security Testing, Zero Trust & ASM",
     "governance-risk-compliance": "SOC 2, ISO 27001, GDPR & DPDP Compliance",
   };
   const title = TITLE_OVERRIDE[slug] ?? `${p.title} — Cybersecurity Services`;

@@ -131,9 +131,9 @@ export const SERVICE_PAGES: ServicePage[] = [
   {
     slug: "advanced-emerging-security",
     icon: "lock",
-    title: "Advanced & Emerging Security",
-    tagline: "Defense for the threats arriving now: securing AI and LLM systems, Zero Trust, and the attack surface you can't see.",
-    intro: "The threats that matter most right now aren't in last year's playbook. We secure the AI and LLM systems you're building or buying, design Zero Trust so a single stolen credential doesn't hand over the whole network, and keep watch on the internet-facing footprint that keeps growing while you ship. AI/LLM security is our deepest emerging specialism, and it's delivered by the same senior team that does the work in-house.",
+    title: "AI & LLM Security, Zero Trust & Attack Surface Management",
+    tagline: "Security for the AI and LLM systems you're building, plus Zero Trust and attack-surface defense — practitioner-led, in-house.",
+    intro: "AI and LLM security is our deepest emerging specialism. We test your LLM features against prompt injection, jailbreaks, indirect injection through RAG, insecure tool use, and data leakage — and we secure the AI pipelines and agents you're shipping. Alongside AI security we design Zero Trust so a single stolen credential can't pivot across the network, and we keep watch on the internet-facing footprint that keeps growing while you ship. Delivered by the same senior team that does the work in-house.",
     whatsIncluded: [
       { title: "AI Security Assessment", desc: "We assess the security posture of the AI systems and pipelines you're building or procuring — covering model inputs, outputs, APIs, and the infrastructure they run on." },
       { title: "LLM Security Testing", desc: "We probe your LLM features against prompt injection, jailbreaks, indirect injection via RAG, insecure tool use, and data leakage — and tell you concretely what breaks and how to fix it." },
@@ -162,7 +162,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       { q: "Do you actually do this in-house?", a: "Yes. AI/LLM security, Zero Trust, and attack-surface work are all delivered by our own senior team. The only thing we route to trusted partners is penetration testing." },
       { q: "We're early with AI — is it too soon?", a: "It's the right time. Building guardrails and identity boundaries while the system is still small is far cheaper than retrofitting them after something is in production." },
     ],
-    metaDescription: "Security for AI and LLM systems, Zero Trust architecture, and attack-surface management — practitioner-led, in-house, from ShieldSync Security.",
+    metaDescription: "AI & LLM security testing — prompt injection, jailbreaks, RAG/agent security — plus Zero Trust architecture and attack-surface management. Practitioner-led, in-house.",
   },
   {
     slug: "governance-risk-compliance",
