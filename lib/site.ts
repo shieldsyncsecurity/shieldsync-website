@@ -226,7 +226,7 @@ export const LAB_TRACKS: LabTrack[] = [
 /* Labs dropdown menu (header) ------------------------------------------------- */
 
 export const LABS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
-  { label: "AWS Security Labs", desc: "Cloud security in real AWS — first lab free", href: "/labs", tag: "Flagship" },
+  { label: "AWS Security Labs", desc: "Cloud security in real AWS — first lab free", href: "/labs-wizard?track=aws", tag: "Flagship" },
   { label: "SOC Labs (SIEM + SOAR)", desc: "Threat detection & automated response", href: "/labs/soc" },
 ];
 
