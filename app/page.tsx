@@ -4,7 +4,8 @@ import { Container, Button, SectionHeading, Card } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { LabWorkspacePreview } from "@/components/lab-workspace-preview";
 import { ArrowRight, Check, Shield, Cloud, Compliance, Radar, Cap, Flask, Code, Lock } from "@/components/icons";
-import { SERVICES, WHY, SOCIAL_PROOF, SITE } from "@/lib/site";
+import { SERVICES, WHY, SOCIAL_PROOF, SITE, BLOG_POSTS } from "@/lib/site";
+import { BlogCarousel } from "@/components/blog-carousel";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -214,6 +215,26 @@ export default function HomePage() {
                 </ul>
               </Card>
             </Reveal>
+          </div>
+        </Container>
+      </section>
+
+      {/* ------------------------------------------------------------ Blog posts */}
+      <section className="border-b border-line py-14 sm:py-20">
+        <Container>
+          <Reveal>
+            <div className="flex items-end justify-between gap-4">
+              <SectionHeading
+                eyebrow="From the blog"
+                title="Insights on cloud security"
+              />
+              <Button href="/blog" variant="secondary" className="shrink-0 self-start">
+                All posts <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </Reveal>
+          <div className="mt-10">
+            <BlogCarousel posts={BLOG_POSTS.slice(0, 6)} />
           </div>
         </Container>
       </section>
