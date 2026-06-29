@@ -80,7 +80,7 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
       <section className="relative isolate overflow-hidden border-b border-line">
         <div className="aurora absolute inset-0 -z-10" />
         <div className="cyber-grid absolute inset-0 -z-10" />
-        <Container className="py-14 sm:py-18">
+        <Container className="py-10 sm:py-12">
           <Reveal className="max-w-3xl">
             <Link href="/labs" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-bright">
               ← All hands-on labs
@@ -136,7 +136,7 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
       </section>
 
       {/* What you'll do */}
-      <section className="border-b border-line py-14 sm:py-20">
+      <section className="border-b border-line py-8 sm:py-12">
         <Container>
           <div className="mx-auto max-w-3xl">
             <h2 className="text-2xl font-extrabold tracking-tight text-fg">What you&apos;ll do</h2>
@@ -153,7 +153,7 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
       </section>
 
       {/* Skills you'll gain + roles it maps to */}
-      <section className="border-b border-line py-14 sm:py-20">
+      <section className="border-b border-line py-8 sm:py-12">
         <Container>
           <div className="mx-auto grid max-w-3xl gap-10 sm:grid-cols-2">
             <div>
@@ -187,7 +187,7 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
 
       {/* Check my work — never stuck (AWS labs only; SOC isn't built yet) */}
       {!soon ? (
-        <section className="border-b border-line bg-surface/50 py-14 sm:py-18">
+        <section className="border-b border-line bg-surface/50 py-10 sm:py-12">
           <Container>
             <div className="mx-auto max-w-3xl">
               <span className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-bright">
@@ -208,7 +208,7 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
 
       {/* Related */}
       {related.length > 0 ? (
-        <section className="border-b border-line py-14 sm:py-20">
+        <section className="border-b border-line py-8 sm:py-12">
           <Container>
             <h2 className="text-2xl font-extrabold tracking-tight text-fg">More {lab.track}</h2>
             <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">

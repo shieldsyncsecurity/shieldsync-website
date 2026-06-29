@@ -126,7 +126,7 @@ export default function TrainingPage() {
       </section>
 
       {/* Verticals — à la carte */}
-      <section className="border-b border-line py-14 sm:py-20">
+      <section className="border-b border-line py-8 sm:py-12">
         <Container>
           <Reveal>
             <SectionHeading
@@ -136,7 +136,7 @@ export default function TrainingPage() {
             />
           </Reveal>
 
-          <div className="mt-12 grid gap-6 md:grid-cols-2">
+          <div className="mt-6 grid gap-6 md:grid-cols-2">
             {VERTICALS.map((v, i) => {
               const Icon = v.icon;
               return (
@@ -186,12 +186,12 @@ export default function TrainingPage() {
       </section>
 
       {/* How we deliver */}
-      <section className="border-b border-line py-14 sm:py-20">
+      <section className="border-b border-line py-8 sm:py-12">
         <Container>
           <Reveal>
             <SectionHeading eyebrow="How we deliver" title="Training built around your team, not a syllabus" />
           </Reveal>
-          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-6 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {DELIVERY.map((d, i) => {
               const Icon = d.icon;
               return (

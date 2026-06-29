@@ -49,7 +49,7 @@ export default function BlogPage() {
         description="Practical tutorials, career roadmaps, and AWS / SOC security writing from the team."
       />
 
-      <section className="py-14 sm:py-20">
+      <section className="py-8 sm:py-12">
         <Container>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {BLOG_POSTS.map((post, i) => (

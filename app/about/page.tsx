@@ -48,12 +48,12 @@ export default function AboutPage() {
       />
 
       {/* Values */}
-      <section className="border-b border-line py-14 sm:py-20">
+      <section className="border-b border-line py-8 sm:py-12">
         <Container>
           <Reveal>
             <SectionHeading eyebrow="What we believe" title="Principles that shape the work" />
           </Reveal>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2">
+          <div className="mt-6 grid gap-6 sm:grid-cols-2">
             {ABOUT.values.map((v, i) => (
               <Reveal key={v.title} delay={i * 70}>
                 <Card className="h-full p-7">
@@ -68,7 +68,7 @@ export default function AboutPage() {
       </section>
 
       {/* Team */}
-      <section className="border-b border-line py-14 sm:py-20">
+      <section className="border-b border-line py-8 sm:py-12">
         <Container>
           <Reveal>
             <SectionHeading
@@ -77,7 +77,7 @@ export default function AboutPage() {
               description="A small, senior team of working cloud and security engineers. We let the labs and the results speak — so you get hands-on depth, not personalities."
             />
           </Reveal>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2">
+          <div className="mt-6 grid gap-6 sm:grid-cols-2">
             {ABOUT.team.map((m, i) => (
               <Reveal key={m.role} delay={i * 80}>
                 <Card className="flex h-full items-start gap-5 p-7">
@@ -97,7 +97,7 @@ export default function AboutPage() {
       </section>
 
       {/* Company facts */}
-      <section className="border-b border-line py-14 sm:py-20">
+      <section className="border-b border-line py-8 sm:py-12">
         <Container>
           <div className="grid gap-6 rounded-2xl border border-line bg-surface p-8 sm:grid-cols-3 sm:p-10">
             <div>

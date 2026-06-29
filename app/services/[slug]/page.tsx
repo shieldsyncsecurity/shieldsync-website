@@ -54,7 +54,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
       <section className="relative isolate overflow-hidden border-b border-line">
         <div className="aurora absolute inset-0 -z-10" />
         <div className="cyber-grid absolute inset-0 -z-10" />
-        <Container className="py-14 sm:py-16 lg:py-20">
+        <Container className="py-10 lg:py-14">
           <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
             <Reveal>
               <span className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-bright">

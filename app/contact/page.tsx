@@ -48,7 +48,7 @@ export default function ContactPage() {
         description="Whether you're a business securing the cloud or an individual building a career, tell us what you need — we reply fast."
       />
 
-      <section className="py-14 sm:py-20">
+      <section className="py-8 sm:py-12">
         <Container className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
           {/* Channels */}
           <Reveal>

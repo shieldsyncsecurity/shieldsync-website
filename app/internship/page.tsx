@@ -46,7 +46,7 @@ export default function InternshipPage() {
         <div className="aurora absolute inset-0 -z-10" />
         <div className="cyber-grid absolute inset-0 -z-10" />
 
-        <Container className="py-10 sm:py-14">
+        <Container className="py-8 sm:py-10">
           <div className="grid gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-start">
 
             {/* Left: pitch */}
@@ -90,7 +90,7 @@ export default function InternshipPage() {
       </section>
 
       {/* ─── What you'll work on + Who it's for ───────────────────────────── */}
-      <section className="py-10 sm:py-14">
+      <section className="py-8 sm:py-10">
         <Container>
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
 

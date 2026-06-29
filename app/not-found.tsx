@@ -2,7 +2,7 @@ import { Container, Button } from "@/components/ui";
 
 export default function NotFound() {
   return (
-    <Container className="flex min-h-[60vh] flex-col items-center justify-center py-24 text-center">
+    <Container className="flex min-h-[60vh] flex-col items-center justify-center py-14 text-center">
       <p className="font-mono text-sm font-bold uppercase tracking-[0.22em] text-brand-bright">Error 404</p>
       <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-fg sm:text-5xl">This page got nuked.</h1>
       <p className="mt-5 max-w-md text-lg leading-8 text-muted">

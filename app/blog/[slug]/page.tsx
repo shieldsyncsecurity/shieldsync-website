@@ -51,7 +51,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <SchemaOrg schema={schema} />
 
       <article className="border-b border-line">
-        <Container className="py-14 sm:py-18">
+        <Container className="py-10 sm:py-12">
           <div className="mx-auto max-w-3xl">
           <Link href="/blog" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-bright">
             ← Back to blog
