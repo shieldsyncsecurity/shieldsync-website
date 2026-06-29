@@ -165,7 +165,7 @@ export function SiteHeader() {
             href="/internship"
             className="hidden text-sm font-semibold text-muted transition hover:text-fg lg:inline-block"
           >
-            Apply for internship
+            Internship programme
           </Link>
           <span className="hidden h-6 w-px bg-line-strong lg:block" aria-hidden="true" />
           <Button href="/labs-wizard" variant="secondary" className="px-4 py-2">
@@ -265,7 +265,7 @@ export function SiteHeader() {
               href="/internship"
               className="rounded-lg px-3 py-3 text-sm font-semibold text-fg transition hover:bg-surface"
             >
-              Apply for internship
+              Internship programme
             </Link>
             <Button href="/labs-wizard" variant="secondary" className="mt-1">
               Try a free lab

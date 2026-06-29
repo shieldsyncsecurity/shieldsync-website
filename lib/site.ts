@@ -294,7 +294,6 @@ export const FOOTER_NAV: { heading: string; links: NavItem[] }[] = [
     links: [
       { label: "About us", href: "/about" },
       { label: "Services", href: "/services" },
-      { label: "Contact", href: "/contact" },
     ],
   },
   {
