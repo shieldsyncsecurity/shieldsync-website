@@ -168,7 +168,7 @@ export function SiteHeader() {
             Apply for internship
           </Link>
           <span className="hidden h-6 w-px bg-line-strong lg:block" aria-hidden="true" />
-          <Button href="/labs-wizard?track=aws" variant="secondary" className="px-4 py-2">
+          <Button href="/labs-wizard" variant="secondary" className="px-4 py-2">
             Try a free lab
           </Button>
           <Button href="/contact" variant="primary" className="px-4 py-2">
@@ -267,7 +267,7 @@ export function SiteHeader() {
             >
               Apply for internship
             </Link>
-            <Button href="/labs-wizard?track=aws" variant="secondary" className="mt-1">
+            <Button href="/labs-wizard" variant="secondary" className="mt-1">
               Try a free lab
             </Button>
           </nav>
