@@ -87,16 +87,16 @@ export function PageHero({
     <section className="relative isolate overflow-hidden border-b border-line">
       <div className="aurora absolute inset-0 -z-10" />
       <div className="cyber-grid absolute inset-0 -z-10" />
-      <Container className={compact ? "py-9 sm:py-11" : "py-14 sm:py-18 lg:py-20"}>
+      <Container className={compact ? "py-4 sm:py-6" : "py-5 sm:py-8"}>
         <Reveal className="max-w-3xl">
           <span className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-bright">
             <span className="h-1 w-1 rounded-full bg-brand" />
             {eyebrow}
           </span>
-          <h1 className={`${compact ? "mt-4" : "mt-5"} text-4xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-5xl`}>
+          <h1 className={`${compact ? "mt-2" : "mt-2"} text-2xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-3xl lg:text-4xl`}>
             {title}
           </h1>
-          <p className={`${compact ? "mt-4" : "mt-5"} text-lg leading-8 text-muted`}>{description}</p>
+          <p className={`${compact ? "mt-2" : "mt-2"} text-base leading-7 text-muted`}>{description}</p>
         </Reveal>
       </Container>
     </section>
