@@ -227,6 +227,7 @@ export const LAB_TRACKS: LabTrack[] = [
 
 export const LABS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
   { label: "AWS Security Labs", desc: "Cloud security in real AWS — first lab free", href: "/labs-wizard?track=aws", tag: "Flagship" },
+  { label: "AWS Security Specialty (SCS-C02) prep", desc: "Every SCS-C02 domain mapped to a hands-on lab", href: "/aws-security-certification" },
   { label: "SOC Labs (SIEM + SOAR)", desc: "Threat detection & automated response", href: "/labs/soc" },
 ];
 
@@ -303,6 +304,7 @@ export const FOOTER_NAV: { heading: string; links: NavItem[] }[] = [
       { label: "Training", href: "/training" },
       { label: "Internship", href: "/internship" },
       { label: "Hands-on Labs", href: "/labs" },
+      { label: "AWS SCS-C02 prep", href: "/aws-security-certification" },
       { label: "Blog", href: "/blog" },
     ],
   },

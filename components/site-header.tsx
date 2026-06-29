@@ -230,6 +230,12 @@ export function SiteHeader() {
                     </Link>
                     <div className="ml-3 flex flex-col gap-1 border-l border-line pl-3">
                       <Link
+                        href="/aws-security-certification"
+                        className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
+                      >
+                        AWS Security Specialty (SCS-C02) prep
+                      </Link>
+                      <Link
                         href="/labs/soc"
                         className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
                       >
