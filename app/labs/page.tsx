@@ -161,6 +161,59 @@ export default function LabsPage() {
         </Container>
       </section>
 
+      {/* Pricing / access — clear path to the wizard + Paytm checkout */}
+      <section className="border-b border-line py-14 sm:py-20">
+        <Container>
+          <Reveal>
+            <div className="grid gap-6 sm:grid-cols-3">
+              {/* Free */}
+              <div className="flex flex-col rounded-2xl border border-line bg-panel p-7">
+                <p className="text-xs font-bold uppercase tracking-widest text-muted">Free</p>
+                <p className="mt-3 text-3xl font-extrabold text-fg">₹0</p>
+                <p className="mt-2 text-sm text-muted">Your first lab, no card required.</p>
+                <ul className="mt-5 grid gap-2 text-sm text-fg/85">
+                  <li>✓ S3 misconfiguration lab (Beginner)</li>
+                  <li>✓ Full lab experience</li>
+                  <li>✓ Auto-graded tasks</li>
+                </ul>
+                <Button href={FREE_LAB_HREF} external variant="secondary" className="mt-auto pt-6">
+                  Start free
+                </Button>
+              </div>
+              {/* Per-lab */}
+              <div className="flex flex-col rounded-2xl border border-brand/40 bg-panel p-7 ring-1 ring-brand/30">
+                <p className="text-xs font-bold uppercase tracking-widest text-brand-bright">Pay per lab</p>
+                <p className="mt-3 text-3xl font-extrabold text-fg">From ₹99 <span className="text-lg font-medium text-muted">/ $3</span></p>
+                <p className="mt-2 text-sm text-muted">Buy individual labs as you need them.</p>
+                <ul className="mt-5 grid gap-2 text-sm text-fg/85">
+                  <li>✓ Unlock any single lab</li>
+                  <li>✓ Multiple launches in window</li>
+                  <li>✓ Certificate on completion</li>
+                </ul>
+                <Button href={SITE.startUrl} className="mt-auto pt-6">
+                  Buy a lab
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+              {/* Monthly */}
+              <div className="flex flex-col rounded-2xl border border-line bg-panel p-7">
+                <p className="text-xs font-bold uppercase tracking-widest text-muted">Monthly pass</p>
+                <p className="mt-3 text-3xl font-extrabold text-fg">₹2,000 <span className="text-lg font-medium text-muted">/ $25</span></p>
+                <p className="mt-2 text-sm text-muted">All labs, all levels, for a full month.</p>
+                <ul className="mt-5 grid gap-2 text-sm text-fg/85">
+                  <li>✓ All available labs</li>
+                  <li>✓ All tracks + levels</li>
+                  <li>✓ Certificate on completion</li>
+                </ul>
+                <Button href={`${SITE.startUrl}&plan=monthly`} variant="secondary" className="mt-auto pt-6">
+                  Get monthly pass
+                </Button>
+              </div>
+            </div>
+          </Reveal>
+        </Container>
+      </section>
+
       <FaqSection faqs={FAQS.labs} title="Labs — frequently asked questions" />
     </>
   );
