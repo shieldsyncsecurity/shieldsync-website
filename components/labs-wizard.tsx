@@ -414,17 +414,27 @@ export function LabsWizard({
               >
                 ← Back
               </button>
-              <button
-                type="button"
-                onClick={() => setStep((s) => (s === 2 && mode === "monthly" ? 4 : s + 1))}
-                disabled={!canContinue}
-                className={`inline-flex items-center gap-2 rounded-xl px-6 py-3 text-base font-bold transition ${
-                  canContinue ? "glow-brand bg-gradient-to-r from-brand to-cyan text-white hover:brightness-110" : "cursor-not-allowed bg-surface text-muted"
-                }`}
-              >
-                Continue
-                <ArrowRight className="h-4 w-4" />
-              </button>
+              {step === 4 && mode === "monthly" ? (
+                <a
+                  href={launchHref}
+                  className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-base font-bold glow-brand bg-gradient-to-r from-brand to-cyan text-white hover:brightness-110 transition"
+                >
+                  Continue to payment
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setStep((s) => (s === 2 && mode === "monthly" ? 4 : s + 1))}
+                  disabled={!canContinue}
+                  className={`inline-flex items-center gap-2 rounded-xl px-6 py-3 text-base font-bold transition ${
+                    canContinue ? "glow-brand bg-gradient-to-r from-brand to-cyan text-white hover:brightness-110" : "cursor-not-allowed bg-surface text-muted"
+                  }`}
+                >
+                  Continue
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              )}
             </div>
           ) : null}
         </div>
