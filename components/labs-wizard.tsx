@@ -107,11 +107,11 @@ export function LabsWizard({
   }
 
   return (
-    <section className="py-12 sm:py-16">
+    <section className="py-6 sm:py-10">
       <Container>
         <div className="mx-auto max-w-4xl">
           {/* Currency toggle */}
-          <div className="mb-6 flex items-center justify-end gap-3">
+          <div className="mb-4 flex items-center justify-end gap-3">
             <span className="text-xs text-muted">Prices shown for your region</span>
             <div className="inline-flex rounded-lg border border-line bg-panel p-0.5 text-sm font-semibold">
               <button type="button" onClick={() => setCurrency("INR")} className={curBtn(currency === "INR")}>₹ INR</button>
@@ -141,7 +141,7 @@ export function LabsWizard({
             })}
           </ol>
 
-          <div className="mt-10">
+          <div className="mt-6">
             {/* STEP 1 — choose track */}
             {step === 1 ? (
               <div>
@@ -198,31 +198,31 @@ export function LabsWizard({
                 as a footnote inside "Pay per lab". */}
             {step === 2 ? (
               <div>
-                <p className="text-sm font-bold uppercase tracking-[0.18em] text-brand-bright">{trackName}</p>
-                <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">How do you want to learn?</h1>
-                <p className="mt-3 text-lg text-muted">Pick what fits — you can change this anytime.</p>
-                <div className={`mt-8 grid gap-5 ${track === "aws" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-bright">{trackName}</p>
+                <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-fg sm:text-3xl">How do you want to learn?</h1>
+                <p className="mt-1 text-sm text-muted">Pick what fits — you can change this anytime.</p>
+                <div className={`mt-5 grid gap-4 ${track === "aws" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
                   {/* FREE — a third box ALONGSIDE the paid plans (AWS track only). It
                       launches the free lab directly (no further config), so it's an <a>,
                       not a select-then-continue option. Kept visually equal to the others. */}
                   {track === "aws" ? (
                     <a
                       href={`${SITE.labsUrl}/labs/${FREE_SLUG}?intent=launch`}
-                      className="flex flex-col rounded-2xl border border-line bg-panel p-7 text-left transition hover:border-line-strong"
+                      className="flex flex-col rounded-2xl border border-line bg-panel p-5 text-left transition hover:border-line-strong"
                     >
                       <div className="flex items-start justify-between gap-3">
-                        <h3 className="text-xl font-bold text-fg">Free lab</h3>
-                        <span className="shrink-0 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-700">FREE</span>
+                        <h3 className="text-base font-bold text-fg">Free lab</h3>
+                        <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-bold text-emerald-700">FREE</span>
                       </div>
-                      <ul className="mt-4 space-y-2">
+                      <ul className="mt-3 space-y-1.5">
                         {["Your first beginner lab", "Real, isolated AWS account", "No card needed"].map((p) => (
-                          <li key={p} className="flex items-center gap-2 text-base text-muted">
-                            <Check className="h-4 w-4 shrink-0 text-brand" /> {p}
+                          <li key={p} className="flex items-center gap-2 text-sm text-muted">
+                            <Check className="h-3.5 w-3.5 shrink-0 text-brand" /> {p}
                           </li>
                         ))}
                       </ul>
-                      <span className="mt-5 inline-flex items-center gap-1.5 text-base font-semibold text-brand-bright">
-                        Launch now <ArrowRight className="h-4 w-4" />
+                      <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-bright">
+                        Launch now <ArrowRight className="h-3.5 w-3.5" />
                       </span>
                     </a>
                   ) : null}
@@ -248,30 +248,27 @@ export function LabsWizard({
                     <button
                       key={o.key}
                       type="button"
-                      onClick={() => { setMode(o.key); setStep(o.key === "monthly" ? 4 : 3); }}
-                      className={`relative flex flex-col rounded-2xl border p-7 text-left transition ${
+                      onClick={() => setMode(o.key)}
+                      className={`relative flex flex-col rounded-2xl border p-5 text-left transition ${
                         mode === o.key ? "border-brand bg-brand/[0.05] ring-2 ring-brand/40" : "border-line bg-panel hover:border-line-strong"
                       }`}
                     >
                       {o.badge ? (
-                        <span className="absolute -top-3 right-5 rounded-full bg-gradient-to-r from-brand to-cyan px-3 py-0.5 text-xs font-bold text-white shadow-sm">
+                        <span className="absolute -top-3 right-5 rounded-full bg-gradient-to-r from-brand to-cyan px-3 py-0.5 text-[11px] font-bold text-white shadow-sm">
                           {o.badge}
                         </span>
                       ) : null}
                       <div className="flex items-start justify-between gap-3">
-                        <h3 className="text-xl font-bold text-fg">{o.title}</h3>
-                        <span className="shrink-0 text-lg font-bold text-brand-bright">{o.price}</span>
+                        <h3 className="text-base font-bold text-fg">{o.title}</h3>
+                        <span className="shrink-0 text-sm font-bold text-brand-bright">{o.price}</span>
                       </div>
-                      <ul className="mt-4 space-y-2">
+                      <ul className="mt-3 space-y-1.5">
                         {o.pts.map((p) => (
-                          <li key={p} className="flex items-center gap-2 text-base text-muted">
-                            <Check className="h-4 w-4 shrink-0 text-brand" /> {p}
+                          <li key={p} className="flex items-center gap-2 text-sm text-muted">
+                            <Check className="h-3.5 w-3.5 shrink-0 text-brand" /> {p}
                           </li>
                         ))}
                       </ul>
-                      <span className="mt-5 inline-flex items-center gap-1.5 text-base font-semibold text-brand-bright">
-                        {o.cta}
-                      </span>
                     </button>
                   ))}
                 </div>
@@ -412,7 +409,7 @@ export function LabsWizard({
 
           {/* Nav */}
           {step < 5 ? (
-            <div className="mt-10 flex items-center justify-between border-t border-line pt-6">
+            <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
               <button
                 type="button"
                 onClick={() => setStep((s) => (s === 4 && mode === "monthly" ? 2 : Math.max(1, s - 1)))}
