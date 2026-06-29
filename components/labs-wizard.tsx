@@ -408,7 +408,7 @@ export function LabsWizard({
             <div className="mt-10 flex items-center justify-between border-t border-line pt-6">
               <button
                 type="button"
-                onClick={() => setStep((s) => Math.max(1, s - 1))}
+                onClick={() => setStep((s) => (s === 4 && mode === "monthly" ? 2 : Math.max(1, s - 1)))}
                 disabled={step === 1}
                 className={`text-base font-semibold transition ${step === 1 ? "cursor-not-allowed text-muted/40" : "text-muted hover:text-fg"}`}
               >
@@ -416,7 +416,7 @@ export function LabsWizard({
               </button>
               <button
                 type="button"
-                onClick={() => setStep((s) => s + 1)}
+                onClick={() => setStep((s) => (s === 2 && mode === "monthly" ? 4 : s + 1))}
                 disabled={!canContinue}
                 className={`inline-flex items-center gap-2 rounded-xl px-6 py-3 text-base font-bold transition ${
                   canContinue ? "glow-brand bg-gradient-to-r from-brand to-cyan text-white hover:brightness-110" : "cursor-not-allowed bg-surface text-muted"
