@@ -39,8 +39,8 @@ export const NAV: NavItem[] = [
   { label: "Services", href: "/services" },
   { label: "Training", href: "/training" },
   { label: "Hands-on Labs", href: "/labs" },
-  { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
+  { label: "Blog", href: "/blog" },
 ];
 
 /* Social proof ---------------------------------------------------------------- */
