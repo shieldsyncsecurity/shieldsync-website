@@ -104,6 +104,7 @@ export type Service = {
   title: string;
   desc: string;
   points: string[];
+  href: string;
   featured?: boolean;
 };
 
@@ -113,6 +114,7 @@ export const SERVICES: Service[] = [
     title: "Cloud & Infrastructure Security",
     desc: "Practitioner-led security for your cloud and the infrastructure under it — AWS, Azure, and GCP plus on-premise — reviewed and hardened against real attack paths, not checklists.",
     points: ["Cloud misconfiguration & IAM review", "Network, identity & data-exposure hardening", "Prioritized, fix-first remediation"],
+    href: "/services/cloud-infrastructure-security",
     featured: true,
   },
   {
@@ -120,37 +122,53 @@ export const SERVICES: Service[] = [
     title: "SOC & Managed Detection",
     desc: "Around-the-clock threat monitoring, hunting, and incident response — so attacks are detected and contained in real time, not discovered weeks later.",
     points: ["24/7 threat monitoring & hunting", "SIEM / SOAR detection engineering", "Incident response & containment"],
+    href: "/services/soc-managed-detection",
   },
   {
     icon: "code",
     title: "Application Security & DevSecOps",
     desc: "Build security into the SDLC — secure code from design to deploy, with controls wired into your pipelines instead of bolted on at the end.",
     points: ["Secure SDLC & threat modeling", "SAST / DAST & dependency scanning", "CI/CD pipeline & IaC security"],
+    href: "/services/application-security-devsecops",
   },
   {
     icon: "lock",
     title: "Advanced & Emerging Security",
     desc: "Next-generation defense for a shifting threat landscape — AI and LLM security, Zero Trust architecture, and continuous attack-surface management.",
     points: ["AI & LLM security (security for AI)", "Zero Trust architecture", "Attack-surface management"],
+    href: "/services/advanced-emerging-security",
   },
   {
     icon: "compliance",
     title: "Governance, Risk & Compliance",
     desc: "Get audit-ready against the frameworks your customers ask about — with risk assessments, control mapping, and evidence, not paperwork.",
     points: ["SOC 2 & ISO 27001 readiness", "GDPR & DPDP data protection", "Risk assessments & control mapping"],
+    href: "/services/governance-risk-compliance",
   },
   {
     icon: "cap",
     title: "Corporate Training",
     desc: "Hands-on security training delivered to your team — built around your stack and real risks, across infrastructure, endpoint, cloud, and SOC.",
     points: ["À la carte training by domain", "Tailored to your environment", "Practical, scenario-based sessions"],
+    href: "/training",
   },
   {
     icon: "flask",
     title: "Labs-as-a-Service",
     desc: "Managed, real-world cyber ranges your team launches on demand — cloud security, SIEM, and SOAR scenarios in isolated environments.",
     points: ["AWS security scenarios", "SIEM detection labs", "SOAR automation labs"],
+    href: "/labs",
   },
+];
+
+/* Services dropdown (header) — the five security service landing pages + training. */
+export const SERVICES_MENU: { label: string; desc: string; href: string }[] = [
+  { label: "Cloud & Infrastructure Security", desc: "AWS, Azure, GCP & on-prem, hardened to real attack paths", href: "/services/cloud-infrastructure-security" },
+  { label: "SOC & Managed Detection", desc: "Monitoring, hunting & incident response", href: "/services/soc-managed-detection" },
+  { label: "Application Security & DevSecOps", desc: "Secure the SDLC, from code to pipeline", href: "/services/application-security-devsecops" },
+  { label: "Advanced & Emerging Security", desc: "AI/LLM security, Zero Trust & attack-surface management", href: "/services/advanced-emerging-security" },
+  { label: "Governance, Risk & Compliance", desc: "SOC 2, ISO 27001, GDPR & DPDP readiness", href: "/services/governance-risk-compliance" },
+  { label: "Corporate Training", desc: "À la carte team training by domain", href: "/training" },
 ];
 
 /* Why ShieldSync -------------------------------------------------------------- */

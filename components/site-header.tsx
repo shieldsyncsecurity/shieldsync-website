@@ -6,22 +6,26 @@ import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/brand";
 import { Button } from "@/components/ui";
 import { Menu, Close, ChevronDown } from "@/components/icons";
-import { NAV, LABS_MENU } from "@/lib/site";
+import { NAV, LABS_MENU, SERVICES_MENU } from "@/lib/site";
 
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [labsOpen, setLabsOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
   const labsRef = useRef<HTMLDivElement>(null);
+  const servicesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setOpen(false);
     setLabsOpen(false);
+    setServicesOpen(false);
   }, [pathname]);
 
   useEffect(() => {
     function onDown(e: MouseEvent) {
       if (labsRef.current && !labsRef.current.contains(e.target as Node)) setLabsOpen(false);
+      if (servicesRef.current && !servicesRef.current.contains(e.target as Node)) setServicesOpen(false);
     }
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
@@ -45,6 +49,50 @@ export function SiteHeader() {
 
           <nav className="hidden items-center gap-1 md:flex">
             {NAV.map((item) => {
+              if (item.href === "/services") {
+                return (
+                  <div key={item.href} className="relative" ref={servicesRef}>
+                    <button
+                      type="button"
+                      onClick={() => setServicesOpen((v) => !v)}
+                      aria-expanded={servicesOpen}
+                      className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition ${
+                        isActive(item.href) || servicesOpen ? "text-fg" : "text-muted hover:text-fg"
+                      }`}
+                    >
+                      {item.label}
+                      <ChevronDown className={`h-4 w-4 transition-transform ${servicesOpen ? "rotate-180" : ""}`} />
+                    </button>
+
+                    {servicesOpen ? (
+                      <div className="absolute left-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-xl border border-line bg-panel p-2 shadow-2xl">
+                        {SERVICES_MENU.map((m) => (
+                          <Link
+                            key={m.label}
+                            href={m.href}
+                            onClick={() => setServicesOpen(false)}
+                            className="block rounded-lg px-3 py-2.5 transition hover:bg-surface"
+                          >
+                            <p className="text-sm font-semibold text-fg">{m.label}</p>
+                            <p className="mt-0.5 text-xs text-muted">{m.desc}</p>
+                          </Link>
+                        ))}
+                        <div className="my-1 h-px bg-line" />
+                        <Link
+                          href="/services"
+                          onClick={() => setServicesOpen(false)}
+                          className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-muted transition hover:bg-surface hover:text-fg"
+                        >
+                          <span>
+                            See all <span className="font-semibold text-fg">services overview</span>
+                          </span>
+                          <span aria-hidden="true">→</span>
+                        </Link>
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              }
               if (item.href === "/labs") {
                 return (
                   <div key={item.href} className="relative" ref={labsRef}>
@@ -143,33 +191,61 @@ export function SiteHeader() {
       {open ? (
         <div className="border-t border-line bg-ink md:hidden">
           <nav className="mx-auto flex w-full max-w-[1536px] flex-col gap-1 px-5 py-4 sm:px-6">
-            {NAV.map((item) =>
-              item.href === "/labs" ? (
-                <div key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={`block rounded-lg px-3 py-3 text-sm font-medium transition ${
-                      isActive(item.href) ? "bg-surface text-fg" : "text-muted hover:bg-surface hover:text-fg"
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                  <div className="ml-3 flex flex-col gap-1 border-l border-line pl-3">
+            {NAV.map((item) => {
+              if (item.href === "/services") {
+                return (
+                  <div key={item.href}>
                     <Link
-                      href="/labs/soc"
-                      className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
+                      href={item.href}
+                      className={`block rounded-lg px-3 py-3 text-sm font-medium transition ${
+                        isActive(item.href) ? "bg-surface text-fg" : "text-muted hover:bg-surface hover:text-fg"
+                      }`}
                     >
-                      SOC Labs (SIEM + SOAR)
+                      {item.label}
                     </Link>
-                    <Link
-                      href="/start-here"
-                      className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
-                    >
-                      New here? Start with the roadmap
-                    </Link>
+                    <div className="ml-3 flex flex-col gap-1 border-l border-line pl-3">
+                      {SERVICES_MENU.map((m) => (
+                        <Link
+                          key={m.href}
+                          href={m.href}
+                          className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
+                        >
+                          {m.label}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ) : (
+                );
+              }
+              if (item.href === "/labs") {
+                return (
+                  <div key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={`block rounded-lg px-3 py-3 text-sm font-medium transition ${
+                        isActive(item.href) ? "bg-surface text-fg" : "text-muted hover:bg-surface hover:text-fg"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                    <div className="ml-3 flex flex-col gap-1 border-l border-line pl-3">
+                      <Link
+                        href="/labs/soc"
+                        className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
+                      >
+                        SOC Labs (SIEM + SOAR)
+                      </Link>
+                      <Link
+                        href="/start-here"
+                        className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
+                      >
+                        New here? Start with the roadmap
+                      </Link>
+                    </div>
+                  </div>
+                );
+              }
+              return (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -179,8 +255,8 @@ export function SiteHeader() {
                 >
                   {item.label}
                 </Link>
-              )
-            )}
+              );
+            })}
             <div className="my-2 h-px bg-line" />
             <Button href="/contact" variant="primary" className="mt-1">
               Book a call
