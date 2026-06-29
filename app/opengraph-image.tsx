@@ -2,7 +2,7 @@ import { ogResponse, OG_SIZE } from "@/lib/og";
 
 export const size = OG_SIZE;
 export const contentType = "image/png";
-export const alt = "ShieldSync Security â€” Secure the cloud. Build the talent that defends it.";
+export const alt = "ShieldSync Security — Secure the cloud. Build the talent that defends it.";
 
 export default function Image() {
   return ogResponse({
