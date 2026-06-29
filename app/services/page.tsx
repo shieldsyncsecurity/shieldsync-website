@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Container, Card, SectionHeading } from "@/components/ui";
+import { Container, Card, SectionHeading, Button } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { CtaBand, FaqSection, PageHero } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
+import { BlogCarousel } from "@/components/blog-carousel";
 import { webPageSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
-import { Cloud, Shield, Flask, Compliance, Cap, Radar, Check, Code, Lock } from "@/components/icons";
-import { SERVICES, FAQS, SITE } from "@/lib/site";
+import { ArrowRight, Cloud, Shield, Flask, Compliance, Cap, Radar, Check, Code, Lock } from "@/components/icons";
+import { SERVICES, FAQS, SITE, BLOG_POSTS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Cloud Security Services — Assessments, Compliance, Training",
@@ -37,6 +38,13 @@ const ICONS = { cloud: Cloud, shield: Shield, flask: Flask, compliance: Complian
 const FRAMEWORKS = ["SOC 2", "ISO 27001", "GDPR", "PCI DSS", "DPDP Act", "NIST CSF"];
 
 export default function ServicesPage() {
+  const KW: string[] = [];
+  const matched = KW.length
+    ? BLOG_POSTS.filter((p) => KW.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
+    : [];
+  const rest = BLOG_POSTS.filter((p) => !matched.includes(p));
+  const posts = [...matched, ...rest].slice(0, 6);
+
   return (
     <>
       <SchemaOrg schema={PAGE_SCHEMA} />
@@ -52,7 +60,7 @@ export default function ServicesPage() {
       />
 
       {/* Services grid */}
-      <section className="border-b border-line py-8 sm:py-12">
+      <section className="border-b border-line py-6 sm:py-8">
         <Container>
           <div className="grid gap-6 md:grid-cols-2">
             {SERVICES.map((s, i) => {
@@ -96,7 +104,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Compliance frameworks */}
-      <section className="border-b border-line py-8 sm:py-12">
+      <section className="border-b border-line py-6 sm:py-8">
         <Container>
           <Reveal>
             <SectionHeading
@@ -117,6 +125,22 @@ export default function ServicesPage() {
           </Reveal>
         </Container>
       </section>
+
+      {posts.length > 0 && (
+        <section className="border-b border-line py-8 sm:py-10">
+          <Container>
+            <div className="flex items-end justify-between gap-4">
+              <SectionHeading eyebrow="From the blog" title="Related reads" />
+              <Button href="/blog" variant="secondary" className="shrink-0 self-start">
+                All posts <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="mt-6">
+              <BlogCarousel posts={posts} />
+            </div>
+          </Container>
+        </section>
+      )}
 
       <FaqSection faqs={FAQS.services} title="Services — frequently asked questions" />
 

@@ -5,7 +5,8 @@ import { CtaBand, PageHero } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
 import { ArrowRight, Check, Cloud, Radar, Server, Laptop, Shield, Cap, Compliance } from "@/components/icons";
-import { CONTACT, SITE } from "@/lib/site";
+import { BlogCarousel } from "@/components/blog-carousel";
+import { CONTACT, SITE, BLOG_POSTS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Cybersecurity Training Services — Infrastructure, Endpoint, Cloud & SOC",
@@ -96,6 +97,13 @@ const DELIVERY = [
 ];
 
 export default function TrainingPage() {
+  const KW = ["Training", "Enablement", "SOC", "SIEM"];
+  const matched = KW.length
+    ? BLOG_POSTS.filter((p) => KW.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
+    : [];
+  const rest = BLOG_POSTS.filter((p) => !matched.includes(p));
+  const posts = [...matched, ...rest].slice(0, 6);
+
   return (
     <>
       <SchemaOrg schema={PAGE_SCHEMA} />
@@ -126,7 +134,7 @@ export default function TrainingPage() {
       </section>
 
       {/* Verticals — à la carte */}
-      <section className="border-b border-line py-8 sm:py-12">
+      <section className="border-b border-line py-6 sm:py-8">
         <Container>
           <Reveal>
             <SectionHeading
@@ -186,7 +194,7 @@ export default function TrainingPage() {
       </section>
 
       {/* How we deliver */}
-      <section className="border-b border-line py-8 sm:py-12">
+      <section className="border-b border-line py-6 sm:py-8">
         <Container>
           <Reveal>
             <SectionHeading eyebrow="How we deliver" title="Training built around your team, not a syllabus" />
@@ -209,6 +217,22 @@ export default function TrainingPage() {
           </div>
         </Container>
       </section>
+
+      {posts.length > 0 && (
+        <section className="border-b border-line py-8 sm:py-10">
+          <Container>
+            <div className="flex items-end justify-between gap-4">
+              <SectionHeading eyebrow="From the blog" title="Related reads" />
+              <Button href="/blog" variant="secondary" className="shrink-0 self-start">
+                All posts <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="mt-6">
+              <BlogCarousel posts={posts} />
+            </div>
+          </Container>
+        </section>
+      )}
 
       <CtaBand
         title="Tell us what your team needs"

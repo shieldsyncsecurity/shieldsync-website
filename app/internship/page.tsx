@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Container, Card, Pill } from "@/components/ui";
+import { Container, Card, Pill, SectionHeading, Button } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
-import { Check, Cloud, Flask, Radar, Cap } from "@/components/icons";
+import { ArrowRight, Check, Cloud, Flask, Radar, Cap } from "@/components/icons";
 import { SchemaOrg } from "@/components/schema-org";
+import { BlogCarousel } from "@/components/blog-carousel";
 import { webPageSchema, breadcrumbSchema, internshipProgramSchema } from "@/lib/schema";
 import { InternshipApplyForm } from "@/components/internship-apply-form";
-import { INTERNSHIP, SITE } from "@/lib/site";
+import { INTERNSHIP, SITE, BLOG_POSTS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Cybersecurity Internship — 8 Weeks, Real AWS Labs, Certificate",
@@ -37,6 +38,13 @@ const PAGE_SCHEMA = [
 ];
 
 export default function InternshipPage() {
+  const KW = ["Training", "Cloud", "AWS", "Career"];
+  const matched = KW.length
+    ? BLOG_POSTS.filter((p) => KW.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
+    : [];
+  const rest = BLOG_POSTS.filter((p) => !matched.includes(p));
+  const posts = [...matched, ...rest].slice(0, 6);
+
   return (
     <>
       <SchemaOrg schema={PAGE_SCHEMA} />
@@ -46,7 +54,7 @@ export default function InternshipPage() {
         <div className="aurora absolute inset-0 -z-10" />
         <div className="cyber-grid absolute inset-0 -z-10" />
 
-        <Container className="py-8 sm:py-10">
+        <Container className="py-6 sm:py-8">
           <div className="grid gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-start">
 
             {/* Left: pitch */}
@@ -90,7 +98,7 @@ export default function InternshipPage() {
       </section>
 
       {/* ─── What you'll work on + Who it's for ───────────────────────────── */}
-      <section className="py-8 sm:py-10">
+      <section className="py-6 sm:py-8">
         <Container>
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
 
@@ -142,6 +150,22 @@ export default function InternshipPage() {
           </div>
         </Container>
       </section>
+
+      {posts.length > 0 && (
+        <section className="border-b border-line py-8 sm:py-10">
+          <Container>
+            <div className="flex items-end justify-between gap-4">
+              <SectionHeading eyebrow="From the blog" title="Related reads" />
+              <Button href="/blog" variant="secondary" className="shrink-0 self-start">
+                All posts <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="mt-6">
+              <BlogCarousel posts={posts} />
+            </div>
+          </Container>
+        </section>
+      )}
     </>
   );
 }

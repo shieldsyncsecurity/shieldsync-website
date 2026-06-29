@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Container, Card, SectionHeading } from "@/components/ui";
+import { Container, Card, SectionHeading, Button } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { CtaBand, PageHero } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
+import { BlogCarousel } from "@/components/blog-carousel";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
-import { Cap } from "@/components/icons";
-import { ABOUT, SITE, CONTACT } from "@/lib/site";
+import { ArrowRight, Cap } from "@/components/icons";
+import { ABOUT, SITE, CONTACT, BLOG_POSTS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About ShieldSync Security",
@@ -33,6 +34,13 @@ const PAGE_SCHEMA = [
 ];
 
 export default function AboutPage() {
+  const KW: string[] = [];
+  const matched = KW.length
+    ? BLOG_POSTS.filter((p) => KW.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
+    : [];
+  const rest = BLOG_POSTS.filter((p) => !matched.includes(p));
+  const posts = [...matched, ...rest].slice(0, 6);
+
   return (
     <>
       <SchemaOrg schema={PAGE_SCHEMA} />
@@ -48,7 +56,7 @@ export default function AboutPage() {
       />
 
       {/* Values */}
-      <section className="border-b border-line py-8 sm:py-12">
+      <section className="border-b border-line py-6 sm:py-8">
         <Container>
           <Reveal>
             <SectionHeading eyebrow="What we believe" title="Principles that shape the work" />
@@ -68,7 +76,7 @@ export default function AboutPage() {
       </section>
 
       {/* Team */}
-      <section className="border-b border-line py-8 sm:py-12">
+      <section className="border-b border-line py-6 sm:py-8">
         <Container>
           <Reveal>
             <SectionHeading
@@ -97,7 +105,7 @@ export default function AboutPage() {
       </section>
 
       {/* Company facts */}
-      <section className="border-b border-line py-8 sm:py-12">
+      <section className="border-b border-line py-6 sm:py-8">
         <Container>
           <div className="grid gap-6 rounded-2xl border border-line bg-surface p-8 sm:grid-cols-3 sm:p-10">
             <div>
@@ -115,6 +123,22 @@ export default function AboutPage() {
           </div>
         </Container>
       </section>
+
+      {posts.length > 0 && (
+        <section className="border-b border-line py-8 sm:py-10">
+          <Container>
+            <div className="flex items-end justify-between gap-4">
+              <SectionHeading eyebrow="From the blog" title="Related reads" />
+              <Button href="/blog" variant="secondary" className="shrink-0 self-start">
+                All posts <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="mt-6">
+              <BlogCarousel posts={posts} />
+            </div>
+          </Container>
+        </section>
+      )}
 
       <CtaBand
         title="Work with us"

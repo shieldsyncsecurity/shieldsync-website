@@ -1,12 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Container, Button } from "@/components/ui";
+import { Container, Button, SectionHeading } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { FaqSection } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
+import { BlogCarousel } from "@/components/blog-carousel";
 import { webPageSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { ArrowRight, Check, Cloud, Radar } from "@/components/icons";
-import { AWS_LABS, SOC_LABS, FAQS, SITE } from "@/lib/site";
+import { AWS_LABS, SOC_LABS, FAQS, SITE, BLOG_POSTS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Hands-on Labs — Cloud Security & SOC (SIEM & SOAR)",
@@ -43,6 +44,13 @@ const FREE_LAB_HREF = `${SITE.labsUrl}/labs/${AWS_LABS.find((l) => l.free)?.slug
 const PRICE_BTN = "mt-auto pt-5";
 
 export default function LabsPage() {
+  const KW = ["Cloud", "AWS", "Lab", "IAM", "S3"];
+  const matched = KW.length
+    ? BLOG_POSTS.filter((p) => KW.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
+    : [];
+  const rest = BLOG_POSTS.filter((p) => !matched.includes(p));
+  const posts = [...matched, ...rest].slice(0, 6);
+
   return (
     <>
       <SchemaOrg schema={PAGE_SCHEMA} />
@@ -52,7 +60,7 @@ export default function LabsPage() {
         <div className="aurora absolute inset-0 -z-10" />
         <div className="cyber-grid absolute inset-0 -z-10" />
 
-        <Container className="py-10 sm:py-12">
+        <Container className="py-6 sm:py-8">
           {/* Mini header row */}
           <Reveal>
             <div className="flex flex-col gap-3 border-b border-line pb-8 sm:flex-row sm:items-end sm:justify-between">
@@ -244,6 +252,22 @@ export default function LabsPage() {
           </Reveal>
         </Container>
       </section>
+
+      {posts.length > 0 && (
+        <section className="border-b border-line py-8 sm:py-10">
+          <Container>
+            <div className="flex items-end justify-between gap-4">
+              <SectionHeading eyebrow="From the blog" title="Related reads" />
+              <Button href="/blog" variant="secondary" className="shrink-0 self-start">
+                All posts <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="mt-6">
+              <BlogCarousel posts={posts} />
+            </div>
+          </Container>
+        </section>
+      )}
 
       <FaqSection faqs={FAQS.labs} title="Labs — frequently asked questions" />
     </>

@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/ui";
+import { Container, SectionHeading, Button } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { PageHero } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
+import { BlogCarousel } from "@/components/blog-carousel";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
-import { Mail, WhatsApp, Phone, Pin } from "@/components/icons";
+import { ArrowRight, Mail, WhatsApp, Phone, Pin } from "@/components/icons";
 import { ContactForm } from "@/components/contact-form";
-import { CONTACT, SITE } from "@/lib/site";
+import { CONTACT, SITE, BLOG_POSTS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact ShieldSync Security",
@@ -34,6 +35,13 @@ const PAGE_SCHEMA = [
 ];
 
 export default function ContactPage() {
+  const KW: string[] = [];
+  const matched = KW.length
+    ? BLOG_POSTS.filter((p) => KW.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
+    : [];
+  const rest = BLOG_POSTS.filter((p) => !matched.includes(p));
+  const posts = [...matched, ...rest].slice(0, 6);
+
   return (
     <>
       <SchemaOrg schema={PAGE_SCHEMA} />
@@ -48,7 +56,7 @@ export default function ContactPage() {
         description="Whether you're a business securing the cloud or an individual building a career, tell us what you need — we reply fast."
       />
 
-      <section className="py-8 sm:py-12">
+      <section className="py-6 sm:py-8">
         <Container className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
           {/* Channels */}
           <Reveal>
@@ -103,6 +111,22 @@ export default function ContactPage() {
           </Reveal>
         </Container>
       </section>
+
+      {posts.length > 0 && (
+        <section className="border-b border-line py-8 sm:py-10">
+          <Container>
+            <div className="flex items-end justify-between gap-4">
+              <SectionHeading eyebrow="From the blog" title="Related reads" />
+              <Button href="/blog" variant="secondary" className="shrink-0 self-start">
+                All posts <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="mt-6">
+              <BlogCarousel posts={posts} />
+            </div>
+          </Container>
+        </section>
+      )}
     </>
   );
 }

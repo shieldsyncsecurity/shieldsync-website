@@ -1,12 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Container, Button, Card } from "@/components/ui";
+import { Container, Button, Card, SectionHeading } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { CtaBand } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
+import { BlogCarousel } from "@/components/blog-carousel";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
 import { Check, ArrowRight, Shield, Cap } from "@/components/icons";
-import { ROADMAP, ROADMAP_ROLES, SITE } from "@/lib/site";
+import { ROADMAP, ROADMAP_ROLES, SITE, BLOG_POSTS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Start Here — Learn Cloud Security (Hands-on Roadmap)",
@@ -48,6 +49,13 @@ const WHO = [
 ];
 
 export default function StartHerePage() {
+  const KW = ["Cloud", "AWS", "Training", "IAM"];
+  const matched = KW.length
+    ? BLOG_POSTS.filter((p) => KW.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
+    : [];
+  const rest = BLOG_POSTS.filter((p) => !matched.includes(p));
+  const posts = [...matched, ...rest].slice(0, 6);
+
   return (
     <>
       <SchemaOrg schema={PAGE_SCHEMA} />
@@ -56,7 +64,7 @@ export default function StartHerePage() {
       <section className="relative isolate overflow-hidden border-b border-line">
         <div className="aurora absolute inset-0 -z-10" />
         <div className="cyber-grid absolute inset-0 -z-10" />
-        <Container className="py-10 sm:py-12">
+        <Container className="py-6 sm:py-8">
           <div className="grid items-center gap-8 lg:grid-cols-2">
             {/* Left: headline + CTAs */}
             <Reveal>
@@ -103,7 +111,7 @@ export default function StartHerePage() {
       </section>
 
       {/* ── 4 roadmap stage cards — immediately visible ───────────────── */}
-      <section className="border-b border-line py-8 sm:py-10">
+      <section className="border-b border-line py-6 sm:py-8">
         <Container>
           <ol className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {ROADMAP.map((s, i) => {
@@ -153,7 +161,7 @@ export default function StartHerePage() {
       </section>
 
       {/* ── Where it gets you ─────────────────────────────────────────── */}
-      <section className="border-b border-line py-8 sm:py-10">
+      <section className="border-b border-line py-6 sm:py-8">
         <Container>
           <Reveal className="mb-5 flex flex-wrap items-baseline justify-between gap-2">
             <h2 className="text-xl font-extrabold tracking-tight text-fg sm:text-2xl">Where this roadmap gets you</h2>
@@ -180,6 +188,22 @@ export default function StartHerePage() {
           </div>
         </Container>
       </section>
+
+      {posts.length > 0 && (
+        <section className="border-b border-line py-8 sm:py-10">
+          <Container>
+            <div className="flex items-end justify-between gap-4">
+              <SectionHeading eyebrow="From the blog" title="Related reads" />
+              <Button href="/blog" variant="secondary" className="shrink-0 self-start">
+                All posts <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="mt-6">
+              <BlogCarousel posts={posts} />
+            </div>
+          </Container>
+        </section>
+      )}
 
       <CtaBand
         title="Start Stage 1 — free"
