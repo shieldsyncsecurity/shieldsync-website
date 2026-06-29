@@ -244,6 +244,39 @@ export default function HomePage() {
         </Container>
       </section>
 
+      {/* ---------------------------------------------- AWS SCS-C02 cert callout */}
+      <section className="border-b border-line py-8 sm:py-10">
+        <Container>
+          <Reveal>
+            <Link
+              href="/aws-security-certification"
+              className="group flex flex-col items-start justify-between gap-4 rounded-3xl border border-line bg-gradient-to-br from-brand/[0.08] to-transparent p-6 transition hover:border-brand sm:flex-row sm:items-center sm:p-8"
+            >
+              <div className="flex items-start gap-4">
+                <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-brand/25 bg-brand/10 text-brand-bright">
+                  <Cloud className="h-6 w-6" />
+                </span>
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-bright">
+                    AWS Certification prep
+                  </span>
+                  <h2 className="mt-1 text-xl font-bold text-fg sm:text-2xl">
+                    AWS Security Specialty (SCS-C02) — every domain mapped to a hands-on lab
+                  </h2>
+                  <p className="mt-1 max-w-2xl text-sm leading-6 text-muted">
+                    Skip the walkthroughs. Practise IAM, S3, KMS, VPC, GuardDuty, and CloudTrail in real, isolated AWS accounts. First lab free.
+                  </p>
+                </div>
+              </div>
+              <span className="shrink-0 inline-flex items-center gap-1.5 rounded-xl border border-brand bg-brand px-5 py-2.5 text-sm font-semibold text-white transition group-hover:brightness-110">
+                Explore SCS-C02 prep
+                <ArrowRight className="h-4 w-4" />
+              </span>
+            </Link>
+          </Reveal>
+        </Container>
+      </section>
+
       {/* ------------------------------------------------------------ Blog posts */}
       <section className="border-b border-line py-8 sm:py-12">
         <Container>
