@@ -1,10 +1,31 @@
 import type { Metadata } from "next";
 import { LabsWizard } from "@/components/labs-wizard";
+import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Start a hands-on lab",
-  robots: { index: false, follow: false },
+  title: "Start an AWS Security Lab — Pick a plan and launch",
+  description:
+    "Pick your plan and start a hands-on AWS security lab in a real, isolated AWS account. Free first lab, pay-per-lab from ₹99, or monthly access to every AWS security lab.",
+  keywords: [
+    "AWS security lab",
+    "AWS security training",
+    "AWS cloud security course",
+    "hands-on AWS labs",
+    "AWS IAM training",
+  ],
   alternates: { canonical: "/labs-wizard" },
+  openGraph: {
+    title: "Start an AWS Security Lab — ShieldSync",
+    description:
+      "Pick your plan and launch a hands-on AWS security lab in a real, isolated AWS account. Free first lab.",
+    url: `${SITE.url}/labs-wizard`,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Start an AWS Security Lab — ShieldSync",
+    description: "Real, isolated AWS account. Free first lab. Pick your plan and launch.",
+  },
 };
 
 export default async function LabsWizardPage({

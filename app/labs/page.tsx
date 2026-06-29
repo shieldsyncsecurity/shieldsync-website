@@ -5,30 +5,74 @@ import { Reveal } from "@/components/reveal";
 import { FaqSection } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
 import { BlogCarousel } from "@/components/blog-carousel";
-import { webPageSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
+import { webPageSchema, breadcrumbSchema, faqSchema, courseSchema, courseListSchema } from "@/lib/schema";
 import { ArrowRight, Check, Cloud, Radar } from "@/components/icons";
-import { AWS_LABS, SOC_LABS, FAQS, SITE, BLOG_POSTS } from "@/lib/site";
+import { AWS_LABS, SOC_LABS, FAQS, SITE, BLOG_POSTS, AWS_PRICE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Hands-on Labs — Cloud Security & SOC (SIEM & SOAR)",
+  title: "AWS Security Labs — Hands-on Cloud Security in Real AWS",
   description:
-    "Two hands-on tracks in managed cyber ranges you launch from a browser: Cloud Security on real AWS (our flagship), and a full SOC track — SIEM and SOAR. No setup.",
+    "AWS security labs you launch in your browser — real, isolated AWS accounts, no setup, first lab free. Practise IAM, S3, encryption, VPC, GuardDuty, and detection on a live console with auto-wipe when you're done.",
+  keywords: [
+    "AWS security labs",
+    "AWS cloud security",
+    "hands-on AWS security",
+    "AWS IAM labs",
+    "AWS S3 security",
+    "cloud security training",
+    "AWS penetration testing labs",
+    "cyber range AWS",
+  ],
   alternates: { canonical: "/labs" },
+  openGraph: {
+    title: "AWS Security Labs — Hands-on Cloud Security in Real AWS",
+    description:
+      "Practise AWS cloud security in real, isolated AWS accounts. IAM, S3, encryption, GuardDuty, VPC — no setup, first lab free, auto-wipe when done.",
+    url: `${SITE.url}/labs`,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AWS Security Labs — Hands-on Cloud Security in Real AWS",
+    description: "Real AWS accounts, no setup, first lab free. IAM, S3, encryption, GuardDuty, VPC.",
+  },
 };
 
 const PAGE_URL = `${SITE.url}/labs`;
 const PAGE_SCHEMA = [
   webPageSchema({
     url: PAGE_URL,
-    name: "Hands-on Labs — Cloud Security & SOC — ShieldSync Security",
-    description: "Two tracks of real, managed cyber ranges: Cloud Security on AWS, and a full SOC track (SIEM & SOAR).",
-    dateModified: "2026-06-29",
-    breadcrumb: [{ name: "Home", url: SITE.url }, { name: "Hands-on Labs", url: PAGE_URL }],
+    name: "AWS Security Labs — Hands-on Cloud Security in Real AWS",
+    description:
+      "AWS security labs you launch in your browser — real, isolated AWS accounts covering IAM, S3, encryption, VPC, GuardDuty and detection. First lab free.",
+    dateModified: "2026-06-30",
+    breadcrumb: [{ name: "Home", url: SITE.url }, { name: "AWS Security Labs", url: PAGE_URL }],
   }),
   breadcrumbSchema(PAGE_URL, [
     { name: "Home", url: SITE.url },
-    { name: "Hands-on Labs", url: PAGE_URL },
+    { name: "AWS Security Labs", url: PAGE_URL },
   ]),
+  courseListSchema({
+    url: PAGE_URL,
+    name: "AWS Security Labs catalog",
+    items: AWS_LABS.map((l) => ({
+      url: `${SITE.labsUrl}/labs/${l.slug}`,
+      name: `${l.title} — AWS Security Lab`,
+      description: l.desc,
+    })),
+  }),
+  // Each AWS lab as its own Course — Google can show course rich results
+  // when users search for the specific lab topic ("AWS IAM lab", "S3 misconfig lab").
+  ...AWS_LABS.map((l) =>
+    courseSchema({
+      url: `${SITE.labsUrl}/labs/${l.slug}`,
+      name: `${l.title} — AWS Security Lab`,
+      description: l.desc,
+      level: l.level,
+      free: l.free,
+      priceINR: AWS_PRICE[l.level]?.inr,
+    })
+  ),
   faqSchema(FAQS.labs),
 ];
 
@@ -70,10 +114,10 @@ export default function LabsPage() {
                   Hands-on labs
                 </span>
                 <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">
-                  Two tracks. Real environments. <span className="text-gradient">Zero setup.</span>
+                  <span className="text-gradient">AWS Security Labs</span> — practice cloud security in real AWS
                 </h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
-                  Real AWS accounts provisioned in your browser. No setup, no credit card for the first lab, auto-wiped when done.
+                  Real, isolated AWS accounts provisioned in your browser. Practice IAM, S3, encryption, GuardDuty, VPC and detection — no setup, first lab free, auto-wiped when you&apos;re done.
                 </p>
               </div>
               <div className="flex shrink-0 gap-2">

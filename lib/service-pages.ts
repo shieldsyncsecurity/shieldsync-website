@@ -52,7 +52,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       { q: "Is this just an automated scan?", a: "No. Tools help us cover ground, but the review and the attack-path analysis are done by practitioners, which is what surfaces the chained issues scanners miss." },
       { q: "We're mostly on AWS. Is that a fit?", a: "Yes. AWS is our deepest specialism, and most of our cloud work centers on it, though we cover Azure, GCP, and on-premise just as readily." },
     ],
-    metaDescription: "Practitioner-led cloud and infrastructure security across AWS, Azure, GCP, and on-prem. We review and harden against real attack paths with fix-first remediation.",
+    metaDescription: "AWS security assessment and hardening — IAM, S3, encryption, VPC, GuardDuty — plus Azure, GCP, and on-prem. Practitioner-led review against real attack paths with fix-first remediation.",
   },
   {
     slug: "soc-managed-detection",

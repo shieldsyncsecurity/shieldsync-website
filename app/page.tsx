@@ -8,7 +8,32 @@ import { SERVICES, WHY, SOCIAL_PROOF, SITE, BLOG_POSTS } from "@/lib/site";
 import { BlogCarousel } from "@/components/blog-carousel";
 
 export const metadata: Metadata = {
+  title: "AWS Cloud Security Services & Hands-on Labs | ShieldSync",
+  description:
+    "Practitioner-led AWS cloud security — assessments, compliance, and detection — plus hands-on AWS security labs in real, isolated AWS accounts. First lab free.",
+  keywords: [
+    "AWS security",
+    "AWS cloud security",
+    "AWS security labs",
+    "AWS security services",
+    "cloud security training",
+    "AWS IAM",
+    "AWS compliance",
+    "cybersecurity services",
+  ],
   alternates: { canonical: "/" },
+  openGraph: {
+    title: "AWS Cloud Security Services & Hands-on Labs | ShieldSync",
+    description:
+      "AWS security services + hands-on AWS labs in real, isolated AWS accounts. IAM, S3, encryption, GuardDuty, VPC. First lab free.",
+    url: SITE.url,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AWS Cloud Security Services & Hands-on Labs | ShieldSync",
+    description: "AWS security services + hands-on AWS labs in real, isolated AWS accounts.",
+  },
 };
 
 const SERVICE_ICONS = { cloud: Cloud, shield: Shield, flask: Flask, compliance: Compliance, cap: Cap, radar: Radar, code: Code, lock: Lock } as const;

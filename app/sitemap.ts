@@ -40,7 +40,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${base}/labs`,
       lastModified: now,
       changeFrequency: "weekly",
-      priority: 0.8,
+      priority: 0.9,
+    },
+    {
+      url: `${base}/labs-wizard`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.9,
     },
     {
       url: `${base}/labs/soc`,

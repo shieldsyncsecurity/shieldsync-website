@@ -41,10 +41,31 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const p = SERVICE_PAGES.find((x) => x.slug === slug);
   if (!p) return { title: "Service" };
+  const url = `${SITE.url}/services/${slug}`;
+  // Slug-specific SEO title overrides (lead with the keyword the page should rank for)
+  const TITLE_OVERRIDE: Record<string, string> = {
+    "cloud-infrastructure-security": "AWS, Cloud & Infrastructure Security Services",
+    "soc-managed-detection": "Managed SOC, SIEM & SOAR — 24/7 Detection & Response",
+    "application-security-devsecops": "Application Security & DevSecOps Services",
+    "advanced-emerging-security": "AI/LLM Security, Zero Trust & ASM Services",
+    "governance-risk-compliance": "SOC 2, ISO 27001, GDPR & DPDP Compliance",
+  };
+  const title = TITLE_OVERRIDE[slug] ?? `${p.title} — Cybersecurity Services`;
   return {
-    title: `${p.title} — Cybersecurity Services`,
+    title,
     description: p.metaDescription,
     alternates: { canonical: `/services/${slug}` },
+    openGraph: {
+      title,
+      description: p.metaDescription,
+      url,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: p.metaDescription,
+    },
   };
 }
 

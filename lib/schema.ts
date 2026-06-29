@@ -165,6 +165,76 @@ export function internshipProgramSchema() {
 }
 
 // ---------------------------------------------------------------------------
+// Course — for a single hands-on lab. Enables Google's "course" rich result.
+// ---------------------------------------------------------------------------
+export function courseSchema(opts: {
+  url: string;
+  name: string;
+  description: string;
+  level?: string;
+  hoursMin?: number;
+  priceINR?: number;
+  free?: boolean;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "@id": `${opts.url}#course`,
+    name: opts.name,
+    description: opts.description,
+    url: opts.url,
+    provider: { "@id": `${SITE.url}/#organization` },
+    educationalLevel: opts.level ?? "Beginner",
+    inLanguage: "en",
+    hasCourseInstance: {
+      "@type": "CourseInstance",
+      courseMode: "online",
+      courseWorkload: opts.hoursMin ? `PT${opts.hoursMin}M` : "PT30M",
+    },
+    ...(opts.free !== undefined && {
+      offers: {
+        "@type": "Offer",
+        price: opts.free ? "0" : String(opts.priceINR ?? 99),
+        priceCurrency: "INR",
+        availability: "https://schema.org/InStock",
+        category: opts.free ? "Free" : "Paid",
+      },
+    }),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// ItemList — for catalog pages that enumerate Course items (lab index page).
+// Helps Google understand /labs is a structured list of AWS security courses.
+// ---------------------------------------------------------------------------
+export function courseListSchema(opts: {
+  url: string;
+  name: string;
+  items: { url: string; name: string; description: string }[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": `${opts.url}#courselist`,
+    name: opts.name,
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+    numberOfItems: opts.items.length,
+    itemListElement: opts.items.map((it, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: it.url,
+      item: {
+        "@type": "Course",
+        name: it.name,
+        description: it.description,
+        url: it.url,
+        provider: { "@id": `${SITE.url}/#organization` },
+      },
+    })),
+  };
+}
+
+// ---------------------------------------------------------------------------
 // FAQPage — pass an array of {q, a} pairs to generate FAQ rich results
 // ---------------------------------------------------------------------------
 export function faqSchema(faqs: { q: string; a: string }[]) {
