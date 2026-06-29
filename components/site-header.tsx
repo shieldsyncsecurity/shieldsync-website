@@ -267,7 +267,7 @@ export function SiteHeader() {
             >
               Apply for internship
             </Link>
-            <Button href="/labs" variant="secondary" className="mt-1">
+            <Button href="/labs-wizard?track=aws" variant="secondary" className="mt-1">
               Try a free lab
             </Button>
           </nav>
