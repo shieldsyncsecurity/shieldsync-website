@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Container, Card, SectionHeading, Button } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
-import { FaqSection, PageHero } from "@/components/sections";
+import { FaqSection } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
 import { webPageSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { ArrowRight, Check, Cloud, Shield, Flask, Compliance, Cap, Radar, Code, Lock } from "@/components/icons";
@@ -50,16 +50,69 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
     <>
       <SchemaOrg schema={schema} />
 
-      <PageHero eyebrow="Cybersecurity services" title={p.title} description={p.tagline} />
+      {/* Hero — two-column: title + CTAs left, icon + key points right */}
+      <section className="relative isolate overflow-hidden border-b border-line">
+        <div className="aurora absolute inset-0 -z-10" />
+        <div className="cyber-grid absolute inset-0 -z-10" />
+        <Container className="py-14 sm:py-16 lg:py-20">
+          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+            <Reveal>
+              <span className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-bright">
+                <span className="h-1 w-1 rounded-full bg-brand" />
+                Cybersecurity services
+              </span>
+              <h1 className="mt-5 text-4xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-5xl">
+                {p.title}
+              </h1>
+              <p className="mt-5 text-lg leading-8 text-muted">{p.tagline}</p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button href="/contact">
+                  Book a call
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+                <Button href={quoteHref} external variant="secondary">
+                  Request a quote
+                </Button>
+              </div>
+            </Reveal>
 
-      {/* Intro + what's included */}
-      <section className="border-b border-line py-14 sm:py-20">
+            <Reveal delay={100}>
+              <div className="rounded-2xl border border-line bg-panel/80 p-6 sm:p-8 backdrop-blur-sm">
+                <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-brand/25 bg-brand/10 text-brand-bright">
+                  <Icon className="h-6 w-6" />
+                </span>
+                <p className="mt-4 text-sm font-semibold uppercase tracking-wide text-muted">What&apos;s included</p>
+                <ul className="mt-3 grid gap-2.5">
+                  {p.whatsIncluded.slice(0, 5).map((w) => (
+                    <li key={w.title} className="flex items-start gap-2.5 text-base text-fg/90">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
+                      <span className="font-medium">{w.title}</span>
+                    </li>
+                  ))}
+                  {p.whatsIncluded.length > 5 && (
+                    <li className="pl-6.5 text-sm text-muted">+ {p.whatsIncluded.length - 5} more below</li>
+                  )}
+                </ul>
+              </div>
+            </Reveal>
+          </div>
+        </Container>
+      </section>
+
+      {/* Intro */}
+      <section className="border-b border-line py-10 sm:py-14">
         <Container>
           <Reveal>
             <p className="max-w-3xl text-lg leading-8 text-muted">{p.intro}</p>
           </Reveal>
+        </Container>
+      </section>
+
+      {/* What's included — full detail */}
+      <section className="border-b border-line py-10 sm:py-14">
+        <Container>
           <Reveal>
-            <h2 className="mt-12 text-2xl font-extrabold tracking-tight text-fg sm:text-3xl">What&apos;s included</h2>
+            <h2 className="text-2xl font-extrabold tracking-tight text-fg sm:text-3xl">What&apos;s included</h2>
           </Reveal>
           <div className="mt-8 grid gap-5 sm:grid-cols-2">
             {p.whatsIncluded.map((w, i) => (
@@ -78,7 +131,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
       </section>
 
       {/* Approach */}
-      <section className="border-b border-line py-14 sm:py-20">
+      <section className="border-b border-line py-10 sm:py-14">
         <Container>
           <Reveal>
             <SectionHeading eyebrow="How it works" title="Our approach" />
@@ -98,13 +151,10 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
       </section>
 
       {/* Deliverables */}
-      <section className="border-b border-line py-14 sm:py-20">
+      <section className="border-b border-line py-10 sm:py-14">
         <Container className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
           <Reveal>
-            <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-brand/25 bg-brand/10 text-brand-bright">
-              <Icon className="h-7 w-7" />
-            </span>
-            <SectionHeading className="mt-5" eyebrow="What you get" title="Deliverables" />
+            <SectionHeading eyebrow="What you get" title="Deliverables" />
           </Reveal>
           <Reveal delay={100}>
             <ul className="grid gap-3.5">
@@ -121,8 +171,8 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
 
       <FaqSection faqs={p.faqs} title={`${p.title} — FAQs`} />
 
-      {/* Compact CTA (no big band — header + WhatsApp already persist) */}
-      <section className="py-14 sm:py-20">
+      {/* Compact CTA */}
+      <section className="py-10 sm:py-14">
         <Container>
           <div className="flex flex-col items-start justify-between gap-5 rounded-3xl border border-line bg-surface/60 p-7 sm:flex-row sm:items-center sm:p-9">
             <div>
