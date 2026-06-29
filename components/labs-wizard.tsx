@@ -221,7 +221,7 @@ export function LabsWizard({
                           </li>
                         ))}
                       </ul>
-                      <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-bright">
+                      <span className="mt-auto pt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-bright">
                         Launch now <ArrowRight className="h-3.5 w-3.5" />
                       </span>
                     </a>
@@ -269,6 +269,9 @@ export function LabsWizard({
                           </li>
                         ))}
                       </ul>
+                      <span className="mt-auto pt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-bright">
+                        {o.cta}
+                      </span>
                     </button>
                   ))}
                 </div>
