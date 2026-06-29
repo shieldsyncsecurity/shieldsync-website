@@ -25,7 +25,7 @@ export default function HomePage() {
         <div className="aurora absolute inset-0 -z-10" />
         <div className="cyber-grid absolute inset-0 -z-10" />
 
-        <Container className="grid gap-12 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-20">
+        <Container className="grid gap-10 py-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-10">
           <Reveal>
             <span className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-bright">
               <span className="h-1 w-1 rounded-full bg-brand" />
