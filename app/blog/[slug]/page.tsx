@@ -131,7 +131,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
       <CtaBand
         title="Learn it by doing"
-        subtitle="Spin up a real AWS security lab, or explore our training tracks."
+        subtitle="Pick your track and launch a hands-on lab in a real, isolated environment."
+        primary={{ label: "AWS Security Labs", href: "/labs-wizard?track=aws" }}
+        secondary={{ label: "SOC Labs (SIEM + SOAR)", href: "/labs/soc" }}
       />
     </>
   );

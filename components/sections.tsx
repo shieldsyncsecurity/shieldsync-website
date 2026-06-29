@@ -3,24 +3,30 @@ import { Reveal } from "@/components/reveal";
 import { ArrowRight, WhatsApp } from "@/components/icons";
 import { CONTACT } from "@/lib/site";
 
-/* Brand-gradient call-to-action band (reused across pages). */
+/* Brand-gradient call-to-action band (reused across pages).
+ * Default secondary = WhatsApp. Pass `secondary` to override (e.g. SOC labs
+ * link), or `secondary: null` to hide it entirely. */
+type Cta = { label: string; href: string };
 export function CtaBand({
   title,
   subtitle,
   primary = { label: "Book a call", href: "/contact" },
+  secondary,
 }: {
   title: string;
   subtitle: string;
-  primary?: { label: string; href: string };
+  primary?: Cta;
+  secondary?: Cta | null;
 }) {
+  const showWhatsAppDefault = secondary === undefined;
   return (
-    <section className="py-16 sm:py-24">
+    <section className="py-10 sm:py-14">
       <Container>
         <Reveal>
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand to-cyan p-10 text-center text-white sm:p-16">
-            <h2 className="mx-auto max-w-2xl text-3xl font-extrabold tracking-tight sm:text-4xl">{title}</h2>
-            <p className="mx-auto mt-4 max-w-xl text-lg leading-7 text-white/85">{subtitle}</p>
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand to-cyan p-8 text-center text-white sm:p-12">
+            <h2 className="mx-auto max-w-2xl text-2xl font-extrabold tracking-tight sm:text-3xl">{title}</h2>
+            <p className="mx-auto mt-3 max-w-xl text-base leading-7 text-white/85">{subtitle}</p>
+            <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <a
                 href={primary.href}
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-base font-semibold text-brand-bright shadow-sm transition hover:bg-white/90"
@@ -28,15 +34,25 @@ export function CtaBand({
                 {primary.label}
                 <ArrowRight className="h-4 w-4" />
               </a>
-              <a
-                href={CONTACT.whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/50 px-6 py-3 text-base font-semibold text-white transition hover:bg-white/10"
-              >
-                <WhatsApp className="h-4 w-4" />
-                WhatsApp
-              </a>
+              {secondary ? (
+                <a
+                  href={secondary.href}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/50 px-6 py-3 text-base font-semibold text-white transition hover:bg-white/10"
+                >
+                  {secondary.label}
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              ) : showWhatsAppDefault ? (
+                <a
+                  href={CONTACT.whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/50 px-6 py-3 text-base font-semibold text-white transition hover:bg-white/10"
+                >
+                  <WhatsApp className="h-4 w-4" />
+                  WhatsApp
+                </a>
+              ) : null}
             </div>
           </div>
         </Reveal>
