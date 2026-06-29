@@ -378,14 +378,14 @@ export function LabsWizard({
                   <Check className="h-8 w-8" />
                 </span>
                 <h1 className="mt-6 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">
-                  {total.usd === 0 ? "One step left — sign in to launch" : mode === "monthly" ? "You're almost set" : "Your lab is ready"}
+                  {total.usd === 0 ? "One step left — sign in to launch" : mode === "monthly" ? "You're almost set" : "One step left — sign in & pay"}
                 </h1>
                 <p className="mx-auto mt-3 max-w-md text-lg text-muted">
                   {mode === "monthly"
                     ? `Sign in on ShieldSync Labs to start your subscription — every ${track === "soc" ? "SOC" : "AWS"} lab unlocks instantly.`
                     : total.usd === 0
                     ? `A quick Google sign-in on ShieldSync Labs, then "${lab?.title}" spins up automatically in your own isolated AWS account.`
-                    : `Sign in on ShieldSync Labs to complete checkout and launch "${lab?.title}".`}
+                    : `Sign in on ShieldSync Labs, complete the one-time payment, and "${lab?.title}" launches automatically in your own isolated AWS account.`}
                 </p>
                 <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                   <Button href={launchHref} external>
