@@ -109,7 +109,7 @@ export function LabsWizard({
   return (
     <section className="py-12 sm:py-16">
       <Container>
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-4xl">
           {/* Currency toggle */}
           <div className="mb-6 flex items-center justify-end gap-3">
             <span className="text-xs text-muted">Prices shown for your region</span>
@@ -234,6 +234,7 @@ export function LabsWizard({
                       price: `From ${money(fromPrice)}`,
                       badge: "",
                       pts: ["Buy only the labs you want", "One-time payment", "Great for targeted practice"],
+                      cta: "Pick a lab →",
                     },
                     {
                       key: "monthly" as const,
@@ -241,13 +242,14 @@ export function LabsWizard({
                       price: `${money(monthly)}/mo`,
                       badge: "Best value",
                       pts: [`Every ${track === "soc" ? "SOC" : "AWS"} lab unlocked`, "New labs included", "Cancel within 24h"],
+                      cta: "Get started →",
                     },
                   ].map((o) => (
                     <button
                       key={o.key}
                       type="button"
-                      onClick={() => setMode(o.key)}
-                      className={`relative rounded-2xl border p-7 text-left transition ${
+                      onClick={() => { setMode(o.key); setStep(o.key === "monthly" ? 4 : 3); }}
+                      className={`relative flex flex-col rounded-2xl border p-7 text-left transition ${
                         mode === o.key ? "border-brand bg-brand/[0.05] ring-2 ring-brand/40" : "border-line bg-panel hover:border-line-strong"
                       }`}
                     >
@@ -267,6 +269,9 @@ export function LabsWizard({
                           </li>
                         ))}
                       </ul>
+                      <span className="mt-5 inline-flex items-center gap-1.5 text-base font-semibold text-brand-bright">
+                        {o.cta}
+                      </span>
                     </button>
                   ))}
                 </div>
