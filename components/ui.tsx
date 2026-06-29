@@ -77,10 +77,10 @@ export function SectionHeading({
 }) {
   const alignment = align === "center" ? "mx-auto max-w-2xl text-center items-center" : "max-w-2xl items-start text-left";
   return (
-    <div className={`flex flex-col gap-4 ${alignment} ${className}`}>
+    <div className={`flex flex-col gap-2 ${alignment} ${className}`}>
       {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
-      <h2 className="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">{title}</h2>
-      {description ? <p className="text-lg leading-8 text-muted">{description}</p> : null}
+      <h2 className="text-2xl font-extrabold tracking-tight text-fg sm:text-3xl">{title}</h2>
+      {description ? <p className="text-base leading-7 text-muted">{description}</p> : null}
     </div>
   );
 }

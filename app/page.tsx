@@ -32,18 +32,18 @@ export default function HomePage() {
               Cloud &amp; cybersecurity services
             </span>
 
-            <h1 className="mt-5 text-4xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-5xl">
+            <h1 className="mt-3 text-3xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-4xl lg:text-5xl">
               Secure your cloud — <span className="text-gradient">and the team that runs it</span>.
             </h1>
 
-            <p className="mt-6 max-w-xl text-lg leading-8 text-muted">
+            <p className="mt-3 max-w-xl text-base leading-7 text-muted">
               Practitioner-led cloud security for businesses: AWS-deep <span className="font-medium text-fg">assessments</span>,{" "}
               <span className="font-medium text-fg">compliance readiness</span>, and{" "}
               <span className="font-medium text-fg">detection &amp; response</span> — plus hands-on training that
-              upskills your team on your actual stack. Built and delivered by working security engineers, not a report mill.
+              upskills your team on your actual stack.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
               <Button href="/contact">
                 Book a call
                 <ArrowRight className="h-4 w-4" />
@@ -107,7 +107,7 @@ export default function HomePage() {
       </section>
 
       {/* ------------------------------------------------------------- Services */}
-      <section className="border-b border-line py-14 sm:py-20">
+      <section className="border-b border-line py-8 sm:py-12">
         <Container>
           <Reveal>
             <SectionHeading
@@ -116,7 +116,7 @@ export default function HomePage() {
               description="From cloud and application security to 24/7 detection and team training — practitioner-led work mapped to the attack paths that actually matter to your business."
             />
           </Reveal>
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {SERVICES.slice(0, 4).map((s, i) => {
               const Icon = SERVICE_ICONS[s.icon];
               return (
@@ -144,7 +144,7 @@ export default function HomePage() {
       </section>
 
       {/* ----------------------------------------------------------------- Why */}
-      <section className="border-b border-line py-14 sm:py-20">
+      <section className="border-b border-line py-8 sm:py-12">
         <Container className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <Reveal>
             <SectionHeading
@@ -168,7 +168,7 @@ export default function HomePage() {
       </section>
 
       {/* -------------------------------------------------------- Team training */}
-      <section className="border-b border-line py-14 sm:py-20">
+      <section className="border-b border-line py-8 sm:py-12">
         <Container>
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <Reveal>
@@ -220,7 +220,7 @@ export default function HomePage() {
       </section>
 
       {/* ------------------------------------------------------------ Blog posts */}
-      <section className="border-b border-line py-14 sm:py-20">
+      <section className="border-b border-line py-8 sm:py-12">
         <Container>
           <Reveal>
             <div className="flex items-end justify-between gap-4">
@@ -233,14 +233,14 @@ export default function HomePage() {
               </Button>
             </div>
           </Reveal>
-          <div className="mt-10">
+          <div className="mt-6">
             <BlogCarousel posts={BLOG_POSTS.slice(0, 6)} />
           </div>
         </Container>
       </section>
 
       {/* ----------------------------------- Hands-on labs (secondary B2C nod) */}
-      <section className="border-b border-line py-14 sm:py-16">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <Reveal>
             <div className="flex flex-col items-start justify-between gap-5 rounded-3xl border border-line bg-surface/60 p-7 sm:flex-row sm:items-center sm:p-9">
