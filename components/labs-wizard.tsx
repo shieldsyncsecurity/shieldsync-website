@@ -84,6 +84,8 @@ export function LabsWizard({
   const launchHref =
     mode !== "monthly" && track === "aws" && selected
       ? `${SITE.labsUrl}/labs/${selected}?intent=launch`
+      : mode === "monthly"
+      ? `${SITE.labsUrl}?checkout=monthly`
       : SITE.labsUrl;
 
   const labels = ["Track", "Plan", mode === "monthly" ? "Review" : "Pick a lab", "Confirm", "Launch"];
