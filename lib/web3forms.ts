@@ -13,21 +13,22 @@
 // Get a key free (no signup) at https://web3forms.com: enter the destination
 // email → the key is emailed there → set it below.
 
-// Public Web3Forms key bound to internship@shieldsyncsecurity.com. Committed
-// directly (not just .env.local) because the site has CI/CD on push to main and
-// .env.local is gitignored — an env-only key would vanish on the next CI build.
-// Web3Forms access keys are PUBLIC form identifiers (they ship in the client
-// bundle and are protected by the domain allowlist, not by secrecy), so it's
-// standard + safe to commit. An env var still overrides it if present.
-const DEFAULT_KEY = "c68a4cfb-0943-457d-b22e-d65da1f898b9";
+// Public Web3Forms keys, committed directly (not just .env.local) because the
+// site has CI/CD on push to main and .env.local is gitignored — an env-only key
+// would vanish on the next CI build. Web3Forms access keys are PUBLIC form
+// identifiers (they ship in the client bundle and are protected by the domain
+// allowlist, not by secrecy), so it's standard + safe to commit. Env vars still
+// override if present. Each key routes to the inbox it's bound to:
+//   internship key → internship@shieldsyncsecurity.com  (internship apply form)
+//   contact key    → contact@shieldsyncsecurity.com     (contact form)
+const DEFAULT_INTERNSHIP_KEY = "c68a4cfb-0943-457d-b22e-d65da1f898b9";
+const DEFAULT_CONTACT_KEY = "4ef3b28c-d82a-4195-a7d7-1d6ac3d7903b";
 
 export const WEB3FORMS_KEY_INTERNSHIP =
-  process.env.NEXT_PUBLIC_WEB3FORMS_KEY || DEFAULT_KEY;
+  process.env.NEXT_PUBLIC_WEB3FORMS_KEY || DEFAULT_INTERNSHIP_KEY;
 
 export const WEB3FORMS_KEY_CONTACT =
-  process.env.NEXT_PUBLIC_WEB3FORMS_KEY_CONTACT ||
-  process.env.NEXT_PUBLIC_WEB3FORMS_KEY ||
-  DEFAULT_KEY;
+  process.env.NEXT_PUBLIC_WEB3FORMS_KEY_CONTACT || DEFAULT_CONTACT_KEY;
 
 /** A real Web3Forms key is a UUID-ish hex string; the placeholder isn't. */
 export function isWeb3FormsConfigured(key: string): boolean {
