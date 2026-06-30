@@ -21,7 +21,9 @@ const csp = [
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com`,
-  `connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com${isDev ? " ws:" : ""}`,
+  // api.web3forms.com = the internship application form's submit endpoint
+  // (client-side fetch POST → emails the submission to internship@…).
+  `connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://api.web3forms.com${isDev ? " ws:" : ""}`,
   // Allow YouTube iframe embeds (homepage hero + /free-lab + /aws-security-certification).
   // Without this, frame-src falls back to default-src 'self' and the browser blocks
   // every <iframe src="youtube.com/embed/..."> silently — no console error in many
