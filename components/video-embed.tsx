@@ -53,7 +53,13 @@ export function VideoEmbed({
   //   cc_load_policy=1  — captions on by default (a11y + helps muted viewers)
   //   hd=1              — request HD quality
   //   playsinline=1     — keep inline on iOS instead of forcing fullscreen
-  const params = "rel=0&modestbranding=1&cc_load_policy=1&hd=1&playsinline=1";
+  //   autoplay=1        — start immediately on iframe load. Browser autoplay
+  //                       policy allows this because LiteYouTubeEmbed only
+  //                       loads the iframe after a user click on the facade,
+  //                       so the iframe load itself counts as user-initiated.
+  //                       Without this YouTube renders its own giant red
+  //                       "click to play" overlay on top of our facade.
+  const params = "rel=0&modestbranding=1&cc_load_policy=1&hd=1&playsinline=1&autoplay=1";
 
   const schema = {
     "@context": "https://schema.org",

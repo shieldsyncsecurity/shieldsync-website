@@ -160,3 +160,14 @@ body {
   outline: 2px solid var(--color-brand, #6366f1);
   outline-offset: 2px;
 }
+/* CRITICAL: the .ss-video-frame .lty-playbtn rule above has higher specificity
+ * than the package's default .lyt-activated .lty-playbtn { display:none }, so
+ * the facade play button leaks through the iframe after the user clicks it
+ * (visible as a stray brand-coloured circle on top of the playing video).
+ * Confirmed by the symptom that it vanishes in fullscreen — only the iframe
+ * shows in fullscreen, so the parent-page overlay disappears.
+ * Force-hide it once the package marks the wrapper as activated. */
+.ss-video-frame .yt-lite.lyt-activated .lty-playbtn,
+.ss-video-frame .yt-lite.lyt-activated .lty-playbtn::before {
+  display: none !important;
+}
