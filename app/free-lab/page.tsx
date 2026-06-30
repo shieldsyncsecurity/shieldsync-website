@@ -4,12 +4,16 @@ import { Reveal } from "@/components/reveal";
 import { PageHero, FaqSection, CtaBand } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
 import { BlogCarousel } from "@/components/blog-carousel";
+import { VideoEmbed } from "@/components/video-embed";
 import {
   webPageSchema,
   breadcrumbSchema,
   faqSchema,
   courseSchema,
 } from "@/lib/schema";
+
+const FREE_LAB_VIDEO_ID = "Q5RhZCJ9_vU";
+const FREE_LAB_VIDEO_TITLE = "Watch a real AWS security lab end-to-end";
 import { ArrowRight, Check, Cloud, Shield, Lock } from "@/components/icons";
 import { SITE, BLOG_POSTS } from "@/lib/site";
 
@@ -318,6 +322,25 @@ export default function FreeLabPage() {
           </Container>
         </section>
       )}
+
+      {/* See it in action — full walkthrough (4-5 min) for the qualified
+          visitor who's already landed on the free-lab page. */}
+      <section className="border-b border-line py-8 sm:py-12">
+        <Container>
+          <Reveal>
+            <SectionHeading
+              eyebrow="Watch a real run"
+              title="What happens when you click Launch"
+              description="The full lab walkthrough — provisioning, the misconfig scenario, the live grader, the auto-wipe. About 5 minutes."
+            />
+          </Reveal>
+          <Reveal delay={100}>
+            <div className="mx-auto mt-6 max-w-4xl">
+              <VideoEmbed videoId={FREE_LAB_VIDEO_ID} title={FREE_LAB_VIDEO_TITLE} />
+            </div>
+          </Reveal>
+        </Container>
+      </section>
 
       {/* FAQ */}
       <FaqSection faqs={FAQS} title="Free AWS lab — questions people ask" />

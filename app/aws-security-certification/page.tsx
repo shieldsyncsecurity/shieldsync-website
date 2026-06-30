@@ -4,7 +4,11 @@ import { Container, Card, Button, SectionHeading } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { SchemaOrg } from "@/components/schema-org";
 import { BlogCarousel } from "@/components/blog-carousel";
+import { VideoEmbed } from "@/components/video-embed";
 import { webPageSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
+
+const CERT_VIDEO_ID = "Q5RhZCJ9_vU";
+const CERT_VIDEO_TITLE = "Inside a hands-on AWS Security Specialty lab";
 import { ArrowRight, Check, Cloud } from "@/components/icons";
 import { AWS_LABS, SITE, BLOG_POSTS } from "@/lib/site";
 
@@ -297,6 +301,25 @@ export default function AwsSecurityCertificationPage() {
               </div>
             ))}
           </div>
+        </Container>
+      </section>
+
+      {/* Walkthrough video — full lab session for the qualified visitor who
+          is researching SCS-C02 hands-on practice. */}
+      <section className="border-b border-line py-8 sm:py-12">
+        <Container>
+          <Reveal>
+            <SectionHeading
+              eyebrow="Watch a lab end-to-end"
+              title="What hands-on AWS Security Specialty practice actually looks like"
+              description="The full lab run — provision, the misconfig scenario, the live grader, the auto-wipe. About 5 minutes."
+            />
+          </Reveal>
+          <Reveal delay={100}>
+            <div className="mx-auto mt-6 max-w-4xl">
+              <VideoEmbed videoId={CERT_VIDEO_ID} title={CERT_VIDEO_TITLE} />
+            </div>
+          </Reveal>
         </Container>
       </section>
 
