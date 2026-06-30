@@ -6,6 +6,7 @@ import { SchemaOrg } from "@/components/schema-org";
 import { BlogCarousel } from "@/components/blog-carousel";
 import { webPageSchema, breadcrumbSchema, internshipProgramSchema } from "@/lib/schema";
 import { InternshipApplyForm } from "@/components/internship-apply-form";
+import { InternshipPlanDownload } from "@/components/internship-plan-download";
 import { INTERNSHIP, SITE, BLOG_POSTS } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -101,6 +102,14 @@ export default function InternshipPage() {
                   </li>
                 ))}
               </ul>
+
+              {/* Download the full 8-week plan as a PDF */}
+              <div className="mt-5">
+                <InternshipPlanDownload />
+                <p className="mt-1.5 text-xs text-muted">
+                  Full curriculum, week by week — see exactly what you&apos;ll learn before you apply.
+                </p>
+              </div>
             </Reveal>
 
             {/* Right: application form */}
