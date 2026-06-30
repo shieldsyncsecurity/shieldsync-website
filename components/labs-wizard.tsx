@@ -10,7 +10,7 @@ const FREE_SLUG = "s3-misconfiguration-audit";
 const LEVEL_DOT: Record<string, string> = { Beginner: "bg-emerald-500", Intermediate: "bg-amber-500", Advanced: "bg-rose-500" };
 
 type Track = "aws" | "soc" | null;
-type Mode = "per-lab" | "monthly" | null;
+type Mode = "per-lab" | "monthly" | "free" | null;
 type Item = { slug: string; title: string; desc: string; tags: string[]; badge: string; dot: string; price: Money; free: boolean };
 
 export function LabsWizard({
@@ -82,7 +82,9 @@ export function LabsWizard({
   // page to auto-launch right after sign-in (no extra click). SOC labs aren't on the
   // platform yet, and monthly has no single lab — both fall back to the catalog root.
   const launchHref =
-    mode !== "monthly" && track === "aws" && selected
+    mode === "free"
+      ? `${SITE.labsUrl}/labs/${FREE_SLUG}?intent=launch`
+      : mode !== "monthly" && track === "aws" && selected
       ? `${SITE.labsUrl}/labs/${selected}?intent=launch`
       : mode === "monthly"
       ? `${SITE.labsUrl}?checkout=monthly`
@@ -202,13 +204,16 @@ export function LabsWizard({
                 <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-fg sm:text-3xl">How do you want to learn?</h1>
                 <p className="mt-1 text-sm text-muted">Pick what fits — you can change this anytime.</p>
                 <div className={`mt-5 grid gap-4 ${track === "aws" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
-                  {/* FREE — a third box ALONGSIDE the paid plans (AWS track only). It
-                      launches the free lab directly (no further config), so it's an <a>,
-                      not a select-then-continue option. Kept visually equal to the others. */}
+                  {/* FREE — third box ALONGSIDE the paid plans (AWS track only).
+                      Same select-then-Continue behaviour as the paid cards: clicking
+                      sets mode="free"; Continue navigates to the free lab launch URL. */}
                   {track === "aws" ? (
-                    <a
-                      href={`${SITE.labsUrl}/labs/${FREE_SLUG}?intent=launch`}
-                      className="flex flex-col rounded-2xl border border-line bg-panel p-5 text-left transition hover:border-line-strong"
+                    <button
+                      type="button"
+                      onClick={() => setMode("free")}
+                      className={`flex flex-col rounded-2xl border p-5 text-left transition ${
+                        mode === "free" ? "border-brand bg-brand/[0.05] ring-2 ring-brand/40" : "border-line bg-panel hover:border-line-strong"
+                      }`}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <h3 className="text-base font-bold text-fg">Free lab</h3>
@@ -224,7 +229,7 @@ export function LabsWizard({
                       <span className="mt-auto pt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-bright">
                         Launch now <ArrowRight className="h-3.5 w-3.5" />
                       </span>
-                    </a>
+                    </button>
                   ) : null}
 
                   {[
@@ -427,6 +432,14 @@ export function LabsWizard({
                   className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-base font-bold glow-brand bg-gradient-to-r from-brand to-cyan text-white hover:brightness-110 transition"
                 >
                   Continue to payment
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              ) : step === 2 && mode === "free" ? (
+                <a
+                  href={launchHref}
+                  className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-base font-bold glow-brand bg-gradient-to-r from-brand to-cyan text-white hover:brightness-110 transition"
+                >
+                  Launch free lab
                   <ArrowRight className="h-4 w-4" />
                 </a>
               ) : (
