@@ -6,26 +6,30 @@ import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/brand";
 import { Button } from "@/components/ui";
 import { Menu, Close, ChevronDown } from "@/components/icons";
-import { NAV, LABS_MENU, SERVICES_MENU } from "@/lib/site";
+import { NAV, LABS_MENU, SERVICES_MENU, CERTIFICATIONS_MENU } from "@/lib/site";
 
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [labsOpen, setLabsOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [certsOpen, setCertsOpen] = useState(false);
   const labsRef = useRef<HTMLDivElement>(null);
   const servicesRef = useRef<HTMLDivElement>(null);
+  const certsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setOpen(false);
     setLabsOpen(false);
     setServicesOpen(false);
+    setCertsOpen(false);
   }, [pathname]);
 
   useEffect(() => {
     function onDown(e: MouseEvent) {
       if (labsRef.current && !labsRef.current.contains(e.target as Node)) setLabsOpen(false);
       if (servicesRef.current && !servicesRef.current.contains(e.target as Node)) setServicesOpen(false);
+      if (certsRef.current && !certsRef.current.contains(e.target as Node)) setCertsOpen(false);
     }
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
@@ -144,6 +148,50 @@ export function SiteHeader() {
                   </div>
                 );
               }
+              if (item.href === "/aws-security-certification") {
+                return (
+                  <div key={item.href} className="relative" ref={certsRef}>
+                    <button
+                      type="button"
+                      onClick={() => setCertsOpen((v) => !v)}
+                      aria-expanded={certsOpen}
+                      className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition ${
+                        isActive(item.href) || certsOpen ? "text-fg" : "text-muted hover:text-fg"
+                      }`}
+                    >
+                      {item.label}
+                      <ChevronDown className={`h-4 w-4 transition-transform ${certsOpen ? "rotate-180" : ""}`} />
+                    </button>
+
+                    {certsOpen ? (
+                      <div className="absolute left-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-xl border border-line bg-panel p-2 shadow-2xl">
+                        {CERTIFICATIONS_MENU.map((m) => (
+                          <Link
+                            key={m.label}
+                            href={m.href}
+                            onClick={() => setCertsOpen(false)}
+                            className="block rounded-lg px-3 py-2.5 transition hover:bg-surface"
+                          >
+                            <p className="flex items-center gap-2 text-sm font-semibold text-fg">
+                              {m.label}
+                              {m.tag ? (
+                                <span className="rounded border border-brand/30 bg-brand/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-bright">
+                                  {m.tag}
+                                </span>
+                              ) : null}
+                            </p>
+                            <p className="mt-0.5 text-xs text-muted">{m.desc}</p>
+                          </Link>
+                        ))}
+                        <div className="my-1 h-px bg-line" />
+                        <p className="px-3 py-2 text-xs text-muted">
+                          More certifications coming — preparing learners for <span className="font-semibold text-fg">SAA-C03</span>, <span className="font-semibold text-fg">CCSP</span> & <span className="font-semibold text-fg">CISSP</span> next.
+                        </p>
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              }
               return (
                 <Link
                   key={item.href}
@@ -230,12 +278,6 @@ export function SiteHeader() {
                     </Link>
                     <div className="ml-3 flex flex-col gap-1 border-l border-line pl-3">
                       <Link
-                        href="/aws-security-certification"
-                        className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
-                      >
-                        AWS Security Specialty (SCS-C02) prep
-                      </Link>
-                      <Link
                         href="/labs/soc"
                         className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
                       >
@@ -247,6 +289,31 @@ export function SiteHeader() {
                       >
                         New here? Start with the roadmap
                       </Link>
+                    </div>
+                  </div>
+                );
+              }
+              if (item.href === "/aws-security-certification") {
+                return (
+                  <div key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={`block rounded-lg px-3 py-3 text-sm font-medium transition ${
+                        isActive(item.href) ? "bg-surface text-fg" : "text-muted hover:bg-surface hover:text-fg"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                    <div className="ml-3 flex flex-col gap-1 border-l border-line pl-3">
+                      {CERTIFICATIONS_MENU.map((m) => (
+                        <Link
+                          key={m.href}
+                          href={m.href}
+                          className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
+                        >
+                          {m.label}
+                        </Link>
+                      ))}
                     </div>
                   </div>
                 );
