@@ -6,13 +6,16 @@ import { SITE, CONTACT, FOOTER_NAV } from "@/lib/site";
 export function SiteFooter() {
   return (
     <footer className="mt-auto border-t border-line bg-ink-2">
-      <div className="mx-auto w-full max-w-[1536px] px-5 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+      <div className="mx-auto w-full max-w-[1536px] px-5 py-12 sm:px-6 lg:px-8">
+        {/* Brand + 3 link columns + Get-in-touch = 5 columns, evenly aligned.
+            (Was a 4-col grid holding 5 children, so Get-in-touch wrapped under
+            the logo — that's what made it look lopsided.) */}
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_0.9fr_1.3fr] lg:gap-8">
           {/* Brand */}
-          <div className="max-w-xs">
+          <div className="max-w-xs sm:col-span-2 lg:col-span-1">
             <Logo variant="compact" height={32} />
-            <p className="mt-4 text-base leading-7 text-muted">{SITE.shortDesc}</p>
-            <p className="mt-4 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-brand-bright">
+            <p className="mt-4 text-sm leading-6 text-muted">{SITE.shortDesc}</p>
+            <p className="mt-4 font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-bright">
               {SITE.tagline}
             </p>
           </div>
@@ -20,11 +23,11 @@ export function SiteFooter() {
           {/* Nav groups */}
           {FOOTER_NAV.map((group) => (
             <div key={group.heading}>
-              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">{group.heading}</h3>
-              <ul className="mt-4 space-y-3">
+              <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-muted">{group.heading}</h3>
+              <ul className="mt-4 space-y-2.5">
                 {group.links.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className="text-base text-fg/80 transition hover:text-brand-bright">
+                    <Link href={link.href} className="text-sm text-fg/80 transition hover:text-brand-bright">
                       {link.label}
                     </Link>
                   </li>
@@ -35,8 +38,8 @@ export function SiteFooter() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">Get in touch</h3>
-            <ul className="mt-4 space-y-3 text-base">
+            <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-muted">Get in touch</h3>
+            <ul className="mt-4 space-y-2.5 text-sm">
               <li>
                 <a href={`mailto:${CONTACT.email}`} className="inline-flex items-center gap-2 text-fg/80 transition hover:text-brand-bright">
                   <Mail className="h-4 w-4 text-brand" /> {CONTACT.email}
@@ -59,14 +62,15 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-4 border-t border-line pt-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
-          <p>© {2026} {SITE.legalName}. All rights reserved.</p>
+        <div className="mt-10 flex flex-col gap-4 border-t border-line pt-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+          <p>© 2026 {SITE.legalName}. All rights reserved.</p>
+          {/* Legal-only row (Contact now lives in the Company column above, so
+              it's not duplicated here). */}
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             <Link href="/privacy" className="transition hover:text-brand-bright">Privacy</Link>
             <Link href="/terms" className="transition hover:text-brand-bright">Terms</Link>
             <Link href="/refund" className="transition hover:text-brand-bright">Refund &amp; Cancellation</Link>
             <Link href="/shipping" className="transition hover:text-brand-bright">Shipping &amp; Delivery</Link>
-            <Link href="/contact" className="transition hover:text-brand-bright">Contact</Link>
           </div>
         </div>
       </div>

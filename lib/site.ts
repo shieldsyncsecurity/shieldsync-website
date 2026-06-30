@@ -416,29 +416,33 @@ export const INTERNSHIP = {
 
 /* Footer nav groups ----------------------------------------------------------- */
 
+// Three balanced footer columns (≈4 links each) → rendered as: Brand · Explore ·
+// Learn · Company · Get-in-touch. Keep the groups roughly even so the footer
+// reads as a clean grid, not a lopsided one.
 export const FOOTER_NAV: { heading: string; links: NavItem[] }[] = [
   {
-    heading: "Company",
+    heading: "Explore",
     links: [
-      { label: "About us", href: "/about" },
       { label: "Services", href: "/services" },
-    ],
-  },
-  {
-    heading: "Certifications",
-    links: [
-      { label: "AWS Security Specialty (SCS-C02)", href: "/aws-security-certification" },
+      { label: "Hands-on Labs", href: "/labs" },
+      { label: "Certifications", href: "/aws-security-certification" },
+      { label: "Pricing", href: "/pricing" },
     ],
   },
   {
     heading: "Learn",
     links: [
       { label: "Start here", href: "/start-here" },
-      { label: "Labs", href: "/labs" },
-      { label: "Pricing", href: "/pricing" },
       { label: "Internship", href: "/internship" },
       { label: "Training", href: "/training" },
       { label: "Blog", href: "/blog" },
+    ],
+  },
+  {
+    heading: "Company",
+    links: [
+      { label: "About us", href: "/about" },
+      { label: "Contact", href: "/contact" },
     ],
   },
 ];
