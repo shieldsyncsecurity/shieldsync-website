@@ -8,11 +8,36 @@ import { SERVICES, WHY, SOCIAL_PROOF, SITE, BLOG_POSTS } from "@/lib/site";
 import { BlogCarousel } from "@/components/blog-carousel";
 import { VideoEmbed } from "@/components/video-embed";
 
-// When the NotebookLM explainer is uploaded to YouTube (unlisted), paste the
-// 11-char video id here. Until then the section renders a placeholder card
-// that reserves the exact 16:9 footprint so swapping it in causes zero CLS.
-const HOMEPAGE_VIDEO_ID = "";
+// ─────────────────────────────────────────────────────────────────────────
+//  Explainer video config — flip these two constants when the YouTube
+//  upload is ready. No other code change required.
+//
+//  HOMEPAGE_VIDEO_ID
+//    Paste the 11-char unlisted YouTube id (the bit after "v=").
+//    Empty string = no video yet → falls back to safe defaults below.
+//
+//  HOMEPAGE_VIDEO_PLACEMENT
+//    "hero"      → video REPLACES the AWS-console mock in the hero right
+//                  column. Use when the video is ≤ ~90 seconds.
+//    "mid-page"  → video renders in the "See it in action" section
+//                  between Team Training and the SCS-C02 callout. Use for
+//                  ~2–3 min videos that qualify their own slot.
+//    "off"       → no video on homepage anywhere. Use if the explainer
+//                  ended up too long (3 min+); embed it on /free-lab or
+//                  /aws-security-certification instead.
+//
+//  Fallback logic (so the page never looks broken mid-edit):
+//    • placement="hero" but no id  → hero shows the mock (today's state)
+//    • placement="mid-page" + no id → mid-page shows the placeholder card
+//    • placement="off"             → no video anywhere on home
+// ─────────────────────────────────────────────────────────────────────────
+type VideoPlacement = "hero" | "mid-page" | "off";
+const HOMEPAGE_VIDEO_ID: string = "";
+const HOMEPAGE_VIDEO_PLACEMENT: VideoPlacement = "mid-page" as VideoPlacement;
 const HOMEPAGE_VIDEO_TITLE = "See ShieldSync in action — 90 seconds";
+
+const VIDEO_IN_HERO = HOMEPAGE_VIDEO_PLACEMENT === "hero" && HOMEPAGE_VIDEO_ID !== "";
+const VIDEO_MID_PAGE = HOMEPAGE_VIDEO_PLACEMENT === "mid-page";
 
 export const metadata: Metadata = {
   title: "AWS Cloud Security Services & Hands-on Labs | ShieldSync",
@@ -101,39 +126,55 @@ export default function HomePage() {
             </div>
           </Reveal>
 
-          {/* Right: hands-on AWS labs preview — a real product mock that links into
-              the guided lab picker (wizard). Showcases the hands-on depth behind the
-              services without a wall of text. */}
+          {/* Right column: video OR the AWS-console mock.
+              When VIDEO_IN_HERO (= placement="hero" + video id set), the explainer
+              replaces the mock. Otherwise the mock renders as today. Both render
+              at the same 16:9-ish footprint so the hero grid never shifts. */}
           <Reveal delay={140}>
-            <div className="rounded-3xl border border-line bg-panel p-3 shadow-xl shadow-slate-900/5">
-              <Link
-                href={SITE.startUrl}
-                aria-label="Open the guided lab picker"
-                className="group relative block overflow-hidden rounded-2xl border border-line bg-surface px-4 pb-4 pt-11 transition hover:border-line-strong hover:shadow-md"
-              >
-                <span className="absolute left-3 top-3 rounded-md bg-blue-600 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white shadow">
-                  ★ AWS Security Labs
-                </span>
-                <span className="absolute right-3 top-3 rounded-md border border-line bg-panel px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
-                  Preview
-                </span>
-                <div className="pointer-events-none select-none">
-                  <LabWorkspacePreview />
-                </div>
-                <span className="mt-3 flex items-center justify-center gap-1 text-sm font-semibold text-brand-bright opacity-80 transition group-hover:opacity-100">
-                  Start a hands-on lab →
-                </span>
-              </Link>
-              <Link
-                href="/labs"
-                className="group flex items-center justify-between gap-3 rounded-b-2xl px-3 py-4 transition hover:bg-surface"
-              >
-                <span className="text-sm text-muted">Real, hands-on AWS cloud security in your browser.</span>
-                <span className="shrink-0 text-sm font-semibold text-brand-bright transition group-hover:translate-x-0.5">
-                  Explore →
-                </span>
-              </Link>
-            </div>
+            {VIDEO_IN_HERO ? (
+              <div className="rounded-3xl border border-line bg-panel p-3 shadow-xl shadow-slate-900/5">
+                <VideoEmbed videoId={HOMEPAGE_VIDEO_ID} title={HOMEPAGE_VIDEO_TITLE} />
+                <Link
+                  href="/labs"
+                  className="group mt-1 flex items-center justify-between gap-3 rounded-b-2xl px-3 py-4 transition hover:bg-surface"
+                >
+                  <span className="text-sm text-muted">Real, hands-on AWS cloud security in your browser.</span>
+                  <span className="shrink-0 text-sm font-semibold text-brand-bright transition group-hover:translate-x-0.5">
+                    Explore →
+                  </span>
+                </Link>
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-line bg-panel p-3 shadow-xl shadow-slate-900/5">
+                <Link
+                  href={SITE.startUrl}
+                  aria-label="Open the guided lab picker"
+                  className="group relative block overflow-hidden rounded-2xl border border-line bg-surface px-4 pb-4 pt-11 transition hover:border-line-strong hover:shadow-md"
+                >
+                  <span className="absolute left-3 top-3 rounded-md bg-blue-600 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white shadow">
+                    ★ AWS Security Labs
+                  </span>
+                  <span className="absolute right-3 top-3 rounded-md border border-line bg-panel px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
+                    Preview
+                  </span>
+                  <div className="pointer-events-none select-none">
+                    <LabWorkspacePreview />
+                  </div>
+                  <span className="mt-3 flex items-center justify-center gap-1 text-sm font-semibold text-brand-bright opacity-80 transition group-hover:opacity-100">
+                    Start a hands-on lab →
+                  </span>
+                </Link>
+                <Link
+                  href="/labs"
+                  className="group flex items-center justify-between gap-3 rounded-b-2xl px-3 py-4 transition hover:bg-surface"
+                >
+                  <span className="text-sm text-muted">Real, hands-on AWS cloud security in your browser.</span>
+                  <span className="shrink-0 text-sm font-semibold text-brand-bright transition group-hover:translate-x-0.5">
+                    Explore →
+                  </span>
+                </Link>
+              </div>
+            )}
           </Reveal>
         </Container>
       </section>
@@ -251,42 +292,47 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* -------------------------------------------- See it in action — video */}
-      <section className="border-b border-line py-8 sm:py-12">
-        <Container>
-          <Reveal>
-            <SectionHeading
-              eyebrow="See it in action"
-              title="Watch a real AWS security lab in 90 seconds"
-              description="The launch flow. The grader. The auto-wipe. No setup, no pitch — just the product working."
-            />
-          </Reveal>
-          <Reveal delay={100}>
-            <div className="mx-auto mt-6 max-w-4xl">
-              <VideoEmbed videoId={HOMEPAGE_VIDEO_ID} title={HOMEPAGE_VIDEO_TITLE} />
-            </div>
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted">
-              <span className="inline-flex items-center gap-1.5">
-                <Check className="h-4 w-4 shrink-0 text-brand" /> Real isolated AWS account
-              </span>
-              <span className="hidden sm:inline text-line">·</span>
-              <span className="inline-flex items-center gap-1.5">
-                <Check className="h-4 w-4 shrink-0 text-brand" /> Auto-graded against live state
-              </span>
-              <span className="hidden sm:inline text-line">·</span>
-              <span className="inline-flex items-center gap-1.5">
-                <Check className="h-4 w-4 shrink-0 text-brand" /> Auto-wiped, no credit card
-              </span>
-            </div>
-            <div className="mt-5 flex justify-center">
-              <Button href="/labs-wizard?track=aws" variant="secondary">
-                Skip the video — launch the free lab
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </Reveal>
-        </Container>
-      </section>
+      {/* -------------------------------------------- See it in action — video
+          Renders only when HOMEPAGE_VIDEO_PLACEMENT === "mid-page". When
+          placement is "hero" or "off", this section is omitted entirely so the
+          page stays compact and we don't show the explainer twice. */}
+      {VIDEO_MID_PAGE && (
+        <section className="border-b border-line py-8 sm:py-12">
+          <Container>
+            <Reveal>
+              <SectionHeading
+                eyebrow="See it in action"
+                title="Watch a real AWS security lab in 90 seconds"
+                description="The launch flow. The grader. The auto-wipe. No setup, no pitch — just the product working."
+              />
+            </Reveal>
+            <Reveal delay={100}>
+              <div className="mx-auto mt-6 max-w-4xl">
+                <VideoEmbed videoId={HOMEPAGE_VIDEO_ID} title={HOMEPAGE_VIDEO_TITLE} />
+              </div>
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted">
+                <span className="inline-flex items-center gap-1.5">
+                  <Check className="h-4 w-4 shrink-0 text-brand" /> Real isolated AWS account
+                </span>
+                <span className="hidden sm:inline text-line">·</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Check className="h-4 w-4 shrink-0 text-brand" /> Auto-graded against live state
+                </span>
+                <span className="hidden sm:inline text-line">·</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Check className="h-4 w-4 shrink-0 text-brand" /> Auto-wiped, no credit card
+                </span>
+              </div>
+              <div className="mt-5 flex justify-center">
+                <Button href="/labs-wizard?track=aws" variant="secondary">
+                  Skip the video — launch the free lab
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </Reveal>
+          </Container>
+        </section>
+      )}
 
       {/* ---------------------------------------------- AWS SCS-C02 cert callout */}
       <section className="border-b border-line py-8 sm:py-10">
