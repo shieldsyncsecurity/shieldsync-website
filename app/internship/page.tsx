@@ -171,6 +171,76 @@ export default function InternshipPage() {
         </Container>
       </section>
 
+      {/* ─── Week-by-week curriculum ──────────────────────────────────────── */}
+      <section className="border-t border-line py-8 sm:py-12">
+        <Container>
+          <Reveal>
+            <SectionHeading
+              eyebrow="The 8-week plan"
+              title="Exactly what you'll learn, week by week"
+              description={INTERNSHIP.commitment}
+            />
+          </Reveal>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {INTERNSHIP.curriculum.map((w, i) => (
+              <Reveal key={w.week} delay={(i % 2) * 60}>
+                <div className="flex h-full flex-col rounded-2xl border border-line bg-panel p-5">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-brand/10 px-2 text-xs font-bold text-brand-bright">
+                      {i + 1}
+                    </span>
+                    <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted">{w.week}</span>
+                  </div>
+                  <h3 className="mt-2 text-base font-bold text-fg">{w.title}</h3>
+                  <p className="mt-1 text-sm font-medium text-brand-bright">{w.focus}</p>
+                  <ul className="mt-3 grid gap-1.5">
+                    {w.learn.map((l) => (
+                      <li key={l} className="flex items-start gap-2 text-sm text-muted">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand" /> {l}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-auto pt-3 text-sm text-fg/85">
+                    <span className="font-semibold text-fg">Build:</span> {w.project}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* ─── Certificate + exam readiness ─────────────────────────────────── */}
+      <section className="border-t border-line py-8 sm:py-12">
+        <Container>
+          <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+            <Reveal>
+              <div className="flex h-full flex-col rounded-2xl border border-brand/30 bg-gradient-to-br from-brand/[0.08] to-transparent p-6 sm:p-7">
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-brand/25 bg-brand/10 text-brand-bright">
+                    <Cap className="h-5 w-5" />
+                  </span>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-bright">What you graduate with</p>
+                </div>
+                <h2 className="mt-3 text-xl font-bold text-fg sm:text-2xl">{INTERNSHIP.certificate.title}</h2>
+                <p className="mt-2 text-sm leading-6 text-muted">{INTERNSHIP.certificate.detail}</p>
+              </div>
+            </Reveal>
+            <Reveal delay={80}>
+              <div className="flex h-full flex-col rounded-2xl border border-line bg-panel p-6 sm:p-7">
+                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-bright">Plus — exam ready</p>
+                <h3 className="mt-3 text-lg font-bold text-fg">Toward AWS Security Specialty (SCS-C02)</h3>
+                <p className="mt-2 text-sm leading-6 text-muted">{INTERNSHIP.certificate.examReadiness}</p>
+                <Button href="/aws-security-certification" variant="secondary" className="mt-4 self-start">
+                  See the SCS-C02 path
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </Reveal>
+          </div>
+        </Container>
+      </section>
+
       {posts.length > 0 && (
         <section className="border-b border-line py-8 sm:py-10">
           <Container>

@@ -300,6 +300,118 @@ export const INTERNSHIP = {
     "Career-changers entering cybersecurity",
     "Early-career IT professionals moving into cloud security",
   ],
+
+  // Time commitment + what the certificate actually is (answers the two
+  // questions every prospect asks: "what will I learn?" and "what cert?").
+  commitment: "8 weeks · ~10–15 hrs/week · remote · 1:1 mentorship",
+  certificate: {
+    title: "ShieldSync Cybersecurity Internship — Completion Certificate",
+    detail:
+      "Issued by ShieldSync Security Private Limited on completing the capstone. It verifies hands-on cloud security work in real AWS accounts — not attendance.",
+    examReadiness:
+      "The curriculum maps to the AWS Security Specialty (SCS-C02) exam domains, so you finish exam-ready. The AWS certification itself is sat separately with AWS — we prepare you for it, we don't issue it.",
+  },
+
+  // Week-by-week guided plan. Each week = a focus, what you learn, and the
+  // hands-on deliverable that goes into your portfolio.
+  curriculum: [
+    {
+      week: "Week 1",
+      title: "Foundations & the security mindset",
+      focus: "Get fluent in the cloud + the attacker's-eye view.",
+      learn: [
+        "Cloud, Linux & networking essentials for security",
+        "How an AWS account is structured (regions, services, billing)",
+        "Reading the shared-responsibility model the way auditors do",
+        "Setting up your own AWS account safely",
+      ],
+      project: "Stand up a clean AWS account with billing alarms and a baseline security checklist.",
+    },
+    {
+      week: "Week 2",
+      title: "Identity & Access Management (IAM)",
+      focus: "The control plane every breach goes through.",
+      learn: [
+        "IAM users, roles, policies & policy evaluation logic",
+        "Least privilege, permissions boundaries & conditions",
+        "Trust policies, cross-account access & the confused-deputy problem",
+        "Spotting and closing privilege-escalation paths",
+      ],
+      project: "Complete the IAM privilege-escalation lab — find the path to admin, prove it, then remediate.",
+    },
+    {
+      week: "Week 3",
+      title: "Data protection",
+      focus: "Stop the leaks that make headlines.",
+      learn: [
+        "S3 security — public buckets, ACLs, bucket policies, Block Public Access",
+        "Encryption with KMS — keys, key policies vs IAM, grants",
+        "Secrets management & in-transit encryption (TLS-only)",
+        "Data classification & lifecycle (Object Lock, versioning)",
+      ],
+      project: "Complete the S3 misconfiguration lab — find and fix public buckets, missing encryption, and over-broad access.",
+    },
+    {
+      week: "Week 4",
+      title: "Network security",
+      focus: "Control what can reach what.",
+      learn: [
+        "VPC design — subnets, route tables, NAT",
+        "Security groups vs NACLs (and the trick questions)",
+        "VPC endpoints & endpoint policies to keep traffic private",
+        "Edge protection — WAF and Shield basics",
+      ],
+      project: "Lock down an exposed service so it's reachable only over a private S3 endpoint with a restrictive policy.",
+    },
+    {
+      week: "Week 5",
+      title: "Logging, monitoring & detection",
+      focus: "See the attack while it's happening.",
+      learn: [
+        "CloudTrail — management vs data events, multi-region trails",
+        "CloudWatch metric filters → alarms",
+        "GuardDuty findings & Security Hub aggregation",
+        "Querying CloudTrail history with Athena",
+      ],
+      project: "Build a detection pipeline: a suspicious action triggers a CloudWatch alarm and a notification.",
+    },
+    {
+      week: "Week 6",
+      title: "Incident response & forensics",
+      focus: "What to do when the alert fires.",
+      learn: [
+        "The IR runbook order — isolate, preserve, investigate, eradicate, recover",
+        "Containing a compromised instance / revoking sessions",
+        "Capturing forensic evidence before teardown",
+        "Reconstructing a breach timeline from CloudTrail + Athena",
+      ],
+      project: "Walk a simulated key-compromise end to end and write a short incident report.",
+    },
+    {
+      week: "Week 7",
+      title: "Governance, compliance & emerging risk",
+      focus: "Make security provable — and look ahead.",
+      learn: [
+        "AWS Organizations, OUs & Service Control Policies (guardrails)",
+        "AWS Config & conformance packs for continuous compliance",
+        "Mapping controls to SOC 2 / ISO 27001 / GDPR / DPDP",
+        "Intro to AI/LLM security — where the field is heading",
+      ],
+      project: "Apply org-level guardrails (e.g. a region-lock SCP) and map five controls to a compliance framework.",
+    },
+    {
+      week: "Week 8",
+      title: "Capstone, portfolio & career",
+      focus: "Turn 7 weeks of work into a job.",
+      learn: [
+        "Assess a mock environment end to end, like a real engagement",
+        "Write a professional findings report with prioritised remediation",
+        "Build a GitHub portfolio from your lab work",
+        "Resume, LinkedIn & mock interview; your cert roadmap",
+      ],
+      project: "Deliver a full capstone assessment + report, and present it in a 1:1 review — your completion milestone.",
+    },
+  ],
 };
 
 /* Footer nav groups ----------------------------------------------------------- */
