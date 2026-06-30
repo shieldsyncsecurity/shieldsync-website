@@ -124,3 +124,39 @@ body {
     scroll-behavior: auto;
   }
 }
+
+/* ────────────────────────────────────────────────────────────────────────
+ * LiteYouTubeEmbed polish — overrides the package's default red YouTube
+ * play button with a brand-coloured one, and tightens the focus ring so
+ * the embed reads as native chrome instead of a third-party widget.
+ * The package's own CSS is imported by the <VideoEmbed> client component.
+ * ──────────────────────────────────────────────────────────────────────── */
+.ss-video-frame .yt-lite {
+  background-color: rgb(15 23 42); /* slate-900 — matches dark hero */
+}
+.ss-video-frame .yt-lite::before {
+  content: "";
+  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.45) 100%);
+}
+.ss-video-frame .lty-playbtn {
+  width: 78px;
+  height: 78px;
+  background: radial-gradient(circle, var(--color-brand, #6366f1) 0%, var(--color-brand, #6366f1) 60%, transparent 60%);
+  filter: drop-shadow(0 4px 24px rgba(99, 102, 241, 0.5));
+  border-radius: 50%;
+  opacity: 0.95;
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+.ss-video-frame .yt-lite:hover .lty-playbtn {
+  transform: scale(1.08);
+  opacity: 1;
+}
+.ss-video-frame .lty-playbtn::before {
+  border-color: transparent transparent transparent white;
+  border-width: 12px 0 12px 20px;
+  margin-left: 4px; /* optical centre */
+}
+.ss-video-frame .yt-lite:focus-visible {
+  outline: 2px solid var(--color-brand, #6366f1);
+  outline-offset: 2px;
+}

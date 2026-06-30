@@ -6,6 +6,13 @@ import { LabWorkspacePreview } from "@/components/lab-workspace-preview";
 import { ArrowRight, Check, Shield, Cloud, Compliance, Radar, Cap, Flask, Code, Lock } from "@/components/icons";
 import { SERVICES, WHY, SOCIAL_PROOF, SITE, BLOG_POSTS } from "@/lib/site";
 import { BlogCarousel } from "@/components/blog-carousel";
+import { VideoEmbed } from "@/components/video-embed";
+
+// When the NotebookLM explainer is uploaded to YouTube (unlisted), paste the
+// 11-char video id here. Until then the section renders a placeholder card
+// that reserves the exact 16:9 footprint so swapping it in causes zero CLS.
+const HOMEPAGE_VIDEO_ID = "";
+const HOMEPAGE_VIDEO_TITLE = "See ShieldSync in action — 90 seconds";
 
 export const metadata: Metadata = {
   title: "AWS Cloud Security Services & Hands-on Labs | ShieldSync",
@@ -241,6 +248,43 @@ export default function HomePage() {
               </Card>
             </Reveal>
           </div>
+        </Container>
+      </section>
+
+      {/* -------------------------------------------- See it in action — video */}
+      <section className="border-b border-line py-8 sm:py-12">
+        <Container>
+          <Reveal>
+            <SectionHeading
+              eyebrow="See it in action"
+              title="Watch a real AWS security lab in 90 seconds"
+              description="The launch flow. The grader. The auto-wipe. No setup, no pitch — just the product working."
+            />
+          </Reveal>
+          <Reveal delay={100}>
+            <div className="mx-auto mt-6 max-w-4xl">
+              <VideoEmbed videoId={HOMEPAGE_VIDEO_ID} title={HOMEPAGE_VIDEO_TITLE} />
+            </div>
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted">
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-4 w-4 shrink-0 text-brand" /> Real isolated AWS account
+              </span>
+              <span className="hidden sm:inline text-line">·</span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-4 w-4 shrink-0 text-brand" /> Auto-graded against live state
+              </span>
+              <span className="hidden sm:inline text-line">·</span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-4 w-4 shrink-0 text-brand" /> Auto-wiped, no credit card
+              </span>
+            </div>
+            <div className="mt-5 flex justify-center">
+              <Button href="/labs-wizard?track=aws" variant="secondary">
+                Skip the video — launch the free lab
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </Reveal>
         </Container>
       </section>
 
