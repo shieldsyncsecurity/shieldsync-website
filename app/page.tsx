@@ -32,7 +32,7 @@ import { VideoEmbed } from "@/components/video-embed";
 //    • placement="off"             → no video anywhere on home
 // ─────────────────────────────────────────────────────────────────────────
 type VideoPlacement = "hero" | "mid-page" | "off";
-const HOMEPAGE_VIDEO_ID: string = "Q5RhZCJ9_vU";
+const HOMEPAGE_VIDEO_ID: string = "XBLtcjQaXZE";
 const HOMEPAGE_VIDEO_PLACEMENT: VideoPlacement = "mid-page" as VideoPlacement;
 const HOMEPAGE_VIDEO_TITLE = "See ShieldSync in action — full walkthrough";
 

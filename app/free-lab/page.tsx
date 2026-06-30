@@ -12,7 +12,7 @@ import {
   courseSchema,
 } from "@/lib/schema";
 
-const FREE_LAB_VIDEO_ID = "Q5RhZCJ9_vU";
+const FREE_LAB_VIDEO_ID = "XBLtcjQaXZE";
 const FREE_LAB_VIDEO_TITLE = "Watch a real AWS security lab end-to-end";
 import { ArrowRight, Check, Cloud, Shield, Lock } from "@/components/icons";
 import { SITE, BLOG_POSTS } from "@/lib/site";

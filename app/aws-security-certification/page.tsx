@@ -7,7 +7,7 @@ import { BlogCarousel } from "@/components/blog-carousel";
 import { VideoEmbed } from "@/components/video-embed";
 import { webPageSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
 
-const CERT_VIDEO_ID = "Q5RhZCJ9_vU";
+const CERT_VIDEO_ID = "XBLtcjQaXZE";
 const CERT_VIDEO_TITLE = "Inside a hands-on AWS Security Specialty lab";
 import { ArrowRight, Check, Cloud } from "@/components/icons";
 import { AWS_LABS, SITE, BLOG_POSTS } from "@/lib/site";
