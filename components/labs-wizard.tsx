@@ -67,8 +67,13 @@ export function LabsWizard({
     }));
   }, [track]);
 
-  const cats = useMemo(() => ["All", ...Array.from(new Set(items.map((i) => i.badge)))], [items]);
-  const filtered = useMemo(() => (cat === "All" ? items : items.filter((i) => i.badge === cat)), [items, cat]);
+  // The "Pick a lab" step renders only in the pay-per-lab plan, so it must NOT
+  // list the FREE lab — that's its own separate card back on the Plan step.
+  // Showing it here made users think the paid flow had dumped them on the free
+  // lab. Exclude free labs from the picker AND from its category chips.
+  const pickable = useMemo(() => items.filter((i) => !i.free), [items]);
+  const cats = useMemo(() => ["All", ...Array.from(new Set(pickable.map((i) => i.badge)))], [pickable]);
+  const filtered = useMemo(() => (cat === "All" ? pickable : pickable.filter((i) => i.badge === cat)), [pickable, cat]);
   const lab = useMemo(() => items.find((i) => i.slug === selected) ?? null, [items, selected]);
 
   const trackName = track === "soc" ? "Security Operations" : "AWS Cloud Security";
