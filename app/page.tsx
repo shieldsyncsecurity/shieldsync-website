@@ -297,26 +297,6 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* ----------------------------------- Hands-on labs (secondary B2C nod) */}
-      <section className="border-b border-line py-8 sm:py-10">
-        <Container>
-          <Reveal>
-            <div className="flex flex-col items-start justify-between gap-5 rounded-3xl border border-line bg-surface/60 p-7 sm:flex-row sm:items-center sm:p-9">
-              <div>
-                <h2 className="text-xl font-bold text-fg sm:text-2xl">Prefer to learn by doing?</h2>
-                <p className="mt-2 max-w-2xl text-base leading-7 text-muted">
-                  Individuals can practice cloud security in real, isolated AWS accounts with our hands-on labs —
-                  your first lab is free.
-                </p>
-              </div>
-              <Button href="/labs" variant="secondary">
-                Explore the labs
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </Reveal>
-        </Container>
-      </section>
     </>
   );
 }
