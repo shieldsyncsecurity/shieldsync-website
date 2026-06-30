@@ -42,7 +42,18 @@ export function SiteHeader() {
     };
   }, [open]);
 
-  const isActive = (href: string) => pathname === href || (href !== "/" && pathname.startsWith(href));
+  // A nav item lights up for its own route AND its related funnel routes — so
+  // "Labs" stays active on the wizard and the free-lab landing, not just /labs.
+  const RELATED: Record<string, string[]> = {
+    "/labs": ["/labs", "/labs-wizard", "/free-lab"],
+    "/aws-security-certification": ["/aws-security-certification"],
+    "/services": ["/services"],
+  };
+  const isActive = (href: string) => {
+    const group = RELATED[href];
+    if (group) return group.some((p) => pathname === p || pathname.startsWith(p + "/") || pathname.startsWith(p + "?"));
+    return pathname === href || (href !== "/" && pathname.startsWith(href));
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-ink/80 backdrop-blur-md">
@@ -139,7 +150,7 @@ export function SiteHeader() {
                           className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-muted transition hover:bg-surface hover:text-fg"
                         >
                           <span>
-                            New here? <span className="font-semibold text-fg">Start with the roadmap</span>
+                            New to cloud security? <span className="font-semibold text-fg">Start here</span>
                           </span>
                           <span aria-hidden="true">→</span>
                         </Link>
@@ -207,19 +218,14 @@ export function SiteHeader() {
           </nav>
         </div>
 
-        {/* Right: actions with separators */}
+        {/* Right: two actions. Start free lab = primary (widest, zero-friction
+            funnel for learners AND business evaluators). Book a call = secondary
+            (higher-intent B2B path). Internship now lives in the left nav. */}
         <div className="hidden items-center gap-3 md:flex">
-          <Link
-            href="/internship"
-            className="hidden text-sm font-semibold text-muted transition hover:text-fg lg:inline-block"
-          >
-            Internship programme
-          </Link>
-          <span className="hidden h-6 w-px bg-line-strong lg:block" aria-hidden="true" />
-          <Button href="/labs-wizard" variant="secondary" className="px-4 py-2">
-            Try a free lab
+          <Button href="/free-lab" variant="primary" className="px-4 py-2">
+            Start free lab
           </Button>
-          <Button href="/contact" variant="primary" className="px-4 py-2">
+          <Button href="/contact" variant="secondary" className="px-4 py-2">
             Book a call
           </Button>
         </div>
@@ -277,17 +283,20 @@ export function SiteHeader() {
                       {item.label}
                     </Link>
                     <div className="ml-3 flex flex-col gap-1 border-l border-line pl-3">
-                      <Link
-                        href="/labs/soc"
-                        className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
-                      >
-                        SOC Labs (SIEM + SOAR)
-                      </Link>
+                      {LABS_MENU.map((m) => (
+                        <Link
+                          key={m.href}
+                          href={m.href}
+                          className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
+                        >
+                          {m.label}
+                        </Link>
+                      ))}
                       <Link
                         href="/start-here"
                         className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
                       >
-                        New here? Start with the roadmap
+                        New to cloud security? Start here
                       </Link>
                     </div>
                   </div>
@@ -331,17 +340,11 @@ export function SiteHeader() {
               );
             })}
             <div className="my-2 h-px bg-line" />
-            <Button href="/contact" variant="primary" className="mt-1">
-              Book a call
+            <Button href="/free-lab" variant="primary" className="mt-1">
+              Start free lab
             </Button>
-            <Link
-              href="/internship"
-              className="rounded-lg px-3 py-3 text-sm font-semibold text-fg transition hover:bg-surface"
-            >
-              Internship programme
-            </Link>
-            <Button href="/labs-wizard" variant="secondary" className="mt-1">
-              Try a free lab
+            <Button href="/contact" variant="secondary" className="mt-1">
+              Book a call
             </Button>
           </nav>
         </div>

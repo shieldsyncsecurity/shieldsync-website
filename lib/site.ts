@@ -35,12 +35,17 @@ export const CONTACT = {
 
 export type NavItem = { label: string; href: string };
 
+// Top-nav (Model A — product-first). Dropdown parents: /services, /labs,
+// /aws-security-certification (handled specially in site-header). The rest are
+// plain links. Training folded into the Services dropdown (it's a B2B service);
+// Contact removed (the "Book a call" action button covers it); Internship +
+// Pricing promoted to first-class items.
 export const NAV: NavItem[] = [
   { label: "Services", href: "/services" },
-  { label: "Training", href: "/training" },
-  { label: "Hands-on Labs", href: "/labs" },
+  { label: "Labs", href: "/labs" },
   { label: "Certifications", href: "/aws-security-certification" },
-  { label: "Contact", href: "/contact" },
+  { label: "Internship", href: "/internship" },
+  { label: "Pricing", href: "/pricing" },
   { label: "Blog", href: "/blog" },
 ];
 
@@ -169,6 +174,7 @@ export const SERVICES_MENU: { label: string; desc: string; href: string }[] = [
   { label: "Application Security & DevSecOps", desc: "Secure the SDLC, from code to pipeline", href: "/services/application-security-devsecops" },
   { label: "Advanced & Emerging Security", desc: "AI/LLM security, Zero Trust & attack-surface management", href: "/services/advanced-emerging-security" },
   { label: "Governance, Risk & Compliance", desc: "SOC 2, ISO 27001, GDPR & DPDP readiness", href: "/services/governance-risk-compliance" },
+  { label: "Corporate Training", desc: "Team training across infra, cloud & SOC — tailored to your stack", href: "/training" },
 ];
 
 /* Why ShieldSync -------------------------------------------------------------- */
@@ -226,14 +232,18 @@ export const LAB_TRACKS: LabTrack[] = [
 
 /* Labs dropdown menu (header) ------------------------------------------------- */
 
+// SOC labs intentionally omitted until the track is live — no "coming soon"
+// items in the primary nav. The /labs/soc page still exists for direct links.
 export const LABS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
-  { label: "AWS Security Labs", desc: "Cloud security in real AWS — first lab free", href: "/labs-wizard?track=aws", tag: "Flagship" },
-  { label: "SOC Labs (SIEM + SOAR)", desc: "Threat detection & automated response", href: "/labs/soc" },
+  { label: "AWS Security Labs", desc: "Cloud security in real AWS — pick a lab or go monthly", href: "/labs-wizard?track=aws", tag: "Flagship" },
+  { label: "Start the free lab", desc: "Launch the S3 misconfiguration lab now — no card needed", href: "/free-lab" },
 ];
 
 /* Certifications dropdown — top-nav. Add new certs here as you ship landing pages. */
 export const CERTIFICATIONS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
   { label: "AWS Security Specialty (SCS-C02)", desc: "Every SCS-C02 domain mapped to a hands-on lab", href: "/aws-security-certification", tag: "Live" },
+  { label: "SCS-C02 study guide", desc: "6-week plan + domain-by-domain breakdown", href: "/blog/scs-c02-study-guide" },
+  { label: "SCS-C02 practice questions", desc: "50 realistic scenarios with explanations", href: "/blog/scs-c02-practice-questions" },
 ];
 
 /* Headline training offer ----------------------------------------------------- */
@@ -312,9 +322,10 @@ export const FOOTER_NAV: { heading: string; links: NavItem[] }[] = [
     heading: "Learn",
     links: [
       { label: "Start here", href: "/start-here" },
-      { label: "Training", href: "/training" },
+      { label: "Labs", href: "/labs" },
+      { label: "Pricing", href: "/pricing" },
       { label: "Internship", href: "/internship" },
-      { label: "Hands-on Labs", href: "/labs" },
+      { label: "Training", href: "/training" },
       { label: "Blog", href: "/blog" },
     ],
   },

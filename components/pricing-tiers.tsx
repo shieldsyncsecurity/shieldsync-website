@@ -1,0 +1,142 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Check, ArrowRight } from "@/components/icons";
+import {
+  AWS_PRICE,
+  AWS_MONTHLY,
+  FREE,
+  formatMoney,
+  type Currency,
+  type Money,
+} from "@/lib/region";
+
+/* Pricing tiers with a ₹/$ region toggle, mirroring the labs-wizard. The three
+ * lab tiers switch currency; the internship tier is billed in INR and shown as
+ * a fixed price with a USD-approx note. */
+
+type Tier = {
+  name: string;
+  price: (c: Currency) => string;
+  cadence?: string;
+  blurb: string;
+  points: string[];
+  cta: { label: string; href: string; external?: boolean };
+  badge?: string;
+  featured?: boolean;
+};
+
+const money = (m: Money, c: Currency) => formatMoney(m, c);
+
+const TIERS: Tier[] = [
+  {
+    name: "Free lab",
+    price: () => "Free",
+    blurb: "Your first beginner lab, on us.",
+    points: ["One real, isolated AWS account", "S3 misconfiguration scenario", "Auto-graded against live state", "No credit card"],
+    cta: { label: "Start free lab", href: "/free-lab" },
+  },
+  {
+    name: "Pay per lab",
+    price: (c) => `From ${money(AWS_PRICE.Beginner, c)}`,
+    blurb: "Buy only the labs you want.",
+    points: ["One-time payment per lab", "30 launches within 7 days", "Beginner to advanced", "Great for targeted practice"],
+    cta: { label: "Pick a lab", href: "/labs-wizard?track=aws&plan=per-lab" },
+  },
+  {
+    name: "Monthly",
+    price: (c) => `${money(AWS_MONTHLY, c)}`,
+    cadence: "/ month",
+    blurb: "Every AWS security lab, unlocked.",
+    points: ["All AWS labs included", "New labs as we ship them", "Unlimited launches (fair use)", "Cancel anytime"],
+    cta: { label: "Go monthly", href: "/labs-wizard?plan=monthly" },
+    badge: "Best value",
+    featured: true,
+  },
+  {
+    name: "Internship",
+    price: () => "₹9,999",
+    blurb: "8 weeks, mentored, job-ready.",
+    points: ["Structured 8-week program", "Hands-on AWS projects", "1:1 mentorship", "Completion certificate"],
+    cta: { label: "Apply now", href: "/internship" },
+  },
+];
+
+export function PricingTiers() {
+  const [currency, setCurrency] = useState<Currency>("USD");
+
+  // Region resolved client-side from the browser timezone (India → INR),
+  // identical to the labs-wizard. Manual toggle always overrides.
+  useEffect(() => {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+      if (/Kolkata|Calcutta/i.test(tz)) setCurrency("INR");
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const curBtn = (active: boolean) =>
+    `rounded-md px-3 py-1.5 transition ${active ? "bg-brand/10 text-brand-bright" : "text-muted hover:text-fg"}`;
+
+  return (
+    <div>
+      <div className="mb-6 flex items-center justify-center gap-3">
+        <span className="text-xs text-muted">Prices shown for your region</span>
+        <div className="inline-flex rounded-lg border border-line bg-panel p-0.5 text-sm font-semibold">
+          <button type="button" onClick={() => setCurrency("INR")} className={curBtn(currency === "INR")}>₹ INR</button>
+          <button type="button" onClick={() => setCurrency("USD")} className={curBtn(currency === "USD")}>$ USD</button>
+        </div>
+      </div>
+
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {TIERS.map((t) => (
+          <div
+            key={t.name}
+            className={`relative flex flex-col rounded-2xl border bg-panel p-6 ${
+              t.featured ? "border-brand ring-1 ring-brand/40" : "border-line"
+            }`}
+          >
+            {t.badge ? (
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-brand to-cyan px-3 py-0.5 text-[11px] font-bold text-white shadow-sm">
+                {t.badge}
+              </span>
+            ) : null}
+            <h3 className="text-base font-bold text-fg">{t.name}</h3>
+            <div className="mt-2 flex items-baseline gap-1">
+              <span className="text-3xl font-extrabold text-fg">{t.price(currency)}</span>
+              {t.cadence ? <span className="text-sm text-muted">{t.cadence}</span> : null}
+            </div>
+            <p className="mt-2 text-sm text-muted">{t.blurb}</p>
+            <ul className="mt-4 flex-1 space-y-2">
+              {t.points.map((p) => (
+                <li key={p} className="flex items-start gap-2 text-sm text-fg/85">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
+                  {p}
+                </li>
+              ))}
+            </ul>
+            <Link
+              href={t.cta.href}
+              className={`mt-5 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold transition ${
+                t.featured
+                  ? "glow-brand bg-gradient-to-r from-brand to-cyan text-white hover:brightness-110"
+                  : "border border-line-strong text-fg hover:bg-surface"
+              }`}
+            >
+              {t.cta.label}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        ))}
+      </div>
+
+      {currency === "USD" ? (
+        <p className="mt-4 text-center text-xs text-muted">
+          Internship is billed in INR (₹9,999 ≈ $120). Lab prices shown in USD; charged in your region&apos;s currency at checkout.
+        </p>
+      ) : null}
+    </div>
+  );
+}
