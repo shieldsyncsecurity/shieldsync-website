@@ -22,6 +22,12 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com`,
   `connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com${isDev ? " ws:" : ""}`,
+  // Allow YouTube iframe embeds (homepage hero + /free-lab + /aws-security-certification).
+  // Without this, frame-src falls back to default-src 'self' and the browser blocks
+  // every <iframe src="youtube.com/embed/..."> silently — no console error in many
+  // cases, just a blank player. youtube-nocookie included for the privacy-preserving
+  // variant the facade falls back to in some browsers.
+  "frame-src https://www.youtube.com https://www.youtube-nocookie.com",
   "upgrade-insecure-requests",
 ].join("; ");
 

@@ -33,7 +33,7 @@ import { VideoEmbed } from "@/components/video-embed";
 // ─────────────────────────────────────────────────────────────────────────
 type VideoPlacement = "hero" | "mid-page" | "off";
 const HOMEPAGE_VIDEO_ID: string = "XBLtcjQaXZE";
-const HOMEPAGE_VIDEO_PLACEMENT: VideoPlacement = "mid-page" as VideoPlacement;
+const HOMEPAGE_VIDEO_PLACEMENT: VideoPlacement = "hero" as VideoPlacement;
 const HOMEPAGE_VIDEO_TITLE = "See ShieldSync in action — full walkthrough";
 
 const VIDEO_IN_HERO = HOMEPAGE_VIDEO_PLACEMENT === "hero" && HOMEPAGE_VIDEO_ID !== "";
