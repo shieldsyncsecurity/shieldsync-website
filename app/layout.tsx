@@ -51,13 +51,17 @@ export const metadata: Metadata = {
     title: `${SITE.nameFull} — ${SITE.shortDesc}`,
     description: SITE.description,
     url: SITE.url,
-    // og:image is auto-wired from app/opengraph-image.tsx by Next.js
+    // Static OG card (prerendered from the old next/og design, now served as a
+    // plain file so the whole site can be a pure static export — see /public/og).
+    // Per-page OG PNGs are also in /public/og and can be wired into each section's
+    // metadata later; this is the site-wide default.
+    images: [{ url: "/og/default.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE.nameFull} — ${SITE.shortDesc}`,
     description: SITE.description,
-    // twitter:image is auto-wired from app/opengraph-image.tsx by Next.js
+    images: ["/og/default.png"],
     // Add site handle when you have one: site: "@shieldsyncsec"
   },
   robots: {

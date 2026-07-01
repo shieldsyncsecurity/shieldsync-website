@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV !== "production";
+// STATIC_EXPORT=true → build a pure static site (`out/`) for AWS Amplify hosting.
+// A static site is served entirely from CDN (no Worker, no Lambda), so the
+// Cloudflare Free-plan 10ms-CPU cap that caused Error 1102 cannot exist. Gated by
+// an env var so the Cloudflare/OpenNext build (which does NOT set it) is completely
+// unaffected during the migration — both targets build from one repo.
+// NOTE: static export can't run next.config `headers()`, so the security headers
+// below are mirrored in `customHttp.yml` (read by Amplify) for the exported build.
+const isExport = process.env.STATIC_EXPORT === "true";
 
 /**
  * Baseline Content-Security-Policy.
@@ -48,9 +56,22 @@ const nextConfig: NextConfig = {
   // Pin Turbopack's workspace root to THIS app (a sibling package-lock.json
   // higher up otherwise gets inferred as root and breaks module resolution).
   turbopack: { root: process.cwd() },
-  async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
-  },
+  ...(isExport
+    ? {
+        // Amplify static-export target: emit `out/`. `next/image` optimization
+        // needs a server, so serve images as-is from the CDN (unoptimized).
+        // `headers()` is intentionally omitted (unsupported in export) → served
+        // via customHttp.yml instead.
+        output: "export" as const,
+        images: { unoptimized: true },
+      }
+    : {
+        // Cloudflare/OpenNext target (current live site): keep serving the
+        // security headers from the framework.
+        async headers() {
+          return [{ source: "/:path*", headers: securityHeaders }];
+        },
+      }),
 };
 
 export default nextConfig;

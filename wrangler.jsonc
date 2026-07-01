@@ -4,12 +4,21 @@
   "name": "shieldsync-website",
   "compatibility_date": "2024-12-30",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
-  // NOTE on Error 1102 ("Worker exceeded resource limits"):
-  // The old `usage_model: "unbound"` we tried was deprecated/ignored, and the
-  // modern `limits.cpu_ms` requires the Workers Paid Standard plan ($5/mo).
-  // Free plan = 10ms CPU; that's what's tripping 1102 on heavy pages.
-  // Real fixes: (a) upgrade plan in CF dashboard, then re-add `limits.cpu_ms`;
-  // (b) keep heavy work out of the request path (precompute at build time).
+  // ── Error 1102 ("Worker exceeded resource limits") ──────────────────────────
+  // ROOT CAUSE (verified 2026-07-01): the site is already 100% static/SSG (0
+  // dynamic routes, OG images prerendered, no API routes) — NOT a code problem.
+  // 1102 is the Cloudflare FREE plan's hard 10ms-CPU cap being tripped by OpenNext
+  // worker COLD-START init on the first hits after a deploy (each deploy flushes
+  // warm isolates). Code can't lift that ceiling.
+  //
+  // FIX: upgrade the Cloudflare account to Workers Paid ($5/mo) → per-request CPU
+  // cap jumps 10ms → 30s and 1102 disappears. Applies to the live Worker
+  // immediately — no code change or redeploy needed.
+  //
+  // OPTIONAL after upgrading (cost-cap CPU so a runaway can't rack up charges):
+  // uncomment the line below and redeploy. `limits.cpu_ms` is REJECTED on Free, so
+  // keep it commented until the account is on Workers Paid.
+  // "limits": { "cpu_ms": 200 },
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
