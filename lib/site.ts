@@ -232,11 +232,12 @@ export const LAB_TRACKS: LabTrack[] = [
 
 /* Labs dropdown menu (header) ------------------------------------------------- */
 
-// SOC labs intentionally omitted until the track is live — no "coming soon"
-// items in the primary nav. The /labs/soc page still exists for direct links.
+// Two tracks in the primary nav: AWS (live, flagship) + SOC (coming soon → /labs/soc).
+// The free lab is reached via the top-right "Start free lab" button and "Start here",
+// so it no longer needs its own dropdown row.
 export const LABS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
   { label: "AWS Security Labs", desc: "Cloud security in real AWS — pick a lab or go monthly", href: "/labs-wizard?track=aws", tag: "Flagship" },
-  { label: "Start the free lab", desc: "Launch the S3 misconfiguration lab now — no card needed", href: "/free-lab" },
+  { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/labs/soc", tag: "Coming soon" },
 ];
 
 /* Certifications dropdown — top-nav. Add new certs here as you ship landing pages. */

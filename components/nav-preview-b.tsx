@@ -24,7 +24,7 @@ const FOR_BUSINESS: Group[] = [
 
 const FOR_LEARNERS: Group[] = [
   { label: "AWS Security Labs", href: "/labs-wizard?track=aws", desc: "Real isolated AWS — pick a lab or go monthly", tag: "Flagship" },
-  { label: "Start the free lab", href: "/free-lab", desc: "Launch the S3 lab now — no card needed" },
+  { label: "SOC Labs", href: "/labs/soc", desc: "Blue-team detection & response — SIEM & SOAR", tag: "Coming soon" },
   { label: "AWS Security Specialty (SCS-C02)", href: "/aws-security-certification", desc: "Every exam domain mapped to a hands-on lab" },
   { label: "Internship", href: "/internship", desc: "8 weeks, mentored, job-ready" },
   { label: "Start here roadmap", href: "/start-here", desc: "New to cloud security? Begin here" },
