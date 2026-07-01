@@ -8,6 +8,18 @@ import { webPageSchema, breadcrumbSchema, blogPostingSchema } from "@/lib/schema
 import Image from "next/image";
 import { BLOG_POSTS, SITE } from "@/lib/site";
 
+// Posts that map to a LIVE hands-on lab get a direct link to that lab page — a
+// targeted internal link that passes ranking signal to the lab page (and is better
+// UX than the generic wizard CTA). Only live labs (s3, iam) are mapped.
+const BLOG_LAB_MAP: Record<string, { slug: string; label: string }> = {
+  "aws-iam-least-privilege": { slug: "iam-privilege-escalation", label: "IAM Privilege Escalation" },
+  "iam-identity-center-attack-defense": { slug: "iam-privilege-escalation", label: "IAM Privilege Escalation" },
+  "cross-account-roles-confused-deputy": { slug: "iam-privilege-escalation", label: "IAM Privilege Escalation" },
+  "credential-compromise": { slug: "iam-privilege-escalation", label: "IAM Privilege Escalation" },
+  "imdsv2-ssrf-credential-theft": { slug: "iam-privilege-escalation", label: "IAM Privilege Escalation" },
+  "secure-s3-from-data-leaks": { slug: "s3-misconfiguration-audit", label: "S3 Misconfiguration Audit" },
+};
+
 export function generateStaticParams() {
   return BLOG_POSTS.map((p) => ({ slug: p.slug }));
 }
@@ -24,6 +36,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const post = BLOG_POSTS.find((p) => p.slug === slug);
   if (!post) notFound();
 
+  const relatedLab = BLOG_LAB_MAP[slug] ?? null;
   const url = `${SITE.url}/blog/${post.slug}`;
   const datePublished = new Date(`${post.date} 12:00 GMT`).toISOString().slice(0, 10);
   const schema = [
@@ -129,12 +142,21 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         </Container>
       </article>
 
-      <CtaBand
-        title="Learn it by doing"
-        subtitle="Pick your track and launch a hands-on lab in a real, isolated environment."
-        primary={{ label: "AWS Security Labs", href: "/labs-wizard?track=aws" }}
-        secondary={{ label: "SOC Labs (SIEM + SOAR)", href: "/labs/soc" }}
-      />
+      {relatedLab ? (
+        <CtaBand
+          title="Practise this in a real AWS account"
+          subtitle={`Don't just read it — the ${relatedLab.label} lab spins up a real, isolated AWS account in your browser so you find and fix it hands-on.`}
+          primary={{ label: `Open the ${relatedLab.label} lab`, href: `/labs/${relatedLab.slug}` }}
+          secondary={{ label: "Browse all labs", href: "/labs" }}
+        />
+      ) : (
+        <CtaBand
+          title="Learn it by doing"
+          subtitle="Pick your track and launch a hands-on lab in a real, isolated environment."
+          primary={{ label: "AWS Security Labs", href: "/labs-wizard?track=aws" }}
+          secondary={{ label: "SOC Labs (SIEM + SOAR)", href: "/labs/soc" }}
+        />
+      )}
     </>
   );
 }

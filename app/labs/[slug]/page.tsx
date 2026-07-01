@@ -71,6 +71,36 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
       { name: "Hands-on Labs", url: `${SITE.url}/labs` },
       { name: lab.title, url },
     ]),
+    // Course structured data (rich results in search). Only for LIVE AWS labs —
+    // SOC labs are "coming soon", so schema-ing them as an in-stock course would be wrong.
+    ...(soon
+      ? []
+      : [
+          {
+            "@context": "https://schema.org",
+            "@type": "Course",
+            name: `${lab.title} — AWS Security Lab`,
+            description: lab.desc,
+            url,
+            provider: { "@type": "Organization", name: "ShieldSync Security", url: SITE.url },
+            educationalLevel: lab.level,
+            inLanguage: "en",
+            teaches: lab.skills,
+            timeRequired: `PT${lab.minutes}M`,
+            offers: {
+              "@type": "Offer",
+              price: lab.free ? "0" : "99",
+              priceCurrency: "INR",
+              availability: "https://schema.org/InStock",
+              url,
+            },
+            hasCourseInstance: {
+              "@type": "CourseInstance",
+              courseMode: "online",
+              courseWorkload: `PT${lab.minutes}M`,
+            },
+          },
+        ]),
   ];
 
   return (
