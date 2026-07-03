@@ -1,14 +1,16 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Container, Button, SectionHeading } from "@/components/ui";
+import { Container, Button } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { FaqSection } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
-import { BlogCarousel } from "@/components/blog-carousel";
+import { RelatedBlogSection } from "@/components/related-blog-section";
+import { PricingTiers } from "@/components/pricing-tiers";
 import { webPageSchema, breadcrumbSchema, faqSchema, courseSchema, courseListSchema } from "@/lib/schema";
 import { ArrowRight, Check, Cloud, Radar } from "@/components/icons";
-import { AWS_LABS, SOC_LABS, FAQS, SITE, BLOG_POSTS } from "@/lib/site";
+import { AWS_LABS, SOC_LABS, FAQS, SITE } from "@/lib/site";
 import { AWS_PRICE } from "@/lib/region";
+import { levelBadgeClass, productBadgeClass } from "@/components/status-badge";
 
 export const metadata: Metadata = {
   title: "AWS Security Labs — Hands-on Cloud Security in Real AWS",
@@ -77,25 +79,9 @@ const PAGE_SCHEMA = [
   faqSchema(FAQS.labs),
 ];
 
-const LEVEL_STYLE: Record<string, string> = {
-  Beginner: "border-emerald-300 bg-emerald-50 text-emerald-700",
-  Intermediate: "border-amber-300 bg-amber-50 text-amber-700",
-  Advanced: "border-rose-300 bg-rose-50 text-rose-700",
-};
-
 const FREE_LAB_HREF = `${SITE.labsUrl}/labs/${AWS_LABS.find((l) => l.free)?.slug ?? "s3-misconfiguration-audit"}`;
 
-// Uniform button classes for all three pricing cards
-const PRICE_BTN = "mt-auto pt-5";
-
 export default function LabsPage() {
-  const KW = ["Cloud", "AWS", "Lab", "IAM", "S3"];
-  const matched = KW.length
-    ? BLOG_POSTS.filter((p) => KW.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
-    : [];
-  const rest = BLOG_POSTS.filter((p) => !matched.includes(p));
-  const posts = [...matched, ...rest].slice(0, 6);
-
   return (
     <>
       <SchemaOrg schema={PAGE_SCHEMA} />
@@ -180,7 +166,7 @@ export default function LabsPage() {
                           {lab.free && (
                             <span className="rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide bg-brand/10 text-brand-bright">Free</span>
                           )}
-                          <span className={`rounded border px-1.5 py-0.5 text-[10px] font-bold uppercase ${LEVEL_STYLE[lab.level]}`}>
+                          <span className={`rounded border px-1.5 py-0.5 text-[10px] font-bold uppercase ${levelBadgeClass(lab.level)}`}>
                             {lab.level}
                           </span>
                         </span>
@@ -220,9 +206,7 @@ export default function LabsPage() {
                   {SOC_LABS.map((lab) => (
                     <li key={lab.slug} className="flex items-center justify-between gap-3 rounded-lg border border-line bg-surface px-3 py-2.5">
                       <span className="text-sm font-semibold text-fg">{lab.title}</span>
-                      <span className={`shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-bold uppercase ${
-                        lab.product === "SIEM" ? "border-emerald-300 bg-emerald-50 text-emerald-700" : "border-violet-300 bg-violet-50 text-violet-700"
-                      }`}>
+                      <span className={`shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-bold uppercase ${productBadgeClass(lab.product)}`}>
                         {lab.product}
                       </span>
                     </li>
@@ -237,82 +221,16 @@ export default function LabsPage() {
             </Reveal>
           </div>
 
-          {/* Pricing — 3 uniform cards */}
+          {/* Pricing — shared with /pricing (components/pricing-tiers.tsx) so
+              copy and prices can't drift between the two pages. */}
           <Reveal>
             <p className="mt-10 mb-4 text-xs font-bold uppercase tracking-widest text-muted">Pricing</p>
-            <div className="grid gap-4 sm:grid-cols-3">
-
-              {/* Free */}
-              <div className="flex flex-col rounded-xl border border-line bg-panel p-5">
-                <p className="text-xs font-bold uppercase tracking-widest text-muted">Free</p>
-                <p className="mt-2 text-2xl font-extrabold text-fg">₹0</p>
-                <p className="mt-1 text-sm text-muted">First lab, no card needed.</p>
-                <ul className="mt-4 flex-1 grid gap-1.5 text-sm text-fg/85">
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand" />S3 misconfiguration lab</li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand" />Full graded experience</li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand" />No credit card required</li>
-                </ul>
-                <div className={PRICE_BTN}>
-                  <Button href={FREE_LAB_HREF} external variant="secondary" className="w-full">
-                    Start free lab <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-
-              {/* Per-lab — featured */}
-              <div className="flex flex-col rounded-xl border border-brand/40 bg-panel p-5 ring-1 ring-brand/20">
-                <p className="text-xs font-bold uppercase tracking-widest text-brand-bright">Pay per lab</p>
-                <p className="mt-2 text-2xl font-extrabold text-fg">From ₹99 <span className="text-base font-medium text-muted">/ $3</span></p>
-                <p className="mt-1 text-sm text-muted">Buy individual labs as you go.</p>
-                <ul className="mt-4 flex-1 grid gap-1.5 text-sm text-fg/85">
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand" />Any single lab</li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand" />Multiple re-launches (48h)</li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand" />Completion certificate</li>
-                </ul>
-                <div className={PRICE_BTN}>
-                  <Button href={SITE.startUrl} className="w-full">
-                    Buy a lab <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-
-              {/* Monthly */}
-              <div className="flex flex-col rounded-xl border border-line bg-panel p-5">
-                <p className="text-xs font-bold uppercase tracking-widest text-muted">Monthly pass</p>
-                <p className="mt-2 text-2xl font-extrabold text-fg">₹2,000 <span className="text-base font-medium text-muted">/ $25</span></p>
-                <p className="mt-1 text-sm text-muted">All labs, all levels, one month.</p>
-                <ul className="mt-4 flex-1 grid gap-1.5 text-sm text-fg/85">
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand" />Every available lab unlocked</li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand" />All tracks + levels</li>
-                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-brand" />Certificate per lab</li>
-                </ul>
-                <div className={PRICE_BTN}>
-                  <Button href={`${SITE.labsUrl}?checkout=monthly`} external variant="secondary" className="w-full">
-                    Get monthly pass <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-
-            </div>
+            <PricingTiers />
           </Reveal>
         </Container>
       </section>
 
-      {posts.length > 0 && (
-        <section className="border-b border-line py-8 sm:py-10">
-          <Container>
-            <div className="flex items-end justify-between gap-4">
-              <SectionHeading eyebrow="From the blog" title="Related reads" />
-              <Button href="/blog" variant="secondary" className="shrink-0 self-start">
-                All posts <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="mt-6">
-              <BlogCarousel posts={posts} />
-            </div>
-          </Container>
-        </section>
-      )}
+      <RelatedBlogSection keywords={["Cloud", "AWS", "Lab", "IAM", "S3"]} />
 
       <FaqSection faqs={FAQS.labs} title="Labs — frequently asked questions" />
     </>

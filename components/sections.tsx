@@ -1,4 +1,4 @@
-import { Container, SectionHeading } from "@/components/ui";
+import { Container, SectionHeading, Button } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { ArrowRight, WhatsApp } from "@/components/icons";
 import { CONTACT } from "@/lib/site";
@@ -6,13 +6,14 @@ import { CONTACT } from "@/lib/site";
 /* Brand-gradient call-to-action band (reused across pages).
  * Default secondary = WhatsApp. Pass `secondary` to override (e.g. SOC labs
  * link), or `secondary: null` to hide it entirely. */
-type Cta = { label: string; href: string };
+type Cta = { label: string; href: string; external?: boolean };
 export function CtaBand({
   title,
   subtitle,
   primary = { label: "Book a call", href: "/contact" },
   primaryCaption,
   secondary,
+  compact = false,
 }: {
   title: string;
   subtitle: string;
@@ -20,44 +21,48 @@ export function CtaBand({
   /** Optional small caption rendered under the primary button (e.g. honest CTA subtext). */
   primaryCaption?: string;
   secondary?: Cta | null;
+  /** Tighter version — smaller padding/type, for use as an inline mid-page CTA rather than the full closing band. */
+  compact?: boolean;
 }) {
   const showWhatsAppDefault = secondary === undefined;
   return (
-    <section className="py-10 sm:py-14">
+    <section className={compact ? "py-8 sm:py-10" : "py-10 sm:py-14"}>
       <Container>
         <Reveal>
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand to-cyan p-8 text-center text-white sm:p-12">
-            <h2 className="mx-auto max-w-2xl text-2xl font-extrabold tracking-tight sm:text-3xl">{title}</h2>
-            <p className="mx-auto mt-3 max-w-xl text-base leading-7 text-white/85">{subtitle}</p>
-            <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <div
+            className={`relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand to-cyan text-center text-white ${
+              compact ? "p-6 sm:p-8" : "p-8 sm:p-12"
+            }`}
+          >
+            <h2 className={`mx-auto max-w-2xl font-extrabold tracking-tight ${compact ? "text-xl sm:text-2xl" : "text-2xl sm:text-3xl"}`}>
+              {title}
+            </h2>
+            <p className={`mx-auto text-white/85 ${compact ? "mt-2 max-w-lg text-sm leading-6" : "mt-3 max-w-xl text-base leading-7"}`}>
+              {subtitle}
+            </p>
+            <div className={`flex flex-col items-center justify-center gap-3 sm:flex-row ${compact ? "mt-5" : "mt-6"}`}>
               <div className="flex flex-col items-center gap-1.5">
-                <a
-                  href={primary.href}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-base font-semibold text-brand-bright shadow-sm transition hover:bg-white/90"
-                >
+                <Button href={primary.href} external={primary.external} variant={compact ? "onGradientCompact" : "onGradient"}>
                   {primary.label}
                   <ArrowRight className="h-4 w-4" />
-                </a>
+                </Button>
                 {primaryCaption ? <p className="text-xs text-white/75">{primaryCaption}</p> : null}
               </div>
               {secondary ? (
-                <a
-                  href={secondary.href}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/50 px-6 py-3 text-base font-semibold text-white transition hover:bg-white/10"
-                >
+                <Button href={secondary.href} external={secondary.external} variant={compact ? "onGradientOutlineCompact" : "onGradientOutline"}>
                   {secondary.label}
                   <ArrowRight className="h-4 w-4" />
-                </a>
+                </Button>
               ) : showWhatsAppDefault ? (
-                <a
+                <Button
                   href={CONTACT.whatsappHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/50 px-6 py-3 text-base font-semibold text-white transition hover:bg-white/10"
+                  external
+                  newTab
+                  variant={compact ? "onGradientOutlineCompact" : "onGradientOutline"}
                 >
                   <WhatsApp className="h-4 w-4" />
                   WhatsApp
-                </a>
+                </Button>
               ) : null}
             </div>
           </div>

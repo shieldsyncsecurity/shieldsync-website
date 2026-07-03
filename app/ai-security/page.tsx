@@ -7,6 +7,7 @@ import { SchemaOrg } from "@/components/schema-org";
 import { webPageSchema, breadcrumbSchema, courseListSchema } from "@/lib/schema";
 import { ArrowRight, Shield, Lock, Code } from "@/components/icons";
 import { SITE, BLOG_POSTS } from "@/lib/site";
+import { InDevelopmentBadge } from "@/components/status-badge";
 
 export const metadata: Metadata = {
   title: "AI & LLM Security Training — Hands-on, on AWS",
@@ -161,9 +162,7 @@ export default function AiSecurityPage() {
                 <div>
                   <p className="flex items-center gap-2 text-sm font-bold text-fg">
                     What&apos;s coming
-                    <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-700">
-                      In development
-                    </span>
+                    <InDevelopmentBadge />
                   </p>
                   <p className="mt-1 text-sm leading-6 text-muted">
                     A hands-on Amazon Bedrock security lab — find and fix real IAM, Guardrails, and data-isolation

@@ -3,7 +3,7 @@ import { Container, Card, Button, SectionHeading } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { FaqSection, CtaBand } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
-import { BlogCarousel } from "@/components/blog-carousel";
+import { RelatedBlogSection } from "@/components/related-blog-section";
 import { VideoEmbed } from "@/components/video-embed";
 import {
   webPageSchema,
@@ -15,7 +15,7 @@ import {
 const FREE_LAB_VIDEO_ID = "XBLtcjQaXZE";
 const FREE_LAB_VIDEO_TITLE = "Watch a real AWS security lab end-to-end";
 import { ArrowRight, Check, Cloud, Shield, Lock } from "@/components/icons";
-import { SITE, BLOG_POSTS } from "@/lib/site";
+import { SITE } from "@/lib/site";
 
 const PAGE_URL = `${SITE.url}/free-lab`;
 const LAUNCH_URL =
@@ -123,13 +123,6 @@ const FAQS = [
 ];
 
 export default function FreeLabPage() {
-  const KW = ["s3", "iam", "encryption", "kms", "aws", "cloud"];
-  const matched = BLOG_POSTS.filter((p) =>
-    KW.some((k) => p.category.toLowerCase().includes(k.toLowerCase())),
-  );
-  const rest = BLOG_POSTS.filter((p) => !matched.includes(p));
-  const posts = [...matched, ...rest].slice(0, 6);
-
   const breadcrumbs = [
     { name: "Home", url: SITE.url },
     { name: "Free AWS Security Lab", url: PAGE_URL },
@@ -315,24 +308,10 @@ export default function FreeLabPage() {
       </section>
 
       {/* Related blog */}
-      {posts.length > 0 && (
-        <section className="border-b border-line py-8 sm:py-10">
-          <Container>
-            <div className="flex items-end justify-between gap-4">
-              <SectionHeading
-                eyebrow="From the blog"
-                title="Read more on AWS security"
-              />
-              <Button href="/blog" variant="secondary" className="shrink-0 self-start">
-                All posts <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="mt-6">
-              <BlogCarousel posts={posts} />
-            </div>
-          </Container>
-        </section>
-      )}
+      <RelatedBlogSection
+        keywords={["s3", "iam", "encryption", "kms", "aws", "cloud"]}
+        title="Read more on AWS security"
+      />
 
       {/* See it in action — full walkthrough (4-5 min) for the qualified
           visitor who's already landed on the free-lab page. Anchored by

@@ -4,8 +4,8 @@ import { Container, Button, SectionHeading, Card } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { LabWorkspacePreview } from "@/components/lab-workspace-preview";
 import { ArrowRight, Check, Shield, Cloud, Compliance, Radar, Cap, Flask, Code, Lock } from "@/components/icons";
-import { SERVICES, WHY, SOCIAL_PROOF, SITE, BLOG_POSTS } from "@/lib/site";
-import { BlogCarousel } from "@/components/blog-carousel";
+import { SERVICES, WHY, SOCIAL_PROOF, SITE } from "@/lib/site";
+import { RelatedBlogSection } from "@/components/related-blog-section";
 import { VideoEmbed } from "@/components/video-embed";
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -368,24 +368,7 @@ export default function HomePage() {
       </section>
 
       {/* ------------------------------------------------------------ Blog posts */}
-      <section className="border-b border-line py-8 sm:py-10">
-        <Container>
-          <Reveal>
-            <div className="flex items-end justify-between gap-4">
-              <SectionHeading
-                eyebrow="From the blog"
-                title="Insights on cloud security"
-              />
-              <Button href="/blog" variant="secondary" className="shrink-0 self-start">
-                All posts <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </Reveal>
-          <div className="mt-6">
-            <BlogCarousel posts={BLOG_POSTS.slice(0, 6)} />
-          </div>
-        </Container>
-      </section>
+      <RelatedBlogSection title="Insights on cloud security" />
 
     </>
   );

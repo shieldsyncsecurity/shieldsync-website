@@ -4,11 +4,11 @@ import { Container, Card, SectionHeading, Button } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { FaqSection } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
-import { BlogCarousel } from "@/components/blog-carousel";
+import { RelatedBlogSection } from "@/components/related-blog-section";
 import { webPageSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { ArrowRight, Check, Cloud, Shield, Flask, Compliance, Cap, Radar, Code, Lock } from "@/components/icons";
 import { SERVICE_PAGES } from "@/lib/service-pages";
-import { SITE, CONTACT, BLOG_POSTS } from "@/lib/site";
+import { SITE, CONTACT } from "@/lib/site";
 
 const ICONS = { cloud: Cloud, shield: Shield, flask: Flask, compliance: Compliance, cap: Cap, radar: Radar, code: Code, lock: Lock } as const;
 const WA_BASE = CONTACT.whatsappHref.split("?")[0];
@@ -22,15 +22,6 @@ const SERVICE_BLOG_KEYWORDS: Record<string, string[]> = {
   "advanced-emerging-security": ["AI Security", "AI", "LLM", "Agent", "RAG", "Bedrock", "Zero Trust"],
   "governance-risk-compliance": ["Compliance", "DPDP", "GDPR", "ISO", "SOC 2"],
 };
-
-function relatedPosts(slug: string, limit = 6) {
-  const kw = SERVICE_BLOG_KEYWORDS[slug] || [];
-  const matched = kw.length
-    ? BLOG_POSTS.filter((p) => kw.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
-    : [];
-  const rest = BLOG_POSTS.filter((p) => !matched.includes(p));
-  return [...matched, ...rest].slice(0, limit);
-}
 
 export function generateStaticParams() {
   return SERVICE_PAGES.map((p) => ({ slug: p.slug }));
@@ -86,7 +77,6 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
     faqSchema(p.faqs),
   ];
   const quoteHref = `${WA_BASE}?text=${encodeURIComponent(`Hi ShieldSync — I'd like to talk about ${p.title}.`)}`;
-  const blogs = relatedPosts(slug);
 
   return (
     <>
@@ -198,23 +188,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
       <FaqSection faqs={p.faqs} title={`${p.title} — FAQs`} />
 
       {/* Related blog posts */}
-      {blogs.length > 0 && (
-        <section className="border-b border-line py-8 sm:py-10">
-          <Container>
-            <Reveal>
-              <div className="flex items-end justify-between gap-4">
-                <SectionHeading eyebrow="From the blog" title="Related reads" />
-                <Button href="/blog" variant="secondary" className="shrink-0 self-start">
-                  All posts <ArrowRight className="h-4 w-4" />
-                </Button>
-              </div>
-            </Reveal>
-            <div className="mt-6">
-              <BlogCarousel posts={blogs} />
-            </div>
-          </Container>
-        </section>
-      )}
+      <RelatedBlogSection keywords={SERVICE_BLOG_KEYWORDS[slug]} />
 
       {/* Compact CTA */}
       <section className="py-8 sm:py-10">

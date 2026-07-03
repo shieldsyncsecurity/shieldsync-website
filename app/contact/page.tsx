@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Container, SectionHeading, Button } from "@/components/ui";
+import { Container } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { PageHero } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
-import { BlogCarousel } from "@/components/blog-carousel";
+import { RelatedBlogSection } from "@/components/related-blog-section";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
-import { ArrowRight, Mail, WhatsApp, Phone, Pin } from "@/components/icons";
+import { Mail, WhatsApp, Phone, Pin } from "@/components/icons";
 import { ContactForm } from "@/components/contact-form";
-import { CONTACT, SITE, BLOG_POSTS } from "@/lib/site";
+import { CONTACT, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact ShieldSync Security",
@@ -35,13 +35,6 @@ const PAGE_SCHEMA = [
 ];
 
 export default function ContactPage() {
-  const KW: string[] = [];
-  const matched = KW.length
-    ? BLOG_POSTS.filter((p) => KW.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
-    : [];
-  const rest = BLOG_POSTS.filter((p) => !matched.includes(p));
-  const posts = [...matched, ...rest].slice(0, 6);
-
   return (
     <>
       <SchemaOrg schema={PAGE_SCHEMA} />
@@ -112,21 +105,7 @@ export default function ContactPage() {
         </Container>
       </section>
 
-      {posts.length > 0 && (
-        <section className="border-b border-line py-8 sm:py-10">
-          <Container>
-            <div className="flex items-end justify-between gap-4">
-              <SectionHeading eyebrow="From the blog" title="Related reads" />
-              <Button href="/blog" variant="secondary" className="shrink-0 self-start">
-                All posts <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="mt-6">
-              <BlogCarousel posts={posts} />
-            </div>
-          </Container>
-        </section>
-      )}
+      <RelatedBlogSection />
     </>
   );
 }

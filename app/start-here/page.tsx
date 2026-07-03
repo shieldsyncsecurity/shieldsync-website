@@ -1,13 +1,14 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Container, Button, Card, SectionHeading } from "@/components/ui";
+import { Container, Button, Card } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { CtaBand } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
-import { BlogCarousel } from "@/components/blog-carousel";
+import { RelatedBlogSection } from "@/components/related-blog-section";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
 import { Check, ArrowRight, Shield, Cap } from "@/components/icons";
-import { ROADMAP, ROADMAP_ROLES, SITE, BLOG_POSTS } from "@/lib/site";
+import { ROADMAP, ROADMAP_ROLES, SITE } from "@/lib/site";
+import { ROADMAP_LEVEL_TONE, toneClass, toneDotClass } from "@/components/status-badge";
 
 export const metadata: Metadata = {
   title: "Cloud Security Engineer Roadmap — Hands-on AWS Security",
@@ -56,13 +57,6 @@ const PAGE_SCHEMA = [
   ]),
 ];
 
-const LEVEL: Record<string, { dot: string; chip: string }> = {
-  Beginner:     { dot: "bg-emerald-500", chip: "border-emerald-300 bg-emerald-50 text-emerald-700" },
-  Intermediate: { dot: "bg-amber-500",   chip: "border-amber-300 bg-amber-50 text-amber-700" },
-  Advanced:     { dot: "bg-rose-500",    chip: "border-rose-300 bg-rose-50 text-rose-700" },
-  SOC:          { dot: "bg-violet-500",  chip: "border-violet-300 bg-violet-50 text-violet-700" },
-};
-
 const WHO = [
   { t: "Complete beginners", d: "Never touched AWS or security? Stage 1 assumes nothing." },
   { t: "Developers & IT pros", d: "Add cloud-security skills employers test for — with labs to prove them." },
@@ -70,13 +64,6 @@ const WHO = [
 ];
 
 export default function StartHerePage() {
-  const KW = ["Cloud", "AWS", "Training", "IAM", "Career"];
-  const matched = KW.length
-    ? BLOG_POSTS.filter((p) => KW.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
-    : [];
-  const rest = BLOG_POSTS.filter((p) => !matched.includes(p));
-  const posts = [...matched, ...rest].slice(0, 6);
-
   return (
     <>
       <SchemaOrg schema={PAGE_SCHEMA} />
@@ -136,7 +123,7 @@ export default function StartHerePage() {
         <Container>
           <ol className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {ROADMAP.map((s, i) => {
-              const lv = LEVEL[s.level];
+              const tone = ROADMAP_LEVEL_TONE[s.level];
               return (
                 <Reveal key={s.step} delay={i * 70} as="li" className="h-full">
                   <Card className="flex h-full flex-col p-5">
@@ -147,8 +134,8 @@ export default function StartHerePage() {
                       <span className="text-sm font-semibold text-muted">{s.time}</span>
                     </div>
 
-                    <span className={`mt-3 inline-flex w-fit items-center gap-1.5 rounded-md border px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide ${lv.chip}`}>
-                      <span className={`h-1.5 w-1.5 rounded-full ${lv.dot}`} />
+                    <span className={`mt-3 inline-flex w-fit items-center gap-1.5 rounded-md border px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide ${toneClass(tone)}`}>
+                      <span className={`h-1.5 w-1.5 rounded-full ${toneDotClass(tone)}`} />
                       {s.level === "SOC" ? "SOC track" : `${s.level} labs`}
                     </span>
                     <h3 className="mt-2 text-base font-bold text-fg">{s.title}</h3>
@@ -210,21 +197,7 @@ export default function StartHerePage() {
         </Container>
       </section>
 
-      {posts.length > 0 && (
-        <section className="border-b border-line py-8 sm:py-10">
-          <Container>
-            <div className="flex items-end justify-between gap-4">
-              <SectionHeading eyebrow="From the blog" title="Related reads" />
-              <Button href="/blog" variant="secondary" className="shrink-0 self-start">
-                All posts <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="mt-6">
-              <BlogCarousel posts={posts} />
-            </div>
-          </Container>
-        </section>
-      )}
+      <RelatedBlogSection keywords={["Cloud", "AWS", "Training", "IAM", "Career"]} />
 
       <CtaBand
         title="Start Stage 1 — free"

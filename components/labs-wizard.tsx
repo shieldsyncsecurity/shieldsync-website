@@ -5,9 +5,9 @@ import { Container, Card, Button } from "@/components/ui";
 import { Check, ArrowRight, Shield, Cloud, Radar } from "@/components/icons";
 import { AWS_LABS, SOC_LABS, SITE } from "@/lib/site";
 import { AWS_PRICE, SOC_PRICE, AWS_MONTHLY, SOC_MONTHLY, FREE, formatMoney, type Money, type Currency } from "@/lib/region";
+import { levelDotClass, toneDotClass, PRODUCT_TONE } from "@/components/status-badge";
 
 const FREE_SLUG = "s3-misconfiguration-audit";
-const LEVEL_DOT: Record<string, string> = { Beginner: "bg-emerald-500", Intermediate: "bg-amber-500", Advanced: "bg-rose-500" };
 
 type Track = "aws" | "soc" | null;
 type Mode = "per-lab" | "monthly" | "free" | null;
@@ -57,12 +57,12 @@ export function LabsWizard({
     if (track === "soc")
       return SOC_LABS.map((l) => ({
         slug: l.slug, title: l.title, desc: l.desc, tags: l.tags,
-        badge: l.product, dot: l.product === "SIEM" ? "bg-emerald-500" : "bg-violet-500",
+        badge: l.product, dot: toneDotClass(PRODUCT_TONE[l.product] ?? "emerald"),
         price: SOC_PRICE, free: false,
       }));
     return AWS_LABS.map((l) => ({
       slug: l.slug, title: l.title, desc: l.desc, tags: l.tags,
-      badge: l.level, dot: LEVEL_DOT[l.level],
+      badge: l.level, dot: levelDotClass(l.level),
       price: l.slug === FREE_SLUG ? FREE : AWS_PRICE[l.level], free: l.slug === FREE_SLUG,
     }));
   }, [track]);

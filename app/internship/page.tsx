@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Container, Card, Pill, SectionHeading, Button } from "@/components/ui";
+import { Container, Card, Pill, Button, SectionHeading } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { ArrowRight, Check, Cloud, Flask, Radar, Cap } from "@/components/icons";
 import { SchemaOrg } from "@/components/schema-org";
-import { BlogCarousel } from "@/components/blog-carousel";
+import { RelatedBlogSection } from "@/components/related-blog-section";
 import { webPageSchema, breadcrumbSchema, internshipProgramSchema } from "@/lib/schema";
 import { InternshipApplyForm } from "@/components/internship-apply-form";
 import { InternshipPlanDownload } from "@/components/internship-plan-download";
-import { INTERNSHIP, SITE, BLOG_POSTS } from "@/lib/site";
+import { INTERNSHIP, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Cybersecurity Internship in India — 8 Weeks, AWS Labs, Certificate",
@@ -59,13 +59,6 @@ const PAGE_SCHEMA = [
 ];
 
 export default function InternshipPage() {
-  const KW = ["Training", "Cloud", "AWS", "Career"];
-  const matched = KW.length
-    ? BLOG_POSTS.filter((p) => KW.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
-    : [];
-  const rest = BLOG_POSTS.filter((p) => !matched.includes(p));
-  const posts = [...matched, ...rest].slice(0, 6);
-
   return (
     <>
       <SchemaOrg schema={PAGE_SCHEMA} />
@@ -250,21 +243,7 @@ export default function InternshipPage() {
         </Container>
       </section>
 
-      {posts.length > 0 && (
-        <section className="border-b border-line py-8 sm:py-10">
-          <Container>
-            <div className="flex items-end justify-between gap-4">
-              <SectionHeading eyebrow="From the blog" title="Related reads" />
-              <Button href="/blog" variant="secondary" className="shrink-0 self-start">
-                All posts <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="mt-6">
-              <BlogCarousel posts={posts} />
-            </div>
-          </Container>
-        </section>
-      )}
+      <RelatedBlogSection keywords={["Training", "Cloud", "AWS", "Career"]} />
     </>
   );
 }

@@ -3,14 +3,15 @@ import Link from "next/link";
 import { Container, Card, Button, SectionHeading } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { SchemaOrg } from "@/components/schema-org";
-import { BlogCarousel } from "@/components/blog-carousel";
+import { RelatedBlogSection } from "@/components/related-blog-section";
 import { VideoEmbed } from "@/components/video-embed";
 import { webPageSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
 
 const CERT_VIDEO_ID = "XBLtcjQaXZE";
 const CERT_VIDEO_TITLE = "Inside a hands-on AWS Security Specialty lab";
 import { ArrowRight, Check, Cloud } from "@/components/icons";
-import { AWS_LABS, SITE, BLOG_POSTS } from "@/lib/site";
+import { AWS_LABS, SITE } from "@/lib/site";
+import { FreeBadge } from "@/components/status-badge";
 
 const PAGE_URL = `${SITE.url}/aws-security-certification`;
 
@@ -144,11 +145,6 @@ const PAGE_SCHEMA = [
 ];
 
 export default function AwsSecurityCertificationPage() {
-  const KW = ["Cloud", "AWS", "IAM", "S3", "KMS", "GuardDuty"];
-  const matched = BLOG_POSTS.filter((p) => KW.some((k) => p.category.toLowerCase().includes(k.toLowerCase())));
-  const rest = BLOG_POSTS.filter((p) => !matched.includes(p));
-  const posts = [...matched, ...rest].slice(0, 6);
-
   return (
     <>
       <SchemaOrg schema={PAGE_SCHEMA} />
@@ -261,11 +257,7 @@ export default function AwsSecurityCertificationPage() {
                               <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand" />
                               <span>
                                 {l.title}
-                                {l.slug === "s3-misconfiguration-audit" && (
-                                  <span className="ml-2 rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">
-                                    FREE
-                                  </span>
-                                )}
+                                {l.slug === "s3-misconfiguration-audit" && <FreeBadge className="ml-2" />}
                               </span>
                             </Link>
                           </li>
@@ -386,21 +378,10 @@ export default function AwsSecurityCertificationPage() {
       </section>
 
       {/* Related blog */}
-      {posts.length > 0 && (
-        <section className="border-b border-line py-8 sm:py-10">
-          <Container>
-            <div className="flex items-end justify-between gap-4">
-              <SectionHeading eyebrow="From the blog" title="Related reads for SCS-C03 prep (upgraded from SCS-C02)" />
-              <Button href="/blog" variant="secondary" className="shrink-0 self-start">
-                All posts <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="mt-6">
-              <BlogCarousel posts={posts} />
-            </div>
-          </Container>
-        </section>
-      )}
+      <RelatedBlogSection
+        keywords={["Cloud", "AWS", "IAM", "S3", "KMS", "GuardDuty"]}
+        title="Related reads for SCS-C03 prep (upgraded from SCS-C02)"
+      />
 
       {/* CTA */}
       <section className="py-8 sm:py-10">

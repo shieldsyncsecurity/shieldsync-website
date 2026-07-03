@@ -1,14 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Container, Button, SectionHeading } from "@/components/ui";
+import { Container, Button } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { SchemaOrg } from "@/components/schema-org";
-import { BlogCarousel } from "@/components/blog-carousel";
+import { RelatedBlogSection } from "@/components/related-blog-section";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
 import { ArrowRight, Radar, Flask, Shield } from "@/components/icons";
-import { SOC_LABS, SITE, BLOG_POSTS } from "@/lib/site";
+import { SOC_LABS, SITE } from "@/lib/site";
 import { SocWaitlistForm } from "@/components/soc-waitlist-form";
+import { productBadgeClass } from "@/components/status-badge";
 
 export const metadata: Metadata = {
   title: "SOC Labs — SIEM & SOAR, Hands-on (Detection & Response)",
@@ -47,7 +48,7 @@ const GROUPS = [
     blurb: "Build high-signal detections, hunt through telemetry, and turn noisy logs into alerts that actually matter.",
     badge: "border-emerald-400/50 bg-emerald-600/80",
     border: "border-emerald-400/60",
-    labelColor: "border-emerald-300 bg-emerald-50 text-emerald-700",
+    labelColor: productBadgeClass("SIEM"),
     icon: Radar,
   },
   {
@@ -58,19 +59,12 @@ const GROUPS = [
     blurb: "Wire detections to automated playbooks, auto-enrich alerts, and cut mean-time-to-respond to minutes.",
     badge: "border-violet-400/50 bg-violet-600/80",
     border: "border-violet-400/60",
-    labelColor: "border-violet-300 bg-violet-50 text-violet-700",
+    labelColor: productBadgeClass("SOAR"),
     icon: Flask,
   },
 ] as const;
 
 export default function SocLabsPage() {
-  const KW = ["SOC", "SIEM", "SOAR", "Detection", "Incident"];
-  const matched = KW.length
-    ? BLOG_POSTS.filter((p) => KW.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
-    : [];
-  const rest = BLOG_POSTS.filter((p) => !matched.includes(p));
-  const posts = [...matched, ...rest].slice(0, 6);
-
   return (
     <>
       <SchemaOrg schema={PAGE_SCHEMA} />
@@ -189,21 +183,7 @@ export default function SocLabsPage() {
         </Container>
       </section>
 
-      {posts.length > 0 && (
-        <section className="border-b border-line py-8 sm:py-10">
-          <Container>
-            <div className="flex items-end justify-between gap-4">
-              <SectionHeading eyebrow="From the blog" title="Related reads" />
-              <Button href="/blog" variant="secondary" className="shrink-0 self-start">
-                All posts <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="mt-6">
-              <BlogCarousel posts={posts} />
-            </div>
-          </Container>
-        </section>
-      )}
+      <RelatedBlogSection keywords={["SOC", "SIEM", "SOAR", "Detection", "Incident"]} />
     </>
   );
 }

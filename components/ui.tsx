@@ -18,19 +18,26 @@ export function Container({
 type ButtonProps = {
   href: string;
   children: ReactNode;
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "onGradient" | "onGradientOutline" | "onGradientCompact" | "onGradientOutlineCompact";
   className?: string;
   external?: boolean;
   newTab?: boolean;
 };
 
-const BUTTON_BASE =
-  "inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-base font-semibold transition duration-200 focus-visible:outline-2";
+const BUTTON_BASE = "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition duration-200 focus-visible:outline-2";
 
 const BUTTON_VARIANTS: Record<NonNullable<ButtonProps["variant"]>, string> = {
-  primary: "glow-brand bg-gradient-to-r from-brand to-cyan text-white hover:brightness-110 active:brightness-95",
-  secondary: "border border-line bg-panel text-fg shadow-sm hover:border-line-strong hover:bg-surface",
-  ghost: "text-muted hover:text-fg",
+  primary: "px-5 py-3 text-base glow-brand bg-gradient-to-r from-brand to-cyan text-white hover:brightness-110 active:brightness-95",
+  secondary: "px-5 py-3 text-base border border-line bg-panel text-fg shadow-sm hover:border-line-strong hover:bg-surface",
+  ghost: "px-5 py-3 text-base text-muted hover:text-fg",
+  // For use on a brand-gradient background (e.g. CtaBand) — a solid white pill
+  // and a transparent/white-bordered outline, instead of the default variants
+  // (which assume a plain page background). "Compact" pairs are identical but
+  // smaller, for CtaBand's `compact` mode.
+  onGradient: "px-6 py-3 text-base bg-white text-brand-bright shadow-sm hover:bg-white/90",
+  onGradientOutline: "px-6 py-3 text-base border border-white/50 text-white hover:bg-white/10",
+  onGradientCompact: "px-5 py-2.5 text-sm bg-white text-brand-bright shadow-sm hover:bg-white/90",
+  onGradientOutlineCompact: "px-5 py-2.5 text-sm border border-white/50 text-white hover:bg-white/10",
 };
 
 export function Button({ href, children, variant = "primary", className = "", external, newTab }: ButtonProps) {
