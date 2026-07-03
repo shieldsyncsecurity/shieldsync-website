@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Container, Card, Button } from "@/components/ui";
 import { Check, ArrowRight, Shield, Cloud, Radar } from "@/components/icons";
 import { AWS_LABS, SOC_LABS, SITE } from "@/lib/site";
-import { AWS_PRICE, SOC_PRICE, AWS_MONTHLY, SOC_MONTHLY, FREE, formatMoney, type Money, type Currency } from "@/lib/region";
+import { AWS_PRICE, SOC_PRICE, AWS_MONTHLY, SOC_MONTHLY, FREE, awsLabPrice, formatMoney, type Money, type Currency } from "@/lib/region";
 import { levelDotClass, toneDotClass, PRODUCT_TONE } from "@/components/status-badge";
 
 const FREE_SLUG = "s3-misconfiguration-audit";
@@ -63,7 +63,7 @@ export function LabsWizard({
     return AWS_LABS.map((l) => ({
       slug: l.slug, title: l.title, desc: l.desc, tags: l.tags,
       badge: l.level, dot: levelDotClass(l.level),
-      price: l.slug === FREE_SLUG ? FREE : AWS_PRICE[l.level], free: l.slug === FREE_SLUG,
+      price: l.slug === FREE_SLUG ? FREE : awsLabPrice(l.slug, l.level), free: l.slug === FREE_SLUG,
     }));
   }, [track]);
 

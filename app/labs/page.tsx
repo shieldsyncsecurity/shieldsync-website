@@ -9,7 +9,7 @@ import { PricingTiers } from "@/components/pricing-tiers";
 import { webPageSchema, breadcrumbSchema, faqSchema, courseSchema, courseListSchema } from "@/lib/schema";
 import { ArrowRight, Check, Cloud, Radar } from "@/components/icons";
 import { AWS_LABS, SOC_LABS, FAQS, SITE } from "@/lib/site";
-import { AWS_PRICE } from "@/lib/region";
+import { awsLabPrice } from "@/lib/region";
 import { levelBadgeClass, productBadgeClass } from "@/components/status-badge";
 
 export const metadata: Metadata = {
@@ -73,7 +73,7 @@ const PAGE_SCHEMA = [
       description: l.desc,
       level: l.level,
       free: l.free,
-      priceINR: AWS_PRICE[l.level]?.inr,
+      priceINR: awsLabPrice(l.slug, l.level)?.inr,
     })
   ),
   faqSchema(FAQS.labs),
