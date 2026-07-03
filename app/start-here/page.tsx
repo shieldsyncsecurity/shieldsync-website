@@ -229,7 +229,7 @@ export default function StartHerePage() {
       <CtaBand
         title="Start Stage 1 — free"
         subtitle="Your first cloud security lab is on us. No account, no setup — just a browser."
-        primary={{ label: "Start free lab", href: SITE.startUrl }}
+        primary={{ label: "Start the free lab", href: SITE.startUrl }}
       />
     </>
   );

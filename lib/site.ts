@@ -238,6 +238,7 @@ export const LAB_TRACKS: LabTrack[] = [
 export const LABS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
   { label: "AWS Security Labs", desc: "Cloud security in real AWS — pick a lab or go monthly", href: "/labs-wizard?track=aws", tag: "Flagship" },
   { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/labs/soc", tag: "Coming soon" },
+  { label: "AI Security", desc: "Bedrock, LLM apps, agents — guides + labs", href: "/ai-security" },
 ];
 
 /* Certifications dropdown — top-nav. Add new certs here as you ship landing pages. */

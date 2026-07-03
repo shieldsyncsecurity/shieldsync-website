@@ -22,7 +22,7 @@ const LAUNCH_URL =
   "https://labs.shieldsyncsecurity.com/labs/s3-misconfiguration-audit?intent=launch";
 
 export const metadata: Metadata = {
-  title: "Free AWS Security Lab — Real Isolated AWS Account | ShieldSync",
+  title: "Free AWS Security Lab — Real Isolated AWS Account, No Credit Card | ShieldSync",
   description:
     "A 30-minute free AWS security lab in a real, isolated AWS account. Spot public S3 buckets, fix IAM, enforce KMS. No credit card, no setup, auto-wiped.",
   keywords: [
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/free-lab" },
   openGraph: {
-    title: "Free AWS Security Lab — Real Isolated AWS Account",
+    title: "Free AWS Security Lab — Real Isolated AWS Account, No Credit Card",
     description:
       "30 minutes in a real, isolated AWS account. Find the misconfigured S3 bucket, fix IAM, enforce KMS. Free, no card, auto-graded.",
     url: PAGE_URL,
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free AWS Security Lab — Real Isolated AWS Account",
+    title: "Free AWS Security Lab — Real Isolated AWS Account, No Credit Card",
     description:
       "30 min in a real AWS account. Find public S3, fix IAM, enforce KMS. Free, auto-graded.",
   },

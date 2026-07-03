@@ -123,7 +123,7 @@ export default function LabsPage() {
               </div>
               <div className="flex shrink-0 gap-2">
                 <Button href={FREE_LAB_HREF} external>
-                  Start free <ArrowRight className="h-4 w-4" />
+                  Start the free lab <ArrowRight className="h-4 w-4" />
                 </Button>
                 <Button href={SITE.startUrl} variant="secondary">
                   Pricing
@@ -254,7 +254,7 @@ export default function LabsPage() {
                 </ul>
                 <div className={PRICE_BTN}>
                   <Button href={FREE_LAB_HREF} external variant="secondary" className="w-full">
-                    Start free lab <ArrowRight className="h-4 w-4" />
+                    Start the free lab <ArrowRight className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
