@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui";
 import { PageHero, CtaBand } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
-import { BlogGrid } from "@/components/blog-grid";
+import { BlogExplorer } from "@/components/blog-explorer";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
 import { BLOG_POSTS, SITE } from "@/lib/site";
 
@@ -48,7 +48,7 @@ export default function BlogPage() {
 
       <section className="py-6 sm:py-8">
         <Container>
-          <BlogGrid posts={BLOG_POSTS} />
+          <BlogExplorer posts={BLOG_POSTS} />
         </Container>
       </section>
 
