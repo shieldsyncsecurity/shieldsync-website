@@ -9,9 +9,8 @@ import { WhatsAppFab } from "@/components/whatsapp-fab";
 import { CookieConsent } from "@/components/cookie-consent";
 import { Analytics } from "@/components/analytics";
 
-// Routes that render fully standalone (their own chrome).
-// /v4 = preview of the new enterprise theme; brings its own header + footer.
-const BARE_PREFIXES: string[] = ["/v4"];
+// Routes that render fully standalone (their own chrome). None currently.
+const BARE_PREFIXES: string[] = [];
 
 export function SiteChrome({ children }: { children: ReactNode }) {
   const pathname = usePathname();
