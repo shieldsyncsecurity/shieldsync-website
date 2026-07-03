@@ -114,7 +114,7 @@ export default function LabsPage() {
                   <span className="h-1 w-1 rounded-full bg-brand" />
                   Hands-on labs
                 </span>
-                <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">
+                <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl">
                   <span className="text-gradient">AWS Security Labs</span> — practice cloud security in real AWS
                 </h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
@@ -123,7 +123,7 @@ export default function LabsPage() {
               </div>
               <div className="flex shrink-0 gap-2">
                 <Button href={FREE_LAB_HREF} external>
-                  Start the free lab <ArrowRight className="h-4 w-4" />
+                  Start free lab <ArrowRight className="h-4 w-4" />
                 </Button>
                 <Button href={SITE.startUrl} variant="secondary">
                   Pricing
@@ -191,7 +191,7 @@ export default function LabsPage() {
                 </ul>
                 <div className="mt-4">
                   <Button href={FREE_LAB_HREF} external variant="secondary" className="w-full sm:w-fit">
-                    Start the free lab <ArrowRight className="h-4 w-4" />
+                    Start free lab <ArrowRight className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -254,7 +254,7 @@ export default function LabsPage() {
                 </ul>
                 <div className={PRICE_BTN}>
                   <Button href={FREE_LAB_HREF} external variant="secondary" className="w-full">
-                    Start the free lab <ArrowRight className="h-4 w-4" />
+                    Start free lab <ArrowRight className="h-4 w-4" />
                   </Button>
                 </div>
               </div>

@@ -134,7 +134,7 @@ export default function TrainingPage() {
       </section>
 
       {/* Verticals — à la carte */}
-      <section className="border-b border-line py-6 sm:py-8">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <Reveal>
             <SectionHeading
@@ -194,7 +194,7 @@ export default function TrainingPage() {
       </section>
 
       {/* How we deliver */}
-      <section className="border-b border-line py-6 sm:py-8">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <Reveal>
             <SectionHeading eyebrow="How we deliver" title="Training built around your team, not a syllabus" />

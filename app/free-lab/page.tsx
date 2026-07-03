@@ -174,7 +174,7 @@ export default function FreeLabPage() {
               Free · Real AWS · 30 min
             </span>
 
-            <h1 className="mt-3 text-2xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-3xl lg:text-4xl">
+            <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl">
               Free AWS Security Lab — Real Isolated AWS Account, No Credit Card
             </h1>
 
@@ -185,7 +185,7 @@ export default function FreeLabPage() {
 
             <div className="mt-5 flex flex-col items-start gap-1.5">
               <Button href={LAUNCH_URL} external newTab>
-                Start the free lab
+                Start free lab
                 <ArrowRight className="h-4 w-4" />
               </Button>
               <p className="text-xs text-muted">Google sign-in · no card · live in ~60 seconds</p>
@@ -226,7 +226,7 @@ export default function FreeLabPage() {
       </section>
 
       {/* What you'll learn */}
-      <section className="border-b border-line py-5 sm:py-7">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <Reveal>
             <SectionHeading
@@ -249,7 +249,7 @@ export default function FreeLabPage() {
       </section>
 
       {/* How it works */}
-      <section className="border-b border-line py-5 sm:py-7">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <Reveal>
             <SectionHeading
@@ -272,7 +272,7 @@ export default function FreeLabPage() {
       </section>
 
       {/* Next step: SCS-C03 + paid labs */}
-      <section className="border-b border-line py-5 sm:py-7">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <Reveal>
             <SectionHeading
@@ -316,7 +316,7 @@ export default function FreeLabPage() {
 
       {/* Related blog */}
       {posts.length > 0 && (
-        <section className="border-b border-line py-5 sm:py-7">
+        <section className="border-b border-line py-8 sm:py-10">
           <Container>
             <div className="flex items-end justify-between gap-4">
               <SectionHeading
@@ -337,7 +337,7 @@ export default function FreeLabPage() {
       {/* See it in action — full walkthrough (4-5 min) for the qualified
           visitor who's already landed on the free-lab page. Anchored by
           the "Watch a 2-min run" link in the hero. */}
-      <section id="watch" className="border-b border-line py-6 sm:py-9 scroll-mt-20">
+      <section id="watch" className="border-b border-line py-8 sm:py-10 scroll-mt-20">
         <Container>
           <Reveal>
             <SectionHeading
@@ -361,7 +361,7 @@ export default function FreeLabPage() {
       <CtaBand
         title="Launch your free AWS security lab now"
         subtitle="Real isolated AWS account in 30 seconds. No credit card. Auto-graded. Auto-wiped."
-        primary={{ label: "Start the free lab", href: LAUNCH_URL }}
+        primary={{ label: "Start free lab", href: LAUNCH_URL }}
         primaryCaption="Google sign-in · no card · live in ~60 seconds"
         secondary={{ label: "Browse all AWS labs", href: "/labs" }}
       />

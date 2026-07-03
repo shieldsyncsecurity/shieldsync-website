@@ -93,7 +93,7 @@ export default function StartHerePage() {
                 <span className="h-1 w-1 rounded-full bg-brand" />
                 Start here
               </span>
-              <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-fg sm:text-4xl">
+              <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl">
                 Learn <span className="text-gradient">cloud security</span> — a hands-on roadmap, not a reading list.
               </h1>
               <p className="mt-3 text-base leading-7 text-muted">
@@ -105,7 +105,7 @@ export default function StartHerePage() {
                   <ArrowRight className="h-4 w-4" />
                 </Button>
                 <Button href="/labs" variant="secondary">
-                  Browse all labs
+                  Browse all AWS labs
                 </Button>
               </div>
             </Reveal>
@@ -132,7 +132,7 @@ export default function StartHerePage() {
       </section>
 
       {/* ── 4 roadmap stage cards — immediately visible ───────────────── */}
-      <section className="border-b border-line py-6 sm:py-8">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <ol className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {ROADMAP.map((s, i) => {
@@ -182,7 +182,7 @@ export default function StartHerePage() {
       </section>
 
       {/* ── Where it gets you ─────────────────────────────────────────── */}
-      <section className="border-b border-line py-6 sm:py-8">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <Reveal className="mb-5 flex flex-wrap items-baseline justify-between gap-2">
             <h2 className="text-xl font-extrabold tracking-tight text-fg sm:text-2xl">Where this roadmap gets you</h2>
@@ -229,7 +229,7 @@ export default function StartHerePage() {
       <CtaBand
         title="Start Stage 1 — free"
         subtitle="Your first cloud security lab is on us. No account, no setup — just a browser."
-        primary={{ label: "Start the free lab", href: SITE.startUrl }}
+        primary={{ label: "Start free lab", href: SITE.startUrl }}
       />
     </>
   );

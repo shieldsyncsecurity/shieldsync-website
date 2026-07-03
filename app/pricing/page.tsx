@@ -91,14 +91,14 @@ export default function PricingPage() {
       />
 
       {/* Tiers */}
-      <section className="border-b border-line py-8 sm:py-12">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <PricingTiers />
         </Container>
       </section>
 
       {/* For businesses */}
-      <section className="border-b border-line py-8 sm:py-12">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <Reveal>
             <div className="flex flex-col items-start justify-between gap-5 rounded-3xl border border-line bg-surface/60 p-6 sm:flex-row sm:items-center sm:p-8">
@@ -137,7 +137,7 @@ export default function PricingPage() {
         title="Start with the free lab"
         subtitle="Real isolated AWS account in 30 seconds. No credit card. See for yourself before you pay anything."
         primary={{ label: "Start free lab", href: "/free-lab" }}
-        secondary={{ label: "Browse all labs", href: "/labs" }}
+        secondary={{ label: "Browse all AWS labs", href: "/labs" }}
       />
     </>
   );

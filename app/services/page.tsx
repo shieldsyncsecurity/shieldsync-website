@@ -61,7 +61,7 @@ export default function ServicesPage() {
       />
 
       {/* Services grid */}
-      <section className="border-b border-line py-6 sm:py-8">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <div className="grid gap-6 md:grid-cols-2">
             {SERVICES.map((s, i) => {
@@ -113,7 +113,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Compliance frameworks */}
-      <section className="border-b border-line py-6 sm:py-8">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <Reveal>
             <SectionHeading

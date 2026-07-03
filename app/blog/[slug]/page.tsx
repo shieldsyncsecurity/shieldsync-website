@@ -147,7 +147,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           title="Practise this in a real AWS account"
           subtitle={`Don't just read it — the ${relatedLab.label} lab spins up a real, isolated AWS account in your browser so you find and fix it hands-on.`}
           primary={{ label: `Open the ${relatedLab.label} lab`, href: `/labs/${relatedLab.slug}` }}
-          secondary={{ label: "Browse all labs", href: "/labs" }}
+          secondary={{ label: "Browse all AWS labs", href: "/labs" }}
         />
       ) : (
         <CtaBand

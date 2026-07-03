@@ -85,7 +85,7 @@ export default function SocLabsPage() {
               <span className="h-1 w-1 rounded-full bg-brand" />
               SOC track — coming soon
             </span>
-            <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-fg sm:text-4xl">
+            <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl">
               Build the <span className="text-gradient">blue team</span> — SIEM &amp; SOAR, hands-on.
             </h1>
             <p className="mt-3 max-w-2xl text-base leading-7 text-muted">
@@ -118,7 +118,7 @@ export default function SocLabsPage() {
       </section>
 
       {/* ── SIEM + SOAR cards + "safe to practice" in one section ────── */}
-      <section className="py-6 sm:py-8">
+      <section className="py-8 sm:py-10">
         <Container className="grid gap-8">
 
           {/* Two track cards */}

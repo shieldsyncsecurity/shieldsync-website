@@ -56,7 +56,7 @@ export default function AboutPage() {
       />
 
       {/* Values */}
-      <section className="border-b border-line py-6 sm:py-8">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <Reveal>
             <SectionHeading eyebrow="What we believe" title="Principles that shape the work" />
@@ -76,7 +76,7 @@ export default function AboutPage() {
       </section>
 
       {/* Team */}
-      <section className="border-b border-line py-6 sm:py-8">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <Reveal>
             <SectionHeading
@@ -105,7 +105,7 @@ export default function AboutPage() {
       </section>
 
       {/* Company facts */}
-      <section className="border-b border-line py-6 sm:py-8">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <div className="grid gap-6 rounded-2xl border border-line bg-surface p-8 sm:grid-cols-3 sm:p-10">
             <div>

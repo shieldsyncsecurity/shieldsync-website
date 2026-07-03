@@ -46,7 +46,7 @@ export default function BlogPage() {
         description="Practical tutorials, career roadmaps, and AWS / SOC security writing from the team."
       />
 
-      <section className="py-6 sm:py-8">
+      <section className="py-8 sm:py-10">
         <Container>
           <BlogExplorer posts={BLOG_POSTS} />
         </Container>

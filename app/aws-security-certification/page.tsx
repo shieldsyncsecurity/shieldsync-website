@@ -175,7 +175,7 @@ export default function AwsSecurityCertificationPage() {
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
                 <Button href="/labs-wizard?track=aws">
-                  Start with the free lab
+                  Start free lab
                   <ArrowRight className="h-4 w-4" />
                 </Button>
                 <Button href="/labs" variant="secondary">
@@ -349,7 +349,7 @@ export default function AwsSecurityCertificationPage() {
 
       {/* Walkthrough video — full lab session for the qualified visitor who
           is researching SCS-C02 hands-on practice. */}
-      <section className="border-b border-line py-8 sm:py-12">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <Reveal>
             <SectionHeading
@@ -413,7 +413,7 @@ export default function AwsSecurityCertificationPage() {
               </p>
             </div>
             <Button href="/labs-wizard?track=aws">
-              Launch the free lab
+              Start free lab
               <ArrowRight className="h-4 w-4" />
             </Button>
           </div>

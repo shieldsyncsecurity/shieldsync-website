@@ -94,7 +94,7 @@ export default function AiSecurityPage() {
               <span className="h-1 w-1 rounded-full bg-brand" />
               AI Security
             </span>
-            <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight text-fg sm:text-4xl">
+            <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl">
               <span className="text-gradient">AI &amp; LLM Security</span> — learn it hands-on.
             </h1>
             <p className="mt-3 text-base leading-7 text-muted">
@@ -108,7 +108,7 @@ export default function AiSecurityPage() {
                 <ArrowRight className="h-4 w-4" />
               </Button>
               <Button href={SITE.freeLabUrl} variant="secondary" external newTab>
-                Start the free lab
+                Start free lab
               </Button>
             </div>
           </Reveal>
@@ -217,7 +217,7 @@ export default function AiSecurityPage() {
       <CtaBand
         title="Bring AI security into your cloud security program"
         subtitle="Start with a free hands-on AWS security lab, or talk to us about securing your Bedrock, RAG, and AI-agent workloads."
-        primary={{ label: "Start the free lab", href: SITE.freeLabUrl }}
+        primary={{ label: "Start free lab", href: SITE.freeLabUrl }}
         secondary={{ label: "Book a call", href: "/contact" }}
       />
     </>

@@ -81,7 +81,7 @@ export default function InternshipPage() {
             {/* Left: pitch */}
             <Reveal>
               <Pill tone="brand">{INTERNSHIP.badge}</Pill>
-              <h1 className="mt-3 text-4xl font-extrabold leading-tight tracking-tight text-fg sm:text-5xl">
+              <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl">
                 {INTERNSHIP.title}
               </h1>
               <p className="mt-2 text-lg font-semibold text-brand-bright">{INTERNSHIP.subtitle}</p>
@@ -127,7 +127,7 @@ export default function InternshipPage() {
       </section>
 
       {/* ─── What you'll work on + Who it's for ───────────────────────────── */}
-      <section className="py-6 sm:py-8">
+      <section className="py-8 sm:py-10">
         <Container>
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
 
@@ -181,7 +181,7 @@ export default function InternshipPage() {
       </section>
 
       {/* ─── Week-by-week curriculum ──────────────────────────────────────── */}
-      <section className="border-t border-line py-8 sm:py-12">
+      <section className="border-t border-line py-8 sm:py-10">
         <Container>
           <Reveal>
             <SectionHeading
@@ -220,7 +220,7 @@ export default function InternshipPage() {
       </section>
 
       {/* ─── Certificate + exam readiness ─────────────────────────────────── */}
-      <section className="border-t border-line py-8 sm:py-12">
+      <section className="border-t border-line py-8 sm:py-10">
         <Container>
           <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
             <Reveal>

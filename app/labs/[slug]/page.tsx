@@ -137,7 +137,7 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
                 </span>
               ) : null}
             </div>
-            <h1 className="mt-5 text-4xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-5xl">{lab.title}</h1>
+            <h1 className="mt-5 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl">{lab.title}</h1>
             <p className="mt-5 text-lg leading-8 text-muted">{lab.desc}</p>
 
             <div className="mt-7 flex flex-wrap items-center gap-3">
@@ -170,7 +170,7 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
       </section>
 
       {/* What you'll do */}
-      <section className="border-b border-line py-8 sm:py-12">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <div className="mx-auto max-w-3xl">
             <h2 className="text-2xl font-extrabold tracking-tight text-fg">What you&apos;ll do</h2>
@@ -187,7 +187,7 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
       </section>
 
       {/* Skills you'll gain + roles it maps to */}
-      <section className="border-b border-line py-8 sm:py-12">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <div className="mx-auto grid max-w-3xl gap-10 sm:grid-cols-2">
             <div>
@@ -221,7 +221,7 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
 
       {/* Check my work — never stuck (AWS labs only; SOC isn't built yet) */}
       {!soon ? (
-        <section className="border-b border-line bg-surface/50 py-10 sm:py-12">
+        <section className="border-b border-line bg-surface/50 py-8 sm:py-10">
           <Container>
             <div className="mx-auto max-w-3xl">
               <span className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-bright">
@@ -242,7 +242,7 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
 
       {/* Related */}
       {related.length > 0 ? (
-        <section className="border-b border-line py-8 sm:py-12">
+        <section className="border-b border-line py-8 sm:py-10">
           <Container>
             <h2 className="text-2xl font-extrabold tracking-tight text-fg">More {lab.track}</h2>
             <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">

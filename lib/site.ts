@@ -638,7 +638,7 @@ export const TRAINING_PROGRAMS: {
     desc: "A structured cloud-security path that takes motivated professionals from current role to job-ready.",
     points: ["Cloud security depth", "Hands-on labs", "Portfolio & interview prep"],
     href: "/contact",
-    cta: "Talk to us",
+    cta: "Book a call",
   },
   {
     name: "Corporate cohorts",

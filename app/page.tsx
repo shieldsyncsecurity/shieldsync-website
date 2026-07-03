@@ -151,7 +151,7 @@ export default function HomePage() {
                   aria-label="Open the guided lab picker"
                   className="group relative block overflow-hidden rounded-2xl border border-line bg-surface px-4 pb-4 pt-11 transition hover:border-line-strong hover:shadow-md"
                 >
-                  <span className="absolute left-3 top-3 rounded-md bg-blue-600 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white shadow">
+                  <span className="absolute left-3 top-3 rounded-md bg-cyan px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white shadow">
                     ★ AWS Security Labs
                   </span>
                   <span className="absolute right-3 top-3 rounded-md border border-line bg-panel px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
@@ -180,7 +180,7 @@ export default function HomePage() {
       </section>
 
       {/* ------------------------------------------------------------- Services */}
-      <section className="border-b border-line py-8 sm:py-12">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <Reveal>
             <SectionHeading
@@ -217,7 +217,7 @@ export default function HomePage() {
       </section>
 
       {/* ----------------------------------------------------------------- Why */}
-      <section className="border-b border-line py-8 sm:py-12">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <Reveal>
             <SectionHeading
@@ -241,7 +241,7 @@ export default function HomePage() {
       </section>
 
       {/* -------------------------------------------------------- Team training */}
-      <section className="border-b border-line py-8 sm:py-12">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <Reveal>
@@ -297,7 +297,7 @@ export default function HomePage() {
           placement is "hero" or "off", this section is omitted entirely so the
           page stays compact and we don't show the explainer twice. */}
       {VIDEO_MID_PAGE && (
-        <section className="border-b border-line py-8 sm:py-12">
+        <section className="border-b border-line py-8 sm:py-10">
           <Container>
             <Reveal>
               <SectionHeading
@@ -368,7 +368,7 @@ export default function HomePage() {
       </section>
 
       {/* ------------------------------------------------------------ Blog posts */}
-      <section className="border-b border-line py-8 sm:py-12">
+      <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <Reveal>
             <div className="flex items-end justify-between gap-4">

@@ -444,7 +444,7 @@ export function LabsWizard({
                   href={launchHref}
                   className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-base font-bold glow-brand bg-gradient-to-r from-brand to-cyan text-white hover:brightness-110 transition"
                 >
-                  Start the free lab
+                  Start free lab
                   <ArrowRight className="h-4 w-4" />
                 </a>
               ) : (
