@@ -450,7 +450,14 @@ export function LabsWizard({
               ) : (
                 <button
                   type="button"
-                  onClick={() => setStep((s) => (s === 2 && mode === "monthly" ? 4 : s + 1))}
+                  onClick={() =>
+                    setStep((s) =>
+                      // Arrived with a plan pre-chosen (deep-link) but no track yet:
+                      // once the track is picked on step 1, skip the Plan step — the
+                      // plan is already decided. Otherwise monthly jumps Plan -> Confirm.
+                      s === 1 && mode ? 3 : s === 2 && mode === "monthly" ? 4 : s + 1,
+                    )
+                  }
                   disabled={!canContinue}
                   className={`inline-flex items-center gap-2 rounded-xl px-6 py-3 text-base font-bold transition ${
                     canContinue ? "glow-brand bg-gradient-to-r from-brand to-cyan text-white hover:brightness-110" : "cursor-not-allowed bg-surface text-muted"

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Container, Card, Button, SectionHeading } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
-import { PageHero, FaqSection, CtaBand } from "@/components/sections";
+import { FaqSection, CtaBand } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
 import { BlogCarousel } from "@/components/blog-carousel";
 import { VideoEmbed } from "@/components/video-embed";
@@ -110,7 +110,7 @@ const FAQS = [
   },
   {
     q: "Can I get a certificate for finishing?",
-    a: "The free lab issues a completion record once the auto-grader confirms your fix. For a formal certificate tied to the AWS Security Specialty (SCS-C02) syllabus, see our certification track.",
+    a: "The free lab issues a completion record once the auto-grader confirms your fix. For a formal certificate tied to the AWS Security Specialty (SCS-C03) syllabus, see our certification track.",
   },
   {
     q: "Can I retry if I get stuck or fail the grader?",
@@ -118,7 +118,7 @@ const FAQS = [
   },
   {
     q: "How do I get access to more labs after this?",
-    a: "After the free S3 lab, the full AWS catalog (IAM, KMS, VPC, GuardDuty, CloudTrail, incident response) is available on the paid track. We also publish SCS-C02-mapped study paths so each lab maps to an exam domain.",
+    a: "After the free S3 lab, the full AWS catalog (IAM, KMS, VPC, GuardDuty, CloudTrail, incident response) is available on the paid track. We also publish SCS-C03-mapped study paths so each lab maps to an exam domain.",
   },
 ];
 
@@ -160,32 +160,65 @@ export default function FreeLabPage() {
         ]}
       />
 
-      <PageHero
-        compact
-        eyebrow="Free · Real AWS · 30 min"
-        title="Free AWS Security Lab — Real Isolated AWS Account, No Credit Card"
-        description="Launch a 30-minute hands-on AWS security lab in your own isolated AWS account. Find the misconfigured S3 bucket, fix IAM, enforce KMS. Auto-graded against your live AWS state. No setup, no card, no bill."
-      />
+      {/* Hero: two-column, CTA above the fold. Left = pitch + primary CTA,
+          right = the three "not a simulator" differentiators (fills the
+          dead whitespace and replaces the old standalone section below). */}
+      <section className="relative isolate overflow-hidden border-b border-line">
+        <div className="aurora absolute inset-0 -z-10" />
+        <div className="cyber-grid absolute inset-0 -z-10" />
 
-      {/* Primary CTA strip */}
-      <section className="border-b border-line py-6 sm:py-8">
-        <Container>
+        <Container className="grid gap-8 py-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-10">
           <Reveal>
-            <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
-              <div>
-                <p className="text-sm font-semibold text-fg">
-                  Launch in 30 seconds — sign in with Google, no card.
-                </p>
-                <p className="mt-1 text-xs text-muted">
-                  Real AWS account · grader checks live state · auto-wipe at end of session
-                </p>
-              </div>
-              <div className="flex shrink-0 flex-col items-start gap-1.5 sm:items-end">
-                <Button href={LAUNCH_URL} external newTab>
-                  Start the free lab
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-                <p className="text-xs text-muted">Google sign-in · no card · live in ~60 seconds</p>
+            <span className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-bright">
+              <span className="h-1 w-1 rounded-full bg-brand" />
+              Free · Real AWS · 30 min
+            </span>
+
+            <h1 className="mt-3 text-2xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-3xl lg:text-4xl">
+              Free AWS Security Lab — Real Isolated AWS Account, No Credit Card
+            </h1>
+
+            <p className="mt-3 max-w-xl text-base leading-7 text-muted">
+              Launch a 30-minute hands-on lab in your own isolated AWS account. Find the
+              misconfigured S3 bucket, fix IAM, enforce KMS — graded against your live AWS state.
+            </p>
+
+            <div className="mt-5 flex flex-col items-start gap-1.5">
+              <Button href={LAUNCH_URL} external newTab>
+                Start the free lab
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+              <p className="text-xs text-muted">Google sign-in · no card · live in ~60 seconds</p>
+            </div>
+
+            <a
+              href="#watch"
+              className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-bright transition hover:text-brand"
+            >
+              Watch a 2-min run ↓
+            </a>
+          </Reveal>
+
+          <Reveal delay={140}>
+            <div className="rounded-3xl border border-line bg-panel p-5 shadow-xl shadow-slate-900/5">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">
+                Not a simulator
+              </p>
+              <div className="mt-4 flex flex-col gap-4">
+                {DIFFS.map((d) => {
+                  const Icon = d.icon;
+                  return (
+                    <div key={d.t} className="flex items-start gap-3">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand/10">
+                        <Icon className="h-5 w-5 text-brand-bright" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-bold text-fg">{d.t}</h3>
+                        <p className="mt-1 text-xs leading-5 text-muted">{d.d}</p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </Reveal>
@@ -193,7 +226,7 @@ export default function FreeLabPage() {
       </section>
 
       {/* What you'll learn */}
-      <section className="border-b border-line py-6 sm:py-8">
+      <section className="border-b border-line py-5 sm:py-7">
         <Container>
           <Reveal>
             <SectionHeading
@@ -216,7 +249,7 @@ export default function FreeLabPage() {
       </section>
 
       {/* How it works */}
-      <section className="border-b border-line py-6 sm:py-8">
+      <section className="border-b border-line py-5 sm:py-7">
         <Container>
           <Reveal>
             <SectionHeading
@@ -238,53 +271,28 @@ export default function FreeLabPage() {
         </Container>
       </section>
 
-      {/* Why different from a simulator */}
-      <section className="border-b border-line py-6 sm:py-8">
-        <Container>
-          <Reveal>
-            <SectionHeading
-              eyebrow="Not a simulator"
-              title="Why this is different from every other free 'AWS lab'"
-              description="Most free AWS labs are slide decks, videos, or click-through simulators. This one drops you inside the real AWS Console."
-            />
-          </Reveal>
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
-            {DIFFS.map((d) => {
-              const Icon = d.icon;
-              return (
-                <Card key={d.t} className="p-5">
-                  <Icon className="h-6 w-6 text-brand-bright" />
-                  <h3 className="mt-3 text-base font-bold text-fg">{d.t}</h3>
-                  <p className="mt-2 text-sm leading-6 text-muted">{d.d}</p>
-                </Card>
-              );
-            })}
-          </div>
-        </Container>
-      </section>
-
-      {/* Next step: SCS-C02 + paid labs */}
-      <section className="border-b border-line py-6 sm:py-8">
+      {/* Next step: SCS-C03 + paid labs */}
+      <section className="border-b border-line py-5 sm:py-7">
         <Container>
           <Reveal>
             <SectionHeading
               eyebrow="After the free lab"
-              title="Your next step: SCS-C02 + the full AWS catalog"
-              description="Once you finish the S3 lab, you can keep going on the AWS Security Specialty (SCS-C02) track and the rest of the paid labs."
+              title="Your next step: SCS-C03 + the full AWS catalog"
+              description="Once you finish the S3 lab, you can keep going on the AWS Security Specialty (SCS-C03) track and the rest of the paid labs."
             />
           </Reveal>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <Card className="p-5">
               <Lock className="h-6 w-6 text-brand-bright" />
               <h3 className="mt-3 text-base font-bold text-fg">
-                AWS Security Specialty (SCS-C02) prep
+                AWS Security Specialty (SCS-C03) prep
               </h3>
               <p className="mt-2 text-sm leading-6 text-muted">
-                Map every lab to an SCS-C02 exam domain. Practice IAM, KMS, VPC, GuardDuty, CloudTrail in real AWS — not flashcards.
+                Map every lab to an SCS-C03 exam domain. Practice IAM, KMS, VPC, GuardDuty, CloudTrail in real AWS — not flashcards.
               </p>
               <div className="mt-4">
                 <Button href="/aws-security-certification" variant="secondary">
-                  See the SCS-C02 track <ArrowRight className="h-4 w-4" />
+                  See the SCS-C03 track <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
             </Card>
@@ -308,7 +316,7 @@ export default function FreeLabPage() {
 
       {/* Related blog */}
       {posts.length > 0 && (
-        <section className="border-b border-line py-6 sm:py-8">
+        <section className="border-b border-line py-5 sm:py-7">
           <Container>
             <div className="flex items-end justify-between gap-4">
               <SectionHeading
@@ -327,8 +335,9 @@ export default function FreeLabPage() {
       )}
 
       {/* See it in action — full walkthrough (4-5 min) for the qualified
-          visitor who's already landed on the free-lab page. */}
-      <section className="border-b border-line py-8 sm:py-12">
+          visitor who's already landed on the free-lab page. Anchored by
+          the "Watch a 2-min run" link in the hero. */}
+      <section id="watch" className="border-b border-line py-6 sm:py-9 scroll-mt-20">
         <Container>
           <Reveal>
             <SectionHeading
