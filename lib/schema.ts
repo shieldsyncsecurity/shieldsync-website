@@ -19,8 +19,10 @@ export function organizationSchema() {
     logo: {
       "@type": "ImageObject",
       "@id": `${SITE.url}/#logo`,
-      url: `${SITE.url}/logo.svg`,
-      contentUrl: `${SITE.url}/logo.svg`,
+      url: `${SITE.url}/logo/shieldsync-mark-512.png`,
+      contentUrl: `${SITE.url}/logo/shieldsync-mark-512.png`,
+      width: 512,
+      height: 512,
       caption: SITE.nameFull,
     },
     contactPoint: [

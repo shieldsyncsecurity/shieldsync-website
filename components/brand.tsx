@@ -2,11 +2,14 @@ import Link from "next/link";
 import { SITE } from "@/lib/site";
 
 /**
- * Brand lockup. The monochrome SVG logo is white artwork on transparent.
+ * Brand lockup — the "Cipher S" reticle mark (favicon tile, indigo→blue on
+ * dark navy) next to the wordmark. The tile is self-contained (own dark
+ * background), so it reads on both the light header/footer and dark hero
+ * sections without a separate light/dark swap.
  *
- * - variant="compact" (header): crisp icon mark + bold wordmark text. Reads
- *   clearly at small sizes, where the full lockup-with-tagline turns to mush.
- * - variant="full" (footer/hero): the complete logo including the tagline.
+ * - variant="compact" (header/footer): mark tile + bold wordmark text, tuned
+ *   for small sizes where the full lockup-with-tagline turns to mush.
+ * - variant="full" (hero, larger contexts): same lockup, bigger.
  */
 export function Logo({
   variant = "full",
@@ -26,11 +29,11 @@ export function Logo({
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/logo-mark-dark.svg"
+          src="/logo/shieldsync-favicon.svg"
           alt=""
           aria-hidden="true"
-          style={{ height }}
-          className="w-auto select-none"
+          style={{ height, width: height }}
+          className="select-none rounded-[22%]"
           draggable={false}
         />
         <span className="text-xl font-extrabold tracking-tight text-fg">
@@ -43,17 +46,21 @@ export function Logo({
   return (
     <Link
       href="/"
-      className={`inline-flex items-center ${className}`}
+      className={`group inline-flex items-center gap-3 ${className}`}
       aria-label={`${SITE.name} — home`}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/logo.svg"
-        alt={SITE.name}
-        style={{ height }}
-        className="w-auto select-none opacity-95 transition-opacity hover:opacity-100"
+        src="/logo/shieldsync-favicon.svg"
+        alt=""
+        aria-hidden="true"
+        style={{ height, width: height }}
+        className="select-none rounded-[22%]"
         draggable={false}
       />
+      <span className="font-extrabold tracking-tight text-fg" style={{ fontSize: height * 0.62 }}>
+        Shield<span className="text-brand">Sync</span>
+      </span>
     </Link>
   );
 }
