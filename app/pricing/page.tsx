@@ -12,26 +12,25 @@ import { SITE } from "@/lib/site";
 const PAGE_URL = `${SITE.url}/pricing`;
 
 export const metadata: Metadata = {
-  title: "Pricing — AWS Security Labs, Monthly Access & Internship",
+  title: "Pricing — AWS Security Labs & Monthly Access",
   description:
-    "Simple pricing for hands-on AWS security: a free first lab, pay-per-lab from $3 / ₹99, monthly all-access, or the 8-week mentored internship. Business services are custom-quoted.",
+    "Simple pricing for hands-on AWS security: a free first lab, pay-per-lab from $3 / ₹99, or monthly all-access. Business services are custom-quoted.",
   keywords: [
     "AWS security labs pricing",
     "cloud security training cost",
     "AWS security lab price",
-    "cybersecurity internship cost",
   ],
   alternates: { canonical: "/pricing" },
   openGraph: {
     title: "Pricing — ShieldSync AWS Security Labs",
-    description: "Free first lab, pay-per-lab, monthly all-access, or the 8-week internship. Business services custom-quoted.",
+    description: "Free first lab, pay-per-lab, or monthly all-access. Business services custom-quoted.",
     url: PAGE_URL,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Pricing — ShieldSync AWS Security Labs",
-    description: "Free first lab, pay-per-lab, monthly all-access, or the 8-week internship.",
+    description: "Free first lab, pay-per-lab, or monthly all-access.",
   },
 };
 
@@ -49,10 +48,6 @@ const FAQS = [
     a: "Every AWS security lab in the catalog, plus new labs as we ship them, with unlimited launches under fair use. Cancel anytime — your access runs to the end of the paid cycle.",
   },
   {
-    q: "How is the internship priced?",
-    a: "The 8-week mentored internship is ₹9,999 all-inclusive, with a completion certificate. It's a separate program from the self-serve labs — structured projects, 1:1 mentorship, and real AWS work.",
-  },
-  {
     q: "How much do business services cost?",
     a: "Services — cloud security assessments, compliance readiness, managed detection, AI/LLM security testing — are scoped per engagement and custom-quoted. Book a call and we'll size it to your environment.",
   },
@@ -66,8 +61,8 @@ const PAGE_SCHEMA = [
   webPageSchema({
     url: PAGE_URL,
     name: "Pricing — ShieldSync AWS Security Labs",
-    description: "Free first lab, pay-per-lab, monthly all-access, and the 8-week internship. Business services custom-quoted.",
-    dateModified: "2026-06-30",
+    description: "Free first lab, pay-per-lab, and monthly all-access. Business services custom-quoted.",
+    dateModified: "2026-07-03",
     breadcrumb: [
       { name: "Home", url: SITE.url },
       { name: "Pricing", url: PAGE_URL },

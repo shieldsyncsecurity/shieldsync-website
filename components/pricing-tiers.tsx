@@ -12,9 +12,8 @@ import {
   type Money,
 } from "@/lib/region";
 
-/* Pricing tiers with a ₹/$ region toggle, mirroring the labs-wizard. The three
- * lab tiers switch currency; the internship tier is billed in INR and shown as
- * a fixed price with a USD-approx note. */
+/* Pricing tiers with a ₹/$ region toggle, mirroring the labs-wizard. Labs only —
+ * the internship is a separate program (/internship), deliberately NOT a tier here. */
 
 type Tier = {
   name: string;
@@ -54,13 +53,6 @@ const TIERS: Tier[] = [
     badge: "Best value",
     featured: true,
   },
-  {
-    name: "Internship",
-    price: () => "₹9,999",
-    blurb: "8 weeks, mentored, job-ready.",
-    points: ["Structured 8-week program", "Hands-on AWS projects", "1:1 mentorship", "Completion certificate"],
-    cta: { label: "Apply now", href: "/internship" },
-  },
 ];
 
 export function PricingTiers() {
@@ -90,7 +82,7 @@ export function PricingTiers() {
         </div>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto grid max-w-4xl gap-5 sm:grid-cols-3">
         {TIERS.map((t) => (
           <div
             key={t.name}
@@ -134,7 +126,7 @@ export function PricingTiers() {
 
       {currency === "USD" ? (
         <p className="mt-4 text-center text-xs text-muted">
-          Internship is billed in INR (₹9,999 ≈ $120). Lab prices shown in USD; charged in your region&apos;s currency at checkout.
+          Lab prices shown in USD; charged in your region&apos;s currency at checkout.
         </p>
       ) : null}
     </div>

@@ -98,7 +98,7 @@ const DIFFS = [
 const FAQS = [
   {
     q: "Is it really free? What's the catch?",
-    a: "Yes — the first AWS S3 security lab is fully free, no credit card. We cover the AWS cost. The catch: free seats are rate-limited, so if the pool is busy you may need to wait a minute. Paid labs unlock the rest of the catalog (IAM privilege escalation, KMS, VPC, GuardDuty, CloudTrail).",
+    a: "Yes — the first AWS S3 security lab is fully free, no credit card. We cover the AWS cost. The catch: free seats are rate-limited, so at busy times you may need to wait a minute. Paid labs unlock the rest of the catalog (IAM privilege escalation, KMS, VPC, GuardDuty, CloudTrail).",
   },
   {
     q: "Do I need my own AWS account?",
