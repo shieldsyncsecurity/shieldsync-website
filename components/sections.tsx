@@ -11,11 +11,14 @@ export function CtaBand({
   title,
   subtitle,
   primary = { label: "Book a call", href: "/contact" },
+  primaryCaption,
   secondary,
 }: {
   title: string;
   subtitle: string;
   primary?: Cta;
+  /** Optional small caption rendered under the primary button (e.g. honest CTA subtext). */
+  primaryCaption?: string;
   secondary?: Cta | null;
 }) {
   const showWhatsAppDefault = secondary === undefined;
@@ -27,13 +30,16 @@ export function CtaBand({
             <h2 className="mx-auto max-w-2xl text-2xl font-extrabold tracking-tight sm:text-3xl">{title}</h2>
             <p className="mx-auto mt-3 max-w-xl text-base leading-7 text-white/85">{subtitle}</p>
             <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <a
-                href={primary.href}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-base font-semibold text-brand-bright shadow-sm transition hover:bg-white/90"
-              >
-                {primary.label}
-                <ArrowRight className="h-4 w-4" />
-              </a>
+              <div className="flex flex-col items-center gap-1.5">
+                <a
+                  href={primary.href}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-base font-semibold text-brand-bright shadow-sm transition hover:bg-white/90"
+                >
+                  {primary.label}
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+                {primaryCaption ? <p className="text-xs text-white/75">{primaryCaption}</p> : null}
+              </div>
               {secondary ? (
                 <a
                   href={secondary.href}

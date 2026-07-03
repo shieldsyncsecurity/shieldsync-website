@@ -180,10 +180,13 @@ export default function FreeLabPage() {
                   Real AWS account · grader checks live state · auto-wipe at end of session
                 </p>
               </div>
-              <Button href={LAUNCH_URL} external newTab className="shrink-0">
-                Launch the free lab — 30 sec
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+              <div className="flex shrink-0 flex-col items-start gap-1.5 sm:items-end">
+                <Button href={LAUNCH_URL} external newTab>
+                  Start the free lab
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+                <p className="text-xs text-muted">Google sign-in · no card · live in ~60 seconds</p>
+              </div>
             </div>
           </Reveal>
         </Container>
@@ -349,7 +352,8 @@ export default function FreeLabPage() {
       <CtaBand
         title="Launch your free AWS security lab now"
         subtitle="Real isolated AWS account in 30 seconds. No credit card. Auto-graded. Auto-wiped."
-        primary={{ label: "Launch the free lab", href: LAUNCH_URL }}
+        primary={{ label: "Start the free lab", href: LAUNCH_URL }}
+        primaryCaption="Google sign-in · no card · live in ~60 seconds"
         secondary={{ label: "Browse all AWS labs", href: "/labs" }}
       />
     </>

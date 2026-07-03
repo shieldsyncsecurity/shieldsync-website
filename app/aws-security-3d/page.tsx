@@ -12,7 +12,7 @@ import { Aws3dSceneLoader } from "@/components/aws-3d-scene-loader";
 export const metadata: Metadata = {
   title: "AWS Security Domains, in 3D — ShieldSync Experiments",
   description:
-    "An interactive 3D scene of the six AWS Security Specialty (SCS-C02) domains orbiting an isolated AWS account. Drag, zoom, and hover to explore.",
+    "An interactive 3D scene of the six AWS Security Specialty (SCS-C03) domains orbiting an isolated AWS account. Drag, zoom, and hover to explore.",
   alternates: { canonical: "/aws-security-3d" },
   // Experimental playground page — not in the main nav, not in the sitemap,
   // not for search indexing. A direct-link novelty for visitors who land here.
@@ -37,7 +37,7 @@ const DOMAINS: Domain[] = [
 ];
 
 const FACTS = [
-  { icon: Cloud,     k: "65 questions, 170 min", v: "Format of the SCS-C02 exam." },
+  { icon: Cloud,     k: "65 questions, 170 min", v: "Format of the SCS-C03 exam." },
   { icon: Shield,    k: "750 / 1000 to pass",     v: "Scaled score on the real thing." },
   { icon: Radar,     k: "40–80 hours of console", v: "Typical prep time for first-attempt pass." },
   { icon: Lock,      k: "6 domains",              v: "Each visualised as one orbiting node above." },
@@ -61,7 +61,7 @@ export default function Aws3dPage() {
               </span>
             </div>
             <h1 className="max-w-3xl text-3xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-4xl lg:text-5xl">
-              The six SCS-C02 domains, <span className="text-gradient">in orbit</span> around your isolated AWS account.
+              The six SCS-C03 domains, <span className="text-gradient">in orbit</span> around your isolated AWS account.
             </h1>
             <p className="mt-3 max-w-2xl text-base leading-7 text-muted">
               Drag to rotate. Scroll to zoom. Hover a node to focus a domain. The whole scene runs in your browser — no plugin, no install, no data sent anywhere.
@@ -81,14 +81,14 @@ export default function Aws3dPage() {
         </Container>
       </section>
 
-      {/* Legend — what each orbiting node maps to in the SCS-C02 blueprint */}
+      {/* Legend — what each orbiting node maps to in the SCS-C03 blueprint */}
       <section className="border-b border-line/40 py-8 sm:py-12">
         <Container>
           <Reveal>
             <SectionHeading
               eyebrow="Legend"
               title="Each node is one exam domain"
-              description="The scene above isn't decorative — every orbit corresponds to one of the six official SCS-C02 domains, sized by their relative exam weight."
+              description="The scene above isn't decorative — every orbit corresponds to one of the six official SCS-C03 domains, sized by their relative exam weight."
             />
           </Reveal>
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -117,7 +117,7 @@ export default function Aws3dPage() {
         <Container>
           <Reveal>
             <SectionHeading
-              eyebrow="SCS-C02 at a glance"
+              eyebrow="SCS-C03 at a glance"
               title="If the orbit caught your eye"
               description="The exam is structured around exactly what you saw above — and so are our labs."
             />

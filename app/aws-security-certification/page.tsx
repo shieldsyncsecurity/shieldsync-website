@@ -15,12 +15,13 @@ import { AWS_LABS, SITE, BLOG_POSTS } from "@/lib/site";
 const PAGE_URL = `${SITE.url}/aws-security-certification`;
 
 export const metadata: Metadata = {
-  title: "AWS Security Specialty (SCS-C02) — Free Practice Labs",
+  title: "AWS Security Specialty (SCS-C03) — Free Practice Labs",
   description:
-    "Practice every AWS Security Specialty (SCS-C02) domain in real, isolated AWS accounts. IAM, S3, KMS, VPC, GuardDuty, CloudTrail. First lab free, no card needed.",
+    "Practice every AWS Security Specialty (SCS-C03) domain in real, isolated AWS accounts. IAM, S3, KMS, VPC, GenAI/ML security, GuardDuty, CloudTrail. First lab free, no card needed. Upgraded from SCS-C02.",
   keywords: [
     "AWS security specialty",
-    "SCS-C02 practice",
+    "SCS-C03 practice",
+    "SCS-C03 vs SCS-C02",
     "AWS security certification labs",
     "AWS security certification practice",
     "AWS security specialty practice exam",
@@ -29,21 +30,23 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/aws-security-certification" },
   openGraph: {
-    title: "AWS Security Specialty (SCS-C02) — Free Practice Labs",
+    title: "AWS Security Specialty (SCS-C03) — Free Practice Labs",
     description:
-      "Practice every SCS-C02 domain in real, isolated AWS accounts. IAM, S3, KMS, VPC, GuardDuty, CloudTrail. First lab free.",
+      "Practice every SCS-C03 domain in real, isolated AWS accounts. IAM, S3, KMS, VPC, GenAI/ML security, GuardDuty, CloudTrail. First lab free.",
     url: PAGE_URL,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "AWS Security Specialty (SCS-C02) — Free Practice Labs",
-    description: "Practice every SCS-C02 domain in real, isolated AWS accounts. First lab free.",
+    title: "AWS Security Specialty (SCS-C03) — Free Practice Labs",
+    description: "Practice every SCS-C03 domain in real, isolated AWS accounts. First lab free.",
   },
 };
 
-// SCS-C02 official domains — Google rewards content that maps to canonical
-// exam structure. Each AWS lab we publish should be referenceable here.
+// SCS-C03 official domains (live since Dec 2, 2025 — replaced SCS-C02, retired
+// Dec 1, 2025). C03 adds GenAI/ML-security coverage and splits Detection &
+// Incident Response into its own domain. Google rewards content that maps to
+// canonical exam structure. Each AWS lab we publish should be referenceable here.
 const SCS_DOMAINS: { code: string; name: string; weight: string; covers: string; matchTags: string[] }[] = [
   {
     code: "1",
@@ -77,7 +80,7 @@ const SCS_DOMAINS: { code: string; name: string; weight: string; covers: string;
     code: "5",
     name: "Data Protection",
     weight: "18%",
-    covers: "KMS, S3 encryption, Secrets Manager, data classification, in-transit encryption.",
+    covers: "KMS, S3 encryption, Secrets Manager, data classification, in-transit encryption, GenAI/ML data security.",
     matchTags: ["S3", "Encryption", "KMS", "Secrets"],
   },
   {
@@ -96,8 +99,12 @@ function labsForDomain(matchTags: string[]) {
 
 const FAQS = [
   {
-    q: "Do these labs cover the AWS Security Specialty (SCS-C02) exam objectives?",
-    a: "Yes — every lab maps to one or more official SCS-C02 domains. The Identity & Access Management domain is covered by our IAM privilege escalation lab, Data Protection by the S3 misconfiguration audit and KMS encryption labs, Infrastructure Security by the VPC and network labs, and so on. The catalog grows as new lab content ships.",
+    q: "Do these labs cover the AWS Security Specialty (SCS-C03) exam objectives?",
+    a: "Yes — every lab maps to one or more official SCS-C03 domains. The Identity & Access Management domain is covered by our IAM privilege escalation lab, Data Protection by the S3 misconfiguration audit and KMS encryption labs, Infrastructure Security by the VPC and network labs, and so on. The catalog grows as new lab content ships.",
+  },
+  {
+    q: "What changed between SCS-C02 and SCS-C03?",
+    a: "SCS-C03 went live December 2, 2025, replacing SCS-C02 (retired December 1, 2025). The biggest changes: new coverage of GenAI and ML-workload security (Bedrock, SageMaker data protection, model access controls), and Threat Detection & Incident Response is now its own standalone domain instead of being folded into logging and monitoring. The core services — IAM, KMS, VPC, GuardDuty, CloudTrail — are still the backbone of the exam.",
   },
   {
     q: "Is the first lab really free?",
@@ -112,7 +119,7 @@ const FAQS = [
     a: "Indirectly. SAA is broader than security but has a meaningful security component (IAM, S3 policies, VPC, KMS). The labs that cover those domains will help. For pure security depth — IAM privilege escalation, KMS key policies, incident response — Security Specialty is the closer fit.",
   },
   {
-    q: "How much hands-on practice do I need for SCS-C02?",
+    q: "How much hands-on practice do I need for SCS-C03?",
     a: "Most people who pass on the first attempt spend 40–80 hours in a real AWS console, not just reading. Our labs are 30–90 minutes each; a focused candidate clears the relevant 6–10 labs in 2–3 weeks alongside reading the AWS Security Specialty study guide and FAQ pages for the services in scope.",
   },
 ];
@@ -120,9 +127,9 @@ const FAQS = [
 const PAGE_SCHEMA = [
   webPageSchema({
     url: PAGE_URL,
-    name: "AWS Security Specialty (SCS-C02) — Free Practice Labs",
+    name: "AWS Security Specialty (SCS-C03) — Free Practice Labs",
     description:
-      "Practice every AWS Security Specialty (SCS-C02) domain in real, isolated AWS accounts. First lab free.",
+      "Practice every AWS Security Specialty (SCS-C03) domain in real, isolated AWS accounts. First lab free. Upgraded from SCS-C02.",
     dateModified: "2026-06-30",
     breadcrumb: [
       { name: "Home", url: SITE.url },
@@ -158,10 +165,13 @@ export default function AwsSecurityCertificationPage() {
                 AWS Certification prep
               </span>
               <h1 className="mt-2 text-3xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-4xl lg:text-5xl">
-                <span className="text-gradient">AWS Security Specialty (SCS-C02)</span> — hands-on practice labs
+                <span className="text-gradient">AWS Security Specialty (SCS-C03)</span> — hands-on practice labs
               </h1>
               <p className="mt-3 max-w-2xl text-base leading-7 text-muted">
-                Stop watching walkthroughs. Practise every SCS-C02 domain — IAM privilege escalation, S3 encryption, VPC, KMS, GuardDuty, CloudTrail — in a real, isolated AWS account that&apos;s wiped when you&apos;re done.
+                Stop watching walkthroughs. Practise every SCS-C03 domain — IAM privilege escalation, S3 encryption, VPC, KMS, GenAI/ML security, GuardDuty, CloudTrail — in a real, isolated AWS account that&apos;s wiped when you&apos;re done.
+              </p>
+              <p className="mt-2 max-w-2xl text-sm text-muted">
+                Upgraded from SCS-C02 — see <a href="#scs-c03-changes" className="font-semibold text-brand-bright hover:underline">what changed</a>.
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
                 <Button href="/labs-wizard?track=aws">
@@ -183,7 +193,7 @@ export default function AwsSecurityCertificationPage() {
                   <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-brand/25 bg-brand/10 text-brand-bright">
                     <Cloud className="h-5 w-5" />
                   </span>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-muted">SCS-C02 at a glance</p>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted">SCS-C03 at a glance</p>
                 </div>
                 <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
                   <div>
@@ -218,7 +228,7 @@ export default function AwsSecurityCertificationPage() {
           <Reveal>
             <SectionHeading
               eyebrow="Domain coverage"
-              title="Every SCS-C02 domain, mapped to real AWS labs"
+              title="Every SCS-C03 domain, mapped to real AWS labs"
               description="Pick a domain and jump straight to the labs that exercise it on a live AWS console."
             />
           </Reveal>
@@ -270,6 +280,39 @@ export default function AwsSecurityCertificationPage() {
         </Container>
       </section>
 
+      {/* What changed from SCS-C02 */}
+      <section id="scs-c03-changes" className="border-b border-line py-8 sm:py-10 scroll-mt-24">
+        <Container>
+          <Reveal>
+            <SectionHeading
+              eyebrow="Exam transition"
+              title="What changed from SCS-C02"
+              description="SCS-C03 went live December 2, 2025, replacing SCS-C02 (retired December 1, 2025). Same core discipline, two real changes to how AWS tests it."
+            />
+          </Reveal>
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            <div className="rounded-xl border border-line bg-panel p-4">
+              <h3 className="text-sm font-semibold text-fg">GenAI + ML security is now in scope</h3>
+              <p className="mt-1.5 text-sm leading-6 text-muted">
+                SCS-C03 adds coverage of securing generative-AI and machine-learning workloads — Bedrock guardrails, SageMaker data protection, and model access controls sit alongside the classic IAM/KMS/VPC material.
+              </p>
+            </div>
+            <div className="rounded-xl border border-line bg-panel p-4">
+              <h3 className="text-sm font-semibold text-fg">Detection &amp; Incident Response is its own domain</h3>
+              <p className="mt-1.5 text-sm leading-6 text-muted">
+                What used to be blended with logging and monitoring is now a standalone domain, with more weight on GuardDuty, Security Hub, Detective, and incident-response runbooks.
+              </p>
+            </div>
+            <div className="rounded-xl border border-line bg-panel p-4">
+              <h3 className="text-sm font-semibold text-fg">The core services didn&apos;t change</h3>
+              <p className="mt-1.5 text-sm leading-6 text-muted">
+                IAM, KMS, S3, VPC, GuardDuty, and CloudTrail are still the backbone of the exam. If you already started prepping on SCS-C02 material, most of it still applies — you&apos;re extending, not restarting.
+              </p>
+            </div>
+          </div>
+        </Container>
+      </section>
+
       {/* How we differ */}
       <section className="border-b border-line py-8 sm:py-10">
         <Container>
@@ -277,7 +320,7 @@ export default function AwsSecurityCertificationPage() {
             <SectionHeading
               eyebrow="Why hands-on labs"
               title="Console time beats walkthroughs"
-              description="The SCS-C02 exam tests judgment in scenarios you can only get from working an AWS console — not from a multiple-choice trainer."
+              description="The SCS-C03 exam tests judgment in scenarios you can only get from working an AWS console — not from a multiple-choice trainer."
             />
           </Reveal>
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
@@ -347,7 +390,7 @@ export default function AwsSecurityCertificationPage() {
         <section className="border-b border-line py-8 sm:py-10">
           <Container>
             <div className="flex items-end justify-between gap-4">
-              <SectionHeading eyebrow="From the blog" title="Related reads for SCS-C02 prep" />
+              <SectionHeading eyebrow="From the blog" title="Related reads for SCS-C03 prep (upgraded from SCS-C02)" />
               <Button href="/blog" variant="secondary" className="shrink-0 self-start">
                 All posts <ArrowRight className="h-4 w-4" />
               </Button>

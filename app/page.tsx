@@ -334,7 +334,7 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* ---------------------------------------------- AWS SCS-C02 cert callout */}
+      {/* ---------------------------------------------- AWS SCS-C03 cert callout */}
       <section className="border-b border-line py-8 sm:py-10">
         <Container>
           <Reveal>
@@ -351,15 +351,15 @@ export default function HomePage() {
                     AWS Certification prep
                   </span>
                   <h2 className="mt-1 text-xl font-bold text-fg sm:text-2xl">
-                    AWS Security Specialty (SCS-C02) — every domain mapped to a hands-on lab
+                    AWS Security Specialty (SCS-C03) — every domain mapped to a hands-on lab
                   </h2>
                   <p className="mt-1 max-w-2xl text-sm leading-6 text-muted">
-                    Skip the walkthroughs. Practise IAM, S3, KMS, VPC, GuardDuty, and CloudTrail in real, isolated AWS accounts. First lab free.
+                    Skip the walkthroughs. Practise IAM, S3, KMS, VPC, GenAI/ML security, GuardDuty, and CloudTrail in real, isolated AWS accounts. First lab free. Upgraded from SCS-C02.
                   </p>
                 </div>
               </div>
               <span className="shrink-0 inline-flex items-center gap-1.5 rounded-xl border border-brand bg-brand px-5 py-2.5 text-sm font-semibold text-white transition group-hover:brightness-110">
-                Explore SCS-C02 prep
+                Explore SCS-C03 prep
                 <ArrowRight className="h-4 w-4" />
               </span>
             </Link>

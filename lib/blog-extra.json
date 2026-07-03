@@ -1193,8 +1193,8 @@
   },
   {
     "slug": "scs-c02-practice-questions",
-    "title": "SCS-C02 Practice Questions: 50 Realistic Scenarios with Explanations",
-    "excerpt": "Fifty original SCS-C02 practice questions written in the style of the real AWS Security Specialty exam, weighted by domain, with detailed explanations for every answer.",
+    "title": "AWS Security Specialty (SCS-C03) Practice Questions — updated from SCS-C02",
+    "excerpt": "Fifty original SCS-C03 practice questions written in the style of the real AWS Security Specialty exam, weighted by domain, with detailed explanations for every answer. Updated from SCS-C02.",
     "category": "Cloud / AWS",
     "date": "Jun 30, 2026",
     "read": "22 min",
@@ -1202,7 +1202,11 @@
     "body": [
       {
         "t": "p",
-        "text": "SCS-C02 practice questions are the single most useful tool in the final two weeks of exam prep. Reading the AWS docs builds knowledge; running scenarios under timed conditions teaches you how AWS phrases them. This set of 50 original practice questions is written in the same voice as the real AWS Certified Security Specialty exam, weighted to the official blueprint (7 Domain 1, 9 Domain 2, 10 Domain 3, 8 Domain 4, 9 Domain 5, 7 Domain 6), and paired with explanations that go past the right letter into why the wrong ones are tempting."
+        "text": "AWS transitioned the Certified Security Specialty exam from SCS-C02 to SCS-C03 on December 2, 2025 (SCS-C02 was retired December 1, 2025). SCS-C03 adds GenAI/ML-security questions and carves Threat Detection & Incident Response out into its own domain — the practice questions below are written against the current SCS-C03 blueprint. If you'd already been drilling SCS-C02 questions, the core domains (IAM, logging, infrastructure, data protection, governance) still transfer directly."
+      },
+      {
+        "t": "p",
+        "text": "SCS-C03 practice questions are the single most useful tool in the final two weeks of exam prep. Reading the AWS docs builds knowledge; running scenarios under timed conditions teaches you how AWS phrases them. This set of 50 original practice questions is written in the same voice as the real AWS Certified Security Specialty exam, weighted to the official blueprint (7 Domain 1, 9 Domain 2, 10 Domain 3, 8 Domain 4, 9 Domain 5, 7 Domain 6), and paired with explanations that go past the right letter into why the wrong ones are tempting."
       },
       {
         "t": "p",
@@ -2684,8 +2688,8 @@
   },
   {
     "slug": "scs-c02-domain2-logging-lab",
-    "title": "AWS Security Specialty Domain 2 (Logging & Monitoring) — Hands-On Lab Walkthrough",
-    "excerpt": "Build the SCS-C02 logging domain in your hands — a step-by-step walkthrough of an Athena-backed detection pipeline plus the exact mental model AWS expects on every Domain 2 question.",
+    "title": "AWS Security Specialty (SCS-C03) Domain 2 Logging Lab — updated from SCS-C02",
+    "excerpt": "Build the SCS-C03 logging domain in your hands — a step-by-step walkthrough of an Athena-backed detection pipeline plus the exact mental model AWS expects on every Domain 2 question. Updated from SCS-C02.",
     "category": "Cloud / AWS",
     "date": "Jun 30, 2026",
     "read": "14 min",
@@ -2693,7 +2697,11 @@
     "body": [
       {
         "t": "p",
-        "text": "The SCS-C02 logging domain — Domain 2, Security Logging & Monitoring — is 18% of the exam and the single most common reason people fail on a second attempt. It looks easy because the services involved (CloudTrail, CloudWatch Logs, VPC Flow Logs) are familiar from any AWS role. It trips people up because AWS tests the exact, often-counterintuitive details: management events vs data events, what's on by default and what isn't, which subscription filter goes where, when to use a metric filter vs CloudTrail Lake vs Athena. This walkthrough fixes that by building a Domain-2 detection pipeline end to end in the console, the way you'd do it on the job, with the exam-relevant gotchas flagged at every step."
+        "text": "AWS moved from SCS-C02 to SCS-C03 on December 2, 2025. One of the structural changes: Threat Detection & Incident Response — previously blended into this same logging domain — is now its own separate domain, and SCS-C03 adds GenAI/ML-security coverage elsewhere in the blueprint. The logging fundamentals below (CloudTrail, CloudWatch Logs, VPC Flow Logs, Athena) are unchanged and still squarely SCS-C03 Domain 2 material."
+      },
+      {
+        "t": "p",
+        "text": "The SCS-C03 logging domain — Domain 2, Security Logging & Monitoring — is 18% of the exam and the single most common reason people fail on a second attempt. It looks easy because the services involved (CloudTrail, CloudWatch Logs, VPC Flow Logs) are familiar from any AWS role. It trips people up because AWS tests the exact, often-counterintuitive details: management events vs data events, what's on by default and what isn't, which subscription filter goes where, when to use a metric filter vs CloudTrail Lake vs Athena. This walkthrough fixes that by building a Domain-2 detection pipeline end to end in the console, the way you'd do it on the job, with the exam-relevant gotchas flagged at every step."
       },
       {
         "t": "p",
@@ -4373,8 +4381,8 @@
   },
   {
     "slug": "scs-c02-study-guide",
-    "title": "AWS Security Specialty (SCS-C02) Study Guide with Free Hands-On Labs",
-    "excerpt": "A practitioner's SCS-C02 study guide — every domain mapped to the services it really tests, the gotchas the exam loves, and free hands-on AWS labs you can use to build console-time before exam day.",
+    "title": "AWS Security Specialty (SCS-C03) Study Guide — updated from SCS-C02",
+    "excerpt": "A practitioner's SCS-C03 study guide — every domain mapped to the services it really tests, the gotchas the exam loves, and free hands-on AWS labs you can use to build console-time before exam day. Updated from SCS-C02.",
     "category": "Cloud / AWS",
     "date": "Jun 30, 2026",
     "read": "16 min",
@@ -4382,7 +4390,11 @@
     "body": [
       {
         "t": "p",
-        "text": "The AWS Certified Security Specialty exam — code SCS-C02 — is the certification AWS uses to certify people who can actually defend a real AWS environment. Unlike the broader associate-level exams, SCS-C02 goes deep on the security primitives most engineers only half-understand: IAM trust policies, KMS grants, VPC endpoint policies, GuardDuty findings, CloudTrail and Athena, SCPs at the organization level. It rewards judgement built in a real AWS console, and it punishes people who only studied multiple-choice trainers. This study guide is written by people who do AWS security work for a living, mapped to the 2024+ exam blueprint, and paired with hands-on labs you can run for free."
+        "text": "AWS retired the SCS-C02 version of the Certified Security Specialty exam on December 1, 2025, and replaced it with SCS-C03 the next day. The two big changes: GenAI and ML-workload security (Bedrock guardrails, SageMaker data protection, model access controls) is now in scope, and Threat Detection & Incident Response has been split out into its own standalone domain instead of being blended with logging and monitoring. The core services this guide walks — IAM, KMS, VPC, GuardDuty, CloudTrail — are unchanged, so if you started prepping under SCS-C02 you're extending your study plan, not restarting it. This guide has been updated to reflect the current SCS-C03 blueprint."
+      },
+      {
+        "t": "p",
+        "text": "The AWS Certified Security Specialty exam — code SCS-C03 — is the certification AWS uses to certify people who can actually defend a real AWS environment. Unlike the broader associate-level exams, SCS-C03 goes deep on the security primitives most engineers only half-understand: IAM trust policies, KMS grants, VPC endpoint policies, GuardDuty findings, CloudTrail and Athena, SCPs at the organization level. It rewards judgement built in a real AWS console, and it punishes people who only studied multiple-choice trainers. This study guide is written by people who do AWS security work for a living, mapped to the current exam blueprint, and paired with hands-on labs you can run for free."
       },
       {
         "t": "p",

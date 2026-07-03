@@ -6,7 +6,7 @@ import { OrbitControls, Stars, Float, Html } from "@react-three/drei";
 import * as THREE from "three";
 
 /* ──────────────────────────────────────────────────────────────────────────
-   The six SCS-C02 domains as orbiting nodes around a central "isolated
+   The six SCS-C03 domains as orbiting nodes around a central "isolated
    AWS account" core. Colour-coded by category. Hover a node to focus it
    and reveal the domain's role.
    ────────────────────────────────────────────────────────────────────────── */
@@ -287,7 +287,7 @@ export function Aws3dScene() {
             </>
           ) : (
             <p className="text-xs text-white/70">
-              Each orbit is one SCS-C02 domain. Hover to focus.
+              Each orbit is one SCS-C03 domain. Hover to focus.
             </p>
           )}
         </div>

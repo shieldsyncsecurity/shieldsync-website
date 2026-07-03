@@ -8,6 +8,7 @@ import { BlogCarousel } from "@/components/blog-carousel";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
 import { ArrowRight, Radar, Flask, Shield } from "@/components/icons";
 import { SOC_LABS, SITE, BLOG_POSTS } from "@/lib/site";
+import { SocWaitlistForm } from "@/components/soc-waitlist-form";
 
 export const metadata: Metadata = {
   title: "SOC Labs — SIEM & SOAR, Hands-on (Detection & Response)",
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/labs/soc" },
 };
 
-const SOC_START = "/contact";
+const SOC_START = "#waitlist";
 const PAGE_URL = `${SITE.url}/labs/soc`;
 const PAGE_SCHEMA = [
   webPageSchema({
@@ -102,6 +103,15 @@ export default function SocLabsPage() {
                 Try the AWS track now
                 <ArrowRight className="h-4 w-4" />
               </Button>
+            </div>
+          </Reveal>
+
+          <Reveal delay={80}>
+            <div className="mt-6 max-w-xl">
+              <p className="mb-2 text-sm font-semibold text-fg">
+                Join the SOC labs waitlist — first access at launch
+              </p>
+              <SocWaitlistForm />
             </div>
           </Reveal>
         </Container>

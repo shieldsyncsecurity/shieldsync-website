@@ -6,12 +6,18 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Build & deploy (read before shipping)
 
+**HOSTING MOVED 2026-07-01: the live site is a STATIC EXPORT on AWS Amplify Hosting**
+(account 750294427884, us-east-1; Amplify app platform must stay `WEB`, not `WEB_COMPUTE`).
+Cloudflare keeps DNS only (grey-cloud). Do NOT use `npm run deploy` / wrangler — the old
+`shieldsync-website` Worker is dead and pending decommission. See AMPLIFY-MIGRATION-RUNBOOK.md.
+
+- **Deploy = commit + push to `main`** — Amplify watches the repo and rebuilds via
+  `amplify.yml` (`STATIC_EXPORT=true npm run build`, publishes `out/`). Uncommitted changes
+  never reach the live site.
+- **Before pushing, verify the EXPORT build locally:** `STATIC_EXPORT=true npm run build`
+  (plain `npm run build` can pass while the export variant fails — e.g. dynamic OG routes,
+  non-static sitemap/robots).
 - **Prod build MUST use webpack:** `package.json` `build` = `next build --webpack`. Next 16
-  defaults to Turbopack, whose SSR chunks (`server/chunks/ssr/[root-of-the-server]__*._.js`)
-  **`@opennextjs/cloudflare` cannot load at runtime** → the deployed Worker throws
-  `ChunkLoadError` and pages 500. `next.config.ts` keeps `turbopack:{root}` for **dev only**.
-  Do not revert the `--webpack` flag.
-- **Deploy:** `npm run deploy` (= `opennextjs-cloudflare build && opennextjs-cloudflare deploy`)
-  or `npx wrangler deploy`. Worker = `shieldsync-website`, live at `shieldsyncsecurity.com`.
-- **CI/CD is on push to `main`** — every push auto-rebuilds + redeploys. So **uncommitted
-  changes never reach the live site.** Always commit + push to ship.
+  defaults to Turbopack; `next.config.ts` keeps `turbopack:{root}` for **dev only**. Do not
+  revert the `--webpack` flag.
+- Security headers for the static build live in `customHttp.yml` (mirrors next.config).

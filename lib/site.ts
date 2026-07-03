@@ -242,9 +242,9 @@ export const LABS_MENU: { label: string; desc: string; href: string; tag?: strin
 
 /* Certifications dropdown — top-nav. Add new certs here as you ship landing pages. */
 export const CERTIFICATIONS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
-  { label: "AWS Security Specialty (SCS-C02)", desc: "Every SCS-C02 domain mapped to a hands-on lab", href: "/aws-security-certification", tag: "Live" },
-  { label: "SCS-C02 study guide", desc: "6-week plan + domain-by-domain breakdown", href: "/blog/scs-c02-study-guide" },
-  { label: "SCS-C02 practice questions", desc: "50 realistic scenarios with explanations", href: "/blog/scs-c02-practice-questions" },
+  { label: "AWS Security Specialty (SCS-C03)", desc: "Every SCS-C03 domain mapped to a hands-on lab", href: "/aws-security-certification", tag: "Live" },
+  { label: "SCS-C03 study guide", desc: "Updated from SCS-C02 — domain-by-domain breakdown", href: "/blog/scs-c02-study-guide" },
+  { label: "SCS-C03 practice questions", desc: "50 realistic scenarios with explanations", href: "/blog/scs-c02-practice-questions" },
 ];
 
 /* Headline training offer ----------------------------------------------------- */
@@ -310,7 +310,7 @@ export const INTERNSHIP = {
     detail:
       "Issued by ShieldSync Security Private Limited on completing the capstone. It verifies hands-on cloud security work in real AWS accounts — not attendance.",
     examReadiness:
-      "The curriculum maps to the AWS Security Specialty (SCS-C02) exam domains, so you finish exam-ready. The AWS certification itself is sat separately with AWS — we prepare you for it, we don't issue it.",
+      "The curriculum maps to the AWS Security Specialty (SCS-C03) exam domains, so you finish exam-ready. The AWS certification itself is sat separately with AWS — we prepare you for it, we don't issue it.",
   },
 
   // Week-by-week guided plan. Each week = a focus, what you learn, and the
