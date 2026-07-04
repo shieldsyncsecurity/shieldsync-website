@@ -12,7 +12,7 @@ import {
 import { ArrowRight, Check, Cloud, Shield } from "@/components/icons";
 import { SITE } from "@/lib/site";
 
-const PAGE_URL = `${SITE.url}/free-lab`;
+const PAGE_URL = `${SITE.url}/free-labs/aws-security`;
 const LAUNCH_URL =
   "https://labs.shieldsyncsecurity.com/labs/s3-misconfiguration-audit?intent=launch";
 
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     "AWS security practice free",
     "hands-on AWS security",
   ],
-  alternates: { canonical: "/free-lab" },
+  alternates: { canonical: "/free-labs/aws-security" },
   openGraph: {
     title: "Free AWS Security Lab — Real Isolated AWS Account, No Credit Card",
     description:
@@ -101,9 +101,10 @@ const FAQS = [
   },
 ];
 
-export default function FreeLabPage() {
+export default function FreeAwsSecurityLabPage() {
   const breadcrumbs = [
     { name: "Home", url: SITE.url },
+    { name: "Free Labs", url: `${SITE.url}/free-labs` },
     { name: "Free AWS Security Lab", url: PAGE_URL },
   ];
 

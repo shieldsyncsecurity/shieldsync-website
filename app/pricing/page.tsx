@@ -136,7 +136,7 @@ export default function PricingPage() {
       <CtaBand
         title="Start with the free lab"
         subtitle="Real isolated AWS account in 30 seconds. No credit card. See for yourself before you pay anything."
-        primary={{ label: "Start free lab", href: "/free-lab" }}
+        primary={{ label: "Start free lab", href: "/free-labs/aws-security" }}
         secondary={{ label: "Browse all AWS labs", href: "/labs" }}
       />
     </>

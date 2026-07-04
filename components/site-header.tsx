@@ -45,7 +45,7 @@ export function SiteHeader() {
   // A nav item lights up for its own route AND its related funnel routes — so
   // "Labs" stays active on the wizard and the free-lab landing, not just /labs.
   const RELATED: Record<string, string[]> = {
-    "/labs": ["/labs", "/labs-wizard", "/free-lab"],
+    "/labs": ["/labs", "/labs-wizard", "/free-labs"],
     "/aws-security-certification": ["/aws-security-certification"],
     "/services": ["/services"],
   };
@@ -222,7 +222,7 @@ export function SiteHeader() {
             funnel for learners AND business evaluators). Book a call = secondary
             (higher-intent B2B path). Internship now lives in the left nav. */}
         <div className="hidden items-center gap-3 md:flex">
-          <Button href="/free-lab" variant="primary" className="px-4 py-2">
+          <Button href="/free-labs/aws-security" variant="primary" className="px-4 py-2">
             Start free lab
           </Button>
           <Button href="/contact" variant="secondary" className="px-4 py-2">
@@ -340,7 +340,7 @@ export function SiteHeader() {
               );
             })}
             <div className="my-2 h-px bg-line" />
-            <Button href="/free-lab" variant="primary" className="mt-1">
+            <Button href="/free-labs/aws-security" variant="primary" className="mt-1">
               Start free lab
             </Button>
             <Button href="/contact" variant="secondary" className="mt-1">
