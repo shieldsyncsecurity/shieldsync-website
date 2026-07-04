@@ -71,8 +71,8 @@ export function SiteHeader() {
                       type="button"
                       onClick={() => setServicesOpen((v) => !v)}
                       aria-expanded={servicesOpen}
-                      className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition ${
-                        isActive(item.href) || servicesOpen ? "text-fg" : "text-muted hover:text-fg"
+                      className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-[15px] font-semibold transition ${
+                        isActive(item.href) || servicesOpen ? "text-fg" : "text-slate-700 hover:text-fg"
                       }`}
                     >
                       {item.label}
@@ -115,8 +115,8 @@ export function SiteHeader() {
                       type="button"
                       onClick={() => setLabsOpen((v) => !v)}
                       aria-expanded={labsOpen}
-                      className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition ${
-                        isActive(item.href) || labsOpen ? "text-fg" : "text-muted hover:text-fg"
+                      className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-[15px] font-semibold transition ${
+                        isActive(item.href) || labsOpen ? "text-fg" : "text-slate-700 hover:text-fg"
                       }`}
                     >
                       {item.label}
@@ -166,8 +166,8 @@ export function SiteHeader() {
                       type="button"
                       onClick={() => setCertsOpen((v) => !v)}
                       aria-expanded={certsOpen}
-                      className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition ${
-                        isActive(item.href) || certsOpen ? "text-fg" : "text-muted hover:text-fg"
+                      className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-[15px] font-semibold transition ${
+                        isActive(item.href) || certsOpen ? "text-fg" : "text-slate-700 hover:text-fg"
                       }`}
                     >
                       {item.label}
@@ -207,8 +207,8 @@ export function SiteHeader() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
-                    isActive(item.href) ? "text-fg" : "text-muted hover:text-fg"
+                  className={`rounded-lg px-3 py-2 text-[15px] font-semibold transition ${
+                    isActive(item.href) ? "text-fg" : "text-slate-700 hover:text-fg"
                   }`}
                 >
                   {item.label}
