@@ -114,11 +114,11 @@ export function LabsWizard({
   }
 
   return (
-    <section className="py-6 sm:py-10">
+    <section className="py-4 sm:py-6">
       <Container>
         <div className="mx-auto max-w-4xl">
           {/* Currency toggle */}
-          <div className="mb-4 flex items-center justify-end gap-3">
+          <div className="mb-3 flex items-center justify-end gap-3">
             <span className="text-xs text-muted">Prices shown for your region</span>
             <div className="inline-flex rounded-lg border border-line bg-panel p-0.5 text-sm font-semibold">
               <button type="button" onClick={() => setCurrency("INR")} className={curBtn(currency === "INR")}>₹ INR</button>
@@ -148,18 +148,18 @@ export function LabsWizard({
             })}
           </ol>
 
-          <div className="mt-6">
+          <div className="mt-5">
             {/* STEP 1 — choose track */}
             {step === 1 ? (
               <div>
-                <h1 className="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">Which track?</h1>
-                <p className="mt-3 text-lg text-muted">Start with the skills you want to build.</p>
-                <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-muted">
+                <h1 className="text-2xl font-extrabold tracking-tight text-fg sm:text-3xl">Which track?</h1>
+                <p className="mt-2 text-base text-muted">Start with the skills you want to build.</p>
+                <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-muted">
                   <span className="rounded-full border border-line bg-surface px-3 py-1">Real AWS console</span>
                   <span className="rounded-full border border-line bg-surface px-3 py-1">Launches in your browser</span>
                   <span className="rounded-full border border-line bg-surface px-3 py-1">Auto-cleanup when you&apos;re done</span>
                 </div>
-                <div className="mt-8 grid gap-5 sm:grid-cols-2">
+                <div className="mt-5 grid gap-4 sm:grid-cols-2">
                   {[
                     { key: "aws" as const, icon: Cloud, title: "Cloud Security — AWS", desc: "Master cloud security in real AWS environments. Our flagship track.", tag: "Flagship", soon: false },
                     { key: "soc" as const, icon: Radar, title: "Security Operations — SIEM & SOAR", desc: "Detection & response across SIEM and SOAR.", tag: "", soon: true },
@@ -172,7 +172,7 @@ export function LabsWizard({
                         disabled={o.soon}
                         aria-disabled={o.soon}
                         onClick={() => { if (!o.soon) chooseTrack(o.key); }}
-                        className={`rounded-2xl border p-7 text-left transition ${
+                        className={`rounded-2xl border p-5 text-left transition ${
                           o.soon
                             ? "cursor-not-allowed border-line bg-panel opacity-60"
                             : track === o.key
@@ -181,7 +181,7 @@ export function LabsWizard({
                         }`}
                       >
                         <div className="flex items-center justify-between">
-                          <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-brand/25 bg-brand/10 text-brand-bright">
+                          <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-brand/25 bg-brand/10 text-brand-bright">
                             <Icon className="h-6 w-6" />
                           </span>
                           {o.soon ? (
@@ -190,8 +190,8 @@ export function LabsWizard({
                             <span className="rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-bold text-brand-bright">★ {o.tag}</span>
                           ) : null}
                         </div>
-                        <h3 className="mt-5 text-xl font-bold text-fg">{o.title}</h3>
-                        <p className="mt-2 text-base leading-7 text-muted">{o.desc}{o.soon ? " — in development; the AWS track is live now." : ""}</p>
+                        <h3 className="mt-4 text-lg font-bold text-fg">{o.title}</h3>
+                        <p className="mt-1.5 text-sm leading-6 text-muted">{o.desc}{o.soon ? " — in development; the AWS track is live now." : ""}</p>
                       </button>
                     );
                   })}
@@ -422,7 +422,7 @@ export function LabsWizard({
 
           {/* Nav */}
           {step < 5 ? (
-            <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
+            <div className="mt-5 flex items-center justify-between border-t border-line pt-3">
               <button
                 type="button"
                 onClick={() => setStep((s) => (s === 4 && mode === "monthly" ? 2 : Math.max(1, s - 1)))}
