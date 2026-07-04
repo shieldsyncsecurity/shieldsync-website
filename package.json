@@ -6,9 +6,7 @@
     "dev": "next dev -p 3000",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
+    "lint": "eslint"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.19.11",

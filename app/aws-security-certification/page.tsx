@@ -170,7 +170,7 @@ export default function AwsSecurityCertificationPage() {
                 Upgraded from SCS-C02 — see <a href="#scs-c03-changes" className="font-semibold text-brand-bright hover:underline">what changed</a>.
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
-                <Button href="/labs-wizard?track=aws">
+                <Button href="/free-lab">
                   Start free lab
                   <ArrowRight className="h-4 w-4" />
                 </Button>

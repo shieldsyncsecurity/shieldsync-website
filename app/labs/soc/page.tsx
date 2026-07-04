@@ -170,7 +170,7 @@ export default function SocLabsPage() {
           <Reveal>
             <div className="flex flex-wrap items-center gap-3 border-t border-line pt-6">
               <p className="text-sm text-muted">AWS cloud security labs are live now while SOC is in development.</p>
-              <Button href="/labs-wizard?track=aws">
+              <Button href="/free-lab">
                 Start a free AWS lab
                 <ArrowRight className="h-4 w-4" />
               </Button>

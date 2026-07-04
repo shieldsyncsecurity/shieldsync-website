@@ -30,7 +30,10 @@ export function LabsWizard({
   // SOC (SIEM/SOAR) labs are in development — ignore a ?track=soc deep-link so it
   // can't enter the not-yet-built SOC funnel; land on track selection instead.
   const safeTrack: Track = initialTrack === "soc" ? null : (initialTrack ?? null);
-  const startMode: Mode = initialLevel ? "per-lab" : initialPlan ?? null;
+  // If the requested track was blocked (soc, in development), drop any pre-set
+  // plan/level intent too — otherwise picking "aws" on step 1 silently fast-forwards
+  // past the Plan step to a plan the user never chose for the AWS track.
+  const startMode: Mode = initialTrack === "soc" ? null : initialLevel ? "per-lab" : initialPlan ?? null;
   const startStep = safeTrack ? (initialLevel || initialPlan ? 3 : 2) : 1;
   const [step, setStep] = useState(startStep);
   const [track, setTrack] = useState<Track>(safeTrack);
