@@ -26,13 +26,9 @@ export const AWS_PRICE: Record<string, Money> = {
 };
 export const AWS_MONTHLY: Money = { usd: 25, inr: 2000 };
 
-// TEMP (2026-07-03): during Paytm merchant review, mark IAM at ₹99 so the
-// "pay-per-lab from ₹99" claim maps to a REAL ₹99 lab (the level price is ₹249,
-// which confused the reviewers since no purchasable lab was actually ₹99).
-// REVERT to level pricing after Paytm approval — see labs-platform/PAYTM-GOLIVE-RUNBOOK.md.
-export const AWS_LAB_PRICE_OVERRIDE: Record<string, Money> = {
-  "iam-privilege-escalation": { usd: 3, inr: 99 },
-};
+// Optional per-lab price override (e.g. a launch promo). Empty = pure level
+// pricing. (Held the temporary IAM ₹99 during Paytm review; reverted 2026-07-04.)
+export const AWS_LAB_PRICE_OVERRIDE: Record<string, Money> = {};
 /** Per-lab price: the temporary override if set, else the per-level price. */
 export function awsLabPrice(slug: string, level: string): Money {
   return AWS_LAB_PRICE_OVERRIDE[slug] ?? AWS_PRICE[level] ?? FREE;
