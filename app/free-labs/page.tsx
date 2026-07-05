@@ -48,7 +48,7 @@ const FREE_LABS = [
     tag: "AI · Beginner · ~35 min",
     title: "AI Security — secure a Bedrock assistant",
     desc: "Prompt-inject an LLM support assistant, then lock it down with Guardrails, least-privilege, and logging.",
-    ready: false,
+    ready: true,
   },
 ];
 
