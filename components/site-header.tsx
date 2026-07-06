@@ -6,30 +6,45 @@ import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/brand";
 import { Button } from "@/components/ui";
 import { Menu, Close, ChevronDown } from "@/components/icons";
-import { NAV, LABS_MENU, SERVICES_MENU, CERTIFICATIONS_MENU } from "@/lib/site";
+import { NAV, BUSINESSES_MENU, LEARNERS_MENU } from "@/lib/site";
+
+/* Model B nav (audience-first): two dropdown doors — Businesses + Learners —
+ * plus Blog. The dropdown contents live in lib/site.ts (BUSINESSES_MENU /
+ * LEARNERS_MENU); each door also gets a footer row linking to its overview. */
+const DROPDOWNS: Record<
+  string,
+  {
+    menu: { label: string; desc: string; href: string; tag?: string }[];
+    width: string;
+    footer: { href: string; lead: string; strong: string };
+  }
+> = {
+  "/services": {
+    menu: BUSINESSES_MENU,
+    width: "w-80",
+    footer: { href: "/services", lead: "See all", strong: "services overview" },
+  },
+  "/labs": {
+    menu: LEARNERS_MENU,
+    width: "w-80",
+    footer: { href: "/start-here", lead: "New to cloud security?", strong: "Start here" },
+  },
+};
 
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [labsOpen, setLabsOpen] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
-  const [certsOpen, setCertsOpen] = useState(false);
-  const labsRef = useRef<HTMLDivElement>(null);
-  const servicesRef = useRef<HTMLDivElement>(null);
-  const certsRef = useRef<HTMLDivElement>(null);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setOpen(false);
-    setLabsOpen(false);
-    setServicesOpen(false);
-    setCertsOpen(false);
+    setOpenDropdown(null);
   }, [pathname]);
 
   useEffect(() => {
     function onDown(e: MouseEvent) {
-      if (labsRef.current && !labsRef.current.contains(e.target as Node)) setLabsOpen(false);
-      if (servicesRef.current && !servicesRef.current.contains(e.target as Node)) setServicesOpen(false);
-      if (certsRef.current && !certsRef.current.contains(e.target as Node)) setCertsOpen(false);
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) setOpenDropdown(null);
     }
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
@@ -42,12 +57,11 @@ export function SiteHeader() {
     };
   }, [open]);
 
-  // A nav item lights up for its own route AND its related funnel routes — so
-  // "Labs" stays active on the wizard and the free-lab landing, not just /labs.
+  // A nav door lights up for its own route AND everything that lives behind it,
+  // so "Learners" stays active across the whole learner funnel.
   const RELATED: Record<string, string[]> = {
-    "/labs": ["/labs", "/labs-wizard", "/free-labs"],
-    "/aws-security-certification": ["/aws-security-certification"],
-    "/services": ["/services"],
+    "/services": ["/services", "/training"],
+    "/labs": ["/labs", "/labs-wizard", "/free-labs", "/aws-security-certification", "/internship", "/ai-security", "/start-here"],
   };
   const isActive = (href: string) => {
     const group = RELATED[href];
@@ -64,72 +78,30 @@ export function SiteHeader() {
 
           <nav className="hidden items-center gap-1 md:flex">
             {NAV.map((item) => {
-              if (item.href === "/services") {
+              const dd = DROPDOWNS[item.href];
+              if (dd) {
+                const isOpen = openDropdown === item.href;
                 return (
-                  <div key={item.href} className="relative" ref={servicesRef}>
+                  <div key={item.href} className="relative" ref={isOpen ? dropdownRef : undefined}>
                     <button
                       type="button"
-                      onClick={() => setServicesOpen((v) => !v)}
-                      aria-expanded={servicesOpen}
+                      onClick={() => setOpenDropdown((v) => (v === item.href ? null : item.href))}
+                      aria-expanded={isOpen}
                       className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-[15px] font-semibold transition ${
-                        isActive(item.href) || servicesOpen ? "text-fg" : "text-slate-700 hover:text-fg"
+                        isActive(item.href) || isOpen ? "text-fg" : "text-slate-700 hover:text-fg"
                       }`}
                     >
                       {item.label}
-                      <ChevronDown className={`h-4 w-4 transition-transform ${servicesOpen ? "rotate-180" : ""}`} />
+                      <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
                     </button>
 
-                    {servicesOpen ? (
-                      <div className="absolute left-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-xl border border-line bg-panel p-2 shadow-2xl">
-                        {SERVICES_MENU.map((m) => (
+                    {isOpen ? (
+                      <div className={`absolute left-0 top-full z-50 mt-2 ${dd.width} overflow-hidden rounded-xl border border-line bg-panel p-2 shadow-2xl`}>
+                        {dd.menu.map((m) => (
                           <Link
                             key={m.label}
                             href={m.href}
-                            onClick={() => setServicesOpen(false)}
-                            className="block rounded-lg px-3 py-2.5 transition hover:bg-surface"
-                          >
-                            <p className="text-sm font-semibold text-fg">{m.label}</p>
-                            <p className="mt-0.5 text-xs text-muted">{m.desc}</p>
-                          </Link>
-                        ))}
-                        <div className="my-1 h-px bg-line" />
-                        <Link
-                          href="/services"
-                          onClick={() => setServicesOpen(false)}
-                          className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-muted transition hover:bg-surface hover:text-fg"
-                        >
-                          <span>
-                            See all <span className="font-semibold text-fg">services overview</span>
-                          </span>
-                          <span aria-hidden="true">→</span>
-                        </Link>
-                      </div>
-                    ) : null}
-                  </div>
-                );
-              }
-              if (item.href === "/labs") {
-                return (
-                  <div key={item.href} className="relative" ref={labsRef}>
-                    <button
-                      type="button"
-                      onClick={() => setLabsOpen((v) => !v)}
-                      aria-expanded={labsOpen}
-                      className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-[15px] font-semibold transition ${
-                        isActive(item.href) || labsOpen ? "text-fg" : "text-slate-700 hover:text-fg"
-                      }`}
-                    >
-                      {item.label}
-                      <ChevronDown className={`h-4 w-4 transition-transform ${labsOpen ? "rotate-180" : ""}`} />
-                    </button>
-
-                    {labsOpen ? (
-                      <div className="absolute left-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-xl border border-line bg-panel p-2 shadow-2xl">
-                        {LABS_MENU.map((m) => (
-                          <Link
-                            key={m.label}
-                            href={m.href}
-                            onClick={() => setLabsOpen(false)}
+                            onClick={() => setOpenDropdown(null)}
                             className="block rounded-lg px-3 py-2.5 transition hover:bg-surface"
                           >
                             <p className="flex items-center gap-2 text-sm font-semibold text-fg">
@@ -145,59 +117,15 @@ export function SiteHeader() {
                         ))}
                         <div className="my-1 h-px bg-line" />
                         <Link
-                          href="/start-here"
-                          onClick={() => setLabsOpen(false)}
+                          href={dd.footer.href}
+                          onClick={() => setOpenDropdown(null)}
                           className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-muted transition hover:bg-surface hover:text-fg"
                         >
                           <span>
-                            New to cloud security? <span className="font-semibold text-fg">Start here</span>
+                            {dd.footer.lead} <span className="font-semibold text-fg">{dd.footer.strong}</span>
                           </span>
                           <span aria-hidden="true">→</span>
                         </Link>
-                      </div>
-                    ) : null}
-                  </div>
-                );
-              }
-              if (item.href === "/aws-security-certification") {
-                return (
-                  <div key={item.href} className="relative" ref={certsRef}>
-                    <button
-                      type="button"
-                      onClick={() => setCertsOpen((v) => !v)}
-                      aria-expanded={certsOpen}
-                      className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-[15px] font-semibold transition ${
-                        isActive(item.href) || certsOpen ? "text-fg" : "text-slate-700 hover:text-fg"
-                      }`}
-                    >
-                      {item.label}
-                      <ChevronDown className={`h-4 w-4 transition-transform ${certsOpen ? "rotate-180" : ""}`} />
-                    </button>
-
-                    {certsOpen ? (
-                      <div className="absolute left-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-xl border border-line bg-panel p-2 shadow-2xl">
-                        {CERTIFICATIONS_MENU.map((m) => (
-                          <Link
-                            key={m.label}
-                            href={m.href}
-                            onClick={() => setCertsOpen(false)}
-                            className="block rounded-lg px-3 py-2.5 transition hover:bg-surface"
-                          >
-                            <p className="flex items-center gap-2 text-sm font-semibold text-fg">
-                              {m.label}
-                              {m.tag ? (
-                                <span className="rounded border border-brand/30 bg-brand/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-bright">
-                                  {m.tag}
-                                </span>
-                              ) : null}
-                            </p>
-                            <p className="mt-0.5 text-xs text-muted">{m.desc}</p>
-                          </Link>
-                        ))}
-                        <div className="my-1 h-px bg-line" />
-                        <p className="px-3 py-2 text-xs text-muted">
-                          More certifications coming — preparing learners for <span className="font-semibold text-fg">SAA-C03</span>, <span className="font-semibold text-fg">CCSP</span> & <span className="font-semibold text-fg">CISSP</span> next.
-                        </p>
                       </div>
                     ) : null}
                   </div>
@@ -219,8 +147,9 @@ export function SiteHeader() {
         </div>
 
         {/* Right: two actions. Start free lab = primary (widest, zero-friction
-            funnel for learners AND business evaluators). Book a call = secondary
-            (higher-intent B2B path). Internship now lives in the left nav. */}
+            funnel for learners AND business evaluators — it also keeps the labs
+            USP one click away now that Labs lives inside the Learners door).
+            Book a call = secondary (higher-intent B2B path). */}
         <div className="hidden items-center gap-3 md:flex">
           <Button href="/free-labs/aws-security" variant="primary" className="px-4 py-2">
             Start free lab
@@ -246,7 +175,8 @@ export function SiteHeader() {
         <div className="border-t border-line bg-ink md:hidden">
           <nav className="mx-auto flex w-full max-w-[1536px] flex-col gap-1 px-5 py-4 sm:px-6">
             {NAV.map((item) => {
-              if (item.href === "/services") {
+              const dd = DROPDOWNS[item.href];
+              if (dd) {
                 return (
                   <div key={item.href}>
                     <Link
@@ -258,34 +188,9 @@ export function SiteHeader() {
                       {item.label}
                     </Link>
                     <div className="ml-3 flex flex-col gap-1 border-l border-line pl-3">
-                      {SERVICES_MENU.map((m) => (
+                      {dd.menu.map((m) => (
                         <Link
-                          key={m.href}
-                          href={m.href}
-                          className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
-                        >
-                          {m.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                );
-              }
-              if (item.href === "/labs") {
-                return (
-                  <div key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={`block rounded-lg px-3 py-3 text-sm font-medium transition ${
-                        isActive(item.href) ? "bg-surface text-fg" : "text-muted hover:bg-surface hover:text-fg"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                    <div className="ml-3 flex flex-col gap-1 border-l border-line pl-3">
-                      {LABS_MENU.map((m) => (
-                        <Link
-                          key={m.href}
+                          key={m.href + m.label}
                           href={m.href}
                           className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
                         >
@@ -293,36 +198,11 @@ export function SiteHeader() {
                         </Link>
                       ))}
                       <Link
-                        href="/start-here"
+                        href={dd.footer.href}
                         className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
                       >
-                        New to cloud security? Start here
+                        {dd.footer.lead} {dd.footer.strong}
                       </Link>
-                    </div>
-                  </div>
-                );
-              }
-              if (item.href === "/aws-security-certification") {
-                return (
-                  <div key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={`block rounded-lg px-3 py-3 text-sm font-medium transition ${
-                        isActive(item.href) ? "bg-surface text-fg" : "text-muted hover:bg-surface hover:text-fg"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                    <div className="ml-3 flex flex-col gap-1 border-l border-line pl-3">
-                      {CERTIFICATIONS_MENU.map((m) => (
-                        <Link
-                          key={m.href}
-                          href={m.href}
-                          className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
-                        >
-                          {m.label}
-                        </Link>
-                      ))}
                     </div>
                   </div>
                 );

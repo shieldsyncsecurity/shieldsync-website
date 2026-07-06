@@ -39,19 +39,16 @@ export const CONTACT = {
 
 export type NavItem = { label: string; href: string };
 
-// Top-nav (Model A — product-first). Dropdown parents: /services, /labs,
-// /aws-security-certification (handled specially in site-header). The rest are
-// plain links. Training folded into the Services dropdown (it's a B2B service);
-// Contact removed (the "Book a call" action button covers it); Internship
-// promoted to a first-class item. No "Pricing" item — pricing lives in the labs
-// wizard, reached via Labs and the CTAs (owner call, 2026-07-07).
+// Top-nav (Model B — audience-first, owner call 2026-07-07). TWO doors matching
+// the homepage fork: "Businesses" (services + training + hiring assessments)
+// and "Learners" (labs + certification + internship), plus Blog. Both doors are
+// dropdowns (BUSINESSES_MENU / LEARNERS_MENU below, rendered by site-header).
+// The labs USP stays instantly reachable via the header's primary
+// "Start free lab" button — if that button ever goes away, Labs must return to
+// the top level. Contact is covered by the "Book a call" button.
 export const NAV: NavItem[] = [
-  { label: "Services", href: "/services" },
-  { label: "Labs", href: "/labs" },
-  // B2B hiring-assessment product on the enterprise. subdomain (external link).
-  { label: "For Employers", href: SITE.enterpriseUrl },
-  { label: "Certifications", href: "/aws-security-certification" },
-  { label: "Internship", href: "/internship" },
+  { label: "Businesses", href: "/services" },
+  { label: "Learners", href: "/labs" },
   { label: "Blog", href: "/blog" },
 ];
 
@@ -255,6 +252,28 @@ export const CERTIFICATIONS_MENU: { label: string; desc: string; href: string; t
   { label: "SCS-C03 practice questions", desc: "50 realistic scenarios with explanations", href: "/blog/scs-c02-practice-questions" },
 ];
 
+/* Audience dropdowns (header, Model B) ---------------------------------------- */
+
+// "Businesses" door — everything a company buys: the five security services +
+// corporate training (SERVICES_MENU) + the hiring-assessment product.
+export const BUSINESSES_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
+  ...SERVICES_MENU,
+  { label: "Hiring Assessments", desc: "Test candidates on real cloud-security tasks before you hire", href: SITE.enterpriseUrl },
+];
+
+// "Learners" door — track order is a deliberate positioning call (owner,
+// 2026-07-07): AI Security is the flagship, then AWS, Azure, SOC. The free
+// funnel, certification prep, and internship follow.
+export const LEARNERS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
+  { label: "AI Security", desc: "Secure Bedrock, LLM apps & agents — free hands-on lab live", href: "/ai-security", tag: "Flagship" },
+  { label: "AWS Security Labs", desc: "Cloud security in real AWS — pick a lab or go monthly", href: "/labs" },
+  { label: "Azure Security Labs", desc: "Cloud security in real Azure — storage exposure & more", href: "/labs", tag: "Coming soon" },
+  { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/labs/soc", tag: "Coming soon" },
+  { label: "Free Labs", desc: "Two free hands-on labs — real cloud accounts, no card", href: "/free-labs", tag: "Free" },
+  { label: "AWS Certification (SCS-C03)", desc: "Every exam domain mapped to a hands-on lab", href: "/aws-security-certification" },
+  { label: "Internship", desc: "8-week guided internship — projects, labs & certificate", href: "/internship" },
+];
+
 /* Headline training offer ----------------------------------------------------- */
 
 export const OFFER = {
@@ -434,7 +453,7 @@ export const FOOTER_NAV: { heading: string; links: NavItem[] }[] = [
     links: [
       { label: "Services", href: "/services" },
       { label: "Hands-on Labs", href: "/labs" },
-      { label: "For Employers", href: SITE.enterpriseUrl },
+      { label: "Hiring Assessments", href: SITE.enterpriseUrl },
       { label: "Certifications", href: "/aws-security-certification" },
     ],
   },
