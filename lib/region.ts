@@ -20,7 +20,7 @@ export function formatMoney(m: Money, currency: Currency): string {
 // (no FX/international-charge surprises for overseas learners).
 export const FREE: Money = { usd: 0, inr: 0 };
 export const AWS_PRICE: Record<string, Money> = {
-  Beginner: { usd: 3, inr: 199 }, // 1st beginner lab is free (see FREE_SLUG)
+  Beginner: { usd: 4, inr: 199 }, // 1st beginner lab is free (see FREE_SLUG)
   Intermediate: { usd: 5, inr: 249 },
   Advanced: { usd: 7, inr: 499 },
 };
