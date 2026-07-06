@@ -219,7 +219,7 @@ export default function FreeAiSecurityLabPage() {
         subtitle="A real Bedrock assistant in an isolated AWS account. No credit card. Auto-graded. Auto-wiped."
         primary={{ label: "Start free lab", href: LAUNCH_URL }}
         primaryCaption="Google sign-in · no card · live in ~60 seconds"
-        secondary={{ label: "Browse all AWS labs", href: "/labs" }}
+        secondary={{ label: "Explore all free labs", href: "/free-labs" }}
       />
     </>
   );

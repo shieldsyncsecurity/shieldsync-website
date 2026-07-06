@@ -254,7 +254,7 @@ export function LabsWizard({
                       title: `Monthly — ${accessLabel}`,
                       price: `${money(monthly)}/mo`,
                       badge: "Best value",
-                      pts: [`Every ${track === "soc" ? "SOC" : "AWS"} lab unlocked`, "New labs included", "Cancel within 24h"],
+                      pts: [`Every ${track === "soc" ? "SOC" : "AWS"} lab unlocked`, "New labs included", "Cancel anytime"],
                       cta: "Get started →",
                     },
                   ].map((o) => (
@@ -350,7 +350,7 @@ export function LabsWizard({
                     <span className="pb-1.5 text-lg text-muted">/ month</span>
                   </div>
                   <ul className="mt-6 grid gap-3">
-                    {[`Every ${track === "soc" ? "SOC (SIEM + SOAR)" : "AWS security"} lab, unlocked`, "New labs included as we add them", "Launch instantly — no setup", "Cancel anytime (24h window)"].map((f) => (
+                    {[`Every ${track === "soc" ? "SOC (SIEM + SOAR)" : "AWS security"} lab, unlocked`, "New labs included as we add them", "Launch instantly — no setup", "Cancel anytime — access runs to the end of the paid cycle"].map((f) => (
                       <li key={f} className="flex items-center gap-3 text-base text-fg/90">
                         <Check className="h-4 w-4 shrink-0 text-brand" /> {f}
                       </li>
