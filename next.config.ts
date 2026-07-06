@@ -31,7 +31,9 @@ const csp = [
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com`,
   // api.web3forms.com = the internship application form's submit endpoint
   // (client-side fetch POST → emails the submission to internship@…).
-  `connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://api.web3forms.com${isDev ? " ws:" : ""}`,
+  // labs.shieldsyncsecurity.com = the /api/geo country lookup the pre-paint
+  // region script fetches for IP-based currency (CSP blocks it otherwise).
+  `connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://api.web3forms.com https://labs.shieldsyncsecurity.com${isDev ? " ws:" : ""}`,
   // Allow YouTube iframe embeds (homepage hero + /free-lab + /aws-security-certification).
   // Without this, frame-src falls back to default-src 'self' and the browser blocks
   // every <iframe src="youtube.com/embed/..."> silently — no console error in many
