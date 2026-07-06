@@ -96,8 +96,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrains.variable} ${fraunces.variable} h-full antialiased`}>
+    <html lang="en" className={`${inter.variable} ${jetbrains.variable} ${fraunces.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="flex min-h-full flex-col">
+        {/* Region detection before first paint: set data-region="in" for the
+            India timezone so price components show the right currency with no
+            USD->INR flash. globals.css .price-usd/.price-inr toggle on this. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(/Kolkata|Calcutta/i.test(Intl.DateTimeFormat().resolvedOptions().timeZone||'')){document.documentElement.setAttribute('data-region','in')}}catch(e){}",
+          }}
+        />
         {/* Global JSON-LD: Organization + WebSite — present on every page */}
         <SchemaOrg schema={[organizationSchema(), webSiteSchema()]} />
         <SiteChrome>{children}</SiteChrome>

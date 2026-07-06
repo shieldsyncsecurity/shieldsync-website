@@ -61,6 +61,15 @@ body {
   border-radius: 2px;
 }
 
+/* Region-aware price visibility. The inline script in layout.tsx sets
+   data-region="in" on <html> before first paint (India timezone), so priced
+   components show the correct currency with zero flash. Default (no attr) = USD.
+   Kept ASCII and placed before any non-ASCII comment so Turbopack (dev) doesn't
+   drop it. */
+.price-inr { display: none; }
+[data-region="in"] .price-usd { display: none; }
+[data-region="in"] .price-inr { display: revert; }
+
 /* --- Utilities --------------------------------------------------------------- */
 
 .text-gradient {

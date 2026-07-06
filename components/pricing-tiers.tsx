@@ -56,18 +56,23 @@ const TIERS: Tier[] = [
 ];
 
 export function PricingTiers() {
+  // Prices are chosen before first paint by the region script in layout.tsx
+  // (sets <html data-region="in"> for India) and swapped purely in CSS
+  // (.price-usd / .price-inr) — so there is no USD->INR flash on load. This
+  // state only drives the toggle-button highlight + the USD footnote; sync it
+  // to whatever the pre-paint script decided.
   const [currency, setCurrency] = useState<Currency>("USD");
 
-  // Region resolved client-side from the browser timezone (India → INR),
-  // identical to the labs-wizard. Manual toggle always overrides.
   useEffect(() => {
-    try {
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
-      if (/Kolkata|Calcutta/i.test(tz)) setCurrency("INR");
-    } catch {
-      /* ignore */
-    }
+    if (document.documentElement.getAttribute("data-region") === "in") setCurrency("INR");
   }, []);
+
+  // Toggle: flip the region attribute (CSS swaps the prices) and the state
+  // (button highlight + footnote) together.
+  const pick = (c: Currency) => {
+    setCurrency(c);
+    document.documentElement.setAttribute("data-region", c === "INR" ? "in" : "us");
+  };
 
   const curBtn = (active: boolean) =>
     `rounded-md px-3 py-1.5 transition ${active ? "bg-brand/10 text-brand-bright" : "text-muted hover:text-fg"}`;
@@ -77,8 +82,8 @@ export function PricingTiers() {
       <div className="mb-6 flex items-center justify-center gap-3">
         <span className="text-xs text-muted">Prices shown for your region</span>
         <div className="inline-flex rounded-lg border border-line bg-panel p-0.5 text-sm font-semibold">
-          <button type="button" onClick={() => setCurrency("INR")} className={curBtn(currency === "INR")}>₹ INR</button>
-          <button type="button" onClick={() => setCurrency("USD")} className={curBtn(currency === "USD")}>$ USD</button>
+          <button type="button" onClick={() => pick("INR")} className={curBtn(currency === "INR")}>₹ INR</button>
+          <button type="button" onClick={() => pick("USD")} className={curBtn(currency === "USD")}>$ USD</button>
         </div>
       </div>
 
@@ -97,7 +102,10 @@ export function PricingTiers() {
             ) : null}
             <h3 className="text-base font-bold text-fg">{t.name}</h3>
             <div className="mt-2 flex items-baseline gap-1">
-              <span className="text-3xl font-extrabold text-fg">{t.price(currency)}</span>
+              <span className="text-3xl font-extrabold text-fg">
+                <span className="price-usd">{t.price("USD")}</span>
+                <span className="price-inr">{t.price("INR")}</span>
+              </span>
               {t.cadence ? <span className="text-sm text-muted">{t.cadence}</span> : null}
             </div>
             <p className="mt-2 text-sm text-muted">{t.blurb}</p>
@@ -124,11 +132,11 @@ export function PricingTiers() {
         ))}
       </div>
 
-      {currency === "USD" ? (
-        <p className="mt-4 text-center text-xs text-muted">
-          Lab prices shown in USD; charged in your region&apos;s currency at checkout.
-        </p>
-      ) : null}
+      {/* Shown only when USD is active (CSS-hidden for data-region="in"), so it
+          matches the price display before first paint with no flash. */}
+      <p className="price-usd mt-4 text-center text-xs text-muted">
+        Lab prices shown in USD; charged in your region&apos;s currency at checkout.
+      </p>
     </div>
   );
 }
