@@ -8,6 +8,7 @@ import { SchemaOrg } from "@/components/schema-org";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
 import { Check, ArrowRight } from "@/components/icons";
 import { AWS_LABS, SOC_LABS, SITE, launchPolicyText } from "@/lib/site";
+import { awsLabPrice, SOC_PRICE } from "@/lib/region";
 
 export function generateStaticParams() {
   return [...AWS_LABS, ...SOC_LABS].map((l) => ({ slug: l.slug }));
@@ -93,7 +94,11 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
             timeRequired: `PT${lab.minutes}M`,
             offers: {
               "@type": "Offer",
-              price: lab.free ? "0" : "99",
+              // Real per-level price (was a hardcoded "99" for every paid lab).
+              price:
+                lab.kind === "aws"
+                  ? String(lab.free ? 0 : awsLabPrice(lab.slug, lab.level).inr)
+                  : String(SOC_PRICE.inr),
               priceCurrency: "INR",
               availability: "https://schema.org/InStock",
               url,
