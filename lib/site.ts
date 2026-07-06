@@ -254,21 +254,22 @@ export const CERTIFICATIONS_MENU: { label: string; desc: string; href: string; t
 
 /* Audience dropdowns (header, Model B) ---------------------------------------- */
 
-// "Businesses" door — everything a company buys: the five security services +
-// corporate training (SERVICES_MENU) + the hiring-assessment product.
+// KEEP THESE SHORT (owner, 2026-07-07: "so many links"). One row per offering
+// category — the detail lives on the landing pages, not in the menu.
+
+// "Businesses" door — 3 rows. The five individual service pages are listed on
+// /services; do NOT spread SERVICES_MENU here again.
 export const BUSINESSES_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
-  ...SERVICES_MENU,
+  { label: "Security Services", desc: "Assessments, SOC, AppSec, GRC — practitioner-led", href: "/services" },
+  { label: "Corporate Training", desc: "Team training across infra, cloud & SOC — tailored to your stack", href: "/training" },
   { label: "Hiring Assessments", desc: "Test candidates on real cloud-security tasks before you hire", href: SITE.enterpriseUrl },
 ];
 
-// "Learners" door — track order is a deliberate positioning call (owner,
-// 2026-07-07): AI Security is the flagship, then AWS, Azure, SOC. The free
-// funnel, certification prep, and internship follow.
+// "Learners" door — 5 rows in flagship order (AI first, owner call 2026-07-07).
+// Coming-soon tracks (Azure, SOC) stay OUT of the menu until they're real.
 export const LEARNERS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
   { label: "AI Security", desc: "Secure Bedrock, LLM apps & agents — free hands-on lab live", href: "/ai-security", tag: "Flagship" },
   { label: "AWS Security Labs", desc: "Cloud security in real AWS — pick a lab or go monthly", href: "/labs" },
-  { label: "Azure Security Labs", desc: "Cloud security in real Azure — storage exposure & more", href: "/labs", tag: "Coming soon" },
-  { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/labs/soc", tag: "Coming soon" },
   { label: "Free Labs", desc: "Two free hands-on labs — real cloud accounts, no card", href: "/free-labs", tag: "Free" },
   { label: "AWS Certification (SCS-C03)", desc: "Every exam domain mapped to a hands-on lab", href: "/aws-security-certification" },
   { label: "Internship", desc: "8-week guided internship — projects, labs & certificate", href: "/internship" },

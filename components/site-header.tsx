@@ -10,19 +10,18 @@ import { NAV, BUSINESSES_MENU, LEARNERS_MENU } from "@/lib/site";
 
 /* Model B nav (audience-first): two dropdown doors — Businesses + Learners —
  * plus Blog. The dropdown contents live in lib/site.ts (BUSINESSES_MENU /
- * LEARNERS_MENU); each door also gets a footer row linking to its overview. */
+ * LEARNERS_MENU). Keep menus SHORT — one row per offering category. */
 const DROPDOWNS: Record<
   string,
   {
     menu: { label: string; desc: string; href: string; tag?: string }[];
     width: string;
-    footer: { href: string; lead: string; strong: string };
+    footer?: { href: string; lead: string; strong: string };
   }
 > = {
   "/services": {
     menu: BUSINESSES_MENU,
-    width: "w-80",
-    footer: { href: "/services", lead: "See all", strong: "services overview" },
+    width: "w-72",
   },
   "/labs": {
     menu: LEARNERS_MENU,
@@ -35,11 +34,13 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileGroup, setMobileGroup] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setOpen(false);
     setOpenDropdown(null);
+    setMobileGroup(null);
   }, [pathname]);
 
   useEffect(() => {
@@ -115,17 +116,21 @@ export function SiteHeader() {
                             <p className="mt-0.5 text-xs text-muted">{m.desc}</p>
                           </Link>
                         ))}
-                        <div className="my-1 h-px bg-line" />
-                        <Link
-                          href={dd.footer.href}
-                          onClick={() => setOpenDropdown(null)}
-                          className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-muted transition hover:bg-surface hover:text-fg"
-                        >
-                          <span>
-                            {dd.footer.lead} <span className="font-semibold text-fg">{dd.footer.strong}</span>
-                          </span>
-                          <span aria-hidden="true">→</span>
-                        </Link>
+                        {dd.footer ? (
+                          <>
+                            <div className="my-1 h-px bg-line" />
+                            <Link
+                              href={dd.footer.href}
+                              onClick={() => setOpenDropdown(null)}
+                              className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-muted transition hover:bg-surface hover:text-fg"
+                            >
+                              <span>
+                                {dd.footer.lead} <span className="font-semibold text-fg">{dd.footer.strong}</span>
+                              </span>
+                              <span aria-hidden="true">→</span>
+                            </Link>
+                          </>
+                        ) : null}
                       </div>
                     ) : null}
                   </div>
@@ -177,33 +182,42 @@ export function SiteHeader() {
             {NAV.map((item) => {
               const dd = DROPDOWNS[item.href];
               if (dd) {
+                const expanded = mobileGroup === item.href;
                 return (
                   <div key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={`block rounded-lg px-3 py-3 text-sm font-medium transition ${
-                        isActive(item.href) ? "bg-surface text-fg" : "text-muted hover:bg-surface hover:text-fg"
+                    {/* Accordion: tap to expand — don't dump every link at once */}
+                    <button
+                      type="button"
+                      onClick={() => setMobileGroup((v) => (v === item.href ? null : item.href))}
+                      aria-expanded={expanded}
+                      className={`flex w-full items-center justify-between rounded-lg px-3 py-3 text-sm font-medium transition ${
+                        isActive(item.href) || expanded ? "bg-surface text-fg" : "text-muted hover:bg-surface hover:text-fg"
                       }`}
                     >
                       {item.label}
-                    </Link>
-                    <div className="ml-3 flex flex-col gap-1 border-l border-line pl-3">
-                      {dd.menu.map((m) => (
-                        <Link
-                          key={m.href + m.label}
-                          href={m.href}
-                          className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
-                        >
-                          {m.label}
-                        </Link>
-                      ))}
-                      <Link
-                        href={dd.footer.href}
-                        className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
-                      >
-                        {dd.footer.lead} {dd.footer.strong}
-                      </Link>
-                    </div>
+                      <ChevronDown className={`h-4 w-4 transition-transform ${expanded ? "rotate-180" : ""}`} />
+                    </button>
+                    {expanded ? (
+                      <div className="ml-3 flex flex-col gap-1 border-l border-line pl-3">
+                        {dd.menu.map((m) => (
+                          <Link
+                            key={m.href + m.label}
+                            href={m.href}
+                            className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
+                          >
+                            {m.label}
+                          </Link>
+                        ))}
+                        {dd.footer ? (
+                          <Link
+                            href={dd.footer.href}
+                            className="rounded-lg px-3 py-2.5 text-sm text-muted transition hover:bg-surface hover:text-fg"
+                          >
+                            {dd.footer.lead} {dd.footer.strong}
+                          </Link>
+                        ) : null}
+                      </div>
+                    ) : null}
                   </div>
                 );
               }
