@@ -11,7 +11,7 @@ import { SITE } from "@/lib/site";
 const PAGE_URL = `${SITE.url}/free-labs`;
 
 export const metadata: Metadata = {
-  title: "Free Hands-on Security Labs — Real Cloud Accounts, No Credit Card | ShieldSync",
+  title: "Free Hands-on Security Labs — Real Cloud Accounts, No Credit Card",
   description:
     "Free hands-on security labs in real, isolated cloud accounts. Start with the AWS S3 misconfiguration lab; AI security labs coming next. No credit card, auto-graded, auto-wiped.",
   keywords: [

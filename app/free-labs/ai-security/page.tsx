@@ -17,7 +17,7 @@ const LAUNCH_URL =
   "https://labs.shieldsyncsecurity.com/labs/bedrock-prompt-injection";
 
 export const metadata: Metadata = {
-  title: "Free AI Security Lab — Secure a Real Bedrock Assistant, No Credit Card | ShieldSync",
+  title: "Free AI Security Lab — Secure a Real Bedrock Assistant, No Credit Card",
   description:
     "A free, hands-on AI security lab in a real, isolated AWS account. Prompt-inject a live Amazon Bedrock assistant, then lock it down with Guardrails, least-privilege IAM, and model-invocation logging. No credit card, auto-graded, auto-wiped.",
   keywords: [

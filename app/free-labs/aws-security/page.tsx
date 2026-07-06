@@ -19,7 +19,7 @@ const LAUNCH_URL =
   "https://labs.shieldsyncsecurity.com/labs/s3-misconfiguration-audit";
 
 export const metadata: Metadata = {
-  title: "Free AWS Security Lab — Real Isolated AWS Account, No Credit Card | ShieldSync",
+  title: "Free AWS Security Lab — Real Isolated AWS Account, No Credit Card",
   description:
     "A 30-minute free AWS security lab in a real, isolated AWS account. Spot public S3 buckets, fix IAM, enforce KMS. No credit card, no setup, auto-wiped.",
   keywords: [
