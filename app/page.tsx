@@ -117,15 +117,12 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="mt-5">
-              <p className="text-xs font-semibold text-muted">Compliance frameworks we map your controls to</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {FRAMEWORKS.map((f) => (
-                  <span key={f} className="rounded-full border border-line bg-panel px-3 py-1 text-xs font-semibold text-muted">
-                    {f}
-                  </span>
-                ))}
-              </div>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {FRAMEWORKS.map((f) => (
+                <span key={f} className="rounded-full border border-line bg-panel px-3 py-1 text-xs font-semibold text-muted">
+                  {f}
+                </span>
+              ))}
             </div>
           </Reveal>
 
