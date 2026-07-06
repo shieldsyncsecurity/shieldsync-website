@@ -14,7 +14,7 @@ import { SITE } from "@/lib/site";
 
 const PAGE_URL = `${SITE.url}/free-labs/ai-security`;
 const LAUNCH_URL =
-  "https://labs.shieldsyncsecurity.com/labs/bedrock-prompt-injection?intent=launch";
+  "https://labs.shieldsyncsecurity.com/labs/bedrock-prompt-injection";
 
 export const metadata: Metadata = {
   title: "Free AI Security Lab — Secure a Real Bedrock Assistant, No Credit Card | ShieldSync",
@@ -138,15 +138,15 @@ export default function FreeAiSecurityLabPage() {
         <div className="aurora absolute inset-0 -z-10" />
         <div className="cyber-grid absolute inset-0 -z-10" />
 
-        <Container className="grid gap-8 py-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-12">
+        <Container className="grid gap-8 py-7 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-10">
           <Reveal>
             <span className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-bright">
               <span className="h-1 w-1 rounded-full bg-brand" />
               Free · Real AWS Bedrock · ~35 min
             </span>
 
-            <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl">
-              Free AI Security Lab — Secure a Real Bedrock Assistant, No Credit Card
+            <h1 className="mt-3 text-2xl font-bold tracking-tight text-fg sm:text-3xl lg:text-4xl">
+              Free AI security lab on a real Bedrock assistant
             </h1>
 
             <p className="mt-3 max-w-xl text-base leading-7 text-muted">

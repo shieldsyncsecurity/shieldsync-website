@@ -74,7 +74,7 @@ export default function InternshipPage() {
             {/* Left: pitch */}
             <Reveal>
               <Pill tone="brand">{INTERNSHIP.badge}</Pill>
-              <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl">
+              <h1 className="mt-3 text-2xl font-bold tracking-tight text-fg sm:text-3xl lg:text-4xl">
                 {INTERNSHIP.title}
               </h1>
               <p className="mt-2 text-lg font-semibold text-brand-bright">{INTERNSHIP.subtitle}</p>

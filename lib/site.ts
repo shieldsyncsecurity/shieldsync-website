@@ -21,10 +21,11 @@ export const SITE = {
   enterpriseUrl: "https://enterprise.shieldsyncsecurity.com",
   // The guided wizard (plan/lab chooser) — used by the PAID path (Explore → lab detail).
   startUrl: "/labs-wizard?track=aws",
-  // FASTEST free-lab path: jump straight to the platform's free lab, which
-  // auto-redirects to Google sign-in then auto-launches (intent=launch). Used by the
-  // "Start free lab" CTAs so the free funnel is one hop, not homepage→wizard→platform.
-  freeLabUrl: "https://labs.shieldsyncsecurity.com/labs/s3-misconfiguration-audit?intent=launch",
+  // Fastest free-lab path: jump straight to the platform's free lab page. The
+  // learner signs in and then clicks "Launch lab" themselves — we deliberately do
+  // NOT auto-start (that would provision a scarce free AWS account before they're
+  // ready). Used by the "Start free lab" CTAs.
+  freeLabUrl: "https://labs.shieldsyncsecurity.com/labs/s3-misconfiguration-audit",
 } as const;
 
 export const CONTACT = {

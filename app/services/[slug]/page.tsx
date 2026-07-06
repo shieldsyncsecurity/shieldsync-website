@@ -93,7 +93,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                 <span className="h-1 w-1 rounded-full bg-brand" />
                 Cybersecurity services
               </span>
-              <h1 className="mt-2 text-3xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-4xl lg:text-5xl">
+              <h1 className="mt-2 text-2xl font-bold leading-[1.15] tracking-tight text-fg sm:text-3xl lg:text-4xl">
                 {p.title}
               </h1>
               <p className="mt-3 text-base leading-7 text-muted">{p.tagline}</p>

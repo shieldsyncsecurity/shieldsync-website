@@ -100,7 +100,7 @@ export default function LabsPage() {
                   <span className="h-1 w-1 rounded-full bg-brand" />
                   Hands-on labs
                 </span>
-                <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl">
+                <h1 className="mt-2 text-2xl font-bold tracking-tight text-fg sm:text-3xl lg:text-4xl">
                   <span className="text-gradient">AWS Security Labs</span> — practice cloud security in real AWS
                 </h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">

@@ -79,7 +79,7 @@ export default function SocLabsPage() {
               <span className="h-1 w-1 rounded-full bg-brand" />
               SOC track — coming soon
             </span>
-            <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl">
+            <h1 className="mt-4 text-2xl font-bold tracking-tight text-fg sm:text-3xl lg:text-4xl">
               Build the <span className="text-gradient">blue team</span> — SIEM &amp; SOAR, hands-on.
             </h1>
             <p className="mt-3 max-w-2xl text-base leading-7 text-muted">

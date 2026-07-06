@@ -82,7 +82,7 @@ export default function FreeLabsHubPage() {
               <span className="h-1 w-1 rounded-full bg-brand" />
               Free · Real cloud accounts · No card
             </span>
-            <h1 className="mt-3 max-w-2xl text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl">
+            <h1 className="mt-3 max-w-2xl text-2xl font-bold tracking-tight text-fg sm:text-3xl lg:text-4xl">
               Free hands-on security labs
             </h1>
             <p className="mt-3 max-w-xl text-base leading-7 text-muted">

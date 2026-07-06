@@ -80,7 +80,7 @@ export default function StartHerePage() {
                 <span className="h-1 w-1 rounded-full bg-brand" />
                 Start here
               </span>
-              <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl">
+              <h1 className="mt-4 text-2xl font-bold tracking-tight text-fg sm:text-3xl lg:text-4xl">
                 Learn <span className="text-gradient">cloud security</span> — a hands-on roadmap, not a reading list.
               </h1>
               <p className="mt-3 text-base leading-7 text-muted">

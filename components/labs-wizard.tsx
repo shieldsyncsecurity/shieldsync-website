@@ -86,12 +86,14 @@ export function LabsWizard({
   const total: Money = mode === "monthly" ? monthly : lab ? lab.price : FREE;
 
   // Where "Launch your lab" actually sends them. The platform deep-links each AWS
-  // lab at /labs/<slug> (slugs match this catalog). `?intent=launch` tells the lab
-  // page to auto-launch right after sign-in (no extra click). SOC labs aren't on the
+  // lab at /labs/<slug> (slugs match this catalog). Paid labs carry `?intent=launch`
+  // to auto-launch right after sign-in (they've committed at checkout); the FREE lab
+  // deliberately omits it so the learner clicks "Launch lab" themselves (a free seat
+  // is scarce — don't provision one before they're ready). SOC labs aren't on the
   // platform yet, and monthly has no single lab — both fall back to the catalog root.
   const launchHref =
     mode === "free"
-      ? `${SITE.labsUrl}/labs/${FREE_SLUG}?intent=launch`
+      ? `${SITE.labsUrl}/labs/${FREE_SLUG}`
       : mode !== "monthly" && track === "aws" && selected
       ? `${SITE.labsUrl}/labs/${selected}?intent=launch`
       : mode === "monthly"

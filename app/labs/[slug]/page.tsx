@@ -137,7 +137,7 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
                 </span>
               ) : null}
             </div>
-            <h1 className="mt-5 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl lg:text-5xl">{lab.title}</h1>
+            <h1 className="mt-5 text-2xl font-bold tracking-tight text-fg sm:text-3xl lg:text-4xl">{lab.title}</h1>
             <p className="mt-5 text-lg leading-8 text-muted">{lab.desc}</p>
 
             <div className="mt-7 flex flex-wrap items-center gap-3">

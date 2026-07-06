@@ -161,7 +161,7 @@ export default function AwsSecurityCertificationPage() {
                 <span className="h-1 w-1 rounded-full bg-brand" />
                 AWS Certification prep
               </span>
-              <h1 className="mt-2 text-3xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-4xl lg:text-5xl">
+              <h1 className="mt-2 text-2xl font-bold leading-[1.15] tracking-tight text-fg sm:text-3xl lg:text-4xl">
                 <span className="text-gradient">AWS Security Specialty (SCS-C03)</span> — hands-on practice labs
               </h1>
               <p className="mt-3 max-w-2xl text-base leading-7 text-muted">
