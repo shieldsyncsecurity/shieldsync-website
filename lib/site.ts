@@ -608,6 +608,30 @@ export const AWS_LABS: LabItem[] = [
   },
 ];
 
+// Azure security labs — the SECOND cloud track (mirrors AWS_LABS shape). The lab is
+// built in labs-platform; surfaced here as "Coming soon" until the Azure engine path
+// is wired live (no purchase/launch route yet — a coming-soon card only, not a live
+// CTA). CANONICAL shared fields mirror labs-platform/app/content/labs/<slug>/lab.json.
+export const AZURE_LABS: LabItem[] = [
+  {
+    slug: "storage-public-exposure-audit",
+    title: "Storage account public exposure & data leak",
+    level: "Beginner",
+    free: true,
+    desc: "Find and fix a leaky Azure Storage account — anonymous blob access, insecure HTTP, and a weak TLS floor.",
+    tags: ["Azure Storage", "Blob", "Public Access", "TLS"],
+    added: "2026-07-07",
+    minutes: 30,
+    skills: [
+      "Blob anonymous/public access lockdown",
+      "Secure transfer (HTTPS-only) enforcement",
+      "Minimum TLS version hardening",
+      "Data-plane exposure verification (not just the config flag)",
+    ],
+    roles: ["Cloud Security Engineer", "Cloud Security Analyst", "DevSecOps Engineer"],
+  },
+];
+
 // SOC track: SIEM + SOAR, under one roof.
 // NOTE: underlying tool names stay hidden on the public site until a user is inside the lab.
 export type SocLab = { slug: string; product: "SIEM" | "SOAR"; title: string; desc: string; tags: string[]; minutes: number; skills: string[]; roles: string[] };
@@ -811,7 +835,7 @@ export const FAQS: Record<string, { q: string; a: string }[]> = {
     { q: "Can I launch the same lab more than once?", a: "Yes — per-lab purchase includes multiple launches so you can retry if you get stuck or want to practise again from a clean state." },
     { q: "How does 'Check my work' grading work?", a: "When you click Check my work, our engine calls the AWS APIs inside your live session and verifies whether the specific misconfigurations are actually fixed — not just ticked off a checklist. You get immediate, honest feedback on what's done and what's still open." },
     { q: "How is this different from video courses or platforms like ACloudGuru?", a: "Video courses teach you to watch someone else secure things. Our labs put you in a real AWS account with a real security scenario and grade your actual changes. The difference shows up in job interviews." },
-    { q: "How long do I have access after buying a lab?", a: "Per-lab purchases give you 48 hours of access from first launch — enough to complete the lab, take a break, and revisit. Monthly pass subscribers can launch any lab any time for the duration of their subscription." },
+    { q: "How long do I have access after buying a lab?", a: "Per-lab purchases give you a 7-day access window from first launch, with up to 30 launches — enough to complete the lab, take a break, and revisit from a clean state. Monthly pass subscribers can launch any lab any time for the duration of their subscription." },
     { q: "Do I get a certificate?", a: "Yes — you receive a digitally signed completion certificate from ShieldSync Security Private Limited for each lab you complete." },
     { q: "What payment methods are accepted?", a: "We accept UPI, all major debit/credit cards, net banking, and popular wallets (Paytm, PhonePe, Google Pay) — secured through the Paytm payment gateway." },
     { q: "Can I cancel the monthly pass?", a: "Yes — cancel anytime and you won't be charged again. Your access continues to the end of the current paid cycle." },

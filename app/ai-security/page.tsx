@@ -12,7 +12,7 @@ import { InDevelopmentBadge } from "@/components/status-badge";
 export const metadata: Metadata = {
   title: "AI & LLM Security Training — Hands-on, on AWS",
   description:
-    "Practical AI and LLM security for cloud teams — securing Amazon Bedrock, RAG pipelines, AI agents (MCP), and AI coding assistants. SCS-C03 now covers GenAI security. Hands-on Bedrock lab in development.",
+    "Practical AI & LLM security for cloud teams — Bedrock, RAG, AI agents (MCP), AI coding assistants. Free hands-on Bedrock security lab live now.",
   keywords: [
     "AI security",
     "LLM security",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "AI & LLM Security Training — Hands-on, on AWS",
     description:
-      "Practical AI security for cloud teams — Bedrock, RAG, AI agents, and AI coding assistants. Hands-on Bedrock security lab in development.",
+      "Practical AI security for cloud teams — Bedrock, RAG, AI agents, and AI coding assistants. Free hands-on Bedrock security lab live now.",
     url: `${SITE.url}/ai-security`,
     type: "website",
   },

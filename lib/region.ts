@@ -3,12 +3,9 @@
 export type Currency = "USD" | "INR";
 export type Money = { usd: number; inr: number };
 
-export const COUNTRY_COOKIE = "ss-country";
-
-/** Map an ISO country code → display currency. Extend as we add markets. */
-export function currencyForCountry(country?: string | null): Currency {
-  return (country || "").trim().toUpperCase() === "IN" ? "INR" : "USD";
-}
+// Region/currency is decided ONCE by the pre-paint script in app/layout.tsx
+// (<html data-region> + the "ss:region" event + the ss_region localStorage
+// cache). Components must read that — never re-detect country here.
 
 export function formatMoney(m: Money, currency: Currency): string {
   if (m.usd === 0) return "Free";

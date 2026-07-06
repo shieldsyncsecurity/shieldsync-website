@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Container, Button } from "@/components/ui";
+import { Container } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { CtaBand } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
@@ -13,7 +13,7 @@ const PAGE_URL = `${SITE.url}/free-labs`;
 export const metadata: Metadata = {
   title: "Free Hands-on Security Labs — Real Cloud Accounts, No Credit Card",
   description:
-    "Free hands-on security labs in real, isolated cloud accounts. Start with the AWS S3 misconfiguration lab; AI security labs coming next. No credit card, auto-graded, auto-wiped.",
+    "Free hands-on security labs in real, isolated cloud accounts: AWS S3 misconfiguration and AI/Bedrock security. No credit card, auto-graded, auto-wiped.",
   keywords: [
     "free security labs",
     "free hands-on security lab",
@@ -66,7 +66,7 @@ export default function FreeLabsHubPage() {
             url: PAGE_URL,
             name: "Free Hands-on Security Labs",
             description:
-              "Free hands-on security labs in real, isolated cloud accounts. AWS S3 misconfiguration lab live; AI security labs coming next.",
+              "Free hands-on security labs in real, isolated cloud accounts: AWS S3 misconfiguration and AI/Bedrock security, both live.",
             breadcrumb: breadcrumbs,
           }),
           breadcrumbSchema(PAGE_URL, breadcrumbs),

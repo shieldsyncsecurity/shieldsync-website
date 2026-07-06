@@ -9,7 +9,7 @@ import { Cap } from "@/components/icons";
 import { ABOUT, SITE, CONTACT } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "About ShieldSync Security",
+  title: "About Us",
   description:
     "ShieldSync Security is a global cybersecurity company — practitioner-led cloud security services and hands-on training. Our mission, values, and team.",
   alternates: { canonical: "/about" },

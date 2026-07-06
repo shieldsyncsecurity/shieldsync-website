@@ -5,6 +5,7 @@
 ---------------------------------------------------------------------------- */
 
 import { SITE, CONTACT } from "@/lib/site";
+import { AWS_PRICE } from "@/lib/region";
 
 // ---------------------------------------------------------------------------
 // Organization — rendered on every page via layout.tsx
@@ -133,7 +134,6 @@ export function internshipProgramSchema() {
     educationalProgramMode: "online",
     timeToComplete: "P2M",
     numberOfCredits: 0,
-    startDate: "2026-07-01",
     offers: {
       "@type": "Offer",
       price: "9999",
@@ -196,7 +196,7 @@ export function courseSchema(opts: {
     ...(opts.free !== undefined && {
       offers: {
         "@type": "Offer",
-        price: opts.free ? "0" : String(opts.priceINR ?? 99),
+        price: opts.free ? "0" : String(opts.priceINR ?? AWS_PRICE.Beginner.inr),
         priceCurrency: "INR",
         availability: "https://schema.org/InStock",
         category: opts.free ? "Free" : "Paid",

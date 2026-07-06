@@ -19,7 +19,7 @@ const LAUNCH_URL =
 export const metadata: Metadata = {
   title: "Free AI Security Lab — Secure a Real Bedrock Assistant, No Credit Card",
   description:
-    "A free, hands-on AI security lab in a real, isolated AWS account. Prompt-inject a live Amazon Bedrock assistant, then lock it down with Guardrails, least-privilege IAM, and model-invocation logging. No credit card, auto-graded, auto-wiped.",
+    "Prompt-inject a live Amazon Bedrock assistant, then lock it down with Guardrails, least-privilege IAM, and logging. Free, no card, auto-graded.",
   keywords: [
     "free AI security lab",
     "LLM security lab",

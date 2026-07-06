@@ -34,7 +34,7 @@ const csp = [
   // labs.shieldsyncsecurity.com = the /api/geo country lookup the pre-paint
   // region script fetches for IP-based currency (CSP blocks it otherwise).
   `connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://api.web3forms.com https://labs.shieldsyncsecurity.com${isDev ? " ws:" : ""}`,
-  // Allow YouTube iframe embeds (homepage hero + /free-lab + /aws-security-certification).
+  // Allow YouTube iframe embeds (homepage hero + /free-labs/aws-security + /aws-security-certification).
   // Without this, frame-src falls back to default-src 'self' and the browser blocks
   // every <iframe src="youtube.com/embed/..."> silently — no console error in many
   // cases, just a blank player. youtube-nocookie included for the privacy-preserving
@@ -68,8 +68,8 @@ const nextConfig: NextConfig = {
         images: { unoptimized: true },
       }
     : {
-        // Cloudflare/OpenNext target (current live site): keep serving the
-        // security headers from the framework.
+        // Legacy Cloudflare/OpenNext target (pre-Amplify; Worker pending
+        // decommission): keep serving the security headers from the framework.
         async headers() {
           return [{ source: "/:path*", headers: securityHeaders }];
         },

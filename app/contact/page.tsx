@@ -10,7 +10,7 @@ import { ContactForm } from "@/components/contact-form";
 import { CONTACT, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Contact ShieldSync Security",
+  title: "Contact Us",
   description:
     "Talk to ShieldSync Security about cloud security services, corporate training, hands-on labs, or the internship. WhatsApp, email, phone, or the form.",
   alternates: { canonical: "/contact" },

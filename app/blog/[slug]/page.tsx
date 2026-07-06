@@ -15,7 +15,7 @@ const BLOG_LAB_MAP: Record<string, { slug: string; label: string }> = {
   "aws-iam-least-privilege": { slug: "iam-privilege-escalation", label: "IAM Privilege Escalation" },
   "iam-identity-center-attack-defense": { slug: "iam-privilege-escalation", label: "IAM Privilege Escalation" },
   "cross-account-roles-confused-deputy": { slug: "iam-privilege-escalation", label: "IAM Privilege Escalation" },
-  "credential-compromise": { slug: "iam-privilege-escalation", label: "IAM Privilege Escalation" },
+  "respond-to-aws-key-compromise": { slug: "iam-privilege-escalation", label: "IAM Privilege Escalation" },
   "imdsv2-ssrf-credential-theft": { slug: "iam-privilege-escalation", label: "IAM Privilege Escalation" },
   "secure-s3-from-data-leaks": { slug: "s3-misconfiguration-audit", label: "S3 Misconfiguration Audit" },
 };
@@ -28,7 +28,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const post = BLOG_POSTS.find((p) => p.slug === slug);
   if (!post) return { title: "Article" };
-  return { title: post.title, description: post.excerpt, alternates: { canonical: `/blog/${slug}` } };
+  // Excerpts run long for on-page use; SERP descriptions get cut at ~165 chars,
+  // so truncate at a word boundary for the meta tag only.
+  const description = post.excerpt.length > 160 ? `${post.excerpt.slice(0, 157).replace(/\s+\S*$/, "")}…` : post.excerpt;
+  return { title: post.title, description, alternates: { canonical: `/blog/${slug}` } };
 }
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {

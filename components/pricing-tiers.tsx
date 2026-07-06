@@ -6,7 +6,6 @@ import { Check, ArrowRight } from "@/components/icons";
 import {
   AWS_PRICE,
   AWS_MONTHLY,
-  FREE,
   formatMoney,
   type Currency,
   type Money,
@@ -77,11 +76,14 @@ export function PricingTiers() {
 
   // Toggle: flip the region attribute (CSS swaps the prices) and the state
   // (button highlight + footnote) together. Mark it user-set so the async IP
-  // fetch can't stomp the choice.
+  // fetch can't stomp the choice, and cache it so the choice survives full
+  // page loads (the layout script reads ss_region before first paint).
   const pick = (c: Currency) => {
     setCurrency(c);
-    document.documentElement.setAttribute("data-region", c === "INR" ? "in" : "us");
+    const r = c === "INR" ? "in" : "us";
+    document.documentElement.setAttribute("data-region", r);
     document.documentElement.setAttribute("data-region-userset", "1");
+    try { localStorage.setItem("ss_region", JSON.stringify({ r, t: Date.now() })); } catch {}
   };
 
   const curBtn = (active: boolean) =>

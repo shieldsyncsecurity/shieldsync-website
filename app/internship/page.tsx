@@ -12,7 +12,7 @@ import { INTERNSHIP, SITE } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Cybersecurity Internship in India — 8 Weeks, AWS Labs, Certificate",
   description:
-    "Online cybersecurity internship in India: hands-on AWS security projects, real cloud labs, 1:1 mentorship, and a completion certificate. 8 weeks, ₹9,999 all-inclusive. Open to students and career-changers.",
+    "Online cybersecurity internship in India: real AWS security projects, cloud labs, 1:1 mentorship, and a certificate. 8 weeks, ₹9,999 all-inclusive.",
   keywords: [
     "cybersecurity internship india",
     "cybersecurity internship online",

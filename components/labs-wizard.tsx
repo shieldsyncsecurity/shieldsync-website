@@ -14,14 +14,10 @@ type Mode = "per-lab" | "monthly" | "free" | null;
 type Item = { slug: string; title: string; desc: string; tags: string[]; badge: string; dot: string; price: Money; free: boolean };
 
 export function LabsWizard({
-  initialCurrency = "USD",
-  serverDetected = false,
   initialTrack,
   initialPlan,
   initialLevel,
 }: {
-  initialCurrency?: Currency;
-  serverDetected?: boolean;
   initialTrack?: "aws" | "soc";
   initialPlan?: "per-lab" | "monthly";
   initialLevel?: string;
@@ -40,19 +36,30 @@ export function LabsWizard({
   const [mode, setMode] = useState<Mode>(startMode);
   const [cat, setCat] = useState(initialLevel ?? "All");
   const [selected, setSelected] = useState<string | null>(null);
-  const [currency, setCurrency] = useState<Currency>(initialCurrency);
+  const [currency, setCurrency] = useState<Currency>("USD");
 
-  // The edge proxy resolves region from the CDN geo header in production.
-  // If it couldn't (e.g. local dev with no header), fall back to the browser timezone.
+  // Currency follows the canonical <html data-region> set pre-paint by the
+  // region script in app/layout.tsx (localStorage cache -> TZ -> IP via
+  // labs /api/geo), same as PricingTiers — never re-detect here.
   useEffect(() => {
-    if (serverDetected) return;
-    try {
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
-      if (/Kolkata|Calcutta/i.test(tz)) setCurrency("INR");
-    } catch {
-      /* ignore */
-    }
-  }, [serverDetected]);
+    if (document.documentElement.getAttribute("data-region") === "in") setCurrency("INR");
+    const onRegion = (e: Event) => {
+      const detail = (e as CustomEvent<{ region: string }>).detail;
+      setCurrency(detail?.region === "in" ? "INR" : "USD");
+    };
+    window.addEventListener("ss:region", onRegion);
+    return () => window.removeEventListener("ss:region", onRegion);
+  }, []);
+
+  // Manual toggle: write the shared region attributes (and cache) so the choice
+  // holds across every priced surface and can't be stomped by a late IP result.
+  const pickCurrency = (c: Currency) => {
+    setCurrency(c);
+    const r = c === "INR" ? "in" : "us";
+    document.documentElement.setAttribute("data-region", r);
+    document.documentElement.setAttribute("data-region-userset", "1");
+    try { localStorage.setItem("ss_region", JSON.stringify({ r, t: Date.now() })); } catch {}
+  };
 
   const money = (m: Money) => formatMoney(m, currency);
 
@@ -126,8 +133,8 @@ export function LabsWizard({
           <div className="mb-3 flex items-center justify-end gap-3">
             <span className="text-xs text-muted">Prices shown for your region</span>
             <div className="inline-flex rounded-lg border border-line bg-panel p-0.5 text-sm font-semibold">
-              <button type="button" onClick={() => setCurrency("INR")} className={curBtn(currency === "INR")}>₹ INR</button>
-              <button type="button" onClick={() => setCurrency("USD")} className={curBtn(currency === "USD")}>$ USD</button>
+              <button type="button" onClick={() => pickCurrency("INR")} className={curBtn(currency === "INR")}>₹ INR</button>
+              <button type="button" onClick={() => pickCurrency("USD")} className={curBtn(currency === "USD")}>$ USD</button>
             </div>
           </div>
 

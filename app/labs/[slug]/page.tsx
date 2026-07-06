@@ -29,7 +29,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   // AWS labs carry a `free` flag (only the S3 lab today); SOC labs have none, so
   // they always get the standard (non-free) suffix.
   const isFree = lab.kind === "aws" && lab.free === true;
-  const suffix = isFree ? "Free Hands-On AWS Security Lab" : "Hands-On AWS Security Lab";
+  const suffix =
+    lab.kind === "soc"
+      ? "Hands-On SOC Lab (SIEM & SOAR)"
+      : isFree
+      ? "Free Hands-On AWS Security Lab"
+      : "Hands-On AWS Security Lab";
   return { title: `${lab.title} — ${suffix}`, description: lab.desc, alternates: { canonical: `/labs/${slug}` } };
 }
 

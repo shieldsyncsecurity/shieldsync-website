@@ -13,7 +13,7 @@ import { ROADMAP_LEVEL_TONE, toneClass, toneDotClass } from "@/components/status
 export const metadata: Metadata = {
   title: "Cloud Security Engineer Roadmap — Hands-on AWS Security",
   description:
-    "Cloud security engineer roadmap: a step-by-step, hands-on path from zero to job-ready in AWS security. Every step mapped to a real lab — no AWS account, no setup, first lab free.",
+    "Cloud security engineer roadmap: a step-by-step, hands-on path from zero to job-ready in AWS security. Every step mapped to a real lab — first lab free.",
   keywords: [
     "cloud security engineer roadmap",
     "AWS security learning path",

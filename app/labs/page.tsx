@@ -8,14 +8,14 @@ import { RelatedBlogSection } from "@/components/related-blog-section";
 import { PricingTiers } from "@/components/pricing-tiers";
 import { webPageSchema, breadcrumbSchema, faqSchema, courseSchema, courseListSchema } from "@/lib/schema";
 import { ArrowRight, Check, Cloud, Radar } from "@/components/icons";
-import { AWS_LABS, SOC_LABS, FAQS, SITE } from "@/lib/site";
+import { AWS_LABS, AZURE_LABS, SOC_LABS, FAQS, SITE } from "@/lib/site";
 import { awsLabPrice } from "@/lib/region";
 import { levelBadgeClass, productBadgeClass } from "@/components/status-badge";
 
 export const metadata: Metadata = {
   title: "AWS Security Labs — Hands-on Cloud Security in Real AWS",
   description:
-    "AWS security labs you launch in your browser — real, isolated AWS accounts, no setup, first lab free. Practise IAM, S3, encryption, VPC, GuardDuty, and detection on a live console with auto-wipe when you're done.",
+    "AWS security labs you launch in your browser — real, isolated AWS accounts, no setup, first lab free. Practise IAM, S3, encryption, VPC, GuardDuty on a live console.",
   keywords: [
     "AWS security labs",
     "AWS cloud security",
@@ -72,7 +72,9 @@ const PAGE_SCHEMA = [
       name: `${l.title} — AWS Security Lab`,
       description: l.desc,
       level: l.level,
-      free: l.free,
+      // ?? false so paid labs (free: undefined) still emit the offers block
+      // with their real per-level price instead of silently dropping it.
+      free: l.free ?? false,
       priceINR: awsLabPrice(l.slug, l.level)?.inr,
     })
   ),
@@ -136,7 +138,7 @@ export default function LabsPage() {
           </Reveal>
 
           {/* Tracks */}
-          <div className="mt-8 grid items-stretch gap-5 lg:grid-cols-2">
+          <div className="mt-8 grid items-stretch gap-5 lg:grid-cols-3">
             {/* AWS Cloud Security */}
             <Reveal>
               <div className="flex h-full flex-col rounded-2xl border border-line bg-panel p-6">
@@ -180,6 +182,42 @@ export default function LabsPage() {
                     Start free lab <ArrowRight className="h-4 w-4" />
                   </Button>
                 </div>
+              </div>
+            </Reveal>
+
+            {/* Azure Cloud Security (Coming soon) */}
+            <Reveal delay={40}>
+              <div className="flex h-full flex-col rounded-2xl border border-line bg-panel p-6">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-sky-300/60 bg-sky-50/50 text-sky-600">
+                      <Cloud className="h-4 w-4" />
+                    </span>
+                    <h2 className="text-lg font-bold text-fg">Cloud Security — Azure</h2>
+                  </div>
+                  <span className="shrink-0 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.16em] text-amber-700">
+                    Coming soon
+                  </span>
+                </div>
+                <p className="mt-2 text-sm leading-6 text-muted">
+                  Audit and harden real Azure — anonymous storage exposure, insecure transport, and misconfiguration — mapped to how data actually leaks.
+                </p>
+                <ul className="mt-4 grid gap-1.5">
+                  {AZURE_LABS.map((lab) => (
+                    <li key={lab.slug} className="flex items-center justify-between gap-3 rounded-lg border border-line bg-surface px-3 py-2.5">
+                      <span className="text-sm font-semibold text-fg">{lab.title}</span>
+                      <span className="flex shrink-0 items-center gap-1.5">
+                        {lab.free && (
+                          <span className="rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide bg-brand/10 text-brand-bright">Free</span>
+                        )}
+                        <span className={`rounded border px-1.5 py-0.5 text-[10px] font-bold uppercase ${levelBadgeClass(lab.level)}`}>
+                          {lab.level}
+                        </span>
+                      </span>
+                    </li>
+                  ))}
+                  <li className="px-1 pt-1 text-xs text-muted">First Azure lab in final testing — launching soon.</li>
+                </ul>
               </div>
             </Reveal>
 

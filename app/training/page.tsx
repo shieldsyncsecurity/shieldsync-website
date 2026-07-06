@@ -11,7 +11,7 @@ import { CONTACT, SITE } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Cybersecurity Training Services — Infrastructure, Endpoint, Cloud & SOC",
   description:
-    "Practitioner-led, à la carte cybersecurity training across four domains — infrastructure, endpoint, cloud, and SOC. Tailored to your stack, delivered remote or on-site. Request a quote.",
+    "Practitioner-led, à la carte cybersecurity training across infrastructure, endpoint, cloud, and SOC. Tailored to your stack, remote or on-site.",
   alternates: { canonical: "/training" },
 };
 

@@ -19,7 +19,7 @@ const PAGE_URL = `${SITE.url}/aws-security-certification`;
 export const metadata: Metadata = {
   title: "AWS Security Specialty (SCS-C03) — Free Practice Labs",
   description:
-    "Practice every AWS Security Specialty (SCS-C03) domain in real, isolated AWS accounts. IAM, S3, KMS, VPC, GenAI/ML security, GuardDuty, CloudTrail. First lab free, no card needed. Upgraded from SCS-C02.",
+    "Practice every AWS Security Specialty (SCS-C03) domain in real, isolated AWS accounts. IAM, S3, KMS, VPC, GenAI/ML security, GuardDuty. First lab free.",
   keywords: [
     "AWS security specialty",
     "SCS-C03 practice",
