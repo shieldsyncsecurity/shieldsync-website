@@ -113,8 +113,8 @@ export default function LabsPage() {
                 <Button href={FREE_LAB_HREF} external>
                   Start free lab <ArrowRight className="h-4 w-4" />
                 </Button>
-                <Button href={SITE.startUrl} variant="secondary">
-                  Pricing
+                <Button href="#pricing" variant="secondary">
+                  See plans
                 </Button>
               </div>
             </div>
@@ -262,7 +262,7 @@ export default function LabsPage() {
           {/* Pricing — the shared PricingTiers component (prices from lib/region.ts),
               also surfaced in the labs wizard so copy and prices stay consistent. */}
           <Reveal>
-            <p className="mt-10 mb-4 text-xs font-bold uppercase tracking-widest text-muted">Pricing</p>
+            <p id="pricing" className="mt-10 mb-4 scroll-mt-24 text-xs font-bold uppercase tracking-widest text-muted">Pricing</p>
             <PricingTiers />
           </Reveal>
         </Container>
