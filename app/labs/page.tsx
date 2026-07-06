@@ -221,8 +221,8 @@ export default function LabsPage() {
             </Reveal>
           </div>
 
-          {/* Pricing — shared with /pricing (components/pricing-tiers.tsx) so
-              copy and prices can't drift between the two pages. */}
+          {/* Pricing — the shared PricingTiers component (prices from lib/region.ts),
+              also surfaced in the labs wizard so copy and prices stay consistent. */}
           <Reveal>
             <p className="mt-10 mb-4 text-xs font-bold uppercase tracking-widest text-muted">Pricing</p>
             <PricingTiers />

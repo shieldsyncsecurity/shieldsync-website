@@ -74,12 +74,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${base}/pricing`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
-    {
       url: `${base}/labs-wizard`,
       lastModified: now,
       changeFrequency: "weekly",

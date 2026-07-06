@@ -45,7 +45,7 @@ export const NAV: NavItem[] = [
   { label: "Labs", href: "/labs" },
   { label: "Certifications", href: "/aws-security-certification" },
   { label: "Internship", href: "/internship" },
-  { label: "Pricing", href: "/pricing" },
+  { label: "Pricing", href: "/labs-wizard" },
   { label: "Blog", href: "/blog" },
 ];
 
@@ -428,7 +428,7 @@ export const FOOTER_NAV: { heading: string; links: NavItem[] }[] = [
       { label: "Services", href: "/services" },
       { label: "Hands-on Labs", href: "/labs" },
       { label: "Certifications", href: "/aws-security-certification" },
-      { label: "Pricing", href: "/pricing" },
+      { label: "Pricing", href: "/labs-wizard" },
     ],
   },
   {

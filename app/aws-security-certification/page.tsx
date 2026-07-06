@@ -359,7 +359,7 @@ export default function AwsSecurityCertificationPage() {
         </Container>
       </section>
 
-      {/* FAQ — shared component, consistent with /pricing and the free-lab pages */}
+      {/* FAQ — shared component, consistent with the free-lab and labs pages */}
       <FaqSection faqs={FAQS} title="AWS Security Specialty — common questions" />
 
       {/* Related blog */}
