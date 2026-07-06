@@ -86,7 +86,7 @@ export function FaqSection({ faqs, title = "Frequently asked questions" }: { faq
               <details key={f.q} className="group py-5">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-semibold text-fg">
                   {f.q}
-                  <span className="text-2xl leading-none text-brand transition-transform group-open:rotate-45">+</span>
+                  <span aria-hidden className="text-2xl leading-none text-brand transition-transform group-open:rotate-45">+</span>
                 </summary>
                 <p className="mt-3 text-base leading-7 text-muted">{f.a}</p>
               </details>

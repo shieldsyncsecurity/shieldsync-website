@@ -4,6 +4,7 @@ import { Container, Card, Button, SectionHeading } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { SchemaOrg } from "@/components/schema-org";
 import { RelatedBlogSection } from "@/components/related-blog-section";
+import { FaqSection } from "@/components/sections";
 import { VideoEmbed } from "@/components/video-embed";
 import { webPageSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
 
@@ -358,24 +359,8 @@ export default function AwsSecurityCertificationPage() {
         </Container>
       </section>
 
-      {/* FAQ */}
-      <section className="border-b border-line py-8 sm:py-10">
-        <Container>
-          <Reveal>
-            <SectionHeading eyebrow="FAQ" title="AWS Security Specialty — common questions" />
-          </Reveal>
-          <div className="mt-6 grid gap-3">
-            {FAQS.map((f) => (
-              <details key={f.q} className="group rounded-xl border border-line bg-panel p-4">
-                <summary className="cursor-pointer list-none text-sm font-semibold text-fg marker:hidden">
-                  {f.q}
-                </summary>
-                <p className="mt-2 text-sm leading-6 text-muted">{f.a}</p>
-              </details>
-            ))}
-          </div>
-        </Container>
-      </section>
+      {/* FAQ — shared component, consistent with /pricing and the free-lab pages */}
+      <FaqSection faqs={FAQS} title="AWS Security Specialty — common questions" />
 
       {/* Related blog */}
       <RelatedBlogSection

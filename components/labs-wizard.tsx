@@ -136,15 +136,17 @@ export function LabsWizard({
               const done = n < step;
               const active = n === step;
               return (
-                <li key={l} className="flex flex-1 items-center gap-2">
+                <li key={l} aria-current={active ? "step" : undefined} className="flex flex-1 items-center gap-2">
+                  <span className="sr-only">Step {n} of {labels.length}: {l}{active ? " (current)" : done ? " (completed)" : ""}</span>
                   <span
+                    aria-hidden
                     className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold transition ${
                       done ? "bg-brand text-white" : active ? "bg-gradient-to-r from-brand to-cyan text-white" : "bg-surface text-muted"
                     }`}
                   >
                     {done ? <Check className="h-4 w-4" /> : n}
                   </span>
-                  <span className={`hidden text-sm font-semibold sm:inline ${active || done ? "text-fg" : "text-muted"}`}>{l}</span>
+                  <span aria-hidden className={`hidden text-sm font-semibold sm:inline ${active || done ? "text-fg" : "text-muted"}`}>{l}</span>
                   {n < labels.length ? <span className={`h-px flex-1 ${done ? "bg-brand" : "bg-line"}`} /> : null}
                 </li>
               );
