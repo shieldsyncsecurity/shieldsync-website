@@ -243,6 +243,7 @@ export const LAB_TRACKS: LabTrack[] = [
 // so it no longer needs its own dropdown row.
 export const LABS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
   { label: "AWS Security Labs", desc: "Cloud security in real AWS — pick a lab or go monthly", href: "/labs-wizard?track=aws", tag: "Flagship" },
+  { label: "Azure Security Labs", desc: "Cloud security in real Azure — storage exposure & more", href: "/labs", tag: "Coming soon" },
   { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/labs/soc", tag: "Coming soon" },
   { label: "AI Security", desc: "Bedrock, LLM apps, agents — guides + labs", href: "/ai-security" },
 ];
