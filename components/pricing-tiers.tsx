@@ -59,19 +59,29 @@ export function PricingTiers() {
   // Prices are chosen before first paint by the region script in layout.tsx
   // (sets <html data-region="in"> for India) and swapped purely in CSS
   // (.price-usd / .price-inr) — so there is no USD->INR flash on load. This
-  // state only drives the toggle-button highlight + the USD footnote; sync it
-  // to whatever the pre-paint script decided.
+  // state only drives the toggle-button highlight + the USD footnote.
   const [currency, setCurrency] = useState<Currency>("USD");
 
   useEffect(() => {
+    // Initial sync from whatever the pre-paint script decided (cache or TZ).
     if (document.documentElement.getAttribute("data-region") === "in") setCurrency("INR");
+    // Keep in sync when the async IP refinement lands (edge case: wrong-TZ or
+    // VPN visitors get corrected without a page reload).
+    const onRegion = (e: Event) => {
+      const detail = (e as CustomEvent<{ region: string }>).detail;
+      setCurrency(detail?.region === "in" ? "INR" : "USD");
+    };
+    window.addEventListener("ss:region", onRegion);
+    return () => window.removeEventListener("ss:region", onRegion);
   }, []);
 
   // Toggle: flip the region attribute (CSS swaps the prices) and the state
-  // (button highlight + footnote) together.
+  // (button highlight + footnote) together. Mark it user-set so the async IP
+  // fetch can't stomp the choice.
   const pick = (c: Currency) => {
     setCurrency(c);
     document.documentElement.setAttribute("data-region", c === "INR" ? "in" : "us");
+    document.documentElement.setAttribute("data-region-userset", "1");
   };
 
   const curBtn = (active: boolean) =>

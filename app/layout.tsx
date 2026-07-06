@@ -98,13 +98,22 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${jetbrains.variable} ${fraunces.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="flex min-h-full flex-col">
-        {/* Region detection before first paint: set data-region="in" for the
-            India timezone so price components show the right currency with no
-            USD->INR flash. globals.css .price-usd/.price-inr toggle on this. */}
+        {/* Region detection before first paint. Three tiers:
+            1. Cached IP result from a previous visit (localStorage, 7d TTL) —
+               instant, correct even for VPN/travel/wrong-timezone edge cases.
+            2. Timezone fallback for the first-ever visit — near-perfect for
+               the common case (India TZ), no network wait.
+            3. Async IP fetch to labs.shieldsyncsecurity.com/api/geo (Cloudflare
+               Workers -> cf-ipcountry). Corrects the TZ guess for edge cases,
+               fires a "ss:region" event, and caches the result so tier 1 hits
+               on every subsequent visit.
+            data-region="in" makes globals.css show INR (.price-inr) and hide
+            USD (.price-usd). Anything else = USD. A manual toggle sets
+            data-region-userset="1" so the IP fetch can't overwrite the choice. */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{if(/Kolkata|Calcutta/i.test(Intl.DateTimeFormat().resolvedOptions().timeZone||'')){document.documentElement.setAttribute('data-region','in')}}catch(e){}",
+              "(function(){try{var d=document.documentElement,raw=localStorage.getItem('ss_region');if(raw){var p=JSON.parse(raw);if(p&&p.r&&Date.now()-(p.t||0)<6048e5){d.setAttribute('data-region',p.r);return}}var tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';if(/Kolkata|Calcutta/i.test(tz))d.setAttribute('data-region','in');fetch('https://labs.shieldsyncsecurity.com/api/geo').then(function(r){return r.json()}).then(function(x){var r=x&&x.country==='IN'?'in':'us';try{localStorage.setItem('ss_region',JSON.stringify({r:r,t:Date.now()}))}catch(e){}if(d.getAttribute('data-region-userset')==='1')return;if(r!==d.getAttribute('data-region')){d.setAttribute('data-region',r);window.dispatchEvent(new CustomEvent('ss:region',{detail:{region:r}}))}}).catch(function(){})}catch(e){}})();",
           }}
         />
         {/* Global JSON-LD: Organization + WebSite — present on every page */}
