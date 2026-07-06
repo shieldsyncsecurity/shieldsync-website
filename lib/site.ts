@@ -42,8 +42,9 @@ export type NavItem = { label: string; href: string };
 // Top-nav (Model A — product-first). Dropdown parents: /services, /labs,
 // /aws-security-certification (handled specially in site-header). The rest are
 // plain links. Training folded into the Services dropdown (it's a B2B service);
-// Contact removed (the "Book a call" action button covers it); Internship +
-// Pricing promoted to first-class items.
+// Contact removed (the "Book a call" action button covers it); Internship
+// promoted to a first-class item. No "Pricing" item — pricing lives in the labs
+// wizard, reached via Labs and the CTAs (owner call, 2026-07-07).
 export const NAV: NavItem[] = [
   { label: "Services", href: "/services" },
   { label: "Labs", href: "/labs" },
@@ -51,7 +52,6 @@ export const NAV: NavItem[] = [
   { label: "For Employers", href: SITE.enterpriseUrl },
   { label: "Certifications", href: "/aws-security-certification" },
   { label: "Internship", href: "/internship" },
-  { label: "Pricing", href: "/labs-wizard" },
   { label: "Blog", href: "/blog" },
 ];
 
@@ -436,7 +436,6 @@ export const FOOTER_NAV: { heading: string; links: NavItem[] }[] = [
       { label: "Hands-on Labs", href: "/labs" },
       { label: "For Employers", href: SITE.enterpriseUrl },
       { label: "Certifications", href: "/aws-security-certification" },
-      { label: "Pricing", href: "/labs-wizard" },
     ],
   },
   {
