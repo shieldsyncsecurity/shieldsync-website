@@ -21,3 +21,11 @@ Cloudflare keeps DNS only (grey-cloud). Do NOT use `npm run deploy` / wrangler �
   defaults to Turbopack; `next.config.ts` keeps `turbopack:{root}` for **dev only**. Do not
   revert the `--webpack` flag.
 - Security headers for the static build live in `customHttp.yml` (mirrors next.config).
+- **Redirects live in Amplify custom-rules, NOT `next.config.ts`** — a static export
+  (`output: export`) silently ignores `redirects()`. The canonical, version-controlled copy is
+  [`amplify-custom-rules.json`](amplify-custom-rules.json); apply it to the live app with
+  (assume `OrganizationAccountAccessRole` into 750294427884 first):
+  `aws amplify update-app --app-id d2d3yptdwi41th --region us-east-1 --custom-rules file://amplify-custom-rules.json`
+  `update-app` REPLACES the whole set, so **edit the JSON, never hand-append one rule**. Order
+  matters: specific 301s must precede the `/<*>` → `/index.html` catch-all. Whenever a route is
+  renamed or removed, add a 301 for the old URL here (and re-apply) so indexed links don't 404.

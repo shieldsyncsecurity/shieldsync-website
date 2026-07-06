@@ -1,0 +1,5 @@
+[
+  { "source": "/free-lab", "target": "/free-labs/aws-security", "status": "301" },
+  { "source": "/pricing", "target": "/labs-wizard", "status": "301" },
+  { "source": "/<*>", "target": "/index.html", "status": "404-200" }
+]
