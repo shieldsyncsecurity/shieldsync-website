@@ -16,6 +16,9 @@ export const SITE = {
     "ShieldSync is a global cybersecurity company. We help businesses secure their cloud and help professionals build real, job-ready security skills through hands-on services, training, and labs.",
   url: "https://shieldsyncsecurity.com",
   labsUrl: "https://labs.shieldsyncsecurity.com",
+  // B2B hiring-assessment product — employers test candidates on real cloud
+  // security tasks in isolated AWS accounts. Separate app (enterprise. subdomain).
+  enterpriseUrl: "https://enterprise.shieldsyncsecurity.com",
   // The guided wizard (plan/lab chooser) — used by the PAID path (Explore → lab detail).
   startUrl: "/labs-wizard?track=aws",
   // FASTEST free-lab path: jump straight to the platform's free lab, which
@@ -43,6 +46,8 @@ export type NavItem = { label: string; href: string };
 export const NAV: NavItem[] = [
   { label: "Services", href: "/services" },
   { label: "Labs", href: "/labs" },
+  // B2B hiring-assessment product on the enterprise. subdomain (external link).
+  { label: "For Employers", href: SITE.enterpriseUrl },
   { label: "Certifications", href: "/aws-security-certification" },
   { label: "Internship", href: "/internship" },
   { label: "Pricing", href: "/labs-wizard" },
@@ -427,6 +432,7 @@ export const FOOTER_NAV: { heading: string; links: NavItem[] }[] = [
     links: [
       { label: "Services", href: "/services" },
       { label: "Hands-on Labs", href: "/labs" },
+      { label: "For Employers", href: SITE.enterpriseUrl },
       { label: "Certifications", href: "/aws-security-certification" },
       { label: "Pricing", href: "/labs-wizard" },
     ],
