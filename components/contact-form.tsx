@@ -69,9 +69,15 @@ export function ContactForm() {
       <div className="rounded-2xl border border-amber-300/40 bg-amber-50/60 p-7 text-center">
         <p className="text-lg font-bold text-fg">Almost there</p>
         <p className="mt-2 text-sm text-muted">
-          The contact form is being connected. In the meantime, email us at{" "}
-          <span className="font-semibold text-fg">{CONTACT.email}</span> or message us on WhatsApp — we reply within 24 hours.
+          The contact form is being connected. In the meantime, email us directly at{" "}
+          <span className="font-semibold text-fg">{CONTACT.email}</span> — we reply within 24 hours.
         </p>
+        <a
+          href={`mailto:${CONTACT.email}`}
+          className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand to-cyan px-5 py-2.5 text-sm font-bold text-white transition hover:brightness-110"
+        >
+          Email us <span aria-hidden>→</span>
+        </a>
       </div>
     );
   }

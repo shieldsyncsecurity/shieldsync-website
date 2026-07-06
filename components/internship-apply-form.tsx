@@ -66,8 +66,14 @@ export function InternshipApplyForm() {
         <p className="text-lg font-bold text-fg">Almost there</p>
         <p className="mt-2 text-sm text-muted">
           The application form is being connected. In the meantime, email your details to{" "}
-          <span className="font-semibold text-fg">internship@shieldsyncsecurity.com</span> and we&apos;ll get back to you within 24 hours.
+          <span className="font-semibold text-fg">internship@shieldsyncsecurity.com</span> — we reply within 24 hours.
         </p>
+        <a
+          href="mailto:internship@shieldsyncsecurity.com"
+          className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand to-cyan px-5 py-2.5 text-sm font-bold text-white transition hover:brightness-110"
+        >
+          Email your application <span aria-hidden>→</span>
+        </a>
       </div>
     );
   }

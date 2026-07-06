@@ -807,7 +807,7 @@ export const FAQS: Record<string, { q: string; a: string }[]> = {
     { q: "How long do I have access after buying a lab?", a: "Per-lab purchases give you 48 hours of access from first launch — enough to complete the lab, take a break, and revisit. Monthly pass subscribers can launch any lab any time for the duration of their subscription." },
     { q: "Do I get a certificate?", a: "Yes — you receive a digitally signed completion certificate from ShieldSync Security Private Limited for each lab you complete." },
     { q: "What payment methods are accepted?", a: "We accept UPI, all major debit/credit cards, net banking, and popular wallets (Paytm, PhonePe, Google Pay) — secured through the Paytm payment gateway." },
-    { q: "Can I cancel the monthly pass?", a: "Yes — cancel any time within 24 hours of purchase for a full refund. After 24 hours, the pass runs until the end of the billing month." },
+    { q: "Can I cancel the monthly pass?", a: "Yes — cancel anytime and you won't be charged again. Your access continues to the end of the current paid cycle." },
     { q: "Are AWS labs the main focus?", a: "Yes — AWS cloud security is our flagship track and the deepest offering. A SOC track (SIEM & SOAR) is in development to round out the blue-team picture." },
     { q: "Can teams or companies use the labs for training?", a: "Yes — contact us for team access, volume pricing, and a custom labs-as-a-service arrangement tailored to your team's skill gaps." },
   ],
