@@ -292,11 +292,11 @@ export function LabsWizard({
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-bright">{trackName}</p>
                 <h1 className="mt-1 text-2xl font-bold tracking-tight text-fg sm:text-3xl">How do you want to learn?</h1>
                 <p className="mt-1 text-sm text-muted">Pick what fits — you can change this anytime.</p>
-                <div className={`mt-5 grid gap-4 ${track === "aws" || track === "ai" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
+                <div className={`mt-5 grid gap-4 ${track === "aws" || track === "ai" || track === "azure" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
                   {/* FREE — a first-class card alongside the paid plans (AWS + AI
                       tracks). Same select-then-Continue behaviour as the paid cards:
                       clicking sets mode="free"; Continue navigates to the free lab. */}
-                  {track === "aws" || track === "ai" ? (
+                  {track === "aws" || track === "ai" || track === "azure" ? (
                     <button
                       type="button"
                       onClick={() => setMode("free")}
@@ -311,6 +311,8 @@ export function LabsWizard({
                       <ul className="mt-3 space-y-1.5">
                         {(track === "ai"
                           ? ["Secure a live Bedrock assistant", "Real, isolated AWS account", "No card needed"]
+                          : track === "azure"
+                          ? ["Find & fix a public storage account", "Real, isolated Azure resource group", "No card needed"]
                           : ["Your first beginner lab", "Real, isolated AWS account", "No card needed"]
                         ).map((p) => (
                           <li key={p} className="flex items-center gap-2 text-sm text-muted">
