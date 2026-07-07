@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Container, Card, Pill, Button, SectionHeading } from "@/components/ui";
+import { Card, Pill, Button } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { ArrowRight, Check, Cloud, Flask, Radar, Cap } from "@/components/icons";
 import { SchemaOrg } from "@/components/schema-org";
-import { RelatedBlogSection } from "@/components/related-blog-section";
 import { webPageSchema, breadcrumbSchema, internshipProgramSchema } from "@/lib/schema";
 import { InternshipApplyForm } from "@/components/internship-apply-form";
 import { InternshipPlanDownload } from "@/components/internship-plan-download";
@@ -44,7 +43,7 @@ const PAGE_SCHEMA = [
     name: "Cybersecurity Internship — ShieldSync Security",
     description:
       "A focused, hands-on 8-week internship in cloud and cybersecurity. Real AWS security projects, managed cyber-range labs, 1:1 mentorship, and a completion certificate.",
-    dateModified: "2026-06-04",
+    dateModified: "2026-07-07",
     breadcrumb: [
       { name: "Home", url: SITE.url },
       { name: "Internship", url: PAGE_URL },
@@ -58,19 +57,25 @@ const PAGE_SCHEMA = [
   internshipProgramSchema(),
 ];
 
+/* Narrow, low-scroll page (owner call 2026-07-07): content capped at max-w-6xl
+ * (the enterprise-site width, vs the sitewide 1536px Container) and the deep
+ * detail lives in the downloadable 8-week plan PDF, not on the page. */
+const Wrap = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
+  <div className={`mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8 ${className}`}>{children}</div>
+);
+
 export default function InternshipPage() {
   return (
     <>
       <SchemaOrg schema={PAGE_SCHEMA} />
 
-      {/* ─── Hero + Apply form ─────────────────────────────────────────────── */}
+      {/* ─── Hero + Apply form (the conversion core) ───────────────────────── */}
       <section className="relative isolate overflow-hidden border-b border-line">
         <div className="aurora absolute inset-0 -z-10" />
         <div className="cyber-grid absolute inset-0 -z-10" />
 
-        <Container className="py-6 sm:py-8">
-          <div className="grid gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-start">
-
+        <Wrap className="py-6 sm:py-8">
+          <div className="grid gap-8 lg:grid-cols-[1fr_1.05fr] lg:items-start">
             {/* Left: pitch */}
             <Reveal>
               <Pill tone="brand">{INTERNSHIP.badge}</Pill>
@@ -78,13 +83,14 @@ export default function InternshipPage() {
                 {INTERNSHIP.title}
               </h1>
               <p className="mt-2 text-lg font-semibold text-brand-bright">{INTERNSHIP.subtitle}</p>
-              <p className="mt-3 text-base leading-7 text-muted max-w-lg">{INTERNSHIP.summary}</p>
+              <p className="mt-3 max-w-lg text-base leading-7 text-muted">{INTERNSHIP.summary}</p>
 
-              {/* Price callout */}
+              {/* Price + commitment */}
               <div className="mt-5 inline-flex items-baseline gap-2 rounded-2xl border border-line bg-panel px-5 py-3">
                 <span className="text-4xl font-extrabold text-fg">{INTERNSHIP.price}</span>
                 <span className="text-sm text-muted">{INTERNSHIP.priceNote}</span>
               </div>
+              <p className="mt-2 text-sm font-medium text-muted">{INTERNSHIP.commitment}</p>
 
               {/* Inclusions */}
               <ul className="mt-5 grid gap-2 sm:grid-cols-2">
@@ -96,11 +102,11 @@ export default function InternshipPage() {
                 ))}
               </ul>
 
-              {/* Download the full 8-week plan as a PDF */}
+              {/* The full curriculum lives in the PDF — not on the page. */}
               <div className="mt-5">
                 <InternshipPlanDownload />
                 <p className="mt-1.5 text-xs text-muted">
-                  Full curriculum, week by week — see exactly what you&apos;ll learn before you apply.
+                  The full 8-week curriculum, week by week — everything you&apos;ll learn, before you apply.
                 </p>
               </div>
             </Reveal>
@@ -116,122 +122,53 @@ export default function InternshipPage() {
               </Card>
             </Reveal>
           </div>
-        </Container>
+        </Wrap>
       </section>
 
-      {/* ─── What you'll work on + Who it's for ───────────────────────────── */}
+      {/* ─── One compact strip: what you'll do + who it's for ─────────────── */}
       <section className="py-8 sm:py-10">
-        <Container>
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-
-            {/* Work on — 3 compact cards */}
-            <Reveal>
-              <p className="text-xs font-bold uppercase tracking-widest text-brand-bright">What you&apos;ll work on</p>
-              <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-fg">Real projects, real environments</h2>
-              <p className="mt-2 text-sm text-muted">No passive video courses — you do the work of a cloud security practitioner.</p>
-              <div className="mt-6 flex flex-col gap-4">
-                {INTERNSHIP.workOn.map((w, i) => {
-                  const Icon = WORK_ICONS[i % WORK_ICONS.length];
-                  return (
-                    <div key={w.title} className="flex items-start gap-4 rounded-xl border border-line bg-panel p-4">
-                      <span className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand/25 bg-brand/10 text-brand-bright">
-                        <Icon className="h-4 w-4" />
-                      </span>
-                      <div>
-                        <p className="text-sm font-semibold text-fg">{w.title}</p>
-                        <p className="mt-0.5 text-sm leading-6 text-muted">{w.desc}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </Reveal>
-
-            {/* Who it's for */}
-            <Reveal delay={80}>
-              <p className="text-xs font-bold uppercase tracking-widest text-brand-bright">Who it&apos;s for</p>
-              <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-fg">Built for people breaking into security</h2>
-              <p className="mt-2 text-sm text-muted">This programme is designed for motivated starters, not experienced practitioners.</p>
-              <div className="mt-6 flex flex-col gap-3">
-                {INTERNSHIP.forWho.map((f) => (
-                  <div key={f} className="flex items-center gap-3 rounded-xl border border-line bg-panel px-4 py-3.5">
-                    <Cap className="h-5 w-5 shrink-0 text-brand" />
-                    <span className="text-sm text-fg/90">{f}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Small reassurance block */}
-              <div className="mt-6 rounded-xl border border-brand/20 bg-brand/5 p-4">
-                <p className="text-sm font-semibold text-fg">No prior security experience needed</p>
-                <p className="mt-1 text-sm text-muted">
-                  If you have curiosity, basic IT knowledge, and 10–15 hrs/week to commit — you have what it takes.
-                </p>
-              </div>
-            </Reveal>
-          </div>
-        </Container>
-      </section>
-
-      {/* ─── Week-by-week curriculum ──────────────────────────────────────── */}
-      <section className="border-t border-line py-8 sm:py-10">
-        <Container>
+        <Wrap>
           <Reveal>
-            <SectionHeading
-              eyebrow="The 8-week plan"
-              title="Exactly what you'll learn, week by week"
-              description={INTERNSHIP.commitment}
-            />
-          </Reveal>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {INTERNSHIP.curriculum.map((w, i) => (
-              <Reveal key={w.week} delay={(i % 2) * 60}>
-                <div className="flex h-full flex-col rounded-2xl border border-line bg-panel p-5">
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-brand/10 px-2 text-xs font-bold text-brand-bright">
-                      {i + 1}
+            <div className="grid gap-4 sm:grid-cols-3">
+              {INTERNSHIP.workOn.map((w, i) => {
+                const Icon = WORK_ICONS[i % WORK_ICONS.length];
+                return (
+                  <div key={w.title} className="rounded-xl border border-line bg-panel p-4">
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-brand/25 bg-brand/10 text-brand-bright">
+                      <Icon className="h-4 w-4" />
                     </span>
-                    <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted">{w.week}</span>
+                    <p className="mt-3 text-sm font-semibold text-fg">{w.title}</p>
+                    <p className="mt-1 text-sm leading-6 text-muted">{w.desc}</p>
                   </div>
-                  <h3 className="mt-2 text-base font-bold text-fg">{w.title}</h3>
-                  <p className="mt-1 text-sm font-medium text-brand-bright">{w.focus}</p>
-                  <ul className="mt-3 grid gap-1.5">
-                    {w.learn.map((l) => (
-                      <li key={l} className="flex items-start gap-2 text-sm text-muted">
-                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand" /> {l}
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="mt-auto pt-3 text-sm text-fg/85">
-                    <span className="font-semibold text-fg">Build:</span> {w.project}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
+                );
+              })}
+            </div>
+            <div className="mt-4 flex items-start gap-3 rounded-xl border border-brand/20 bg-brand/5 p-4">
+              <Cap className="mt-0.5 h-5 w-5 shrink-0 text-brand" />
+              <p className="text-sm text-fg/90">
+                <span className="font-semibold text-fg">For students, career-changers, and early-career IT professionals.</span>{" "}
+                No prior security experience needed — curiosity, basic IT knowledge, and 10–15 hrs/week is enough.
+              </p>
+            </div>
+          </Reveal>
+        </Wrap>
       </section>
 
-      {/* ─── Certificate + exam readiness ─────────────────────────────────── */}
+      {/* ─── Certificate + exam readiness (compact) ───────────────────────── */}
       <section className="border-t border-line py-8 sm:py-10">
-        <Container>
-          <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+        <Wrap>
+          <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
             <Reveal>
-              <div className="flex h-full flex-col rounded-2xl border border-brand/30 bg-gradient-to-br from-brand/[0.08] to-transparent p-6 sm:p-7">
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-brand/25 bg-brand/10 text-brand-bright">
-                    <Cap className="h-5 w-5" />
-                  </span>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-bright">What you graduate with</p>
-                </div>
-                <h2 className="mt-3 text-xl font-bold text-fg sm:text-2xl">{INTERNSHIP.certificate.title}</h2>
+              <div className="flex h-full flex-col rounded-2xl border border-brand/30 bg-gradient-to-br from-brand/[0.08] to-transparent p-5 sm:p-6">
+                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-bright">What you graduate with</p>
+                <h2 className="mt-2 text-lg font-bold text-fg sm:text-xl">{INTERNSHIP.certificate.title}</h2>
                 <p className="mt-2 text-sm leading-6 text-muted">{INTERNSHIP.certificate.detail}</p>
               </div>
             </Reveal>
             <Reveal delay={80}>
-              <div className="flex h-full flex-col rounded-2xl border border-line bg-panel p-6 sm:p-7">
+              <div className="flex h-full flex-col rounded-2xl border border-line bg-panel p-5 sm:p-6">
                 <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-bright">Plus — exam ready</p>
-                <h3 className="mt-3 text-lg font-bold text-fg">Toward AWS Security Specialty (SCS-C03)</h3>
+                <h3 className="mt-2 text-lg font-bold text-fg">Toward AWS Security Specialty (SCS-C03)</h3>
                 <p className="mt-2 text-sm leading-6 text-muted">{INTERNSHIP.certificate.examReadiness}</p>
                 <Button href="/aws-security-certification" variant="secondary" className="mt-4 self-start">
                   See the SCS-C03 path
@@ -240,10 +177,8 @@ export default function InternshipPage() {
               </div>
             </Reveal>
           </div>
-        </Container>
+        </Wrap>
       </section>
-
-      <RelatedBlogSection keywords={["Training", "Cloud", "AWS", "Career"]} />
     </>
   );
 }
