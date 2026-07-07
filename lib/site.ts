@@ -20,7 +20,10 @@ export const SITE = {
   // security tasks in isolated AWS accounts. Separate app (enterprise. subdomain).
   enterpriseUrl: "https://enterprise.shieldsyncsecurity.com",
   // The guided wizard (plan/lab chooser) — used by the PAID path (Explore → lab detail).
-  startUrl: "/labs-wizard?track=aws",
+  // Track slugs are descriptive (owner, 2026-07-07): aws-security-labs,
+  // ai-security-labs, azure-security-labs, soc-labs, free-security-labs
+  // (legacy short values aws/soc still accepted by the launcher).
+  startUrl: "/labs-wizard?track=aws-security-labs",
   // Fastest free-lab path: jump straight to the platform's free lab page. The
   // learner signs in and then clicks "Launch lab" themselves — we deliberately do
   // NOT auto-start (that would provision a scarce free AWS account before they're
@@ -272,10 +275,12 @@ export const BUSINESSES_MENU: { label: string; desc: string; href: string; tag?:
 // AI -> AWS -> Azure -> SOC; Azure/SOC stay listed even pre-launch), then the
 // free funnel, certification prep, and internship.
 export const LEARNERS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
-  { label: "AI Security", desc: "Secure Bedrock, LLM apps & agents — free hands-on lab live", href: "/ai-security", tag: "Flagship" },
-  { label: "AWS Security Labs", desc: "Cloud security in real AWS — pick a lab or go monthly", href: "/labs-wizard?track=aws" },
-  { label: "Azure Security Labs", desc: "Cloud security in real Azure — storage exposure & more", href: "/aws-security-labs", tag: "Coming soon" },
-  { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/soc-labs", tag: "Coming soon" },
+  // Every track row leads into the WIZARD funnel with a descriptive ?track=
+  // slug (owner, 2026-07-07); the catalog/SEO pages stay, linked elsewhere.
+  { label: "AI Security", desc: "Secure Bedrock, LLM apps & agents — free hands-on lab live", href: "/labs-wizard?track=ai-security-labs", tag: "Flagship" },
+  { label: "AWS Security Labs", desc: "Cloud security in real AWS — pick a lab or go monthly", href: "/labs-wizard?track=aws-security-labs" },
+  { label: "Azure Security Labs", desc: "Cloud security in real Azure — storage exposure & more", href: "/labs-wizard?track=azure-security-labs", tag: "Coming soon" },
+  { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/labs-wizard?track=soc-labs", tag: "Coming soon" },
   // Free Labs is NOT listed here — it has its own top-level nav item.
   { label: "AWS Certification (SCS-C03)", desc: "Every exam domain mapped to a hands-on lab", href: "/aws-security-certification" },
   { label: "Internship", desc: "8-week guided internship — projects, labs & certificate", href: "/internship" },
@@ -631,6 +636,29 @@ export const AWS_LABS: LabItem[] = [
       "STS & role-assumption controls",
     ],
     roles: ["Cloud Security Engineer", "Penetration Tester", "Security Consultant"],
+  },
+];
+
+// AI security labs — the FLAGSHIP track (owner, 2026-07-07). One free lab live on
+// the platform today; paid AI labs follow. CANONICAL shared fields mirror
+// labs-platform/app/content/labs/<slug>/lab.json.
+export const AI_LABS: LabItem[] = [
+  {
+    slug: "bedrock-prompt-injection",
+    title: "Bedrock assistant — prompt injection & lockdown",
+    level: "Beginner",
+    free: true,
+    desc: "Prompt-inject a live LLM support assistant into leaking secrets, then lock it down with Guardrails, least-privilege IAM, and model-invocation logging.",
+    tags: ["Bedrock", "GenAI", "Guardrails", "IAM"],
+    added: "2026-07-06",
+    minutes: 35,
+    skills: [
+      "Bedrock Guardrails configuration",
+      "Prompt-injection attack & defense",
+      "Least-privilege IAM for AI apps",
+      "Model-invocation logging",
+    ],
+    roles: ["AI Security Engineer", "Cloud Security Engineer", "GenAI Developer"],
   },
 ];
 

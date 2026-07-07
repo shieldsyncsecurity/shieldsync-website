@@ -3,13 +3,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { Container, Card, Button } from "@/components/ui";
 import { Check, ArrowRight, Shield, Cloud, Radar } from "@/components/icons";
-import { AWS_LABS, SOC_LABS, SITE } from "@/lib/site";
+import { AWS_LABS, AI_LABS, SOC_LABS, SITE } from "@/lib/site";
 import { AWS_PRICE, SOC_PRICE, AWS_MONTHLY, SOC_MONTHLY, FREE, awsLabPrice, formatMoney, type Money, type Currency } from "@/lib/region";
 import { levelDotClass, toneDotClass, PRODUCT_TONE } from "@/components/status-badge";
 
 const FREE_SLUG = "s3-misconfiguration-audit";
+const AI_FREE_SLUG = "bedrock-prompt-injection";
 
-type Track = "aws" | "soc" | null;
+type Track = "aws" | "soc" | "ai" | "azure" | "free" | null;
 type Mode = "per-lab" | "monthly" | "free" | null;
 type Item = { slug: string; title: string; desc: string; tags: string[]; badge: string; dot: string; price: Money; free: boolean };
 
@@ -18,18 +19,25 @@ export function LabsWizard({
   initialPlan,
   initialLevel,
 }: {
-  initialTrack?: "aws" | "soc";
+  initialTrack?: "aws" | "soc" | "ai" | "azure" | "free";
   initialPlan?: "per-lab" | "monthly";
   initialLevel?: string;
 }) {
   // Deep-links (ads + the "Start here" roadmap) can pre-select a track, plan, and lab level.
-  // SOC (SIEM/SOAR) labs are in development — ignore a ?track=soc deep-link so it
-  // can't enter the not-yet-built SOC funnel; land on track selection instead.
-  const safeTrack: Track = initialTrack === "soc" ? null : (initialTrack ?? null);
-  // If the requested track was blocked (soc, in development), drop any pre-set
-  // plan/level intent too — otherwise picking "aws" on step 1 silently fast-forwards
-  // past the Plan step to a plan the user never chose for the AWS track.
-  const startMode: Mode = initialTrack === "soc" ? null : initialLevel ? "per-lab" : initialPlan ?? null;
+  // Azure + SOC labs are in development — ignore those deep-links so they can't
+  // enter a not-yet-built funnel; land on track selection instead (where their
+  // cards show Coming soon). AWS, AI, and the free view are live.
+  const blockedTrack = initialTrack === "soc" || initialTrack === "azure";
+  const safeTrack: Track = blockedTrack ? null : (initialTrack ?? null);
+  // If the requested track was blocked, drop any pre-set plan/level intent too —
+  // otherwise picking a track on step 1 silently fast-forwards past the Plan step
+  // to a plan the user never chose. The AI track is free-only today, so pre-set
+  // paid plans are dropped for it as well.
+  const startMode: Mode =
+    blockedTrack ? null
+    : initialTrack === "ai" ? "free"
+    : initialLevel ? "per-lab"
+    : initialPlan ?? null;
   const startStep = safeTrack ? (initialLevel || initialPlan ? 3 : 2) : 1;
   const [step, setStep] = useState(startStep);
   const [track, setTrack] = useState<Track>(safeTrack);
@@ -70,6 +78,12 @@ export function LabsWizard({
         badge: l.product, dot: toneDotClass(PRODUCT_TONE[l.product] ?? "emerald"),
         price: SOC_PRICE, free: false,
       }));
+    if (track === "ai")
+      return AI_LABS.map((l) => ({
+        slug: l.slug, title: l.title, desc: l.desc, tags: l.tags,
+        badge: l.level, dot: levelDotClass(l.level),
+        price: FREE, free: true,
+      }));
     return AWS_LABS.map((l) => ({
       slug: l.slug, title: l.title, desc: l.desc, tags: l.tags,
       badge: l.level, dot: levelDotClass(l.level),
@@ -86,7 +100,7 @@ export function LabsWizard({
   const filtered = useMemo(() => (cat === "All" ? pickable : pickable.filter((i) => i.badge === cat)), [pickable, cat]);
   const lab = useMemo(() => items.find((i) => i.slug === selected) ?? null, [items, selected]);
 
-  const trackName = track === "soc" ? "Security Operations" : "AWS Cloud Security";
+  const trackName = track === "soc" ? "Security Operations" : track === "ai" ? "AI Security" : "AWS Cloud Security";
   const accessLabel = track === "soc" ? "full SOC access" : "full AWS access";
   const monthly = track === "soc" ? SOC_MONTHLY : AWS_MONTHLY;
   const fromPrice = track === "soc" ? SOC_PRICE : AWS_PRICE.Beginner;
@@ -100,7 +114,7 @@ export function LabsWizard({
   // platform yet, and monthly has no single lab — both fall back to the catalog root.
   const launchHref =
     mode === "free"
-      ? `${SITE.labsUrl}/labs/${FREE_SLUG}`
+      ? `${SITE.labsUrl}/labs/${track === "ai" ? AI_FREE_SLUG : FREE_SLUG}`
       : mode !== "monthly" && track === "aws" && selected
       ? `${SITE.labsUrl}/labs/${selected}?intent=launch`
       : mode === "monthly"
@@ -123,6 +137,48 @@ export function LabsWizard({
     setMode(null);
     setSelected(null);
     setCat("All");
+  }
+
+  // ?track=free-security-labs — a direct free-labs view instead of the stepper:
+  // both live free labs, one click from launch. No prices, no plans.
+  if (track === "free") {
+    return (
+      <section className="py-6 sm:py-8">
+        <Container>
+          <div className="mx-auto max-w-3xl">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-bright">Free security labs</p>
+            <h1 className="mt-1 text-2xl font-bold tracking-tight text-fg sm:text-3xl">Start with a free lab</h1>
+            <p className="mt-2 text-base text-muted">
+              Real, isolated cloud accounts — no card, auto-graded, auto-wiped. Sign in and click Launch.
+            </p>
+            <div className="mt-6 grid gap-4">
+              {[
+                { title: "AWS Security — S3 misconfiguration audit", desc: "Find the public S3 bucket, fix over-broad IAM, enforce KMS.", meta: "AWS · Beginner · 30 min", href: `${SITE.labsUrl}/labs/${FREE_SLUG}` },
+                { title: "AI Security — secure a Bedrock assistant", desc: "Prompt-inject a live LLM assistant, then lock it down with Guardrails, least-privilege, and logging.", meta: "AI · Beginner · ~35 min", href: `${SITE.labsUrl}/labs/${AI_FREE_SLUG}` },
+              ].map((l) => (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  className="flex flex-col rounded-2xl border border-line bg-panel p-5 transition hover:border-brand sm:flex-row sm:items-center sm:justify-between sm:gap-6"
+                >
+                  <div>
+                    <p className="font-mono text-[11px] font-semibold uppercase tracking-wide text-muted">{l.meta}</p>
+                    <h2 className="mt-1 text-base font-bold text-fg">{l.title}</h2>
+                    <p className="mt-1 text-sm leading-6 text-muted">{l.desc}</p>
+                  </div>
+                  <span className="mt-3 inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-brand-bright sm:mt-0">
+                    Start free <ArrowRight className="h-4 w-4" />
+                  </span>
+                </a>
+              ))}
+            </div>
+            <p className="mt-4 text-sm text-muted">
+              Azure free lab coming soon. Prefer the details first? <a href="/free-labs" className="font-semibold text-brand-bright">See the free-labs pages</a>.
+            </p>
+          </div>
+        </Container>
+      </section>
+    );
   }
 
   return (
@@ -173,13 +229,15 @@ export function LabsWizard({
                   <span className="rounded-full border border-line bg-surface px-3 py-1">Launches in your browser</span>
                   <span className="rounded-full border border-line bg-surface px-3 py-1">Auto-cleanup when you&apos;re done</span>
                 </div>
-                <div className="mt-5 grid gap-4 sm:grid-cols-3">
-                  {/* Track cards share one design; not-yet-live tracks render the same
-                      card disabled with a Coming-soon tag (owner: every track gets the
-                      wizard treatment as it ships — Azure next, then SOC). */}
+                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                  {/* Track cards share one design in flagship order (AI, AWS, Azure,
+                      SOC); not-yet-live tracks render the same card disabled with a
+                      Coming-soon tag — every track gets the wizard treatment as it
+                      ships. */}
                   {[
-                    { id: "aws", key: "aws" as const, icon: Cloud, title: "Cloud Security — AWS", desc: "Master cloud security in real AWS environments. Our flagship track.", tag: "Flagship", soon: false },
-                    { id: "azure", key: "aws" as const, icon: Cloud, title: "Cloud Security — Azure", desc: "Storage exposure, identity and more in real Azure subscriptions.", tag: "", soon: true },
+                    { id: "ai", key: "ai" as const, icon: Shield, title: "AI Security", desc: "Secure Bedrock assistants, LLM apps & agents. Free lab live now.", tag: "Flagship", soon: false },
+                    { id: "aws", key: "aws" as const, icon: Cloud, title: "Cloud Security — AWS", desc: "Master cloud security in real AWS environments. Our deepest catalog.", tag: "", soon: false },
+                    { id: "azure", key: "azure" as const, icon: Cloud, title: "Cloud Security — Azure", desc: "Storage exposure, identity and more in real Azure subscriptions.", tag: "", soon: true },
                     { id: "soc", key: "soc" as const, icon: Radar, title: "Security Operations — SIEM & SOAR", desc: "Detection & response across SIEM and SOAR.", tag: "", soon: true },
                   ].map((o) => {
                     const Icon = o.icon;
@@ -227,10 +285,10 @@ export function LabsWizard({
                 <h1 className="mt-1 text-2xl font-bold tracking-tight text-fg sm:text-3xl">How do you want to learn?</h1>
                 <p className="mt-1 text-sm text-muted">Pick what fits — you can change this anytime.</p>
                 <div className={`mt-5 grid gap-4 ${track === "aws" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
-                  {/* FREE — third box ALONGSIDE the paid plans (AWS track only).
-                      Same select-then-Continue behaviour as the paid cards: clicking
-                      sets mode="free"; Continue navigates to the free lab launch URL. */}
-                  {track === "aws" ? (
+                  {/* FREE — a first-class card alongside the paid plans (AWS + AI
+                      tracks). Same select-then-Continue behaviour as the paid cards:
+                      clicking sets mode="free"; Continue navigates to the free lab. */}
+                  {track === "aws" || track === "ai" ? (
                     <button
                       type="button"
                       onClick={() => setMode("free")}
@@ -243,7 +301,10 @@ export function LabsWizard({
                         <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-bold text-emerald-700">FREE</span>
                       </div>
                       <ul className="mt-3 space-y-1.5">
-                        {["Your first beginner lab", "Real, isolated AWS account", "No card needed"].map((p) => (
+                        {(track === "ai"
+                          ? ["Secure a live Bedrock assistant", "Real, isolated AWS account", "No card needed"]
+                          : ["Your first beginner lab", "Real, isolated AWS account", "No card needed"]
+                        ).map((p) => (
                           <li key={p} className="flex items-center gap-2 text-sm text-muted">
                             <Check className="h-3.5 w-3.5 shrink-0 text-brand" /> {p}
                           </li>
@@ -255,7 +316,21 @@ export function LabsWizard({
                     </button>
                   ) : null}
 
-                  {[
+                  {/* Paid AI labs don't exist yet — an honest placeholder instead of
+                      dead paid cards. */}
+                  {track === "ai" ? (
+                    <div className="flex flex-col rounded-2xl border border-line bg-panel/60 p-5 opacity-75">
+                      <div className="flex items-start justify-between gap-3">
+                        <h3 className="text-base font-bold text-fg">Paid AI labs</h3>
+                        <span className="shrink-0 rounded-full bg-amber-500/15 px-2.5 py-0.5 text-[11px] font-bold text-amber-600">Coming soon</span>
+                      </div>
+                      <p className="mt-3 text-sm leading-6 text-muted">
+                        More AI security labs — agents, RAG pipelines, guardrail bypasses — land here as they ship. The free Bedrock lab is live now.
+                      </p>
+                    </div>
+                  ) : null}
+
+                  {(track === "aws" || track === "soc" ? [
                     {
                       key: "per-lab" as const,
                       title: "Pay per lab",
@@ -272,7 +347,7 @@ export function LabsWizard({
                       pts: [`Every ${track === "soc" ? "SOC" : "AWS"} lab unlocked`, "New labs included", "Cancel anytime"],
                       cta: "Get started →",
                     },
-                  ].map((o) => (
+                  ] : []).map((o) => (
                     <button
                       key={o.key}
                       type="button"
@@ -309,7 +384,7 @@ export function LabsWizard({
             {/* STEP 3 — pick a lab / review plan */}
             {step === 3 && mode === "per-lab" ? (
               <div>
-                <h1 className="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">Pick your lab</h1>
+                <h1 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">Pick your lab</h1>
                 <p className="mt-3 text-lg text-muted">Choose one to start — you can buy more later.</p>
                 <div className="mt-6 flex flex-wrap gap-2">
                   {cats.map((c) => (
@@ -357,7 +432,7 @@ export function LabsWizard({
 
             {step === 3 && mode === "monthly" ? (
               <div>
-                <h1 className="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">Your plan</h1>
+                <h1 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">Your plan</h1>
                 <p className="mt-3 text-lg text-muted">Full access to every {track === "soc" ? "SOC" : "AWS"} lab.</p>
                 <Card hover={false} className="mt-6 border-brand/30 bg-gradient-to-br from-brand/[0.08] to-transparent p-8">
                   <div className="flex items-end gap-2">
@@ -379,7 +454,7 @@ export function LabsWizard({
             {/* STEP 4 — review order (sign-in, payment & launch all happen on the labs platform) */}
             {step === 4 ? (
               <div>
-                <h1 className="text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">Review your order</h1>
+                <h1 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">Review your order</h1>
                 <p className="mt-3 text-lg text-muted">
                   {total.usd === 0
                     ? "No payment needed — you'll sign in on ShieldSync Labs and launch."
@@ -412,7 +487,7 @@ export function LabsWizard({
                 <span className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-full bg-brand/10 text-brand">
                   <Check className="h-8 w-8" />
                 </span>
-                <h1 className="mt-6 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">
+                <h1 className="mt-6 text-2xl font-bold tracking-tight text-fg sm:text-3xl">
                   {total.usd === 0 ? "One step left — sign in to launch" : mode === "monthly" ? "You're almost set" : "One step left — sign in & pay"}
                 </h1>
                 <p className="mx-auto mt-3 max-w-md text-lg text-muted">
