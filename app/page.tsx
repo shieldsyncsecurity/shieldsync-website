@@ -242,6 +242,69 @@ export default function HomePage() {
         </Container>
       </section>
 
+      {/* -------------------------------------- For employers: hiring assessments */}
+      <section className="border-b border-line bg-panel py-8 sm:py-10">
+        <Container>
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+            <Reveal>
+              <span className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-bright">
+                <span className="h-1 w-1 rounded-full bg-brand" />
+                For employers — hiring assessments
+              </span>
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-fg sm:text-3xl">
+                Hire cloud security talent on proof, not resumes.
+              </h2>
+              <p className="mt-3 max-w-xl text-base leading-7 text-muted">
+                Send each candidate one link. They secure a live, isolated AWS account against a real
+                misconfiguration scenario, our engine grades the actual cloud state they produce, and
+                your hiring team gets a verified, side-by-side report.
+              </p>
+              <ul className="mt-4 grid gap-2 sm:grid-cols-3">
+                {["Real AWS, isolated per candidate", "Auto-graded on live cloud state", "Comparable, per-objective reports"].map((p) => (
+                  <li key={p} className="flex items-start gap-2 text-sm text-fg/85">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
+                    {p}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                <Button href={`${SITE.enterpriseUrl}/demo/report`} external newTab>
+                  See a sample report
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+                <Button href={SITE.enterpriseUrl} external variant="secondary">
+                  Explore hiring assessments
+                </Button>
+              </div>
+            </Reveal>
+            <Reveal delay={100}>
+              {/* Mini report teaser — echoes the enterprise report at a glance. */}
+              <div className="rounded-3xl border border-line bg-ink p-5 shadow-xl shadow-slate-900/5">
+                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-muted">Assessment report — sample</p>
+                <div className="mt-3 flex flex-col gap-2.5">
+                  {[
+                    { name: "Candidate A", pct: 100, note: "6/6 objectives · reflection ✓" },
+                    { name: "Candidate B", pct: 83, note: "5/6 objectives · reflection ✓" },
+                    { name: "Candidate C", pct: 33, note: "2/6 objectives" },
+                  ].map((c) => (
+                    <div key={c.name} className="rounded-xl border border-line bg-panel px-4 py-3">
+                      <div className="flex items-baseline justify-between gap-3">
+                        <span className="text-sm font-semibold text-fg">{c.name}</span>
+                        <span className="text-sm font-bold tabular-nums text-brand-bright">{c.pct}%</span>
+                      </div>
+                      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-2">
+                        <div className="h-full rounded-full bg-gradient-to-r from-brand to-cyan" style={{ width: `${c.pct}%` }} />
+                      </div>
+                      <p className="mt-1.5 text-xs text-muted">{c.note}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </Container>
+      </section>
+
       {/* -------------------------------------------------------- Team training */}
       <section className="border-b border-line py-8 sm:py-10">
         <Container>
