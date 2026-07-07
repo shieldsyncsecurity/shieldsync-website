@@ -176,15 +176,10 @@ export const SERVICES: Service[] = [
   },
 ];
 
-/* Services dropdown (header) — the five security service landing pages + training. */
-export const SERVICES_MENU: { label: string; desc: string; href: string }[] = [
-  { label: "Cloud & Infrastructure Security", desc: "AWS, Azure, GCP & on-prem, hardened to real attack paths", href: "/services/cloud-infrastructure-security" },
-  { label: "SOC & Managed Detection", desc: "Monitoring, hunting & incident response", href: "/services/soc-managed-detection" },
-  { label: "Application Security & DevSecOps", desc: "Secure the SDLC, from code to pipeline", href: "/services/application-security-devsecops" },
-  { label: "Advanced & Emerging Security", desc: "AI/LLM security, Zero Trust & attack-surface management", href: "/services/advanced-emerging-security" },
-  { label: "Governance, Risk & Compliance", desc: "SOC 2, ISO 27001, GDPR & DPDP readiness", href: "/services/governance-risk-compliance" },
-  { label: "Corporate Training", desc: "Team training across infra, cloud & SOC — tailored to your stack", href: "/training" },
-];
+/* (The old per-product header dropdowns — SERVICES_MENU / LABS_MENU /
+   CERTIFICATIONS_MENU — were deleted 2026-07-08 after the Model B audience-first
+   nav made them unreferenced. See BUSINESSES_MENU / LEARNERS_MENU below; the
+   old arrays live in git history if a product-first nav ever returns.) */
 
 /* Why ShieldSync -------------------------------------------------------------- */
 
@@ -237,25 +232,6 @@ export const LAB_TRACKS: LabTrack[] = [
     desc: "Wire detections to automated response playbooks and cut mean-time-to-action with SOAR.",
     status: "Coming soon",
   },
-];
-
-/* Labs dropdown menu (header) ------------------------------------------------- */
-
-// Two tracks in the primary nav: AWS (live, flagship) + SOC (coming soon → /soc-labs).
-// The free lab is reached via the top-right "Start free lab" button and "Start here",
-// so it no longer needs its own dropdown row.
-export const LABS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
-  { label: "AWS Security Labs", desc: "Cloud security in real AWS — pick a lab or go monthly", href: "/labs-wizard?track=aws", tag: "Flagship" },
-  { label: "Azure Security Labs", desc: "Cloud security in real Azure — storage exposure & more", href: "/aws-security-labs", tag: "Coming soon" },
-  { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/soc-labs", tag: "Coming soon" },
-  { label: "AI Security", desc: "Bedrock, LLM apps, agents — guides + labs", href: "/ai-security" },
-];
-
-/* Certifications dropdown — top-nav. Add new certs here as you ship landing pages. */
-export const CERTIFICATIONS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
-  { label: "AWS Security Specialty (SCS-C03)", desc: "Every SCS-C03 domain mapped to a hands-on lab", href: "/aws-security-certification", tag: "Live" },
-  { label: "SCS-C03 study guide", desc: "Updated from SCS-C02 — domain-by-domain breakdown", href: "/blog/scs-c02-study-guide" },
-  { label: "SCS-C03 practice questions", desc: "50 realistic scenarios with explanations", href: "/blog/scs-c02-practice-questions" },
 ];
 
 /* Audience dropdowns (header, Model B) ---------------------------------------- */
