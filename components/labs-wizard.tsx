@@ -284,7 +284,7 @@ export function LabsWizard({
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-bright">{trackName}</p>
                 <h1 className="mt-1 text-2xl font-bold tracking-tight text-fg sm:text-3xl">How do you want to learn?</h1>
                 <p className="mt-1 text-sm text-muted">Pick what fits — you can change this anytime.</p>
-                <div className={`mt-5 grid gap-4 ${track === "aws" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
+                <div className={`mt-5 grid gap-4 ${track === "aws" || track === "ai" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
                   {/* FREE — a first-class card alongside the paid plans (AWS + AI
                       tracks). Same select-then-Continue behaviour as the paid cards:
                       clicking sets mode="free"; Continue navigates to the free lab. */}
@@ -316,19 +316,36 @@ export function LabsWizard({
                     </button>
                   ) : null}
 
-                  {/* Paid AI labs don't exist yet — an honest placeholder instead of
-                      dead paid cards. */}
-                  {track === "ai" ? (
-                    <div className="flex flex-col rounded-2xl border border-line bg-panel/60 p-5 opacity-75">
-                      <div className="flex items-start justify-between gap-3">
-                        <h3 className="text-base font-bold text-fg">Paid AI labs</h3>
-                        <span className="shrink-0 rounded-full bg-amber-500/15 px-2.5 py-0.5 text-[11px] font-bold text-amber-600">Coming soon</span>
-                      </div>
-                      <p className="mt-3 text-sm leading-6 text-muted">
-                        More AI security labs — agents, RAG pipelines, guardrail bypasses — land here as they ship. The free Bedrock lab is live now.
-                      </p>
-                    </div>
-                  ) : null}
+                  {/* AI paid plans don't exist yet — render the SAME 3-box layout as
+                      AWS (owner: the 3-box plan step is the design), with the two
+                      paid cards disabled Coming-soon until AI labs ship. */}
+                  {track === "ai"
+                    ? [
+                        {
+                          title: "Pay per lab",
+                          pts: ["Buy only the AI labs you want", "One-time payment", "Agents, RAG pipelines, guardrail bypasses"],
+                        },
+                        {
+                          title: "Monthly — full AI access",
+                          pts: ["Every AI lab unlocked", "New labs included", "Cancel anytime"],
+                        },
+                      ].map((o) => (
+                        <div key={o.title} className="flex cursor-not-allowed flex-col rounded-2xl border border-line bg-panel p-5 opacity-60">
+                          <div className="flex items-start justify-between gap-3">
+                            <h3 className="text-base font-bold text-fg">{o.title}</h3>
+                            <span className="shrink-0 rounded-full bg-amber-500/15 px-2.5 py-0.5 text-[11px] font-bold text-amber-600">Coming soon</span>
+                          </div>
+                          <ul className="mt-3 space-y-1.5">
+                            {o.pts.map((p) => (
+                              <li key={p} className="flex items-center gap-2 text-sm text-muted">
+                                <Check className="h-3.5 w-3.5 shrink-0 text-brand" /> {p}
+                              </li>
+                            ))}
+                          </ul>
+                          <span className="mt-auto pt-4 text-sm font-semibold text-muted">Launching soon</span>
+                        </div>
+                      ))
+                    : null}
 
                   {(track === "aws" || track === "soc" ? [
                     {
