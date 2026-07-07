@@ -145,9 +145,11 @@ export function PricingTiers() {
       </div>
 
       {/* Shown only when USD is active (CSS-hidden for data-region="in"), so it
-          matches the price display before first paint with no flash. */}
+          matches the price display before first paint with no flash. Honest
+          claim (owner, 2026-07-07): checkout bills in INR until the Paytm-side
+          issue is fixed and USD checkout is enabled — update this when it is. */}
       <p className="price-usd mt-4 text-center text-xs text-muted">
-        Lab prices shown in USD; charged in your region&apos;s currency at checkout.
+        USD prices shown for reference — checkout is currently billed in INR (₹).
       </p>
     </div>
   );

@@ -283,7 +283,7 @@ export const LEARNERS_MENU: { label: string; desc: string; href: string; tag?: s
   { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/labs-wizard?track=soc-labs", tag: "Coming soon" },
   // Free Labs is NOT listed here — it has its own top-level nav item.
   { label: "AWS Certification (SCS-C03)", desc: "Every exam domain mapped to a hands-on lab", href: "/aws-security-certification" },
-  { label: "Internship", desc: "8-week guided internship — projects, labs & certificate", href: "/internship" },
+  { label: "Foundation Program", desc: "8-week guided beginner program — projects, labs & certificate", href: "/cybersecurity-foundation-program" },
 ];
 
 /* Headline training offer ----------------------------------------------------- */
@@ -294,27 +294,32 @@ export const OFFER = {
   price: "₹9,999",
   priceNote: "all-inclusive",
   summary:
-    "A focused internship plus 1:1 career guidance — hands-on cloud security projects, real AWS labs, and a completion certificate from ShieldSync Security Private Limited.",
+    "A focused foundation program plus 1:1 career guidance — hands-on cloud security projects, real AWS labs, and a completion certificate from ShieldSync Security Private Limited.",
   bullets: [
-    "2-month structured internship",
+    "8-week structured program",
     "Hands-on AWS & cloud security projects",
     "1:1 career guidance and mentorship",
     "Certificate on completion",
   ],
 };
 
-/* Internship programme (dedicated page) -------------------------------------- */
+/* Cybersecurity Foundation Program (dedicated page) ---------------------------
+   Renamed from "Cybersecurity Internship" (owner call 2026-07-07): charging
+   ₹9,999 for something called an internship read as pay-to-intern; the honest
+   category is a beginner training program. The PAGE still intercepts
+   "cybersecurity internship" searches with an explicit why-not-an-internship
+   line — keep that framing. Const name INTERNSHIP kept (internal only). */
 
 export const INTERNSHIP = {
   badge: "Limited seats",
-  title: "Cybersecurity Internship",
+  title: "Cybersecurity Foundation Program",
   subtitle: "From motivated to job-ready in 8 weeks.",
   price: "₹9,999",
   priceNote: "all-inclusive · certificate included",
   summary:
-    "A focused, hands-on internship in cloud and cybersecurity — real projects, real AWS labs, and 1:1 mentorship that prepares you for an actual security role.",
+    "A focused, hands-on foundation program in cloud and cybersecurity — real projects, real AWS labs, and 1:1 mentorship that prepares you for an actual security role.",
   whatYouGet: [
-    "2-month structured internship",
+    "8-week structured program",
     "Hands-on AWS & cloud security projects",
     "1:1 career mentorship",
     "Access to real cyber-range labs",
@@ -345,7 +350,7 @@ export const INTERNSHIP = {
   // questions every prospect asks: "what will I learn?" and "what cert?").
   commitment: "8 weeks · ~10–15 hrs/week · remote · 1:1 mentorship",
   certificate: {
-    title: "ShieldSync Cybersecurity Internship — Completion Certificate",
+    title: "ShieldSync Cybersecurity Foundation Program — Completion Certificate",
     detail:
       "Issued by ShieldSync Security Private Limited on completing the capstone. It verifies hands-on cloud security work in real AWS accounts — not attendance.",
     examReadiness:
@@ -473,7 +478,7 @@ export const FOOTER_NAV: { heading: string; links: NavItem[] }[] = [
     heading: "Learn",
     links: [
       { label: "Start here", href: "/start-here" },
-      { label: "Internship", href: "/internship" },
+      { label: "Foundation Program", href: "/cybersecurity-foundation-program" },
       { label: "Training", href: "/training" },
       { label: "Blog", href: "/blog" },
     ],
@@ -709,11 +714,11 @@ export const TRAINING_PROGRAMS: {
   featured?: boolean;
 }[] = [
   {
-    name: "Cybersecurity Internship",
+    name: "Cybersecurity Foundation Program",
     audience: "Students & career-changers",
-    desc: "An 8-week, hands-on internship — real AWS cloud security projects, 1:1 mentorship, and a completion certificate.",
+    desc: "An 8-week, hands-on foundation program — real AWS cloud security projects, 1:1 mentorship, and a completion certificate.",
     points: ["Hands-on AWS & cloud security projects", "1:1 career mentorship", "Completion certificate"],
-    href: "/internship",
+    href: "/cybersecurity-foundation-program",
     cta: "Apply now",
     featured: true,
   },

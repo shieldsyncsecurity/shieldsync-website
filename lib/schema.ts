@@ -114,18 +114,19 @@ export function breadcrumbSchema(id: string, items: BreadcrumbItem[]) {
 }
 
 // ---------------------------------------------------------------------------
-// EducationalOccupationalProgram — for /internship page
-// Enables rich results for educational offers in Google Search.
+// EducationalOccupationalProgram — for the /cybersecurity-foundation-program
+// page. Enables rich results for educational offers in Google Search.
+// (Function name kept for import stability.)
 // ---------------------------------------------------------------------------
 export function internshipProgramSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "EducationalOccupationalProgram",
-    "@id": `${SITE.url}/internship#program`,
-    name: "Cybersecurity Internship — ShieldSync Security",
+    "@id": `${SITE.url}/cybersecurity-foundation-program#program`,
+    name: "Cybersecurity Foundation Program — ShieldSync Security",
     description:
-      "A focused, hands-on 8-week internship in cloud and cybersecurity. Real AWS security projects, managed cyber-range labs, 1:1 mentorship, and a completion certificate from ShieldSync Security Private Limited.",
-    url: `${SITE.url}/internship`,
+      "A focused, hands-on 8-week cybersecurity foundation program. Real AWS security projects, managed cyber-range labs, 1:1 mentorship, and a completion certificate from ShieldSync Security Private Limited.",
+    url: `${SITE.url}/cybersecurity-foundation-program`,
     provider: {
       "@id": `${SITE.url}/#organization`,
     },
@@ -140,7 +141,7 @@ export function internshipProgramSchema() {
       priceCurrency: "INR",
       availability: "https://schema.org/LimitedAvailability",
       validFrom: "2026-01-01",
-      category: "Internship",
+      category: "Training program",
       seller: { "@id": `${SITE.url}/#organization` },
     },
     hasCourse: [

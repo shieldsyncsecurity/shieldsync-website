@@ -35,7 +35,7 @@ export function InternshipApplyForm() {
     }
     setStatus("submitting");
     setErrorMsg("");
-    const r = await submitWeb3Forms(WEB3FORMS_KEY_INTERNSHIP, `New Internship Application — ${name}`, {
+    const r = await submitWeb3Forms(WEB3FORMS_KEY_INTERNSHIP, `New Foundation Program Application — ${name}`, {
       name,
       email,
       phone: phone || "—",

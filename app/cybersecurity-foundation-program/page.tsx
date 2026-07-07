@@ -9,50 +9,54 @@ import { InternshipPlanDownload } from "@/components/internship-plan-download";
 import { INTERNSHIP, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Cybersecurity Internship in India — 8 Weeks, AWS Labs, Certificate",
+  // Named a foundation PROGRAM (honest category — we charge for training, we
+  // don't sell internships), but the page still intercepts "cybersecurity
+  // internship" searches: keywords + on-page copy address that intent head-on.
+  title: "Cybersecurity Foundation Program — 8 Weeks, AWS Labs, Certificate",
   description:
-    "Online cybersecurity internship in India: real AWS security projects, cloud labs, 1:1 mentorship, and a certificate. 8 weeks, ₹9,999 all-inclusive.",
+    "8-week hands-on cybersecurity foundation program: real AWS security projects, cloud labs, 1:1 mentorship, certificate. Internship-grade experience, ₹9,999.",
   keywords: [
+    "cybersecurity foundation program",
+    "cybersecurity beginner program india",
     "cybersecurity internship india",
     "cybersecurity internship online",
     "cloud security internship",
     "AWS security internship",
-    "cybersecurity internship for students",
     "online cybersecurity course india",
   ],
-  alternates: { canonical: "/internship" },
+  alternates: { canonical: "/cybersecurity-foundation-program" },
   openGraph: {
-    title: "Cybersecurity Internship in India — 8 Weeks, AWS Labs, Certificate",
+    title: "Cybersecurity Foundation Program — 8 Weeks, AWS Labs, Certificate",
     description:
-      "Online cybersecurity internship: hands-on AWS security projects, 1:1 mentorship, certificate. ₹9,999 all-inclusive.",
-    url: `${SITE.url}/internship`,
+      "Hands-on AWS security projects, 1:1 mentorship, certificate. Internship-grade experience. ₹9,999 all-inclusive.",
+    url: `${SITE.url}/cybersecurity-foundation-program`,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Cybersecurity Internship in India — 8 Weeks, AWS Labs",
+    title: "Cybersecurity Foundation Program — 8 Weeks, AWS Labs",
     description: "Hands-on AWS security projects + mentorship + certificate. ₹9,999.",
   },
 };
 
 const WORK_ICONS = [Cloud, Flask, Radar] as const;
-const PAGE_URL = `${SITE.url}/internship`;
+const PAGE_URL = `${SITE.url}/cybersecurity-foundation-program`;
 const PAGE_SCHEMA = [
   webPageSchema({
     url: PAGE_URL,
-    name: "Cybersecurity Internship — ShieldSync Security",
+    name: "Cybersecurity Foundation Program — ShieldSync Security",
     description:
-      "A focused, hands-on 8-week internship in cloud and cybersecurity. Real AWS security projects, managed cyber-range labs, 1:1 mentorship, and a completion certificate.",
+      "A focused, hands-on 8-week cybersecurity foundation program. Real AWS security projects, managed cyber-range labs, 1:1 mentorship, and a completion certificate.",
     dateModified: "2026-07-07",
     breadcrumb: [
       { name: "Home", url: SITE.url },
-      { name: "Internship", url: PAGE_URL },
+      { name: "Foundation Program", url: PAGE_URL },
     ],
   }),
   breadcrumbSchema(PAGE_URL, [
     { name: "Home", url: SITE.url },
     { name: "Training", url: `${SITE.url}/training` },
-    { name: "Cybersecurity Internship", url: PAGE_URL },
+    { name: "Cybersecurity Foundation Program", url: PAGE_URL },
   ]),
   internshipProgramSchema(),
 ];
@@ -84,6 +88,11 @@ export default function InternshipPage() {
               </h1>
               <p className="mt-2 text-lg font-semibold text-brand-bright">{INTERNSHIP.subtitle}</p>
               <p className="mt-3 max-w-lg text-base leading-7 text-muted">{INTERNSHIP.summary}</p>
+              <p className="mt-2 max-w-lg text-sm leading-6 text-muted">
+                Looking for a cybersecurity <span className="font-semibold text-fg">internship</span>? This gives
+                you the same hands-on experience — real projects, mentorship, certificate — sold honestly as a
+                training program, not a pay-to-intern scheme.
+              </p>
 
               {/* Price + commitment */}
               <div className="mt-5 inline-flex items-baseline gap-2 rounded-2xl border border-line bg-panel px-5 py-3">

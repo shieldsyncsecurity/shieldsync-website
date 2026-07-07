@@ -60,7 +60,7 @@ export function InternshipPlanDownload({ className = "" }: { className?: string 
       doc.text("ShieldSync Security", M, 40);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(12);
-      doc.text("Cybersecurity Internship — 8-Week Guided Plan", M, 62);
+      doc.text("Cybersecurity Foundation Program — 8-Week Guided Plan", M, 62);
       y = 110;
 
       // ── Intro ──
@@ -103,7 +103,7 @@ export function InternshipPlanDownload({ className = "" }: { className?: string 
         doc.text(`${p} / ${pages}`, pageW - M, pageH - 20, { align: "right" });
       }
 
-      doc.save("ShieldSync-Cybersecurity-Internship-Plan.pdf");
+      doc.save("ShieldSync-Cybersecurity-Foundation-Program-Plan.pdf");
     } finally {
       setBusy(false);
     }
