@@ -16,10 +16,13 @@ export function formatMoney(m: Money, currency: Currency): string {
 // India priced for affordability; US/global priced in clean whole dollars
 // (no FX/international-charge surprises for overseas learners).
 export const FREE: Money = { usd: 0, inr: 0 };
+// FLAT pay-per-lab pricing (owner call 2026-07-07): every paid lab is Rs 249 /
+// $4 regardless of level — one price, zero decision friction. The per-level
+// Record shape is kept so awsLabPrice()/callers don't churn if tiers return.
 export const AWS_PRICE: Record<string, Money> = {
-  Beginner: { usd: 4, inr: 199 }, // 1st beginner lab is free (see FREE_SLUG)
-  Intermediate: { usd: 5, inr: 249 },
-  Advanced: { usd: 7, inr: 499 },
+  Beginner: { usd: 4, inr: 249 }, // 1st beginner lab is free (see FREE_SLUG)
+  Intermediate: { usd: 4, inr: 249 },
+  Advanced: { usd: 4, inr: 249 },
 };
 export const AWS_MONTHLY: Money = { usd: 25, inr: 2000 };
 
