@@ -40,7 +40,9 @@ const VIDEO_IN_HERO = HOMEPAGE_VIDEO_PLACEMENT === "hero" && HOMEPAGE_VIDEO_ID !
 const VIDEO_MID_PAGE = HOMEPAGE_VIDEO_PLACEMENT === "mid-page";
 
 export const metadata: Metadata = {
-  title: "AWS Cloud Security Services & Hands-on Labs | ShieldSync",
+  // NOTE: the layout's title.template does NOT apply to the root page (Next
+  // templates only affect child segments), so the brand must be explicit here.
+  title: "AWS Cloud Security Services & Hands-on Labs | ShieldSync Security",
   description:
     "Practitioner-led AWS cloud security — assessments, compliance, and detection — plus hands-on AWS security labs in real, isolated AWS accounts. First lab free.",
   keywords: [
@@ -89,7 +91,7 @@ export default function HomePage() {
               Cloud &amp; cybersecurity services
             </span>
 
-            <h1 className="mt-3 text-3xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-4xl lg:text-5xl">
+            <h1 className="mt-3 text-2xl font-bold leading-[1.15] tracking-tight text-fg sm:text-3xl lg:text-4xl">
               Secure your cloud — <span className="text-gradient">and the team that runs it</span>.
             </h1>
 
@@ -249,7 +251,7 @@ export default function HomePage() {
                 <span className="h-1 w-1 rounded-full bg-brand" />
                 Team training
               </span>
-              <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">
+              <h2 className="mt-4 text-2xl font-bold tracking-tight text-fg sm:text-3xl">
                 Upskill your team across the domains that matter
               </h2>
               <p className="mt-5 text-lg leading-8 text-muted">
