@@ -2,17 +2,17 @@
 
 import { useState } from "react";
 import { Download } from "@/components/icons";
-import { INTERNSHIP, SITE, CONTACT } from "@/lib/site";
+import { FOUNDATION_PROGRAM, SITE, CONTACT } from "@/lib/site";
 
 /* One-click PDF of the 8-week internship plan, generated client-side from the
- * INTERNSHIP data so it never drifts from the page. jsPDF is dynamic-imported
+ * FOUNDATION_PROGRAM data so it never drifts from the page. jsPDF is dynamic-imported
  * on click — it stays out of the initial bundle. */
 
 const BRAND: [number, number, number] = [79, 70, 229]; // #4f46e5
 const INK: [number, number, number] = [17, 24, 39];
 const MUTED: [number, number, number] = [100, 116, 139];
 
-export function InternshipPlanDownload({ className = "" }: { className?: string }) {
+export function FoundationPlanDownload({ className = "" }: { className?: string }) {
   const [busy, setBusy] = useState(false);
 
   async function generate() {
@@ -64,30 +64,30 @@ export function InternshipPlanDownload({ className = "" }: { className?: string 
       y = 110;
 
       // ── Intro ──
-      text(INTERNSHIP.subtitle, 14, INK, { bold: true, gap: 2 });
-      text(`${INTERNSHIP.price} ${INTERNSHIP.priceNote}  ·  ${INTERNSHIP.commitment}`, 10, BRAND, { bold: true, gap: 6 });
-      text(INTERNSHIP.summary, 10.5, MUTED, { gap: 10 });
+      text(FOUNDATION_PROGRAM.subtitle, 14, INK, { bold: true, gap: 2 });
+      text(`${FOUNDATION_PROGRAM.price} ${FOUNDATION_PROGRAM.priceNote}  ·  ${FOUNDATION_PROGRAM.commitment}`, 10, BRAND, { bold: true, gap: 6 });
+      text(FOUNDATION_PROGRAM.summary, 10.5, MUTED, { gap: 10 });
 
       // ── What you get ──
       text("What you get", 13, INK, { bold: true, gap: 4 });
-      for (const g of INTERNSHIP.whatYouGet) text(`•  ${g}`, 10.5, INK, { indent: 6 });
+      for (const g of FOUNDATION_PROGRAM.whatYouGet) text(`•  ${g}`, 10.5, INK, { indent: 6 });
       y += 8;
 
       // ── Certificate ──
       ensure(60);
       text("Your certificate", 13, INK, { bold: true, gap: 4 });
-      text(INTERNSHIP.certificate.title, 10.5, INK, { bold: true });
-      text(INTERNSHIP.certificate.detail, 10, MUTED, { gap: 4 });
-      text(INTERNSHIP.certificate.examReadiness, 10, MUTED, { gap: 12 });
+      text(FOUNDATION_PROGRAM.certificate.title, 10.5, INK, { bold: true });
+      text(FOUNDATION_PROGRAM.certificate.detail, 10, MUTED, { gap: 4 });
+      text(FOUNDATION_PROGRAM.certificate.examReadiness, 10, MUTED, { gap: 12 });
 
       // ── Week-by-week ──
       text("The 8-week plan", 14, BRAND, { bold: true, gap: 6 });
-      INTERNSHIP.curriculum.forEach((w, i) => {
+      FOUNDATION_PROGRAM.curriculum.forEach((w, i) => {
         ensure(90);
         text(`${w.week} — ${w.title}`, 12, INK, { bold: true, gap: 1 });
         text(w.focus, 10, BRAND, { italic: true, gap: 3 });
         for (const l of w.learn) text(`•  ${l}`, 10, INK, { indent: 8 });
-        text(`Build: ${w.project}`, 10, MUTED, { italic: true, indent: 8, gap: i === INTERNSHIP.curriculum.length - 1 ? 4 : 12 });
+        text(`Build: ${w.project}`, 10, MUTED, { italic: true, indent: 8, gap: i === FOUNDATION_PROGRAM.curriculum.length - 1 ? 4 : 12 });
       });
 
       // ── Footer on every page ──

@@ -3,10 +3,10 @@ import { Card, Pill, Button } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { ArrowRight, Check, Cloud, Flask, Radar, Cap } from "@/components/icons";
 import { SchemaOrg } from "@/components/schema-org";
-import { webPageSchema, breadcrumbSchema, internshipProgramSchema } from "@/lib/schema";
-import { InternshipApplyForm } from "@/components/internship-apply-form";
-import { InternshipPlanDownload } from "@/components/internship-plan-download";
-import { INTERNSHIP, SITE } from "@/lib/site";
+import { webPageSchema, breadcrumbSchema, foundationProgramSchema } from "@/lib/schema";
+import { FoundationApplyForm } from "@/components/foundation-apply-form";
+import { FoundationPlanDownload } from "@/components/foundation-plan-download";
+import { FOUNDATION_PROGRAM, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   // Named a foundation PROGRAM (honest category — we charge for training, we
@@ -58,7 +58,7 @@ const PAGE_SCHEMA = [
     { name: "Training", url: `${SITE.url}/training` },
     { name: "Cybersecurity Foundation Program", url: PAGE_URL },
   ]),
-  internshipProgramSchema(),
+  foundationProgramSchema(),
 ];
 
 /* Narrow, low-scroll page (owner call 2026-07-07): content capped at max-w-6xl
@@ -68,7 +68,7 @@ const Wrap = ({ children, className = "" }: { children: React.ReactNode; classNa
   <div className={`mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8 ${className}`}>{children}</div>
 );
 
-export default function InternshipPage() {
+export default function FoundationProgramPage() {
   return (
     <>
       <SchemaOrg schema={PAGE_SCHEMA} />
@@ -82,23 +82,23 @@ export default function InternshipPage() {
           <div className="grid gap-8 lg:grid-cols-[1fr_1.05fr] lg:items-start">
             {/* Left: pitch */}
             <Reveal>
-              <Pill tone="brand">{INTERNSHIP.badge}</Pill>
+              <Pill tone="brand">{FOUNDATION_PROGRAM.badge}</Pill>
               <h1 className="mt-3 text-2xl font-bold tracking-tight text-fg sm:text-3xl lg:text-4xl">
-                {INTERNSHIP.title}
+                {FOUNDATION_PROGRAM.title}
               </h1>
-              <p className="mt-2 text-lg font-semibold text-brand-bright">{INTERNSHIP.subtitle}</p>
-              <p className="mt-3 max-w-lg text-base leading-7 text-muted">{INTERNSHIP.summary}</p>
+              <p className="mt-2 text-lg font-semibold text-brand-bright">{FOUNDATION_PROGRAM.subtitle}</p>
+              <p className="mt-3 max-w-lg text-base leading-7 text-muted">{FOUNDATION_PROGRAM.summary}</p>
 
               {/* Price + commitment */}
               <div className="mt-5 inline-flex items-baseline gap-2 rounded-2xl border border-line bg-panel px-5 py-3">
-                <span className="text-4xl font-extrabold text-fg">{INTERNSHIP.price}</span>
-                <span className="text-sm text-muted">{INTERNSHIP.priceNote}</span>
+                <span className="text-4xl font-extrabold text-fg">{FOUNDATION_PROGRAM.price}</span>
+                <span className="text-sm text-muted">{FOUNDATION_PROGRAM.priceNote}</span>
               </div>
-              <p className="mt-2 text-sm font-medium text-muted">{INTERNSHIP.commitment}</p>
+              <p className="mt-2 text-sm font-medium text-muted">{FOUNDATION_PROGRAM.commitment}</p>
 
               {/* Inclusions */}
               <ul className="mt-5 grid gap-2 sm:grid-cols-2">
-                {INTERNSHIP.whatYouGet.map((g) => (
+                {FOUNDATION_PROGRAM.whatYouGet.map((g) => (
                   <li key={g} className="flex items-start gap-2 text-sm text-fg/85">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
                     {g}
@@ -108,7 +108,7 @@ export default function InternshipPage() {
 
               {/* The full curriculum lives in the PDF — not on the page. */}
               <div className="mt-5">
-                <InternshipPlanDownload />
+                <FoundationPlanDownload />
                 <p className="mt-1.5 text-xs text-muted">
                   The full 8-week curriculum, week by week — everything you&apos;ll learn, before you apply.
                 </p>
@@ -121,7 +121,7 @@ export default function InternshipPage() {
                 <p className="text-base font-bold text-fg">Apply now</p>
                 <p className="mt-0.5 text-sm text-muted">Fill in your details — we reply within 24 hours.</p>
                 <div className="mt-5">
-                  <InternshipApplyForm />
+                  <FoundationApplyForm />
                 </div>
               </Card>
             </Reveal>
@@ -134,7 +134,7 @@ export default function InternshipPage() {
         <Wrap>
           <Reveal>
             <div className="grid gap-4 sm:grid-cols-3">
-              {INTERNSHIP.workOn.map((w, i) => {
+              {FOUNDATION_PROGRAM.workOn.map((w, i) => {
                 const Icon = WORK_ICONS[i % WORK_ICONS.length];
                 return (
                   <div key={w.title} className="rounded-xl border border-line bg-panel p-4">
@@ -165,15 +165,15 @@ export default function InternshipPage() {
             <Reveal>
               <div className="flex h-full flex-col rounded-2xl border border-brand/30 bg-gradient-to-br from-brand/[0.08] to-transparent p-5 sm:p-6">
                 <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-bright">What you graduate with</p>
-                <h2 className="mt-2 text-lg font-bold text-fg sm:text-xl">{INTERNSHIP.certificate.title}</h2>
-                <p className="mt-2 text-sm leading-6 text-muted">{INTERNSHIP.certificate.detail}</p>
+                <h2 className="mt-2 text-lg font-bold text-fg sm:text-xl">{FOUNDATION_PROGRAM.certificate.title}</h2>
+                <p className="mt-2 text-sm leading-6 text-muted">{FOUNDATION_PROGRAM.certificate.detail}</p>
               </div>
             </Reveal>
             <Reveal delay={80}>
               <div className="flex h-full flex-col rounded-2xl border border-line bg-panel p-5 sm:p-6">
                 <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-bright">Plus — exam ready</p>
                 <h3 className="mt-2 text-lg font-bold text-fg">Toward AWS Security Specialty (SCS-C03)</h3>
-                <p className="mt-2 text-sm leading-6 text-muted">{INTERNSHIP.certificate.examReadiness}</p>
+                <p className="mt-2 text-sm leading-6 text-muted">{FOUNDATION_PROGRAM.certificate.examReadiness}</p>
                 <Button href="/aws-security-certification" variant="secondary" className="mt-4 self-start">
                   See the SCS-C03 path
                   <ArrowRight className="h-4 w-4" />

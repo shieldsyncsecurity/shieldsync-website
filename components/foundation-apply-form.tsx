@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { WEB3FORMS_KEY_INTERNSHIP, isWeb3FormsConfigured, submitWeb3Forms } from "@/lib/web3forms";
+import { WEB3FORMS_KEY_FOUNDATION, isWeb3FormsConfigured, submitWeb3Forms } from "@/lib/web3forms";
 
 const INPUT =
   "w-full rounded-lg border border-line bg-surface px-4 py-2.5 text-base text-fg placeholder-muted/60 shadow-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20";
@@ -13,11 +13,11 @@ const BACKGROUNDS = [
   "Other",
 ];
 
-const KEY_CONFIGURED = isWeb3FormsConfigured(WEB3FORMS_KEY_INTERNSHIP);
+const KEY_CONFIGURED = isWeb3FormsConfigured(WEB3FORMS_KEY_FOUNDATION);
 
 type Status = "idle" | "submitting" | "success" | "error" | "unconfigured";
 
-export function InternshipApplyForm() {
+export function FoundationApplyForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -35,7 +35,7 @@ export function InternshipApplyForm() {
     }
     setStatus("submitting");
     setErrorMsg("");
-    const r = await submitWeb3Forms(WEB3FORMS_KEY_INTERNSHIP, `New Foundation Program Application — ${name}`, {
+    const r = await submitWeb3Forms(WEB3FORMS_KEY_FOUNDATION, `New Foundation Program Application — ${name}`, {
       name,
       email,
       phone: phone || "—",

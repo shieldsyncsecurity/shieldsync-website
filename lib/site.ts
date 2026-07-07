@@ -44,7 +44,7 @@ export type NavItem = { label: string; href: string };
 
 // Top-nav (Model B — audience-first, owner call 2026-07-07). TWO doors matching
 // the homepage fork: "Businesses" (services + training + hiring assessments)
-// and "Learners" (labs + certification + internship), plus Blog. Both doors are
+// and "Learners" (labs + certification + foundation program), plus Blog. Both doors are
 // dropdowns (BUSINESSES_MENU / LEARNERS_MENU below, rendered by site-header).
 // The labs USP stays instantly reachable via the header's primary
 // "Start free lab" button — if that button ever goes away, Labs must return to
@@ -284,9 +284,9 @@ export const OFFER = {
    ₹9,999 for something called an internship read as pay-to-intern; the honest
    category is a beginner training program. The PAGE still intercepts
    "cybersecurity internship" searches with an explicit why-not-an-internship
-   line — keep that framing. Const name INTERNSHIP kept (internal only). */
+   line — keep that framing. Const name FOUNDATION_PROGRAM kept (internal only). */
 
-export const INTERNSHIP = {
+export const FOUNDATION_PROGRAM = {
   badge: "Limited seats",
   title: "Cybersecurity Foundation Program",
   subtitle: "From motivated to job-ready in 8 weeks.",

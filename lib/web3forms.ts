@@ -21,11 +21,11 @@
 // override if present. Each key routes to the inbox it's bound to:
 //   internship key → internship@shieldsyncsecurity.com  (internship apply form)
 //   contact key    → contact@shieldsyncsecurity.com     (contact form)
-const DEFAULT_INTERNSHIP_KEY = "c68a4cfb-0943-457d-b22e-d65da1f898b9";
+const DEFAULT_FOUNDATION_KEY = "c68a4cfb-0943-457d-b22e-d65da1f898b9";
 const DEFAULT_CONTACT_KEY = "4ef3b28c-d82a-4195-a7d7-1d6ac3d7903b";
 
-export const WEB3FORMS_KEY_INTERNSHIP =
-  process.env.NEXT_PUBLIC_WEB3FORMS_KEY || DEFAULT_INTERNSHIP_KEY;
+export const WEB3FORMS_KEY_FOUNDATION =
+  process.env.NEXT_PUBLIC_WEB3FORMS_KEY || DEFAULT_FOUNDATION_KEY;
 
 export const WEB3FORMS_KEY_CONTACT =
   process.env.NEXT_PUBLIC_WEB3FORMS_KEY_CONTACT || DEFAULT_CONTACT_KEY;

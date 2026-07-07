@@ -116,9 +116,9 @@ export function breadcrumbSchema(id: string, items: BreadcrumbItem[]) {
 // ---------------------------------------------------------------------------
 // EducationalOccupationalProgram — for the /cybersecurity-foundation-program
 // page. Enables rich results for educational offers in Google Search.
-// (Function name kept for import stability.)
+
 // ---------------------------------------------------------------------------
-export function internshipProgramSchema() {
+export function foundationProgramSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "EducationalOccupationalProgram",
