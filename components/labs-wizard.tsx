@@ -3,12 +3,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Container, Card, Button } from "@/components/ui";
 import { Check, ArrowRight, Shield, Cloud, Radar } from "@/components/icons";
-import { AWS_LABS, AI_LABS, SOC_LABS, SITE } from "@/lib/site";
+import { AWS_LABS, AZURE_LABS, AI_LABS, SOC_LABS, SITE } from "@/lib/site";
 import { AWS_PRICE, SOC_PRICE, AWS_MONTHLY, SOC_MONTHLY, FREE, awsLabPrice, formatMoney, type Money, type Currency } from "@/lib/region";
 import { levelDotClass, toneDotClass, PRODUCT_TONE } from "@/components/status-badge";
 
 const FREE_SLUG = "s3-misconfiguration-audit";
 const AI_FREE_SLUG = "bedrock-prompt-injection";
+const AZURE_FREE_SLUG = "storage-public-exposure-audit";
 
 type Track = "aws" | "soc" | "ai" | "azure" | "free" | null;
 type Mode = "per-lab" | "monthly" | "free" | null;
@@ -27,7 +28,7 @@ export function LabsWizard({
   // Azure + SOC labs are in development — ignore those deep-links so they can't
   // enter a not-yet-built funnel; land on track selection instead (where their
   // cards show Coming soon). AWS, AI, and the free view are live.
-  const blockedTrack = initialTrack === "soc" || initialTrack === "azure";
+  const blockedTrack = initialTrack === "soc";
   const safeTrack: Track = blockedTrack ? null : (initialTrack ?? null);
   // If the requested track was blocked, drop any pre-set plan/level intent too —
   // otherwise picking a track on step 1 silently fast-forwards past the Plan step
@@ -35,7 +36,7 @@ export function LabsWizard({
   // paid plans are dropped for it as well.
   const startMode: Mode =
     blockedTrack ? null
-    : initialTrack === "ai" ? "free"
+    : initialTrack === "ai" || initialTrack === "azure" ? "free"
     : initialLevel ? "per-lab"
     : initialPlan ?? null;
   const startStep = safeTrack ? (initialLevel || initialPlan ? 3 : 2) : 1;
@@ -84,6 +85,12 @@ export function LabsWizard({
         badge: l.level, dot: levelDotClass(l.level),
         price: FREE, free: true,
       }));
+    if (track === "azure")
+      return AZURE_LABS.map((l) => ({
+        slug: l.slug, title: l.title, desc: l.desc, tags: l.tags,
+        badge: l.level, dot: levelDotClass(l.level),
+        price: l.slug === AZURE_FREE_SLUG ? FREE : awsLabPrice(l.slug, l.level), free: l.slug === AZURE_FREE_SLUG,
+      }));
     return AWS_LABS.map((l) => ({
       slug: l.slug, title: l.title, desc: l.desc, tags: l.tags,
       badge: l.level, dot: levelDotClass(l.level),
@@ -100,8 +107,8 @@ export function LabsWizard({
   const filtered = useMemo(() => (cat === "All" ? pickable : pickable.filter((i) => i.badge === cat)), [pickable, cat]);
   const lab = useMemo(() => items.find((i) => i.slug === selected) ?? null, [items, selected]);
 
-  const trackName = track === "soc" ? "Security Operations" : track === "ai" ? "AI Security" : "AWS Cloud Security";
-  const accessLabel = track === "soc" ? "full SOC access" : "full AWS access";
+  const trackName = track === "soc" ? "Security Operations" : track === "ai" ? "AI Security" : track === "azure" ? "Azure Cloud Security" : "AWS Cloud Security";
+  const accessLabel = track === "soc" ? "full SOC access" : track === "azure" ? "full Azure access" : "full AWS access";
   const monthly = track === "soc" ? SOC_MONTHLY : AWS_MONTHLY;
   const fromPrice = track === "soc" ? SOC_PRICE : AWS_PRICE.Beginner;
   const total: Money = mode === "monthly" ? monthly : lab ? lab.price : FREE;
@@ -114,7 +121,7 @@ export function LabsWizard({
   // platform yet, and monthly has no single lab — both fall back to the catalog root.
   const launchHref =
     mode === "free"
-      ? `${SITE.labsUrl}/labs/${track === "ai" ? AI_FREE_SLUG : FREE_SLUG}`
+      ? `${SITE.labsUrl}/labs/${track === "azure" ? AZURE_FREE_SLUG : track === "ai" ? AI_FREE_SLUG : FREE_SLUG}`
       : mode !== "monthly" && track === "aws" && selected
       ? `${SITE.labsUrl}/labs/${selected}?intent=launch`
       : mode === "monthly"
@@ -155,6 +162,7 @@ export function LabsWizard({
               {[
                 { title: "AWS Security — S3 misconfiguration audit", desc: "Find the public S3 bucket, fix over-broad IAM, enforce KMS.", meta: "AWS · Beginner · 30 min", href: `${SITE.labsUrl}/labs/${FREE_SLUG}` },
                 { title: "AI Security — secure a Bedrock assistant", desc: "Prompt-inject a live LLM assistant, then lock it down with Guardrails, least-privilege, and logging.", meta: "AI · Beginner · ~35 min", href: `${SITE.labsUrl}/labs/${AI_FREE_SLUG}` },
+                { title: "Azure Security — Storage public exposure", desc: "Find the public blob container, kill anonymous access, require HTTPS, and disable account-key auth.", meta: "Azure · Beginner · 30 min", href: `${SITE.labsUrl}/labs/${AZURE_FREE_SLUG}` },
               ].map((l) => (
                 <a
                   key={l.href}
@@ -173,7 +181,7 @@ export function LabsWizard({
               ))}
             </div>
             <p className="mt-4 text-sm text-muted">
-              Azure free lab coming soon. Prefer the details first? <a href="/free-labs" className="font-semibold text-brand-bright">See the free-labs pages</a>.
+              Prefer the details first? <a href="/free-labs" className="font-semibold text-brand-bright">See the free-labs pages</a>.
             </p>
           </div>
         </Container>
@@ -237,7 +245,7 @@ export function LabsWizard({
                   {[
                     { id: "ai", key: "ai" as const, icon: Shield, title: "AI Security", desc: "Secure Bedrock assistants, LLM apps & agents. Free lab live now.", tag: "Flagship", soon: false },
                     { id: "aws", key: "aws" as const, icon: Cloud, title: "Cloud Security — AWS", desc: "Master cloud security in real AWS environments. Our deepest catalog.", tag: "", soon: false },
-                    { id: "azure", key: "azure" as const, icon: Cloud, title: "Cloud Security — Azure", desc: "Storage exposure, identity and more in real Azure subscriptions.", tag: "", soon: true },
+                    { id: "azure", key: "azure" as const, icon: Cloud, title: "Cloud Security — Azure", desc: "Storage exposure & misconfiguration in real Azure. Free lab live now.", tag: "", soon: false },
                     { id: "soc", key: "soc" as const, icon: Radar, title: "Security Operations — SIEM & SOAR", desc: "Detection & response across SIEM and SOAR.", tag: "", soon: true },
                   ].map((o) => {
                     const Icon = o.icon;
@@ -347,7 +355,7 @@ export function LabsWizard({
                       ))
                     : null}
 
-                  {(track === "aws" || track === "soc" ? [
+                  {(track === "aws" || track === "soc" || track === "azure" ? [
                     {
                       key: "per-lab" as const,
                       title: "Pay per lab",
@@ -361,7 +369,7 @@ export function LabsWizard({
                       title: `Monthly — ${accessLabel}`,
                       price: `${money(monthly)}/mo`,
                       badge: "Best value",
-                      pts: [`Every ${track === "soc" ? "SOC" : "AWS"} lab unlocked`, "New labs included", "Cancel anytime"],
+                      pts: [`Every ${track === "soc" ? "SOC" : track === "azure" ? "Azure" : "AWS"} lab unlocked`, "New labs included", "Cancel anytime"],
                       cta: "Get started →",
                     },
                   ] : []).map((o) => (
@@ -417,6 +425,11 @@ export function LabsWizard({
                     </button>
                   ))}
                 </div>
+                {filtered.length === 0 ? (
+                  <p className="mt-6 rounded-2xl border border-line bg-panel p-6 text-base text-muted">
+                    More paid labs are coming to this track. For now, start with the free lab (Back → Free), or choose Monthly for full access as they ship.
+                  </p>
+                ) : null}
                 <div className="mt-5 grid gap-4 sm:grid-cols-2">
                   {filtered.map((l) => {
                     const sel = selected === l.slug;
@@ -450,14 +463,14 @@ export function LabsWizard({
             {step === 3 && mode === "monthly" ? (
               <div>
                 <h1 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">Your plan</h1>
-                <p className="mt-3 text-lg text-muted">Full access to every {track === "soc" ? "SOC" : "AWS"} lab.</p>
+                <p className="mt-3 text-lg text-muted">Full access to every {track === "soc" ? "SOC" : track === "azure" ? "Azure" : "AWS"} lab.</p>
                 <Card hover={false} className="mt-6 border-brand/30 bg-gradient-to-br from-brand/[0.08] to-transparent p-8">
                   <div className="flex items-end gap-2">
                     <span className="text-5xl font-extrabold text-fg">{money(monthly)}</span>
                     <span className="pb-1.5 text-lg text-muted">/ month</span>
                   </div>
                   <ul className="mt-6 grid gap-3">
-                    {[`Every ${track === "soc" ? "SOC (SIEM + SOAR)" : "AWS security"} lab, unlocked`, "New labs included as we add them", "Launch instantly — no setup", "Cancel anytime — access runs to the end of the paid cycle"].map((f) => (
+                    {[`Every ${track === "soc" ? "SOC (SIEM + SOAR)" : track === "azure" ? "Azure security" : "AWS security"} lab, unlocked`, "New labs included as we add them", "Launch instantly — no setup", "Cancel anytime — access runs to the end of the paid cycle"].map((f) => (
                       <li key={f} className="flex items-center gap-3 text-base text-fg/90">
                         <Check className="h-4 w-4 shrink-0 text-brand" /> {f}
                       </li>
@@ -509,7 +522,7 @@ export function LabsWizard({
                 </h1>
                 <p className="mx-auto mt-3 max-w-md text-lg text-muted">
                   {mode === "monthly"
-                    ? `Sign in on ShieldSync Labs to start your subscription — every ${track === "soc" ? "SOC" : "AWS"} lab unlocks instantly.`
+                    ? `Sign in on ShieldSync Labs to start your subscription — every ${track === "soc" ? "SOC" : track === "azure" ? "Azure" : "AWS"} lab unlocks instantly.`
                     : total.usd === 0
                     ? `A quick Google sign-in on ShieldSync Labs, then "${lab?.title}" spins up automatically in your own isolated AWS account.`
                     : `Sign in on ShieldSync Labs, complete the one-time payment, and "${lab?.title}" launches automatically in your own isolated AWS account.`}
