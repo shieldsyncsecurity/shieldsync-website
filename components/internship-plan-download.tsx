@@ -99,7 +99,7 @@ export function InternshipPlanDownload({ className = "" }: { className?: string 
         doc.setFont("helvetica", "normal");
         doc.setFontSize(8.5);
         doc.setTextColor(MUTED[0], MUTED[1], MUTED[2]);
-        doc.text(`Apply: ${SITE.url}/internship   ·   ${CONTACT.email}`, M, pageH - 20);
+        doc.text(`Apply: ${SITE.url}/cybersecurity-foundation-program   ·   ${CONTACT.email}`, M, pageH - 20);
         doc.text(`${p} / ${pages}`, pageW - M, pageH - 20, { align: "right" });
       }
 

@@ -883,7 +883,7 @@ export const FAQS: Record<string, { q: string; a: string }[]> = {
     { q: "Can you help with SOC 2 / ISO 27001 / GDPR readiness?", a: "Yes — we map security work to the frameworks your customers ask about, with evidence and control mapping." },
   ],
   training: [
-    { q: "Do I need prior experience?", a: "No — our internship and entry tracks are built for beginners and career-changers." },
+    { q: "Do I need prior experience?", a: "No — our Foundation Program and entry tracks are built for beginners and career-changers." },
     { q: "Is it remote?", a: "Yes — training and labs are remote-first and globally accessible." },
     { q: "Do I get a certificate?", a: "Yes — you receive a certificate from ShieldSync Security Private Limited on completion." },
   ],

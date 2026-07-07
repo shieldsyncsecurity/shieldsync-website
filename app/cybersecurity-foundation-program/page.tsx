@@ -88,11 +88,6 @@ export default function InternshipPage() {
               </h1>
               <p className="mt-2 text-lg font-semibold text-brand-bright">{INTERNSHIP.subtitle}</p>
               <p className="mt-3 max-w-lg text-base leading-7 text-muted">{INTERNSHIP.summary}</p>
-              <p className="mt-2 max-w-lg text-sm leading-6 text-muted">
-                Looking for a cybersecurity <span className="font-semibold text-fg">internship</span>? This gives
-                you the same hands-on experience — real projects, mentorship, certificate — sold honestly as a
-                training program, not a pay-to-intern scheme.
-              </p>
 
               {/* Price + commitment */}
               <div className="mt-5 inline-flex items-baseline gap-2 rounded-2xl border border-line bg-panel px-5 py-3">

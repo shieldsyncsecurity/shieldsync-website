@@ -223,11 +223,11 @@ export function LabsWizard({
   }
 
   return (
-    <section className="py-4 sm:py-6">
+    <section className="py-3 sm:py-4">
       <Container>
         <div className="mx-auto max-w-4xl">
           {/* Currency toggle */}
-          <div className="mb-3 flex items-center justify-end gap-3">
+          <div className="mb-2 flex items-center justify-end gap-3">
             <span className="text-xs text-muted">Prices shown for your region</span>
             <div className="inline-flex rounded-lg border border-line bg-panel p-0.5 text-sm font-semibold">
               <button type="button" onClick={() => pickCurrency("INR")} className={curBtn(currency === "INR")}>₹ INR</button>
@@ -259,7 +259,7 @@ export function LabsWizard({
             })}
           </ol>
 
-          <div className="mt-5">
+          <div className="mt-4">
             {/* STEP 1 — choose track */}
             {step === 1 ? (
               <div>
@@ -270,7 +270,7 @@ export function LabsWizard({
                   <span className="rounded-full border border-line bg-surface px-3 py-1">Launches in your browser</span>
                   <span className="rounded-full border border-line bg-surface px-3 py-1">Auto-cleanup when you&apos;re done</span>
                 </div>
-                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
                   {/* Track cards share one design in flagship order (AI, AWS, Azure,
                       SOC); not-yet-live tracks render the same card disabled with a
                       Coming-soon tag — every track gets the wizard treatment as it
@@ -325,7 +325,7 @@ export function LabsWizard({
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-bright">{trackName}</p>
                 <h1 className="mt-1 text-2xl font-bold tracking-tight text-fg sm:text-3xl">How do you want to learn?</h1>
                 <p className="mt-1 text-sm text-muted">Pick what fits — you can change this anytime.</p>
-                <div className={`mt-5 grid gap-4 ${track === "aws" || track === "ai" || track === "azure" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
+                <div className={`mt-4 grid gap-4 ${track === "aws" || track === "ai" || track === "azure" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
                   {/* FREE — a first-class card alongside the paid plans (AWS + AI
                       tracks). Same select-then-Continue behaviour as the paid cards:
                       clicking sets mode="free"; Continue navigates to the free lab. */}
@@ -465,7 +465,7 @@ export function LabsWizard({
                     More paid labs are coming to this track. For now, start with the free lab (Back → Free), or choose Monthly for full access as they ship.
                   </p>
                 ) : null}
-                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
                   {filtered.map((l) => {
                     const sel = selected === l.slug;
                     return (
@@ -580,7 +580,7 @@ export function LabsWizard({
 
           {/* Nav */}
           {step < 5 ? (
-            <div className="mt-5 flex items-center justify-between border-t border-line pt-3">
+            <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
               <button
                 type="button"
                 onClick={() => setStep((s) => (s === 4 && mode === "monthly" ? 2 : Math.max(1, s - 1)))}
