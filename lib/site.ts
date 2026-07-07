@@ -273,7 +273,7 @@ export const BUSINESSES_MENU: { label: string; desc: string; href: string; tag?:
 // free funnel, certification prep, and internship.
 export const LEARNERS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
   { label: "AI Security", desc: "Secure Bedrock, LLM apps & agents — free hands-on lab live", href: "/ai-security", tag: "Flagship" },
-  { label: "AWS Security Labs", desc: "Cloud security in real AWS — pick a lab or go monthly", href: "/labs" },
+  { label: "AWS Security Labs", desc: "Cloud security in real AWS — pick a lab or go monthly", href: SITE.startUrl },
   { label: "Azure Security Labs", desc: "Cloud security in real Azure — storage exposure & more", href: "/labs", tag: "Coming soon" },
   { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/labs/soc", tag: "Coming soon" },
   // Free Labs is NOT listed here — it has its own top-level nav item.
