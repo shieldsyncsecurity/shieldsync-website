@@ -49,6 +49,9 @@ export type NavItem = { label: string; href: string };
 export const NAV: NavItem[] = [
   { label: "Businesses", href: "/services" },
   { label: "Learners", href: "/labs" },
+  // Standalone acquisition door (owner call 2026-07-07). Plain label — never
+  // show a count of free labs here.
+  { label: "Free Labs", href: "/free-labs" },
   { label: "Blog", href: "/blog" },
 ];
 
@@ -273,7 +276,7 @@ export const LEARNERS_MENU: { label: string; desc: string; href: string; tag?: s
   { label: "AWS Security Labs", desc: "Cloud security in real AWS — pick a lab or go monthly", href: "/labs" },
   { label: "Azure Security Labs", desc: "Cloud security in real Azure — storage exposure & more", href: "/labs", tag: "Coming soon" },
   { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/labs/soc", tag: "Coming soon" },
-  { label: "Free Labs", desc: "Two free hands-on labs — real cloud accounts, no card", href: "/free-labs", tag: "Free" },
+  // Free Labs is NOT listed here — it has its own top-level nav item.
   { label: "AWS Certification (SCS-C03)", desc: "Every exam domain mapped to a hands-on lab", href: "/aws-security-certification" },
   { label: "Internship", desc: "8-week guided internship — projects, labs & certificate", href: "/internship" },
 ];

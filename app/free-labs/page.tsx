@@ -91,7 +91,8 @@ export default function FreeLabsHubPage() {
             </p>
           </Reveal>
 
-          <div className="mt-8 grid gap-5 sm:grid-cols-2">
+          {/* Stacked vertically (owner call 2026-07-07) — one lab per row. */}
+          <div className="mt-8 grid max-w-3xl gap-5">
             {FREE_LABS.map((lab, i) => {
               const Icon = lab.icon;
               const inner = (
