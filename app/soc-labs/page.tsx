@@ -15,11 +15,11 @@ export const metadata: Metadata = {
   title: "SOC Labs — SIEM & SOAR, Hands-on (Detection & Response)",
   description:
     "Hands-on SOC labs: build detections, hunt threats, and automate response in managed SIEM and SOAR environments. No account, no setup — just a browser.",
-  alternates: { canonical: "/labs/soc" },
+  alternates: { canonical: "/soc-labs" },
 };
 
 const SOC_START = "#waitlist";
-const PAGE_URL = `${SITE.url}/labs/soc`;
+const PAGE_URL = `${SITE.url}/soc-labs`;
 const PAGE_SCHEMA = [
   webPageSchema({
     url: PAGE_URL,
@@ -28,7 +28,7 @@ const PAGE_SCHEMA = [
     dateModified: "2026-06-29",
     breadcrumb: [
       { name: "Home", url: SITE.url },
-      { name: "Hands-on Labs", url: `${SITE.url}/labs` },
+      { name: "Hands-on Labs", url: `${SITE.url}/aws-security-labs` },
       { name: "SOC Labs", url: PAGE_URL },
     ],
   }),

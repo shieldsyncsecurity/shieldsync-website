@@ -150,14 +150,14 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           title="Practise this in a real AWS account"
           subtitle={`Don't just read it — the ${relatedLab.label} lab spins up a real, isolated AWS account in your browser so you find and fix it hands-on.`}
           primary={{ label: `Open the ${relatedLab.label} lab`, href: `/labs/${relatedLab.slug}` }}
-          secondary={{ label: "Browse all AWS labs", href: "/labs" }}
+          secondary={{ label: "Browse all AWS labs", href: "/aws-security-labs" }}
         />
       ) : (
         <CtaBand
           title="Learn it by doing"
           subtitle="Pick your track and launch a hands-on lab in a real, isolated environment."
           primary={{ label: "AWS Security Labs", href: "/labs-wizard?track=aws" }}
-          secondary={{ label: "SOC Labs (SIEM + SOAR)", href: "/labs/soc" }}
+          secondary={{ label: "SOC Labs (SIEM + SOAR)", href: "/soc-labs" }}
         />
       )}
     </>

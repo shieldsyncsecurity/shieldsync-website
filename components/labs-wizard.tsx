@@ -166,22 +166,26 @@ export function LabsWizard({
             {/* STEP 1 — choose track */}
             {step === 1 ? (
               <div>
-                <h1 className="text-2xl font-extrabold tracking-tight text-fg sm:text-3xl">Which track?</h1>
+                <h1 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">Which track?</h1>
                 <p className="mt-2 text-base text-muted">Start with the skills you want to build.</p>
                 <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-muted">
                   <span className="rounded-full border border-line bg-surface px-3 py-1">Real AWS console</span>
                   <span className="rounded-full border border-line bg-surface px-3 py-1">Launches in your browser</span>
                   <span className="rounded-full border border-line bg-surface px-3 py-1">Auto-cleanup when you&apos;re done</span>
                 </div>
-                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                  {/* Track cards share one design; not-yet-live tracks render the same
+                      card disabled with a Coming-soon tag (owner: every track gets the
+                      wizard treatment as it ships — Azure next, then SOC). */}
                   {[
-                    { key: "aws" as const, icon: Cloud, title: "Cloud Security — AWS", desc: "Master cloud security in real AWS environments. Our flagship track.", tag: "Flagship", soon: false },
-                    { key: "soc" as const, icon: Radar, title: "Security Operations — SIEM & SOAR", desc: "Detection & response across SIEM and SOAR.", tag: "", soon: true },
+                    { id: "aws", key: "aws" as const, icon: Cloud, title: "Cloud Security — AWS", desc: "Master cloud security in real AWS environments. Our flagship track.", tag: "Flagship", soon: false },
+                    { id: "azure", key: "aws" as const, icon: Cloud, title: "Cloud Security — Azure", desc: "Storage exposure, identity and more in real Azure subscriptions.", tag: "", soon: true },
+                    { id: "soc", key: "soc" as const, icon: Radar, title: "Security Operations — SIEM & SOAR", desc: "Detection & response across SIEM and SOAR.", tag: "", soon: true },
                   ].map((o) => {
                     const Icon = o.icon;
                     return (
                       <button
-                        key={o.key}
+                        key={o.id}
                         type="button"
                         disabled={o.soon}
                         aria-disabled={o.soon}
@@ -220,7 +224,7 @@ export function LabsWizard({
             {step === 2 ? (
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-bright">{trackName}</p>
-                <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-fg sm:text-3xl">How do you want to learn?</h1>
+                <h1 className="mt-1 text-2xl font-bold tracking-tight text-fg sm:text-3xl">How do you want to learn?</h1>
                 <p className="mt-1 text-sm text-muted">Pick what fits — you can change this anytime.</p>
                 <div className={`mt-5 grid gap-4 ${track === "aws" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
                   {/* FREE — third box ALONGSIDE the paid plans (AWS track only).

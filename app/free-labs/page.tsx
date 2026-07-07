@@ -155,7 +155,7 @@ export default function FreeLabsHubPage() {
         title="Start with the free AWS security lab"
         subtitle="Real isolated AWS account in 30 seconds. No credit card. Auto-graded. Auto-wiped."
         primary={{ label: "Start free AWS lab", href: "/free-labs/aws-security" }}
-        secondary={{ label: "Browse all AWS labs", href: "/labs" }}
+        secondary={{ label: "Browse all AWS labs", href: "/aws-security-labs" }}
       />
     </>
   );

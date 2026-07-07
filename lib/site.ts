@@ -48,7 +48,7 @@ export type NavItem = { label: string; href: string };
 // the top level. Contact is covered by the "Book a call" button.
 export const NAV: NavItem[] = [
   { label: "Businesses", href: "/services" },
-  { label: "Learners", href: "/labs" },
+  { label: "Learners", href: "/aws-security-labs" },
   // Standalone acquisition door (owner call 2026-07-07). Plain label — never
   // show a count of free labs here.
   { label: "Free Labs", href: "/free-labs" },
@@ -169,7 +169,7 @@ export const SERVICES: Service[] = [
     title: "Labs-as-a-Service",
     desc: "Managed, real-world cyber ranges your team launches on demand — cloud security, SIEM, and SOAR scenarios in isolated environments.",
     points: ["AWS security scenarios", "SIEM detection labs", "SOAR automation labs"],
-    href: "/labs",
+    href: "/aws-security-labs",
   },
 ];
 
@@ -238,13 +238,13 @@ export const LAB_TRACKS: LabTrack[] = [
 
 /* Labs dropdown menu (header) ------------------------------------------------- */
 
-// Two tracks in the primary nav: AWS (live, flagship) + SOC (coming soon → /labs/soc).
+// Two tracks in the primary nav: AWS (live, flagship) + SOC (coming soon → /soc-labs).
 // The free lab is reached via the top-right "Start free lab" button and "Start here",
 // so it no longer needs its own dropdown row.
 export const LABS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
   { label: "AWS Security Labs", desc: "Cloud security in real AWS — pick a lab or go monthly", href: "/labs-wizard?track=aws", tag: "Flagship" },
-  { label: "Azure Security Labs", desc: "Cloud security in real Azure — storage exposure & more", href: "/labs", tag: "Coming soon" },
-  { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/labs/soc", tag: "Coming soon" },
+  { label: "Azure Security Labs", desc: "Cloud security in real Azure — storage exposure & more", href: "/aws-security-labs", tag: "Coming soon" },
+  { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/soc-labs", tag: "Coming soon" },
   { label: "AI Security", desc: "Bedrock, LLM apps, agents — guides + labs", href: "/ai-security" },
 ];
 
@@ -273,9 +273,9 @@ export const BUSINESSES_MENU: { label: string; desc: string; href: string; tag?:
 // free funnel, certification prep, and internship.
 export const LEARNERS_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
   { label: "AI Security", desc: "Secure Bedrock, LLM apps & agents — free hands-on lab live", href: "/ai-security", tag: "Flagship" },
-  { label: "AWS Security Labs", desc: "Cloud security in real AWS — pick a lab or go monthly", href: SITE.startUrl },
-  { label: "Azure Security Labs", desc: "Cloud security in real Azure — storage exposure & more", href: "/labs", tag: "Coming soon" },
-  { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/labs/soc", tag: "Coming soon" },
+  { label: "AWS Security Labs", desc: "Cloud security in real AWS — pick a lab or go monthly", href: "/labs-wizard?track=aws" },
+  { label: "Azure Security Labs", desc: "Cloud security in real Azure — storage exposure & more", href: "/aws-security-labs", tag: "Coming soon" },
+  { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/soc-labs", tag: "Coming soon" },
   // Free Labs is NOT listed here — it has its own top-level nav item.
   { label: "AWS Certification (SCS-C03)", desc: "Every exam domain mapped to a hands-on lab", href: "/aws-security-certification" },
   { label: "Internship", desc: "8-week guided internship — projects, labs & certificate", href: "/internship" },
@@ -459,7 +459,7 @@ export const FOOTER_NAV: { heading: string; links: NavItem[] }[] = [
     heading: "Explore",
     links: [
       { label: "Services", href: "/services" },
-      { label: "Hands-on Labs", href: "/labs" },
+      { label: "Hands-on Labs", href: "/aws-security-labs" },
       { label: "Hiring Assessments", href: SITE.enterpriseUrl },
       { label: "Certifications", href: "/aws-security-certification" },
     ],

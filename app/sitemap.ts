@@ -74,7 +74,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.85,
     },
     {
-      url: `${base}/labs`,
+      url: `${base}/aws-security-labs`,
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.9,
@@ -86,7 +86,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${base}/labs/soc`,
+      url: `${base}/soc-labs`,
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.8,

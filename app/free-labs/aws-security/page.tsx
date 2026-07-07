@@ -220,7 +220,7 @@ export default function FreeAwsSecurityLabPage() {
         subtitle="Real isolated AWS account in 30 seconds. No credit card. Auto-graded. Auto-wiped."
         primary={{ label: "Start free lab", href: LAUNCH_URL }}
         primaryCaption="Google sign-in · no card · live in ~60 seconds"
-        secondary={{ label: "Browse all AWS labs", href: "/labs" }}
+        secondary={{ label: "Browse all AWS labs", href: "/aws-security-labs" }}
       />
     </>
   );

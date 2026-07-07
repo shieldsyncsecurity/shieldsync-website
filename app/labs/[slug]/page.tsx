@@ -72,13 +72,13 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
       dateModified: "2026-06-04",
       breadcrumb: [
         { name: "Home", url: SITE.url },
-        { name: "Hands-on Labs", url: `${SITE.url}/labs` },
+        { name: "Hands-on Labs", url: `${SITE.url}/aws-security-labs` },
         { name: lab.title, url },
       ],
     }),
     breadcrumbSchema(url, [
       { name: "Home", url: SITE.url },
-      { name: "Hands-on Labs", url: `${SITE.url}/labs` },
+      { name: "Hands-on Labs", url: `${SITE.url}/aws-security-labs` },
       { name: lab.title, url },
     ]),
     // Course structured data (rich results in search). Only for LIVE AWS labs —
@@ -126,7 +126,7 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
         <div className="cyber-grid absolute inset-0 -z-10" />
         <Container className="py-10 sm:py-12">
           <Reveal className="max-w-3xl">
-            <Link href="/labs" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-bright">
+            <Link href="/aws-security-labs" className="inline-flex items-center gap-2 text-sm font-semibold text-brand-bright">
               ← All hands-on labs
             </Link>
             <div className="mt-5 flex flex-wrap items-center gap-3">

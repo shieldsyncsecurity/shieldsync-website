@@ -26,12 +26,12 @@ export const metadata: Metadata = {
     "AWS penetration testing labs",
     "cyber range AWS",
   ],
-  alternates: { canonical: "/labs" },
+  alternates: { canonical: "/aws-security-labs" },
   openGraph: {
     title: "AWS Security Labs — Hands-on Cloud Security in Real AWS",
     description:
       "Practise AWS cloud security in real, isolated AWS accounts. IAM, S3, encryption, GuardDuty, VPC — no setup, first lab free, auto-wipe when done.",
-    url: `${SITE.url}/labs`,
+    url: `${SITE.url}/aws-security-labs`,
     type: "website",
   },
   twitter: {
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   },
 };
 
-const PAGE_URL = `${SITE.url}/labs`;
+const PAGE_URL = `${SITE.url}/aws-security-labs`;
 const PAGE_SCHEMA = [
   webPageSchema({
     url: PAGE_URL,
@@ -251,7 +251,7 @@ export default function LabsPage() {
                   ))}
                 </ul>
                 <div className="mt-4">
-                  <Button href="/labs/soc" variant="secondary" className="w-full sm:w-fit">
+                  <Button href="/soc-labs" variant="secondary" className="w-full sm:w-fit">
                     Explore the SOC track <ArrowRight className="h-4 w-4" />
                   </Button>
                 </div>
