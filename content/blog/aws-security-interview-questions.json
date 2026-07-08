@@ -1,0 +1,120 @@
+{
+  "slug": "aws-security-interview-questions",
+  "title": "AWS Security Interview Questions: 40 Scenarios with Model Answers",
+  "excerpt": "Forty real AWS security interview questions across IAM, encryption, detection, IR, and architecture — each with a model answer and the follow-up the interviewer often asks.",
+  "category": "Career",
+  "date": "Jun 30, 2026",
+  "read": "20 min",
+  "image": "/blog/aws-security-interview-questions.webp",
+  "body": [
+    {
+      "t": "p",
+      "text": "AWS security interview questions are the bottleneck between you and a cloud security role at any serious employer in India. The screens look generic on paper — 'walk me through IAM', 'how does KMS work' — but the interviewer is almost always probing for one specific thing: do you have actual console time, or did you only watch videos? This article collects 40 of the questions that come up most often in cloud security interviews, with a model answer for each and the follow-up that interviewers almost always ask next. Use it as your final-week revision pack before any cloud security interview, especially if you are also working through the cloud security engineer roadmap."
+    },
+    {
+      "t": "h2",
+      "text": "How AWS security interviews are structured"
+    },
+    {
+      "t": "p",
+      "text": "The typical loop has four stages. Recruiter screen: resume walkthrough and behavioural basics, 30 minutes. Technical screen: concepts and small scenarios, 45 to 60 minutes, usually with one of the security engineers. System design: a deeper scenario like 'design the secure landing zone for a healthtech company on AWS', 60 minutes, often with a senior or staff engineer. Behavioural with the hiring manager: scope, ownership, conflict, ambiguity — the questions security organisations get burned on. Across the loop, AWS-specific questions cluster in five buckets: IAM, encryption, detection and monitoring, incident response, and architecture. The 40 questions below are split eight per bucket."
+    },
+    {
+      "t": "h2",
+      "text": "IAM (8 questions)"
+    },
+    {
+      "t": "p",
+      "text": "IAM is the most-tested topic across every level of cloud security hiring. Junior interviews stay on the basics; senior interviews go deep into policy evaluation, cross-account patterns, and privilege escalation paths."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "1. Walk through the IAM policy evaluation logic. Model answer: explicit deny wins everything; otherwise an explicit allow in any applicable policy is required; otherwise implicit deny. The evaluator combines identity policies, resource policies, permissions boundaries, SCPs, and session policies; an action is allowed only if it survives every layer. Follow-up: where do permissions boundaries fit and when would you use one?",
+        "2. What is the difference between a role and a user? Model answer: a user is a long-lived principal with credentials; a role is an assumable identity with temporary credentials issued via STS. Roles are preferred for workloads, federation, and cross-account access because they avoid long-lived secrets. Follow-up: how does sts:AssumeRole differ from sts:AssumeRoleWithWebIdentity?",
+        "3. How do you safely give a third-party vendor access to an AWS account? Model answer: a cross-account IAM role with an external ID condition, scoped to the minimum permissions needed, time-limited where possible. Never share long-lived access keys. Follow-up: what is the confused deputy problem and how does ExternalId prevent it?",
+        "4. Explain Service Control Policies. Model answer: SCPs are org-level guardrails attached at the root, OU, or account level. They do not grant permissions — they limit the maximum permissions any principal in scope can have, including the root user. Common uses: deny actions outside approved regions, deny disabling CloudTrail, deny root user. Follow-up: how do SCPs interact with permissions boundaries?",
+        "5. What condition keys would you use to require MFA for sensitive actions? Model answer: aws:MultiFactorAuthPresent or aws:MultiFactorAuthAge in the Condition block of an IAM policy, typically with Deny when MFA is not present. Follow-up: what is the difference between MFA on the console vs MFA enforced via API?",
+        "6. Describe a real IAM privilege-escalation path. Model answer: iam:CreatePolicyVersion lets a principal create a new default version of a policy attached to itself, swapping in admin permissions. iam:PassRole plus an unrestricted Lambda or EC2 instance profile lets a principal pass an admin role to a compute service. iam:AttachUserPolicy with a wildcard target lets a principal attach AdministratorAccess to itself. Follow-up: how would you detect each of these in CloudTrail?",
+        "7. How does IAM Identity Center (formerly AWS SSO) work? Model answer: it provides centralised workforce identity across AWS accounts via permission sets, which are templates of IAM permissions provisioned into target accounts as roles. Users authenticate once via SAML or the built-in directory and assume permission sets in target accounts. Follow-up: how would you implement attribute-based access control with Identity Center?",
+        "8. What is the difference between a managed policy and an inline policy? Model answer: managed policies are standalone resources versioned and reusable across principals; inline policies are embedded in a single principal and travel with it. Inline is good for one-off principal-specific permissions; managed is preferred for everything else for reusability and auditability. Follow-up: when would you actually prefer inline?"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Encryption and data protection (8 questions)"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "9. Explain envelope encryption with KMS. Model answer: KMS generates a data key, encrypts data locally with the plaintext data key, then stores the data key encrypted under the CMK. To decrypt, the client sends the encrypted data key to KMS, gets back the plaintext data key, decrypts locally. This avoids sending large payloads to KMS. Follow-up: what is the difference between a CMK, a data key, and a grant?",
+        "10. What is the difference between a key policy and an IAM policy for KMS? Model answer: the key policy is the source of truth — without a permitting key policy, no principal can use the key. IAM policies layer on top: a principal needs both the key policy to allow it AND an IAM policy with the kms: action. Follow-up: what is a KMS grant and when do you use one over a policy?",
+        "11. How would you encrypt S3 objects? Model answer: enable default encryption on the bucket with SSE-KMS using a customer-managed CMK; enable S3 bucket keys to reduce KMS request costs; enforce the encryption at write time via a bucket policy that denies PutObject without the correct encryption header. Follow-up: what is the difference between SSE-S3, SSE-KMS, SSE-C, and DSSE-KMS?",
+        "12. How do you rotate a KMS key? Model answer: enable automatic annual rotation for AWS-managed and customer-managed symmetric keys — KMS rotates the backing material while the key ID and ARN stay the same, so applications keep working. For multi-region keys and imported key material, rotation requires manual orchestration. Follow-up: what happens to data encrypted under the old material?",
+        "13. Walk me through how a cross-account S3 GetObject works when the bucket is KMS-encrypted. Model answer: three policies must all permit the action — the bucket policy must allow the principal s3:GetObject, the principal's IAM policy must allow s3:GetObject and kms:Decrypt, and the CMK's key policy must allow the principal kms:Decrypt. Any one missing and the call fails. Follow-up: where in the response do you see which control rejected it?",
+        "14. Secrets Manager vs Parameter Store — when do you use each? Model answer: Secrets Manager for credentials that need rotation, cross-account access, and Lambda-backed rotation; Parameter Store for configuration and lightweight secrets without rotation needs. Parameter Store is much cheaper but lacks built-in rotation. Follow-up: how do you rotate an RDS password with Secrets Manager?",
+        "15. How would you protect against ransomware on S3? Model answer: enable versioning plus MFA Delete; configure S3 Object Lock in compliance mode for write-once-read-many; restrict s3:DeleteObject and s3:PutBucketVersioning via IAM and SCPs; replicate to a separate account with replication time control. Follow-up: what is the difference between Object Lock governance mode and compliance mode?",
+        "16. How does ACM handle certificate renewal? Model answer: ACM automatically renews public certificates issued by it as long as the validation method (DNS or HTTPS) is still in place and the certificate is associated with a supported AWS service (ALB, CloudFront, API Gateway). Imported certificates do not auto-renew. Follow-up: how do you use ACM Private CA?"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Detection and monitoring (8 questions)"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "17. What does GuardDuty actually do? Model answer: GuardDuty continuously analyses VPC Flow Logs, DNS query logs, CloudTrail management and S3 data events, and EKS audit logs, applying ML and threat-intel feeds to surface findings like compromised instances, unauthorised IAM access, and reconnaissance. It is detection-only — it does not block. Follow-up: how do you suppress noisy findings without losing visibility?",
+        "18. CloudTrail management events vs data events — what's the difference? Model answer: management events log control-plane API calls (create/delete/modify resources) and are on by default and free for the first copy. Data events log data-plane operations (S3 GetObject, Lambda Invoke) and are off by default and billed per event. Follow-up: which data events would you turn on for an S3 bucket holding PII?",
+        "19. How would you alert on a root user login? Model answer: a CloudTrail trail with management events, a CloudWatch Logs subscription, a metric filter matching userIdentity.type = Root, a CloudWatch alarm on the metric, and an SNS topic to page. Alternative: an EventBridge rule on the same pattern. Follow-up: how would you prevent root login in the first place?",
+        "20. What is Security Hub and how does it fit with GuardDuty? Model answer: Security Hub aggregates findings from GuardDuty, Inspector, Macie, IAM Access Analyzer, AWS Config, and third parties, normalises them into the AWS Security Finding Format (ASFF), and runs compliance standards (AWS Foundational, CIS, PCI). It is the single pane of glass across AWS-native detectors. Follow-up: how do you automate remediation from Security Hub findings?",
+        "21. How do you query CloudTrail history at scale? Model answer: CloudTrail Lake for ad-hoc SQL with managed storage, or send the trail to S3 and query via Athena with partitioned tables. CloudTrail Lake is simpler; Athena is more flexible and cheaper at scale. Follow-up: how would you write an Athena query to find every IAM principal who disabled MFA in the last 30 days?",
+        "22. What does VPC Flow Logs capture and what does it not? Model answer: source/destination IP, source/destination port, protocol, packet and byte counts, accept/reject. It does not capture packet payloads — for that you need VPC Traffic Mirroring. Follow-up: where can flow logs be delivered and which is fastest for querying?",
+        "23. How would you detect IAM credential exfiltration? Model answer: GuardDuty finding UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration.* fires when temporary credentials issued to an EC2 instance role are used from an IP outside that instance's VPC. Layer on a CloudTrail-based detection for sourceIPAddress changes for the same access key in a short window. Follow-up: what immediate response actions would you take?",
+        "24. What is AWS Config used for in a detection context? Model answer: Config records resource configuration history, evaluates resources against managed or custom rules, and supports conformance packs that bundle rules for a regime (CIS, PCI, NIST). It is the canonical source for 'is this resource compliant with our policy right now and historically'. Follow-up: how does Config differ from Security Hub for compliance reporting?"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Incident response (8 questions)"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "25. An EC2 instance has a confirmed cryptominer running on it. Walk through your response. Model answer: isolate the instance (replace its security group with a deny-all SG), revoke active IAM sessions for the instance role, snapshot the EBS volumes for forensics, capture memory if practical, then terminate the instance and rebuild from a known-good AMI. Investigate how the attacker got in. Follow-up: how would you revoke active sessions for a role?",
+        "26. A long-lived access key has been leaked in a public GitHub commit. What do you do? Model answer: deactivate the key immediately, create a replacement if needed, scan CloudTrail for any use of that key after the leak, audit any resources the key could touch, rotate any secondary credentials it may have created, scrub the commit history and force-push, raise a GitHub takedown request. Add a pre-commit hook plus an org-wide scanner to prevent recurrence. Follow-up: how do you detect that the key was used by the attacker before you found the leak?",
+        "27. How would you do forensics on a compromised EC2 instance without losing evidence? Model answer: snapshot the EBS volumes before any action that might modify them; isolate via SG rather than stopping the instance to preserve in-memory state if possible; use SSM Run Command to capture memory and running processes; attach the snapshots to a forensics instance in a separate account for analysis. Follow-up: why a separate account?",
+        "28. Your organisation just got a GuardDuty 'IAMUser/AnomalousBehavior' finding. What's your first step? Model answer: validate it is not a false positive (was the user travelling, was there a planned automation change?). If real, identify the access key in use, deactivate it, force a session refresh on any federated roles the user could assume, audit CloudTrail for the activities the user performed since the anomaly window started. Follow-up: how would you tell the activities apart from normal use?",
+        "29. What is the IR runbook order? Model answer: prepare, detect, contain, eradicate, recover, lessons learned. Containment comes before eradication — stop the bleeding before you remove the malware — and lessons learned is the step everyone skips. Follow-up: where does evidence preservation fit?",
+        "30. How would you contain a compromised IAM role used by multiple Lambda functions? Model answer: revoke active sessions by attaching an AWSRevokeOlderSessions inline policy with aws:TokenIssueTime condition; rotate the role's trust policy to deny new assumptions; pause the affected Lambda functions (set reserved concurrency to 0); investigate CloudTrail for what the compromised sessions did. Follow-up: how does AWSRevokeOlderSessions actually work?",
+        "31. A user reports a phishing email impersonating your company. What's your AWS-side response? Model answer: if the email links resolve to your domain, check Route 53 for misconfigured records; check SES for any unauthorised senders; check CloudFront for any unexpected distributions; audit IAM Access Analyzer for any unexpected public access; raise a takedown via your DNS registrar and the upstream email provider. Follow-up: what controls would prevent SES-based spoofing of your domain?",
+        "32. How do you run an IR tabletop exercise on AWS? Model answer: pick a realistic scenario (S3 bucket leak, EC2 cryptominer, leaked CI/CD key), assemble the responders, walk through the runbook step by step against the scenario, time-box decisions, capture gaps, file Jiras to close them. Run quarterly. Follow-up: what is the single most common gap you would expect to find?"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Architecture (8 questions)"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "33. Design a secure landing zone for a 200-person SaaS startup. Model answer: AWS Organizations with OUs (Security, Workloads, Sandbox, Suspended); a delegated audit account hosting Security Hub, GuardDuty, CloudTrail org trail; a log archive account with immutable S3 buckets; baseline SCPs (deny region outside ap-south-1/us-east-1, deny disabling CloudTrail, deny root); Control Tower or a Terraform landing zone for new account vending. Follow-up: where do break-glass admin credentials live?",
+        "34. Design VPC connectivity for a multi-account AWS estate. Model answer: Transit Gateway in the network account as the hub, attached to VPCs in each workload account; route tables segment dev/staging/prod; centralised egress via an inspection VPC with AWS Network Firewall or a third-party NGFW. Follow-up: when would you choose PrivateLink over a Transit Gateway path?",
+        "35. How would you design secrets management across 50 microservices? Model answer: Secrets Manager for credentials requiring rotation, with cross-account access via resource policies; per-service IAM roles with kms:Decrypt scoped to the specific secret; rotation Lambdas where supported; auditing via CloudTrail data events on Secrets Manager. Follow-up: how do you handle a secret that needs to be available to a workload in another region?",
+        "36. Design protection for an internet-facing API on API Gateway. Model answer: AWS WAF with managed rule groups (AWSManagedRulesCommonRuleSet, KnownBadInputs, SQLi), a rate-based rule for abuse, association with the API Gateway stage; Shield Standard for free DDoS protection, Shield Advanced if revenue depends on the API; resource policies restricting source IP if private callers only; usage plans with API keys for partner traffic. Follow-up: how would you keep WAF false positives under control?",
+        "37. How do you securely connect on-prem to AWS? Model answer: Direct Connect for production with a Direct Connect Gateway and a Transit Gateway attachment; Site-to-Site VPN as backup over the public internet; private subnets only; no NAT gateway exposing on-prem traffic to the internet; centralised egress through inspection if needed. Follow-up: when would you skip Direct Connect entirely?",
+        "38. Design a logging architecture for compliance. Model answer: org-wide CloudTrail trail to a centralised log archive account with SSE-KMS, MFA Delete, Object Lock in compliance mode; VPC Flow Logs to the same destination; application logs centralised via CloudWatch cross-account or a streaming pipeline; retention aligned to the regime (SOC 2: 1 year, PCI: 1 year online plus deeper archive). Follow-up: how do you prove log integrity?",
+        "39. How do you secure CI/CD pipelines on AWS? Model answer: short-lived OIDC credentials from GitHub Actions or GitLab into account-scoped IAM roles (no long-lived keys); per-environment roles with tight permissions; manual approval before production deploy; signed commits; secret scanning pre-commit and at the PR; artefact signing with Signer. Follow-up: how do you handle a compromised CI/CD runner?",
+        "40. Design a zero-trust architecture for an internal admin tool on AWS. Model answer: front the app with a private ALB plus an OIDC identity provider via Cognito or IAM Identity Center; Verified Access or a similar BeyondCorp-style proxy for device posture; service-to-service auth via mTLS or signed JWTs; data-plane access via short-lived role assumption rather than static credentials; aggressive logging into Security Hub. Follow-up: what is the single weakest link in this design?"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "How to use this list"
+    },
+    {
+      "t": "p",
+      "text": "Do not memorise the model answers — interviewers can spot a recital from across the table. Use the questions to find your weak spots, then go and build the thing in a real AWS account. Console time is the only durable preparation. Pair this list with the AWS Security Specialty study guide on the ShieldSync blog, and if you are earlier in your journey, start with the cloud security engineer roadmap. For structured AWS security exam prep, see the AWS security certification page."
+    }
+  ]
+}

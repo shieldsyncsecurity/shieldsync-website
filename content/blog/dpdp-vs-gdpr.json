@@ -1,0 +1,177 @@
+{
+  "slug": "dpdp-vs-gdpr",
+  "title": "DPDP vs GDPR: What Indian Companies Selling Globally Must Know",
+  "excerpt": "A side-by-side DPDP vs GDPR comparison across 14 dimensions — scope, consent, rights, breach notification, penalties, and the practical posture for Indian SaaS.",
+  "category": "Compliance",
+  "date": "Jun 30, 2026",
+  "read": "13 min",
+  "image": "/blog/dpdp-vs-gdpr.webp",
+  "body": [
+    {
+      "t": "p",
+      "text": "DPDP vs GDPR is the single most-asked comparison in Indian SaaS boardrooms right now. Almost every Indian SaaS that crosses ₹50 crore ARR ends up serving EU or UK customers, and the DPDP Act 2023 has made the home regulation suddenly very real too. The good news: both laws are first cousins, share much of the same design language, and a single well-designed privacy programme can cover both. The bad news: the details diverge in places that matter — consent, lawful bases, age, breach timing, and penalties — and getting the overlap wrong leaves you exposed on both ends."
+    },
+    {
+      "t": "p",
+      "text": "This article walks the comparison across 14 dimensions, calls out where DPDP is stricter and where it is lighter, and lays out the practical play for an Indian SaaS that sells in both markets: build to a GDPR baseline, layer DPDP as an overlay, and you will be defensible on both fronts."
+    },
+    {
+      "t": "h2",
+      "text": "Quick history"
+    },
+    {
+      "t": "p",
+      "text": "GDPR — Regulation (EU) 2016/679 — came into force on 25 May 2018, replacing the 1995 Data Protection Directive and triggering a global shift in privacy law. DPDP — the Digital Personal Data Protection Act 2023 — received Presidential assent on 11 August 2023 and is in operative effect, with the Data Protection Board constituted and the supporting rules largely notified. DPDP draws clear inspiration from GDPR but has been deliberately shorter, more operational, and closer to Indian administrative law tradition."
+    },
+    {
+      "t": "h2",
+      "text": "Side-by-side: 14 dimensions"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Territorial scope — GDPR: processing in EU + offering goods/services to or monitoring EU data subjects. DPDP: processing in India + processing outside India for offering goods/services to data principals in India",
+        "Material scope — GDPR: personal data, automated and structured manual filing. DPDP: digital personal data, or non-digital subsequently digitised",
+        "Roles — GDPR: controller and processor. DPDP: data fiduciary and data processor (substantively the same)",
+        "Lawful bases — GDPR: six bases (consent, contract, legal obligation, vital interests, public task, legitimate interests). DPDP: consent + a small list of 'legitimate uses' (employment, medical emergency, disaster, court order, etc.). No general legitimate interests basis",
+        "Consent standard — GDPR: freely given, specific, informed, unambiguous, by clear affirmative action. DPDP: free, specific, informed, unconditional, unambiguous, by clear affirmative action (DPDP adds 'unconditional')",
+        "Notice — GDPR: detailed Article 13/14 notice. DPDP: plain-language notice at or before consent, in English and any Eighth Schedule language the principal chooses",
+        "Data subject / principal rights — GDPR: access, rectification, erasure, restriction, portability, objection, automated-decision rights. DPDP: access, correction, erasure, grievance redressal, nomination. No explicit portability or objection rights yet",
+        "Age of consent — GDPR: 16 (member states can lower to 13). DPDP: 18, with verifiable parental consent for under-18s",
+        "DPO requirement — GDPR: required for public bodies, large-scale monitoring, large-scale sensitive data. DPDP: required only for Significant Data Fiduciaries, and the DPO must be based in India",
+        "Breach notification — GDPR: 72 hours to supervisory authority unless unlikely to result in risk; affected subjects only if high risk. DPDP: notify the Board and affected principals in the manner and time prescribed — current rules expect within 72 hours, with no explicit risk threshold",
+        "Cross-border transfers — GDPR: adequacy decisions, SCCs, BCRs, derogations. DPDP: permitted except to countries the government notifies as restricted (currently no list); much lighter regime",
+        "Sectoral exemptions — GDPR: limited exemptions for journalism, research, etc. DPDP: broader exemptions for certain government processing, research, and personal/domestic use",
+        "Penalties — GDPR: up to €20m or 4% of global annual turnover, whichever higher. DPDP: up to ₹250 crore per contravention, scaled by Schedule, with no global-turnover linkage",
+        "Enforcement body — GDPR: national supervisory authorities (ICO, CNIL, etc.) coordinated via EDPB. DPDP: a single Data Protection Board of India, operating digitally"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Where DPDP is stricter than GDPR"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Age of consent is 18 — meaningfully higher than the EU's 16. If you have any product that under-18s use, you need verifiable parental consent for Indian users",
+        "No legitimate interests basis — every processing activity must map to consent or one of the listed legitimate uses. Marketing automation cannot ride on legitimate interests as it often does in the EU",
+        "Breach notification is not risk-thresholded — the act and current rules expect notification of all personal data breaches, not only those likely to result in risk",
+        "Consent must be 'unconditional' — you cannot make access to a service conditional on consent to processing not necessary for that service. GDPR has a similar principle but the DPDP wording is sharper"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Where DPDP is lighter than GDPR"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "No data portability right (yet) — a frequent request under GDPR has no DPDP equivalent",
+        "No general DPIA requirement — only Significant Data Fiduciaries must run periodic DPIAs",
+        "Cross-border transfers default to permitted — no SCCs, BCRs, or adequacy machinery needed unless a country is restricted",
+        "DPO only required for SDFs — most Indian SaaS will not need a formal DPO at all",
+        "No special category data regime — DPDP treats all personal data uniformly, while GDPR has heightened rules for special categories (health, biometric, religious, etc.)"
+      ]
+    },
+    {
+      "t": "callout",
+      "text": "DPDP is structurally simpler and operationally tighter. GDPR is structurally complex but allows more flexibility via legitimate interests and risk-based breach notification. Most Indian SaaS overestimate DPDP burden and underestimate GDPR scope — usually it should be the other way around."
+    },
+    {
+      "t": "h2",
+      "text": "The practical play for Indian SaaS selling globally"
+    },
+    {
+      "t": "p",
+      "text": "If you sell in both markets, do not try to maintain two parallel programmes. Build to a GDPR baseline because it is broader and stricter on most operational mechanics, then layer DPDP-specific controls on top. This gives you one privacy programme, one consent system, one DSR workflow, and a small set of DPDP-only obligations to track separately."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Build the consent system to the stricter standard — unconditional, by clear affirmative action, easy to withdraw — and it satisfies both",
+        "Treat 18 as the age of consent across the board if your product is consumer-facing — easier than maintaining two age gates",
+        "Notify all personal data breaches to the relevant authorities within 72 hours — easier than maintaining two risk thresholds",
+        "Use SCCs for cross-border data flows out of the EU, and assume DPDP will catch up with a restricted-country list over time",
+        "Appoint a Privacy Lead or DPO even if not strictly required — it scales better than ad-hoc ownership",
+        "Maintain one Record of Processing Activities (Article 30 equivalent) that doubles as the DPDP data map"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "A note on India-only SaaS"
+    },
+    {
+      "t": "p",
+      "text": "If you sell only to Indian customers and have no EU or UK exposure, GDPR does not apply to you and DPDP alone is enough. But build the programme to handle GDPR-style requests anyway — the moment you sign your first EU customer, you do not want to rebuild the consent flow and DSR queue under deal pressure."
+    },
+    {
+      "t": "h2",
+      "text": "Documentation that satisfies both"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Privacy notice — plain language, in English and at least one Eighth Schedule language for India, layered structure for EU",
+        "Record of Processing Activities — purposes, categories, recipients, retention, transfers, security",
+        "Data Processing Agreements with every processor — DPDP and GDPR processor clauses both",
+        "Breach playbook — single playbook, two notification tracks (Board for India, supervisory authority for EU)",
+        "DSR workflow — single intake queue, identity verification, response SLA, audit trail"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Penalty regimes side by side"
+    },
+    {
+      "t": "p",
+      "text": "Both regimes use large administrative fines as the enforcement lever, but the structures are very different. GDPR penalties are tiered (up to €10m or 2% global turnover for lower-tier infringements, up to €20m or 4% for higher-tier), assessed by national supervisory authorities, and proportionate to global revenue — which makes them existential for large companies and routine for small ones. DPDP penalties are scheduled (₹250 crore ceiling for the most serious failure, scaled down by Schedule for others), assessed by a single Board, and not linked to turnover — which makes them existential for small companies and routine for large ones. Both regimes apply proportionality and consider mitigation, repetition, and gains made. The practical lesson: GDPR fines hurt big companies more, DPDP fines hurt small ones more, and a serious breach under either can end a small SaaS."
+    },
+    {
+      "t": "h2",
+      "text": "Cross-border transfers — the divergence to watch"
+    },
+    {
+      "t": "p",
+      "text": "GDPR's cross-border regime is mature, complex, and after Schrems II has settled into a workable rhythm of Standard Contractual Clauses plus Transfer Impact Assessments for most flows. DPDP's regime is currently permissive — transfers are allowed except to countries the government may notify as restricted — which makes 2026 unusually relaxed for Indian SaaS sending data abroad. This is unlikely to last. Build the discipline now: maintain a transfer register, document the purpose of each cross-border flow, include SCCs or equivalent in vendor contracts even when not strictly required, and prefer Indian or India-region cloud providers for sensitive workloads where it does not cost much performance. When the DPDP restricted-country list lands, you will not need to scramble."
+    },
+    {
+      "t": "h2",
+      "text": "Operationalising the overlap — one programme, two regimes"
+    },
+    {
+      "t": "p",
+      "text": "The most common failure mode for Indian SaaS scaling internationally is to run DPDP and GDPR as parallel programmes — separate consent systems, separate DSR queues, separate processor agreements. This always collapses under its own weight inside a year because every product change requires double the privacy review. The healthier model is one privacy programme with regime-specific overlays. In practice this means a single consent service that captures both DPDP and GDPR proof, a single DSR intake that routes by user region, a single processor agreement template with both clauses, and a single breach playbook with two notification tracks."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Consent service: one schema captures user, purpose, timestamp, notice version, jurisdiction; routing logic decides which proof is shown to which regulator",
+        "DSR queue: one ticket type with a 'jurisdiction' field; SLA is the stricter of DPDP and GDPR per request type",
+        "Processor agreements: one template with EU SCCs as appendix, DPDP processor clauses inline; flip the SCCs in or out based on the processor's location",
+        "Breach playbook: one detection and decision flow, two notification scripts (Board for India, supervisory authority for EU)",
+        "Record of Processing Activities: GDPR Article 30 format covers DPDP data-map needs; do not maintain two"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Common DPDP vs GDPR misconceptions"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "'DPDP is just GDPR-lite, our GDPR programme covers it' — false; DPDP has no legitimate interests basis and consent must be unconditional, so several common GDPR-era marketing flows break under DPDP",
+        "'We do not need to comply with DPDP because we are a foreign company' — false; processing Indian data principals' personal data for goods/services brings you in scope regardless of where you are based",
+        "'Cross-border transfers from India need SCCs' — currently false; DPDP allows transfers except to a future restricted list, but a defensible programme uses contractual protections anyway",
+        "'We need a DPO immediately' — false unless you are notified as a Significant Data Fiduciary; voluntary appointment is sensible but not mandatory"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Where to go from here"
+    },
+    {
+      "t": "p",
+      "text": "If you do not yet have a DPDP programme, start with the DPDP compliance checklist post on the ShieldSync blog. If you need help operationalising the overlap with GDPR, SOC 2, or ISO 27001, the ShieldSync GRC service is designed exactly for Indian SaaS at this scale. One well-built programme can serve all three regimes; two parallel programmes will sink your engineering team. The window to get this right cheaply is now — every quarter of delay adds technical debt that compounds as your data footprint grows."
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "slug": "securing-ai-coding-assistants",
+  "title": "Securing GitHub Copilot, Cursor, and Claude Code in Enterprise Codebases",
+  "excerpt": "An enterprise playbook for securing AI coding assistants — what each tool sends to its provider, how to scope what they see, secret-leakage prevention, supply-chain risk, and a policy template.",
+  "category": "AI Security",
+  "date": "Jun 30, 2026",
+  "read": "12 min",
+  "image": "/blog/securing-ai-coding-assistants.webp",
+  "body": [
+    {
+      "t": "p",
+      "text": "Securing AI coding assistants is the security topic every CISO with a software-engineering org needs an answer on in 2026, and it is also the one where vendor marketing is the least helpful. GitHub Copilot, Cursor, Claude Code, Windsurf, JetBrains AI — they all promise productivity, they all access your source code, and they all have very different data-handling and enterprise-control postures. This guide cuts through the marketing and gives you the concrete controls that make these tools acceptable to your security team: what each tool actually sends to its provider, how to scope what it sees, how to prevent secret leakage, how to manage the supply-chain risk of AI-suggested dependencies, and a policy template you can adapt."
+    },
+    {
+      "t": "p",
+      "text": "We will work tool by tool through Copilot, Cursor, and Claude Code (the three most common in enterprise environments), then cover the cross-cutting controls (gitignore plus tool exclusions, secret scanning, supply chain, compliance posture), and finish with a policy template you can take to your CISO."
+    },
+    {
+      "t": "h2",
+      "text": "What each tool sends to its provider"
+    },
+    {
+      "t": "p",
+      "text": "All three tools work by sending some combination of code context, prompt, and metadata to a model running in the provider's cloud. The differences are in what counts as 'context' and what the provider does with it."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "GitHub Copilot: sends the active editor buffer, surrounding files Copilot decides are relevant, and prompt history to the OpenAI / GitHub-hosted model. Enterprise tier offers data exclusion (code not used for training) and IP indemnification.",
+        "Cursor: sends the active file, an embeddings-based selection of related files in the workspace, and the user prompt to the configured model (OpenAI, Anthropic, or Cursor's hosted models). Privacy mode disables prompt retention.",
+        "Claude Code: sends the user prompt, the files Claude Code reads via its tools (Read, Grep, Glob), and the working-directory context to Anthropic. By default does not train on user data; enterprise plans add admin controls and audit log export."
+      ]
+    },
+    {
+      "t": "p",
+      "text": "The headline question — 'does the provider train on my code' — is answered differently per tier in each tool, and the answer changes over time. Read the current data-usage policy for the specific tier your enterprise is on; do not rely on the public marketing page. For regulated industries (healthcare, fintech, defence), get the answer in writing in your data processing agreement (DPA)."
+    },
+    {
+      "t": "h2",
+      "text": "Scoping what the assistant can see"
+    },
+    {
+      "t": "p",
+      "text": "The simplest control is the most underused: limit what the tool can read in the first place. All three tools respect a combination of .gitignore, tool-specific ignore files, and tool-level exclusions configured by the enterprise."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Maintain a .gitignore that already excludes secrets, build artefacts, customer data dumps, and anything that doesn't belong in a repo. This is the baseline every tool respects.",
+        "Add .copilotignore, .cursorignore, or the equivalent for files that are tracked in git but should not be sent to the assistant (sample customer data, compliance evidence, anything regulated).",
+        "For Claude Code, configure settings.json with explicit deny patterns for sensitive paths; rely on the working-directory boundary as the outer fence.",
+        "Audit the ignore files in CI — a missing .cursorignore in a regulated-data repo is a finding."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Secret-leakage prevention"
+    },
+    {
+      "t": "p",
+      "text": "Two failure modes matter. First, the developer accidentally pastes a secret into the prompt (an API key, a database URL with credentials, a JWT). Second, an existing secret in the codebase is fed to the assistant as context and ends up in provider logs. Both are preventable with layered controls."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Run a pre-commit hook (gitleaks, trufflehog) that blocks commits containing high-confidence secret patterns; this catches secrets before they ever land in the repo.",
+        "Run GitHub Advanced Security secret scanning (or equivalent) on every push; partner with provider-specific 'partner alerts' so leaked keys are revoked at the provider automatically.",
+        "Train developers explicitly: pasting a real production secret into any AI tool is a treat-it-as-compromised event — rotate the secret, do not just delete the chat.",
+        "Configure secrets to be ephemeral wherever possible (IAM roles, short-lived tokens, OIDC federation) so a leaked credential has a small window of usefulness."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Supply-chain risk of AI-suggested dependencies"
+    },
+    {
+      "t": "p",
+      "text": "Coding assistants suggest dependencies. Some of those suggestions are wrong — the package does not exist, has been deprecated, or, in the worst case, has been registered by an attacker who guessed AI would suggest a plausible-looking but non-existent name. This is the 'slopsquatting' pattern: typosquatting for the AI era. The defence is the same SCA and SBOM discipline you already need for human-suggested dependencies, just applied more rigorously."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Run dependency-review-action (GitHub) or Snyk / Dependabot equivalents on every PR; block on new high-severity vulnerabilities or licence violations.",
+        "Maintain an internal package registry that mirrors only vetted versions of public packages; the AI sees what's available in the mirror, not the wider public registry.",
+        "Treat any new dependency in a PR as a review item — the AI cannot judge maintainer trustworthiness, but a human can spot a brand-new package with no history.",
+        "Use OpenSSF Scorecard or similar to score the trustworthiness of any added dependency above a size threshold."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Compliance posture — SOC 2, ISO 27001, DPDP"
+    },
+    {
+      "t": "p",
+      "text": "If your organisation holds SOC 2, ISO 27001, HIPAA, PCI DSS, or operates under India's DPDP Act, EU GDPR, or sector-specific regulation, your AI coding assistant choice is in scope. Auditors will ask three questions: which tools are in use, what data they can access, and what controls govern the data flow. Be ready with documented answers."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Maintain a tool inventory: which AI coding assistants are approved, which tier each team is on, when each was last reviewed.",
+        "Get a Data Processing Agreement (DPA) on file for every approved tool, listing data categories, retention, sub-processors, and breach notification commitments.",
+        "Document the data-flow diagram: developer workstation → assistant → provider model → return path; identify every system that handles the prompt and the response.",
+        "Map the assistant's use to your existing control families: access control (SSO, MFA), encryption (TLS in transit, KMS at rest for any local cache), logging (admin audit logs from the provider), incident response (revoke flow on a leaked-secret event).",
+        "For DPDP-regulated personal data, ensure the assistant tier does not export the data outside India unless the transfer mechanism is documented and lawful."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Code-quality and security review of AI-generated code"
+    },
+    {
+      "t": "p",
+      "text": "AI-generated code is statistically more likely to contain certain classes of bug than human-written code: hardcoded credentials in examples, unchecked input concatenated into SQL, missing error handling, plausible-looking calls to nonexistent APIs, and crypto code that uses the right names but the wrong parameters. None of these are new bug classes; they are the bug classes a hurried human developer also produces. The difference is volume — AI assistants generate more code, faster, so the absolute number of these bugs scales with usage."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Run SAST (Semgrep, CodeQL) on every PR; tune rules for the classes AI assistants regress on most often (injection, auth checks, secrets in code).",
+        "Require human code review on every PR — AI-suggested code does not get to merge unreviewed regardless of how confident the suggestion looked.",
+        "Add lint rules that fail builds on obvious AI-generated tells: TODO-style comments left in, example.com URLs, placeholder API keys.",
+        "Run negative tests: deliberately ask the assistant to generate code that handles malicious input, then review whether it actually validates."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Prompt-injection risk from repository content"
+    },
+    {
+      "t": "p",
+      "text": "Coding assistants read your repo. If your repo contains attacker-controlled content — issue comments, pull request descriptions from external contributors, copied error messages from public services — that content can carry indirect prompt injections aimed at the assistant. Most realistic scenarios are nuisance-level (the assistant produces silly output), but a more sophisticated attack could try to get the assistant to suggest a malicious dependency or insert a backdoor pattern into generated code."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Treat issue tracker content from external contributors as untrusted when an assistant is operating on a repo that pulls it in.",
+        "Be cautious of assistants that browse external URLs autonomously; an attacker-controlled webpage can carry injection.",
+        "Review every assistant-suggested dependency manually; an injection that suggests a typosquatted package is a real attack pattern (slopsquatting).",
+        "For Claude Code or similar agentic assistants, keep the tool allowlist minimal in repos that ingest external untrusted content."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Enterprise rollout pattern"
+    },
+    {
+      "t": "p",
+      "text": "The pattern most enterprises converge on by their second rollout iteration is: a single approved tier per tool, SSO-only login, no personal accounts, mandatory training, and an opt-in repository allowlist for the most sensitive code. This sounds restrictive — in practice it accelerates rollout because security has a clear answer and engineering has a clear path."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Login: SSO via IAM Identity Center or your IdP only; disable personal-account login at the tenant level.",
+        "Licence assignment: managed via your IdP groups, not by the tool's own UI; offboarding revokes access automatically.",
+        "Audit log export: stream the tool's admin audit log to your SIEM (Splunk, OpenSearch, Datadog).",
+        "Repository scoping: high-sensitivity repos require an explicit team-by-team enablement; low-sensitivity repos default to enabled.",
+        "Periodic review: quarterly review of which repos have the assistant enabled, which users are active, and any audit-log anomalies."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "A policy template you can adapt"
+    },
+    {
+      "t": "code",
+      "code": "AI Coding Assistant — Acceptable Use Policy (v1)\n\n1. Approved tools\n   - GitHub Copilot Enterprise\n   - Claude Code (Anthropic Enterprise plan)\n   - Cursor Business\n   Personal-tier or unapproved tools must not be used on company code.\n\n2. Authentication\n   - SSO via the corporate IdP only; personal accounts are not permitted.\n   - MFA is enforced at the IdP level.\n\n3. Data that must not be sent to an AI coding assistant\n   - Production secrets, API keys, database URLs with credentials.\n   - Customer PII, PHI, or any data classified Restricted or Confidential.\n   - Anything covered by an NDA the assistant's DPA does not cover.\n\n4. Repository scoping\n   - Repositories tagged 'restricted-data' require explicit security-team approval before the assistant is enabled.\n   - All other repositories default to enabled.\n\n5. Secrets handling\n   - Pre-commit secret scanning (gitleaks) is mandatory on every developer machine.\n   - Pasting a real secret into an assistant prompt is treated as a leaked-credential incident — rotate immediately and notify security.\n\n6. AI-suggested dependencies\n   - Any new dependency in a PR must pass dependency-review and SCA gates.\n   - New dependencies require human reviewer sign-off; AI suggestions are not self-approving.\n\n7. Audit and review\n   - Provider admin audit logs are streamed to the SIEM.\n   - Tool inventory and DPAs are reviewed quarterly.\n   - Incidents involving an AI coding assistant are reported via the standard incident channel.\n\n8. Training\n   - All engineers complete the 30-minute AI coding assistant security module annually.\n   - New joiners complete it during onboarding before assistant access is granted."
+    },
+    {
+      "t": "h2",
+      "text": "What to do when something goes wrong"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Leaked secret in a prompt: treat the secret as compromised; rotate immediately at the provider; revoke any active sessions; check provider logs for use of the secret.",
+        "Leaked source code via misconfigured tool: review the tool's data-retention policy and request deletion under the DPA; document for the audit trail.",
+        "Malicious AI-suggested dependency: yank the dependency from the internal mirror; run an incident-style review of every repo that pulled it; notify downstream consumers.",
+        "Audit log gap: if the provider's audit log shows a discontinuity, treat it as a detection blind spot and investigate."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "A short checklist"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "One approved enterprise tier per tool; personal-tier accounts disabled.",
+        "SSO-only login via the corporate IdP; MFA enforced.",
+        "DPAs on file for every approved tool; data-flow diagram documented.",
+        ".gitignore plus tool-specific ignore files exclude sensitive paths; CI checks they exist.",
+        "Pre-commit secret scanning and push-time secret scanning are both on.",
+        "Dependency review and SCA run on every PR; internal mirror is the dependency source.",
+        "Audit logs from each tool are streamed to the SIEM; quarterly review is scheduled.",
+        "Annual AI coding assistant security training is required for all engineers."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Where to go next"
+    },
+    {
+      "t": "p",
+      "text": "Securing the coding assistants is one slice of the broader AI security posture; the other slices are covered in our OWASP LLM Top 10 mapped to AWS Bedrock and securing AI agents posts. The IAM, KMS, and CloudTrail patterns that underpin the secret-rotation and audit-log flows above are the same ones the AWS Security Specialty (SCS-C02) exam tests — our study guide walks them with hands-on labs. And if you want a guided review of your own AI tooling posture, ShieldSync's advanced & emerging security service covers AI coding assistants, agent runtimes, and the broader generative-AI threat surface end to end."
+    }
+  ]
+}

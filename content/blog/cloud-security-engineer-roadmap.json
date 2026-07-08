@@ -1,0 +1,276 @@
+{
+  "slug": "cloud-security-engineer-roadmap",
+  "title": "Cloud Security Engineer Roadmap 2026: Skills, Certs, and Portfolio",
+  "excerpt": "A practitioner's cloud security engineer roadmap for 2026 — a 12-month plan with monthly milestones, certs in order, portfolio projects, and India salary ranges.",
+  "category": "Career",
+  "date": "Jun 30, 2026",
+  "read": "18 min",
+  "image": "/blog/cloud-security-engineer-roadmap.webp",
+  "body": [
+    {
+      "t": "p",
+      "text": "A cloud security engineer roadmap is only useful if it tells you what to do this week, this month, and this year — not just a list of vague topics. This is that roadmap. It is written for people in India who want to break into cloud security in 2026, get hired into a junior role within 6 to 12 months, and grow towards a senior or architect-level seat over the following 3 to 5 years. It is based on what real Indian and global employers actually ask for in interviews, the certifications that survive the hiring screen, and the portfolio work that gets recruiters to reply."
+    },
+    {
+      "t": "p",
+      "text": "If you are searching for a cloud security engineer roadmap because you want a clear sequence — not another bookmark of fifty courses — read this end to end once, then come back to whichever month you are on. Pair it with hands-on lab time on a real AWS account and you will be employable inside a year."
+    },
+    {
+      "t": "h2",
+      "text": "What a cloud security engineer actually does"
+    },
+    {
+      "t": "p",
+      "text": "The title 'cloud security engineer' covers a wide band of work, but the core mandate is the same everywhere: keep the cloud environment secure without breaking developer velocity. Day to day, that means reviewing IAM policies, hardening new AWS accounts, triaging GuardDuty and Security Hub findings, writing Terraform modules with secure defaults baked in, responding to incidents, and partnering with engineering teams who are shipping faster than security can review. It is half engineering, half investigation, and a quiet third part politics."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Review and write IAM policies, KMS key policies, S3 bucket policies, SCPs",
+        "Build and maintain detection pipelines — GuardDuty, Security Hub, custom EventBridge rules",
+        "Run incident response when an alert fires — contain, preserve, investigate, eradicate, recover",
+        "Author Terraform / CloudFormation modules with secure defaults so engineering teams inherit the controls",
+        "Lead threat modelling sessions for new services and features",
+        "Drive compliance evidence for SOC 2, ISO 27001, PCI DSS, or the Indian DPDP Act"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Junior vs mid vs senior — what changes at each level"
+    },
+    {
+      "t": "p",
+      "text": "The shape of the job changes more between levels than most roadmaps admit. A junior cloud security engineer mostly executes — they investigate alerts, run vulnerability scans, follow runbooks, fix the IAM policy somebody else flagged. A mid-level engineer owns whole subsystems — they run detection engineering, design the multi-account guardrails, drive an incident from page-out to postmortem. A senior or staff engineer sets technical direction — they pick the tools, set the policies, mentor the team, and own one or two horizontal initiatives like zero-trust networking or a secrets-rotation programme."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Junior (0–2 yrs): execute, learn the AWS surface area, on-call rotation, basic IR",
+        "Mid (2–5 yrs): own subsystems, write IaC modules, lead small projects, mentor interns",
+        "Senior (5–8 yrs): pick tools and patterns, set the standard, lead incidents end to end",
+        "Staff / Principal / Architect (8+ yrs): cross-org technical direction, board-level risk communication"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "The 0-to-12-month learning plan"
+    },
+    {
+      "t": "p",
+      "text": "The plan below assumes you can give 10 to 15 hours per week. Stretch it to 18 months if you are studying around a full-time job in an unrelated field. The order matters — IAM and networking are foundational, so every later month leans on them."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Month 1 — Linux + networking fundamentals. TCP/IP, DNS, HTTP, TLS handshake, the OSI model, shell basics. Output: a one-page summary of how an HTTPS request flows end to end.",
+        "Month 2 — AWS core services. EC2, VPC, S3, IAM, Lambda, RDS. Set up a free-tier account. Output: a working three-tier app on AWS deployed entirely from the console.",
+        "Month 3 — IAM deep dive. Policy evaluation logic, trust policies, condition keys, SCPs, permissions boundaries. Output: a written walkthrough of three privilege-escalation paths.",
+        "Month 4 — AWS Cloud Practitioner certification. Pass the CLF-C02. It is mostly trivia, but it forces a tour of every service you have not touched.",
+        "Month 5 — Detection and logging. CloudTrail, CloudWatch Logs, VPC Flow Logs, GuardDuty, Security Hub, AWS Config. Output: an Athena query that finds every IAM principal that disabled MFA in the last 30 days.",
+        "Month 6 — AWS Solutions Architect Associate (SAA-C03). The breadth here pays back forever — you cannot secure what you cannot architect.",
+        "Month 7 — Encryption and data protection. KMS deeply, S3 encryption modes, Secrets Manager, Certificate Manager, Macie. Output: a multi-account KMS design with key policies and grants.",
+        "Month 8 — Infrastructure as code. Terraform end-to-end, then a security module library. Output: a Terraform module that deploys a hardened S3 bucket with encryption, logging, public-access block, and versioning.",
+        "Month 9 — Incident response and forensics on AWS. Snapshot capture, session revocation, isolation, log aggregation. Output: a written IR runbook for a compromised EC2 instance.",
+        "Month 10 — AWS Security Specialty (SCS-C02). The single most recognisable cloud security certification on the Indian and global market. See the full study guide on the ShieldSync blog.",
+        "Month 11 — Portfolio polish. Write three blog posts, push three GitHub repos, complete three hands-on labs. Update LinkedIn.",
+        "Month 12 — Job hunt. Apply, interview, negotiate. See the cybersecurity internship guide for the India market specifically."
+      ]
+    },
+    {
+      "t": "callout",
+      "text": "The biggest single predictor of getting hired is real console time on AWS. Not videos, not PDFs — actual clicking, breaking, fixing. Budget at least 40% of your study hours for hands-on work, even in the early months."
+    },
+    {
+      "t": "h2",
+      "text": "Foundations you cannot skip — Linux, networking, scripting"
+    },
+    {
+      "t": "p",
+      "text": "Cloud security engineers who do not understand Linux or networking get stuck at junior forever, because every interesting investigation eventually drops to a packet capture, a Sysmon log, or a shell on a compromised host. Spend the first month here even if it feels slow."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Linux: the filesystem hierarchy, users and groups, file permissions, systemd basics, journalctl, ps and lsof, ssh, bash scripting, cron",
+        "Networking: TCP three-way handshake, TLS handshake, DNS resolution including DoH, HTTP methods and status codes, OSI vs TCP/IP, NAT, firewalls and stateful inspection",
+        "Scripting: Python for log parsing and AWS SDK calls; bash for one-liners; PowerShell if you will touch Windows estates",
+        "Git: branch, rebase, pull request review — every IaC change goes through Git"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "The security topics that matter for cloud work"
+    },
+    {
+      "t": "p",
+      "text": "Cloud-native security splits into five buckets. You need working competence in each, with at least one of them at deep expert level by year three."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Identity and access management: federation, role assumption, privilege escalation, least-privilege design",
+        "Encryption and data protection: KMS, envelope encryption, TLS configuration, secret rotation, tokenisation",
+        "Detection and response: log pipelines, SIEM correlation, threat hunting, incident response runbooks",
+        "Network security: VPC design, security groups vs NACLs, WAF, private endpoints, zero-trust patterns",
+        "Governance and compliance: SCPs, AWS Config rules, conformance packs, audit evidence, control mapping"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Certifications in order"
+    },
+    {
+      "t": "p",
+      "text": "Certifications do not get you the job by themselves, but they get your resume past the first filter on Naukri, LinkedIn, and most large-company applicant tracking systems. Do them in this order — earlier ones unlock later ones, and the foundational breadth pays off in interviews."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "AWS Certified Cloud Practitioner (CLF-C02): two to four weeks of study, a wide gentle tour of AWS",
+        "AWS Certified Solutions Architect Associate (SAA-C03): six to ten weeks, the breadth credential everybody respects",
+        "AWS Certified Security Specialty (SCS-C02): eight to twelve weeks, the cloud security credential — see the dedicated SCS-C02 study guide on the ShieldSync blog or the AWS security certification landing page",
+        "Optional senior credentials: ISC2 CCSP (vendor-neutral cloud security), ISC2 CISSP (broad infosec management, gates a lot of senior roles in MNCs)",
+        "Optional offensive credentials: OffSec OSCP if you want to pivot into cloud pentest; AWS / Azure / GCP specific red-team trainings exist but are niche"
+      ]
+    },
+    {
+      "t": "p",
+      "text": "Skip the bundle deals that promise five certs in six months. Hiring managers in India can spot a paper-only candidate within two interview questions, and a stack of weak certs is worse than one strong cert with a portfolio behind it."
+    },
+    {
+      "t": "h2",
+      "text": "Portfolio projects that get replies from recruiters"
+    },
+    {
+      "t": "p",
+      "text": "A portfolio is the single biggest differentiator for a cloud security candidate in India in 2026, because almost nobody has one. The bar is lower than you think — three solid public projects beats a stack of certificates."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A hardened AWS landing zone, written in Terraform, deployable with one command, with SCPs, baseline GuardDuty, Security Hub, CloudTrail org trail",
+        "A small SOAR-style automation: GuardDuty finding → EventBridge → Lambda → automatic containment (isolate EC2 by SG swap, revoke active session)",
+        "A multi-account KMS design with key policies, key rotation, and a cross-account decrypt flow, with the design written up in a README",
+        "An incident response writeup of an intentional misconfiguration — for example, walk through the S3 misconfiguration audit lab on labs.shieldsyncsecurity.com end to end and publish the postmortem",
+        "A privilege-escalation walkthrough in a sandbox account, with detection rules added to GuardDuty / Security Hub after",
+        "A blog series — even three good posts about AWS security gotchas you discovered while studying"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "How to break in — the internship path"
+    },
+    {
+      "t": "p",
+      "text": "The fastest route into a junior cloud security role in India is a cybersecurity internship that includes real cloud work, not a slide-deck shadowing rotation. An internship is the only point in your career where employers will hire you almost entirely on potential rather than experience, and a well-run programme will compress six months of self-study into eight focused weeks of guided work."
+    },
+    {
+      "t": "p",
+      "text": "The ShieldSync internship is designed exactly for this — eight weeks, real AWS labs in isolated accounts, a mentor who reviews your work, and a verifiable completion certificate plus a portfolio piece at the end. Pricing is intentionally accessible (₹9,999) and there is no equity or full-time conversion expectation — it exists to get you employable. See the internship page for the current cohort dates."
+    },
+    {
+      "t": "h2",
+      "text": "Cloud security salary ranges in India"
+    },
+    {
+      "t": "p",
+      "text": "These ranges are aggregated from job-board data, recruiter conversations, and offer letters shared by candidates in 2025 and early 2026. They are industry patterns, not promises. Salaries vary heavily by city, company size, and whether the employer is an Indian startup, an Indian services firm, or an MNC GCC."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Junior cloud security engineer (0–2 yrs): ₹6–12 LPA in metros, ₹4–8 LPA in tier-2 cities",
+        "Mid-level cloud security engineer (2–5 yrs): ₹15–25 LPA, with MNC GCCs paying the top of the range",
+        "Senior cloud security engineer (5–8 yrs): ₹30–50 LPA, plus RSUs at MNCs",
+        "Cloud security architect / staff (8+ yrs): ₹50 LPA to ₹1 Cr+ TC at top MNCs",
+        "vCISO / fractional CISO (consulting): ₹15–40k per day for project work"
+      ]
+    },
+    {
+      "t": "p",
+      "text": "The single biggest lever on your salary is the company, not the cert. The same SCS-C02-holding engineer can earn ₹8 LPA at a small Indian services firm and ₹35 LPA at a Bangalore-based MNC GCC. Apply broadly, negotiate hard, and remember that base salary anchors every future raise."
+    },
+    {
+      "t": "h2",
+      "text": "A realistic week in the life of a year-2 cloud security engineer"
+    },
+    {
+      "t": "p",
+      "text": "If you wonder what you are actually optimising for, here is what a mid-week looks like for a year-2 cloud security engineer at an Indian SaaS startup of 200 people. Monday: triage the weekend's GuardDuty findings, close the false positives, write a Jira for the one real one. Tuesday: pair with a backend engineer on a new microservice — review the IAM role, point out the wildcard, suggest the resource-level scoping. Wednesday: write a Terraform module for hardened RDS, push a PR, review two PRs from peers. Thursday: an alert fires — credential exposure in a public GitHub commit. Run the response runbook: rotate, revoke, audit CloudTrail for misuse, write the timeline. Friday: postmortem with engineering, ship the prevention control (a Git pre-commit hook plus a Lambda that scans pushed repos)."
+    },
+    {
+      "t": "h2",
+      "text": "Common roadmap mistakes"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Collecting certifications without ever opening the AWS console — the cert is a checkpoint, not the work",
+        "Trying to learn three clouds at once — pick AWS first, get fluent, then add Azure or GCP",
+        "Skipping Linux and networking because they feel boring — every interesting incident lives in them",
+        "Building a private portfolio nobody can see — every project needs a public GitHub repo and a writeup",
+        "Applying only to security roles — a year as a cloud or DevOps engineer with security side projects is a faster path than waiting for a junior security opening",
+        "Negotiating only on base — ask about stock, sign-on, learning budget, on-call comp, work-from-home policy"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "How to think about study time vs lab time vs portfolio time"
+    },
+    {
+      "t": "p",
+      "text": "A common failure mode is to spend 90% of available hours on reading and videos, 10% on labs, and zero on portfolio. The result is a candidate who knows a lot, can describe nothing concretely in an interview, and has nothing to link to. A better split for any month after month 1 is roughly 30% reading and reference (FAQs, AWS docs, books), 50% hands-on lab work in a real account, 20% writing — README files, blog posts, postmortems, even private investigation notes. The writing forces synthesis; the labs build muscle memory; the reading fills gaps. Tune the ratios over time but never let any of the three drop below 15% for long."
+    },
+    {
+      "t": "h2",
+      "text": "Year 2 and beyond — going from junior to mid-level"
+    },
+    {
+      "t": "p",
+      "text": "The first year is about getting hired. The second is about going from someone who executes tickets to someone who owns subsystems. Three habits separate the engineers who promote in two years from those who stay at junior for four. First, take on at least one cross-team initiative per quarter — even a small one like 'audit our IAM roles for over-privilege and fix the top 10'. Second, become the go-to person for one specific area on your team (KMS, GuardDuty, Terraform modules, whatever). Third, write — internal docs, postmortems, design proposals. The engineers who can write well are the ones leadership trusts with bigger problems."
+    },
+    {
+      "t": "h2",
+      "text": "Multi-cloud — when and how to add Azure or GCP"
+    },
+    {
+      "t": "p",
+      "text": "Most Indian employers in 2026 still run AWS-heavy estates, with Azure as the second cloud for BFSI and large enterprise, and GCP as the niche third for data-heavy workloads. Pick one cloud and go deep before adding a second — fluency in one cloud is more valuable than surface knowledge of three. The right time to add Azure or GCP is when your AWS role brings you into contact with the other cloud naturally, or when a target role specifically requires it. The transferable concepts (IAM, encryption, network segmentation, detection pipelines) cover 70% of the surface; the remaining 30% is each cloud's idiosyncrasies."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Azure: AZ-500 is the Microsoft analog to SCS-C02 — useful for BFSI and large enterprise roles",
+        "GCP: Professional Cloud Security Engineer (PCSE) — relevant for data-platform and ML-shop employers",
+        "Multi-cloud architect roles are real and pay 15–25% above single-cloud equivalents at senior level"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Specialisation tracks after year 2"
+    },
+    {
+      "t": "p",
+      "text": "By year two or three, broad cloud security becomes too wide for one person to keep current on every domain. The strongest careers pick a specialism and become the team's go-to. The most common tracks in India in 2026:"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Detection engineering — own SIEM content, GuardDuty tuning, custom correlation rules, threat hunting",
+        "Cloud application security — DevSecOps, SAST/DAST, container security, supply chain (SLSA, sigstore)",
+        "Cloud GRC — control mapping, audit evidence, DPDP/SOC 2/ISO/PCI programmes",
+        "Cloud incident response — runbook authoring, forensics, tabletop facilitation, post-mortem culture",
+        "Identity engineering — IAM Identity Center, federation, zero-trust patterns, just-in-time access",
+        "AI/ML security — model security, prompt injection defence, training-data governance (the fastest-growing track in 2026)"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Where to go from here"
+    },
+    {
+      "t": "p",
+      "text": "Start with the cloud security start-here page if you want a structured intro to the field. If you are at the certification stage, the SCS-C02 study guide is the single most useful sibling to this roadmap. If you want guided practice on real AWS accounts, the AWS security labs catalog on labs.shieldsyncsecurity.com is free to try (start with the S3 misconfiguration audit lab). And if you want a mentor and a structured 8-week ramp with a portfolio piece at the end, the ShieldSync internship is built for that exact purpose. The roadmap is long but the steps are concrete — pick month 1, finish it, and the next eleven take care of themselves."
+    }
+  ]
+}

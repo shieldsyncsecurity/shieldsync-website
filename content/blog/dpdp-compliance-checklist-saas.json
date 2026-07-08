@@ -1,0 +1,226 @@
+{
+  "slug": "dpdp-compliance-checklist-saas",
+  "title": "DPDP Act Compliance Checklist for Indian SaaS Companies (2026)",
+  "excerpt": "A practical DPDP Act 2023 compliance checklist for Indian SaaS — obligations explained, a 12-item action list, penalties, and how DPDP compares to GDPR.",
+  "category": "Compliance",
+  "date": "Jun 30, 2026",
+  "read": "15 min",
+  "image": "/blog/dpdp-compliance-checklist-saas.webp",
+  "body": [
+    {
+      "t": "p",
+      "text": "A DPDP compliance checklist is the most-requested document in Indian SaaS legal and security inboxes right now, and for good reason — the Digital Personal Data Protection Act 2023 has finished its rule-making cycle, the Data Protection Board is operational, and the first round of enforcement is expected within the year. Every Indian SaaS company that handles personal data of Indian individuals is in scope, and the penalties are real — up to ₹250 crore per incident. This article walks through what the DPDP Act actually requires, then gives you a 12-item operational checklist you can run against your own product and processes."
+    },
+    {
+      "t": "p",
+      "text": "If you are a founder, head of engineering, or security lead at an Indian SaaS company, treat this as a starting checklist rather than legal advice — the spirit of the act is clear, but several procedural details depend on rules and notifications the Data Protection Board will issue over time. When you are ready to operationalise, the ShieldSync governance, risk and compliance service can take you from this checklist to audit-ready posture."
+    },
+    {
+      "t": "h2",
+      "text": "What the DPDP Act 2023 actually is"
+    },
+    {
+      "t": "p",
+      "text": "The Digital Personal Data Protection Act 2023 is India's first horizontal data protection law. It governs the processing of digital personal data of individuals (called data principals) by data fiduciaries — anyone who alone or with others determines the purpose and means of processing personal data. Unlike the GDPR's broad definitions, DPDP applies to personal data that is collected in digital form, or in non-digital form and subsequently digitised. Most SaaS companies are squarely in scope by default."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Personal data: any data about an individual who is identifiable by or in relation to such data",
+        "Data fiduciary: the entity that decides why and how personal data is processed (the controller equivalent)",
+        "Data processor: any entity that processes data on behalf of a data fiduciary",
+        "Data principal: the individual to whom the personal data relates (the data subject equivalent)",
+        "Significant Data Fiduciary (SDF): a class of data fiduciaries notified by the government based on volume and sensitivity of data, risk to rights of principals, potential impact on sovereignty"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Who the DPDP Act applies to"
+    },
+    {
+      "t": "p",
+      "text": "DPDP applies to processing of digital personal data within India, and to processing outside India if it is for offering goods or services to data principals in India. An Indian SaaS company serving Indian customers is in scope. An Indian SaaS company serving only US customers is mostly out of scope (subject to other laws). A foreign SaaS company selling to Indian users is in scope. There are limited exemptions for certain government processing, research, and personal or domestic use."
+    },
+    {
+      "t": "h2",
+      "text": "Key obligations under the DPDP Act"
+    },
+    {
+      "t": "p",
+      "text": "The act is structurally simpler than GDPR and is built around a small set of operational obligations every data fiduciary must meet."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Consent: must be free, specific, informed, unconditional, unambiguous, and given by a clear affirmative action. Pre-ticked checkboxes do not work",
+        "Purpose limitation: data may be processed only for the specified purpose for which consent was given, or for certain legitimate uses listed in the act",
+        "Notice: at or before requesting consent, fiduciary must provide a notice in plain language describing the personal data sought, the purpose, the rights of the principal, and the grievance mechanism",
+        "Data principal rights: access, correction, completion, updating, erasure, grievance redressal, and nomination",
+        "Breach notification: notify the Board and affected principals of any personal data breach in the manner and within the time prescribed — current rules expect within 72 hours of awareness for the Board",
+        "Children's data: verifiable parental consent for processing data of anyone under 18; no tracking, behavioural monitoring, or targeted advertising directed at children",
+        "Significant Data Fiduciary obligations: appoint a Data Protection Officer based in India, conduct annual Data Protection Impact Assessments, periodic audits",
+        "Reasonable security safeguards: technical and organisational measures to prevent breach"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "The 12-item DPDP compliance checklist"
+    },
+    {
+      "t": "p",
+      "text": "Use this as an operational checklist. Each item should be owned by a named person and tracked in your GRC tool. Most Indian SaaS companies can complete the first 8 items in 60 days with focused effort; the SDF-only items only apply if you are notified."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "1. Data map and inventory — every system that touches personal data, what fields, what flows, what retention. Living document, reviewed quarterly",
+        "2. Privacy notice — plain-language notice meeting the DPDP requirements, available in English and at least one of the 22 Eighth Schedule languages",
+        "3. Consent management — a consent capture flow with proof of when, what, how consent was given, and a one-click withdrawal mechanism that is as easy as giving consent",
+        "4. Data principal rights (DSR) workflow — a ticketed process for access, correction, erasure, and nomination requests, with SLAs and audit trail",
+        "5. Grievance redressal mechanism — a published email address or in-app channel for grievances, with a stated SLA",
+        "6. Processor agreements — written contracts with every vendor that processes personal data on your behalf (data processors), covering security, breach notification, deletion on termination",
+        "7. Breach response playbook — runbook with detection, containment, assessment, notification to the Board within 72 hours, notification to affected principals",
+        "8. Retention and deletion policy — every dataset has a documented retention period and an automated or scheduled deletion job",
+        "9. Children's data controls — age-gating at signup, verifiable parental consent flow if you intend to process under-18 data, behavioural advertising blocked for known minor accounts",
+        "10. Cross-border transfer controls — track which countries your data moves to; while DPDP currently allows transfers except to countries on a future restricted list, build the controls now",
+        "11. Reasonable security safeguards — encryption at rest and in transit, access controls, MFA, logging, vulnerability management, incident response",
+        "12. SDF-only items (if notified): appoint an India-based DPO, run annual DPIAs, periodic audits, publish DPO contact"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Penalties — what non-compliance costs"
+    },
+    {
+      "t": "p",
+      "text": "The DPDP Act introduces administrative penalties imposed by the Data Protection Board, with the scale set by Schedule. The ceilings are large enough to be existential for a small SaaS."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Failure to take reasonable security safeguards: up to ₹250 crore",
+        "Failure to notify the Board and affected principals of a personal data breach: up to ₹200 crore",
+        "Failure to fulfil additional obligations for children's data: up to ₹200 crore",
+        "Failure to fulfil additional obligations of a Significant Data Fiduciary: up to ₹150 crore",
+        "Breach of any other DPDP provision: up to ₹50 crore"
+      ]
+    },
+    {
+      "t": "p",
+      "text": "Penalties are proportional — the Board considers the nature, gravity, duration, type of data, repetition, gains made, mitigations, and a few other factors. But the ceilings make clear that DPDP is not a paperwork exercise."
+    },
+    {
+      "t": "h2",
+      "text": "DPDP vs GDPR — a quick orientation"
+    },
+    {
+      "t": "p",
+      "text": "If you already have a GDPR programme, you are probably 70% of the way to DPDP. The big differences: DPDP has no concept of 'legitimate interest' as a lawful basis (consent and a small list of legitimate uses are it); the breach notification timeline is currently 72 hours but applies to all breaches without a risk threshold; the age of consent is 18 (vs 16 in most of the EU); there is no explicit data portability right yet; and the cross-border transfer regime is currently permissive but designed to harden via a future blocklist. For a deeper side-by-side, see the DPDP vs GDPR comparison on the ShieldSync blog."
+    },
+    {
+      "t": "h2",
+      "text": "Where to start if you have nothing today"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Week 1–2: data map, privacy notice draft, grievance email live",
+        "Week 3–4: consent flow on signup and in-app, DSR ticket queue and SLA",
+        "Week 5–6: processor agreement template, send to top 10 vendors",
+        "Week 7–8: breach playbook, tabletop exercise, retention policy",
+        "Week 9–12: tighten encryption, access controls, MFA, vulnerability management"
+      ]
+    },
+    {
+      "t": "p",
+      "text": "Three months of focused work gets a small SaaS to a defensible posture. Beyond that, treat DPDP as a continuous programme — every new feature touches data, and every new vendor is a new processor. If you want help building the programme, the ShieldSync GRC service is designed to take Indian SaaS companies from zero to audit-ready DPDP posture, including SOC 2 and ISO 27001 alignment if you sell internationally."
+    },
+    {
+      "t": "h2",
+      "text": "Common mistakes"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Treating the privacy notice as a legal document only — it has to be readable, in plain language, and in at least two languages",
+        "Pre-ticked consent boxes or bundled consent that hides marketing inside transactional",
+        "No mechanism to withdraw consent — withdrawal must be as easy as giving consent",
+        "Missing processor agreements with cloud vendors, analytics tools, CRM, support tools",
+        "No documented retention period — defaulting to 'forever'",
+        "Confusing the IT Act 'reasonable security practices' rules (still in force) with DPDP — both apply",
+        "Treating breach notification as optional because the rules are still settling — the obligation is in the act itself"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "How DPDP sits alongside the IT Act and sectoral rules"
+    },
+    {
+      "t": "p",
+      "text": "DPDP is not the only data law that touches Indian SaaS. The Information Technology Act 2000 and its Reasonable Security Practices and Procedures rules (the 'SPDI rules') remain in force and govern 'sensitive personal data or information' — passwords, financial information, health information, biometrics, sexual orientation, medical records. The SPDI definition of sensitive data is narrower than DPDP's flat treatment of personal data but the obligations stack — you need to meet both. Add to that the RBI's data localisation directives for payment data, IRDAI's rules for insurance, the SEBI cybersecurity framework for capital markets entities, and the CERT-In 2022 directions on incident reporting (6-hour reporting window for specified incidents). A defensible Indian SaaS posture maps controls once and reports against each regime — not the other way around."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "IT Act SPDI rules: reasonable security practices, consent for collection of sensitive data, grievance officer publication",
+        "CERT-In 2022 directions: 6-hour incident reporting, 180-day log retention in India, ICT logs in Indian jurisdiction",
+        "RBI: payment system data localisation, cyber security framework for banks and NBFCs, annual VA/PT",
+        "SEBI: cybersecurity and cyber resilience framework for stock exchanges, MIIs, registered intermediaries",
+        "IRDAI: information and cybersecurity guidelines for insurers"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Building the data map — the unglamorous foundation"
+    },
+    {
+      "t": "p",
+      "text": "Every other item on the checklist depends on knowing what personal data you hold and where it flows. The data map is the artefact that captures this. Done well, it is a living document maintained by engineering as part of the change process; done badly, it is a one-time spreadsheet that is stale within a quarter. Start with a simple table per system, columns: system name, owner, personal data categories, source, purpose, lawful basis (consent or which legitimate use), recipients, retention, cross-border destinations, security controls. Cover every production system before you worry about completeness — 80% coverage in two weeks beats 100% in six months."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Application database — the obvious one; field-level inventory of every column that touches personal data",
+        "Analytics — Mixpanel, Amplitude, Google Analytics, in-house event store; what user properties and event properties contain PII",
+        "Support and CRM — Zendesk, Freshdesk, Intercom, HubSpot; conversation transcripts often contain free-text PII",
+        "Logging and observability — Datadog, New Relic, CloudWatch; query parameters and request bodies frequently leak PII",
+        "ML/data lake — Snowflake, BigQuery, S3 data lake; the place data goes to never be deleted",
+        "Vendor APIs — payment processors, KYC, communication providers (SMS, email, WhatsApp)"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Consent flows — getting the UX right"
+    },
+    {
+      "t": "p",
+      "text": "The DPDP consent standard is operationally strict — free, specific, informed, unconditional, unambiguous, by clear affirmative action. The most common product mistakes are: pre-ticked checkboxes (not affirmative), bundled consent (signing up bundles marketing and product analytics into one box, which is not specific), no withdrawal mechanism in-app, and consent capture without proof. Build a small consent service early — it pays for itself the first time legal asks 'who consented to what, when?' and you can answer in one query."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Show purposes individually, not bundled — transactional vs analytics vs marketing vs research",
+        "Default state is unchecked — affirmative action required",
+        "Capture timestamp, version of notice shown, IP, user agent, consent version — store immutably",
+        "Withdrawal mechanism in-app or via a clearly-published email; honour within 48 hours",
+        "Re-consent on material notice changes, not silent updates"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Breach response — the 72-hour clock"
+    },
+    {
+      "t": "p",
+      "text": "The breach notification obligation is the single most-feared part of the DPDP Act because the timer starts the moment you become aware, not the moment you finish investigating. A defensible breach response programme has three layers — detection that catches breaches before users report them, a runbook that compresses decision time, and a notification pipeline that can produce the regulator letter and user comms inside the window. Practice it twice a year via tabletop exercises; the first real incident is too late to test the workflow."
+    },
+    {
+      "t": "h2",
+      "text": "What to do this week"
+    },
+    {
+      "t": "p",
+      "text": "Pick three items off the 12-item checklist and assign owners by Friday. Most teams start with the data map, the privacy notice refresh, and the breach playbook because they are the lowest-friction wins that unblock the rest. If you want help running the programme end to end, the ShieldSync GRC service is built for Indian SaaS at this exact stage — we have helped companies go from zero to a defensible DPDP posture in 8–12 weeks, with optional SOC 2 and ISO 27001 overlays for international sales."
+    }
+  ]
+}

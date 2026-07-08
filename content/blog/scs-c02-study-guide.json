@@ -1,0 +1,347 @@
+{
+  "slug": "scs-c02-study-guide",
+  "title": "AWS Security Specialty (SCS-C03) Study Guide — updated from SCS-C02",
+  "excerpt": "A practitioner's SCS-C03 study guide — every domain mapped to the services it really tests, the gotchas the exam loves, and free hands-on AWS labs you can use to build console-time before exam day. Updated from SCS-C02.",
+  "category": "Cloud / AWS",
+  "date": "Jun 30, 2026",
+  "read": "16 min",
+  "image": "/blog/scs-c02-study-guide.webp",
+  "body": [
+    {
+      "t": "p",
+      "text": "AWS retired the SCS-C02 version of the Certified Security Specialty exam on December 1, 2025, and replaced it with SCS-C03 the next day. The two big changes: GenAI and ML-workload security (Bedrock guardrails, SageMaker data protection, model access controls) is now in scope, and Threat Detection & Incident Response has been split out into its own standalone domain instead of being blended with logging and monitoring. The core services this guide walks — IAM, KMS, VPC, GuardDuty, CloudTrail — are unchanged, so if you started prepping under SCS-C02 you're extending your study plan, not restarting it. This guide has been updated to reflect the current SCS-C03 blueprint."
+    },
+    {
+      "t": "p",
+      "text": "The AWS Certified Security Specialty exam — code SCS-C03 — is the certification AWS uses to certify people who can actually defend a real AWS environment. Unlike the broader associate-level exams, SCS-C03 goes deep on the security primitives most engineers only half-understand: IAM trust policies, KMS grants, VPC endpoint policies, GuardDuty findings, CloudTrail and Athena, SCPs at the organization level. It rewards judgement built in a real AWS console, and it punishes people who only studied multiple-choice trainers. This study guide is written by people who do AWS security work for a living, mapped to the current exam blueprint, and paired with hands-on labs you can run for free."
+    },
+    {
+      "t": "p",
+      "text": "If you're searching for an SCS-C02 study guide because you want to pass the exam in 6 to 12 weeks of focused study, you're in the right place. We'll walk every domain, name the services that genuinely show up, point out the question patterns AWS likes to reuse, and tell you exactly which hands-on labs build the console intuition you need. Where we have a free, browser-launched lab that covers a domain, we'll link it. The rest are paid but cheap."
+    },
+    {
+      "t": "h2",
+      "text": "The SCS-C02 exam at a glance"
+    },
+    {
+      "t": "p",
+      "text": "Before we get into content, the format. SCS-C02 is 65 questions, 170 minutes, scored on a scaled 100–1000 with 750 to pass. About 50 of the questions are scored and the rest are unscored research questions; you can't tell them apart, so answer everything. Question types are single-select multiple choice and multiple-response (pick two or three). There are no labs in the exam itself — every question is text on a screen — but the wrong-answer distractors are written for people who skipped console time, so console time is what separates a pass from a fail."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Format: 65 questions, 170 minutes",
+        "Scored: 100–1000 scale, 750 to pass",
+        "Cost: USD 300 (USD 75 for the practice exam)",
+        "Validity: 3 years, renewable by passing the current version",
+        "Delivery: Pearson VUE test center or online proctoring",
+        "Recommended experience: 5+ years general IT, 2+ years securing AWS workloads"
+      ]
+    },
+    {
+      "t": "p",
+      "text": "The blueprint splits questions across six domains with the weights below. Memorise the weights, because they tell you exactly where to spend your study time."
+    },
+    {
+      "t": "h2",
+      "text": "Domain weights — where to spend study time"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Domain 1 — Threat Detection & Incident Response: 14%",
+        "Domain 2 — Security Logging & Monitoring: 18%",
+        "Domain 3 — Infrastructure Security: 20%",
+        "Domain 4 — Identity & Access Management: 16%",
+        "Domain 5 — Data Protection: 18%",
+        "Domain 6 — Management & Security Governance: 14%"
+      ]
+    },
+    {
+      "t": "p",
+      "text": "Infrastructure Security, Logging & Monitoring, and Data Protection together are 56% of the exam. If you have a fixed study budget, weight those three first. IAM is only 16% on paper, but every other domain assumes you can read an IAM policy fluently — so treat it as foundational rather than optional."
+    },
+    {
+      "t": "h2",
+      "text": "Who this exam is for"
+    },
+    {
+      "t": "p",
+      "text": "If you're a cloud security engineer or working towards becoming one, SCS-C02 maps to your job. If you're a generalist cloud engineer who wants to specialise in security, it forces the focused reading you need. If you're preparing for a cloud security engineer role on the Indian or global market, it's the credential most hiring managers recognise alongside CCSP and CISSP for cloud-native work. It's a poor fit for people who only want a piece of paper without the underlying skill — the question writers go out of their way to detect rote memorisation."
+    },
+    {
+      "t": "h2",
+      "text": "A 6-week SCS-C02 study plan"
+    },
+    {
+      "t": "p",
+      "text": "Six weeks is enough if you can give 10–15 hours per week, you've used AWS for at least a year, and you're disciplined about doing the hands-on work instead of just reading. Stretch to 8–12 weeks if you're new to AWS or studying part-time around a job."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Week 1: Read the official Exam Guide and AWS Security Specialty learning path. Set up a free AWS account, enable an organization, turn on CloudTrail and a Security Hub trial. Do the free S3 misconfiguration lab end to end.",
+        "Week 2: Domain 4 (IAM) deep dive. Read the IAM User Guide sections on policy evaluation, condition keys, permissions boundaries, and SCPs. Do the IAM privilege escalation lab.",
+        "Week 3: Domain 5 (Data Protection). KMS, S3 encryption, Secrets Manager, ACM. Build a customer-managed CMK, a key policy, and a grant — by hand, in the console.",
+        "Week 4: Domain 3 (Infrastructure). VPC endpoint policies, security groups vs NACLs, WAF, Shield, Network Firewall. Build a VPC with a private subnet, attach an S3 gateway endpoint, restrict it via endpoint policy.",
+        "Week 5: Domains 1 and 2 (Detection & Logging). GuardDuty, Security Hub, Detective, CloudTrail, Athena, VPC Flow Logs. Generate a finding intentionally and walk it end to end.",
+        "Week 6: Domain 6 (Governance) plus full-length practice exams. Two timed practice rounds; rebuild any topic where you scored below 70%. Day before: rest."
+      ]
+    },
+    {
+      "t": "callout",
+      "text": "Console time is the single biggest predictor of passing. Most people who pass on the first attempt spend 40–80 hours actually clicking through the AWS console — not just reading or watching videos. If your week feels like 90% reading, rebalance to 50/50."
+    },
+    {
+      "t": "h2",
+      "text": "Domain 1 — Threat Detection & Incident Response (14%)"
+    },
+    {
+      "t": "p",
+      "text": "This domain asks: an alert just fired, what do you do? You need to know which AWS detection services exist, what each one detects, how findings flow into Security Hub, and what an incident response runbook looks like in AWS. GuardDuty is the spine — it analyses VPC Flow Logs, DNS logs, and CloudTrail to surface findings like CryptoCurrency:EC2/BitcoinTool.B!DNS or UnauthorizedAccess:IAMUser/ConsoleLoginSuccess.B. Detective extends GuardDuty by building a graph you can pivot through. Security Hub aggregates findings from GuardDuty, Inspector, Macie, IAM Access Analyzer, and third parties."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "GuardDuty: which finding types exist, how to suppress noise, multi-account aggregation via the GuardDuty delegated administrator",
+        "Security Hub: standards (CIS, PCI, AWS Foundational), aggregator regions, ASFF format, automated remediation via EventBridge → SSM Automation",
+        "Detective: when to use it (graph pivoting), what data it consumes",
+        "AWS Config: configuration history, conformance packs, remediation actions",
+        "IR runbook patterns: isolate an EC2 instance (SG to deny-all), revoke active IAM sessions, rotate credentials, capture forensic evidence (EBS snapshot before terminating)"
+      ]
+    },
+    {
+      "t": "p",
+      "text": "Question pattern to expect: a scenario gives you a GuardDuty finding and asks the right next step. The wrong answers usually skip a containment step (e.g. revoke the session before snapshotting). Practice the runbook order — isolate, preserve, investigate, eradicate, recover."
+    },
+    {
+      "t": "h2",
+      "text": "Domain 2 — Security Logging & Monitoring (18%)"
+    },
+    {
+      "t": "p",
+      "text": "Eighteen percent of the exam, and the most under-prepared-for domain. AWS expects you to know exactly which logs each service produces, where they go, how to query them, and how to alert on them."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "CloudTrail: management events vs data events, multi-region trail vs all-region trail, organization trail, log file validation (SHA-256 digest), encryption with SSE-KMS",
+        "CloudWatch Logs: subscription filters, metric filters → CloudWatch alarms, log groups encryption, retention",
+        "VPC Flow Logs: ACCEPT vs REJECT, custom formats, where they can be sent (CloudWatch Logs, S3, Kinesis Data Firehose)",
+        "CloudTrail Lake and Athena: SQL queries on CloudTrail history, partitioning by region/year/month/day",
+        "S3 server access logs, ELB access logs, Route 53 query logs, AWS WAF logs"
+      ]
+    },
+    {
+      "t": "code",
+      "code": "-- Athena query: find any IAM user who assumed an admin role in the last 24h\nSELECT eventTime, userIdentity.principalId, requestParameters.roleArn\nFROM cloudtrail_logs\nWHERE eventName = 'AssumeRole'\n  AND requestParameters.roleArn LIKE '%AdminRole%'\n  AND from_iso8601_timestamp(eventTime) > current_timestamp - interval '1' day;"
+    },
+    {
+      "t": "p",
+      "text": "Question pattern to expect: 'You need to detect when an IAM user makes a console login from outside a list of allowed countries. Which approach minimises operational overhead?' The answer involves a CloudTrail → CloudWatch Logs subscription → metric filter → CloudWatch alarm, not a Lambda that polls. AWS exams reward managed, event-driven solutions over polling."
+    },
+    {
+      "t": "h2",
+      "text": "Domain 3 — Infrastructure Security (20%)"
+    },
+    {
+      "t": "p",
+      "text": "The biggest single domain. Focuses on VPC design, edge security, and the controls that sit between the internet and your workloads."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "VPC: subnets (public, private, isolated), route tables, NAT gateways vs NAT instances, VPC peering vs Transit Gateway, VPC endpoints (gateway for S3/DynamoDB, interface for the rest), endpoint policies",
+        "Security Groups vs NACLs: stateful vs stateless, the most-common trick question (NACLs need ephemeral port rules for return traffic; SGs don't)",
+        "AWS WAF: web ACLs, managed rule groups, rate-based rules, association with ALB / CloudFront / API Gateway / App Runner",
+        "AWS Shield: Standard (free, automatic) vs Advanced (paid, includes DRT and cost protection)",
+        "AWS Network Firewall: stateful Suricata rules, deep packet inspection, when to use over WAF",
+        "EC2 patch management with Systems Manager Patch Manager, AMI baselines, Inspector for vulnerability scanning"
+      ]
+    },
+    {
+      "t": "p",
+      "text": "Question pattern to expect: a scenario asks you to lock down traffic between an EC2 instance and S3 without going over the internet. The correct answer is an S3 gateway endpoint plus a restrictive endpoint policy plus a bucket policy that requires aws:sourceVpce. The exam loves the combination of three controls (endpoint, endpoint policy, bucket policy) — partial answers that only use one or two will be the distractors."
+    },
+    {
+      "t": "h2",
+      "text": "Domain 4 — Identity & Access Management (16%)"
+    },
+    {
+      "t": "p",
+      "text": "Sixteen percent on paper, foundational in practice — every other domain assumes IAM fluency. You need to read a policy and predict what it allows in seconds."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "IAM policy evaluation logic: explicit deny > explicit allow > implicit deny; SCPs, resource policies, identity policies, permissions boundaries, session policies — and how they combine",
+        "Trust policies vs permissions policies: the Principal in a trust policy, ExternalId for cross-account confused deputy prevention, sts:AssumeRoleWithWebIdentity",
+        "Condition keys: aws:PrincipalOrgID, aws:SourceVpc, aws:SourceIp, aws:MultiFactorAuthPresent, aws:RequestedRegion",
+        "AWS IAM Identity Center (formerly SSO): permission sets, account assignments, attribute-based access control (ABAC) with SCIM-synced attributes",
+        "Service control policies (SCPs): organization-wide guardrails — denylist vs allowlist patterns, why they don't grant permissions",
+        "Permissions boundaries: max permissions an IAM principal can have, often used for delegated admin patterns",
+        "Privilege escalation paths: iam:CreatePolicyVersion, iam:PassRole + sts:AssumeRole, iam:AttachUserPolicy"
+      ]
+    },
+    {
+      "t": "code",
+      "code": "{\n  \"Sid\": \"DenyOutsideMyOrg\",\n  \"Effect\": \"Deny\",\n  \"Action\": \"s3:*\",\n  \"Resource\": \"*\",\n  \"Condition\": {\n    \"StringNotEquals\": {\n      \"aws:PrincipalOrgID\": \"o-abc123def4\"\n    }\n  }\n}"
+    },
+    {
+      "t": "p",
+      "text": "Question pattern to expect: a long JSON policy and three statements about what it allows. Read the Effect, the Action, the Resource, and the Condition in that order. The trap is usually a NotResource or NotAction that flips the meaning, or a condition key that nobody bothered to learn (aws:SecureTransport, aws:ResourceTag). Build a habit: when you see a policy, mentally narrate 'who, can do what, on which resource, when'."
+    },
+    {
+      "t": "h2",
+      "text": "Domain 5 — Data Protection (18%)"
+    },
+    {
+      "t": "p",
+      "text": "All things encryption, secrets, and data lifecycle. KMS is the centrepiece, and it's where most candidates lose marks because the difference between a key policy, an IAM policy, and a grant is genuinely subtle."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "KMS key types: AWS-owned, AWS-managed, customer-managed (CMK); symmetric vs asymmetric; multi-region keys; key rotation (automatic for AWS-managed and CMKs)",
+        "Key policy vs IAM policy vs grant: a key policy is the source of truth for who can use a key; IAM policies still need to allow the kms: action; grants are transient permissions issued programmatically",
+        "S3 encryption: SSE-S3, SSE-KMS (with bucket key vs without), SSE-C, DSSE-KMS; default encryption settings; the difference between PutObject with x-amz-server-side-encryption-aws-kms-key-id and the bucket default",
+        "Secrets Manager vs Systems Manager Parameter Store: rotation, KMS encryption, cross-account access patterns, pricing",
+        "Certificate Manager (ACM) vs ACM Private CA: where each can be used, automatic vs manual renewal",
+        "Macie: discovers PII in S3 via managed and custom data identifiers; findings flow to Security Hub",
+        "Data lifecycle: S3 Glacier and Glacier Deep Archive retrieval times, S3 Object Lock (governance vs compliance mode), versioning + MFA Delete for ransomware protection"
+      ]
+    },
+    {
+      "t": "p",
+      "text": "Question pattern to expect: a cross-account S3 scenario where a bucket is encrypted with a KMS CMK and a principal in another account needs to GetObject. The answer must include: bucket policy allowing the principal, IAM policy on the principal allowing s3:GetObject and kms:Decrypt, key policy on the CMK allowing the principal kms:Decrypt — all three. Skip any of the three and the request fails."
+    },
+    {
+      "t": "h2",
+      "text": "Domain 6 — Management & Security Governance (14%)"
+    },
+    {
+      "t": "p",
+      "text": "Multi-account strategy and the controls that operate at the organization level. AWS Organizations is the foundation; everything else builds on it."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "AWS Organizations: OUs, root, member accounts, the management account vs delegated administrators, AWS Account Factory in Control Tower",
+        "Service Control Policies (SCPs): example patterns — deny all outside approved regions, deny ability to disable CloudTrail, deny root user usage",
+        "Control Tower: landing zones, account baselines, mandatory and elective guardrails",
+        "AWS Config conformance packs and aggregators for multi-account compliance",
+        "Trusted Advisor checks (security category), well-architected security pillar reviews",
+        "Tag policies and resource tagging strategy"
+      ]
+    },
+    {
+      "t": "p",
+      "text": "Question pattern to expect: a scenario where compliance requires that no resource can be created outside ap-south-1 and eu-west-1. The right answer is an SCP on the relevant OU with a Deny on every action whose Condition uses aws:RequestedRegion not in that list. The exam will offer IAM-policy-based answers as distractors — they're wrong because IAM policies don't bind people from creating an account outside the org, and SCPs do."
+    },
+    {
+      "t": "h2",
+      "text": "Books, docs, and videos — what to actually read"
+    },
+    {
+      "t": "p",
+      "text": "There is no shortage of SCS-C02 prep material. There is a shortage of good prep material. These are the resources we recommend, in order."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "AWS Certified Security – Specialty Exam Guide (free PDF from AWS): the canonical blueprint, the only source for what's actually on the exam",
+        "AWS Security Reference Architecture (free PDF from AWS): how AWS itself recommends structuring multi-account security",
+        "AWS Well-Architected Security Pillar whitepaper (free): the design principles the exam expects you to internalise",
+        "AWS Skill Builder Exam Prep (free, 20+ hours): the AWS-authored video course; weakest on hands-on but the closest match to question phrasing",
+        "Stephane Maarek's AWS Security Specialty course on Udemy: most popular paid prep course; strong service walkthroughs",
+        "Tutorials Dojo SCS-C02 practice exams: the standard for full-length timed practice; use these in the final 2 weeks",
+        "AWS service FAQ pages for every service in the blueprint — these contain the edge cases the exam writers source from"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Hands-on labs that build console intuition"
+    },
+    {
+      "t": "p",
+      "text": "Reading the FAQ pages and watching videos will not build the muscle memory you need for scenario questions. Real console time will. These ShieldSync labs are free or pay-per-lab, launch in your browser, and each one maps to an SCS-C02 domain."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "S3 Misconfiguration & Data Exposure (Domain 5, free): find and fix public buckets, missing encryption, and over-broad IAM in a realistic mini-account; verify your fixes with an auto-grader",
+        "IAM Privilege Escalation (Domain 4, pay-per-lab): given leaked CI/CD credentials for a 'limited' deploy user, find the policy path that lets it escalate to admin, prove it by capturing an admin-only flag, then remediate",
+        "More labs covering KMS encryption, VPC endpoint policies, GuardDuty findings, and CloudTrail forensics are landing on a rolling basis — see the full AWS Security Labs catalog"
+      ]
+    },
+    {
+      "t": "p",
+      "text": "The advantage of real, isolated AWS accounts over a simulator is that the failure modes are real — you hit the same UI, the same eventual-consistency surprises, the same IAM error messages you'll see on the job. The grader inspects your live AWS state rather than asking you to click 'done'."
+    },
+    {
+      "t": "h2",
+      "text": "Practice exam strategy for the final 2 weeks"
+    },
+    {
+      "t": "p",
+      "text": "Two weeks out, switch your study mode. Stop reading new material and start running full-length timed practice exams. Target two to three rounds in the final fortnight. After each, rebuild the topics where you scored below 70% — read the relevant FAQ pages, redo the lab if there is one, and write a one-paragraph summary in your own words."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Time your practice exams strictly — 170 minutes, no breaks, no looking up answers",
+        "On the real exam, flag any question you spend more than 3 minutes on and move on; come back at the end",
+        "Read every question twice before reading the options — the question stem usually narrows the answer space more than people realise",
+        "When two options look equally right, the one with less operational overhead wins; AWS prefers managed services over self-managed",
+        "When a question mentions 'compliance', the right answer almost always includes deny SCPs or AWS Config conformance packs, not detective controls alone"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Common pitfalls that cost people the exam"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Skipping IAM depth — the exam quietly tests IAM in every other domain; you must read policies fluently",
+        "Confusing CloudTrail management events with data events — only data events are off by default, and they're billed per event",
+        "Mixing up SGs and NACLs — SGs stateful, NACLs stateless, NACLs need explicit rules for return traffic",
+        "Forgetting that S3 bucket policies and IAM policies and KMS key policies must all permit access for cross-account requests",
+        "Picking a Lambda or custom script when a managed AWS service (EventBridge, GuardDuty, Security Hub) does the same thing",
+        "Choosing IAM for region restriction instead of SCPs at the OU level",
+        "Overlooking VPC endpoint policies — they're the second control after the bucket policy and the exam likes them"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Day-before and exam-day checklist"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Day before: light review of the IAM policy evaluation flowchart and the KMS key policy / IAM policy / grant trifecta. Sleep early.",
+        "Two hours before: re-read the official Exam Guide section headings. No new content.",
+        "At the test centre: bring two forms of ID. For online proctoring: clear desk, single monitor, no second device anywhere in the room.",
+        "First 5 minutes: do a fast pass of all 65 questions and answer the easy ones. Flag the rest.",
+        "Last 15 minutes: revisit every flagged question. Don't change an answer unless you have a specific reason — gut answers are usually right.",
+        "After submit: AWS releases the unofficial pass/fail immediately; the scored report and the badge land within 5 business days."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "What to do if you don't pass"
+    },
+    {
+      "t": "p",
+      "text": "You can retake SCS-C02 after a 14-day cool-off. Use the cool-off to rebuild the weakest domain — the score report breaks down 'needs improvement' by domain, and that's the most honest feedback you'll get. Most second attempts pass because the gap is usually one or two specific topics, not a general weakness."
+    },
+    {
+      "t": "h2",
+      "text": "Ready to start?"
+    },
+    {
+      "t": "p",
+      "text": "Start with one free lab today. The S3 Misconfiguration & Data Exposure lab takes about 30 minutes, runs in a real isolated AWS account in your browser, and covers a slice of Domain 5 end to end. If it clicks for you, the rest of the AWS Security Labs catalog will get you the console time SCS-C02 actually rewards. Pair it with the official Exam Guide and the 6-week plan above, and you've got everything you need to pass."
+    }
+  ]
+}

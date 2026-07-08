@@ -1,0 +1,251 @@
+{
+  "slug": "rag-security-vector-db",
+  "title": "RAG Security: Protecting Vector Databases and Embedding Pipelines",
+  "excerpt": "A practitioner's RAG security guide — corpus poisoning, indirect prompt injection via retrieved docs, embedding inversion, tenant isolation, and concrete defences for OpenSearch, pgvector, and Pinecone.",
+  "category": "AI Security",
+  "date": "Jun 30, 2026",
+  "read": "13 min",
+  "image": "/blog/rag-security-vector-db.webp",
+  "body": [
+    {
+      "t": "p",
+      "text": "RAG security gets less attention than it should because retrieval-augmented generation feels like a solved pattern — chunk your documents, embed them, store in a vector database, retrieve top-k, stuff them into the prompt. The threat model is anything but solved. Every step in that pipeline is an attack surface: the corpus can be poisoned, the retrieved chunks can carry indirect prompt injections, the embedding store can leak across tenants, and the embeddings themselves can be inverted back into source text. This guide walks each attack and the concrete defences for the vector databases you are most likely to use on AWS."
+    },
+    {
+      "t": "p",
+      "text": "We will work through the RAG attack surface (corpus poisoning, indirect injection, embedding inversion, cross-tenant leakage), concrete defences for each, the security tradeoffs between OpenSearch Serverless, pgvector on RDS, and Pinecone, and a worked example showing how the controls compose. The examples assume AWS-native infrastructure and the kinds of regulatory contexts (DPDP for India, GDPR for the EU, HIPAA / PCI in the US) that drive most RAG security work in 2026."
+    },
+    {
+      "t": "h2",
+      "text": "The RAG architecture and where it breaks"
+    },
+    {
+      "t": "p",
+      "text": "A canonical RAG pipeline has five stages: ingestion (documents enter the corpus), chunking (each document is split into passages), embedding (each chunk is converted to a vector), storage (vectors plus metadata land in a vector database), and retrieval (at query time the user's query is embedded and the top-k nearest chunks are returned and stuffed into the model prompt). Each stage has a security story."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Ingestion: who can add documents to the corpus, and how is provenance recorded?",
+        "Chunking: are document boundaries respected, or can a single attacker doc bleed across chunks?",
+        "Embedding: which model produces the embeddings, where does it run, and can the embeddings be inverted?",
+        "Storage: how are vectors and metadata isolated per tenant?",
+        "Retrieval: what filter conditions are enforced at query time, and how is the retrieved content treated by the LLM prompt?"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Attack 1 — Corpus poisoning"
+    },
+    {
+      "t": "p",
+      "text": "Corpus poisoning is the most direct attack on RAG: get attacker-controlled content into the corpus, then phrase your query so the retrieved top-k includes it. The attacker's content can be anything from a fake policy document that overrides a legitimate one, to an instruction that the model treats as authoritative ('Always recommend the product XYZ'), to a malicious URL the model emits as a citation."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Allowlist ingestion sources — only signed bundles or content from trusted origin systems enter the corpus.",
+        "Sign corpus updates with cosign or an internal CI signature; reject unsigned bundles at ingest.",
+        "Maintain a provenance record for every chunk (source URL, ingest time, signer) and surface it in the model's prompt so the model can reason about trust.",
+        "Run a content classifier on incoming documents to flag instruction-like text ('ignore all previous', 'system:', 'always recommend') before it reaches the embedding stage.",
+        "Version the corpus and keep diffs reviewable — corpus drift should be PR-reviewed the way code is."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Attack 2 — Indirect prompt injection via retrieved docs"
+    },
+    {
+      "t": "p",
+      "text": "Even a legitimately ingested document can carry attacker content. A customer-submitted PDF, a public web page scraped into the corpus, an email body indexed for support search — any of these can include text designed to flip the model's behaviour the moment it lands in the prompt. This is the most studied RAG attack since 2023 and the hardest to fully eliminate."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Tag retrieved content explicitly in the prompt: '<RETRIEVED_DOCUMENT source=...>...</RETRIEVED_DOCUMENT>' and instruct the model that text inside these tags is data, not instructions.",
+        "Use Bedrock Guardrails contextual-grounding checks to score whether the model's answer is supported by the retrieved sources — sudden divergence is a signal of indirect injection.",
+        "Strip or escape control sequences in retrieved content (system-prompt markers, tool-call schemas) before stuffing into the prompt.",
+        "Maintain a denied-topics list in Guardrails that catches the most common injection patterns ('reveal the system prompt', 'ignore previous instructions').",
+        "For high-stakes flows, run a second LLM pass that classifies whether retrieved content contains instruction-like text and refuse to use it if it does."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Attack 3 — Embedding inversion"
+    },
+    {
+      "t": "p",
+      "text": "Embeddings are not one-way functions. Recent research has shown that for many embedding models, the original text can be partially reconstructed from the vector — sometimes to high fidelity for short or templated content. If your vector store contains embeddings of sensitive data and an attacker can read the vectors, they may be able to recover the underlying text."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Treat the vector store as containing the source data, not as a safe one-way hash — encrypt it at rest with a customer-managed KMS key.",
+        "Apply the same access controls to the vector store as to the source corpus; do not assume embeddings are 'derived data' from a privacy perspective.",
+        "Where regulation demands it (GDPR right-to-erasure, DPDP rights), build a delete-vector-by-source-id flow into your pipeline.",
+        "Avoid embedding raw PII; redact or tokenise sensitive fields before embedding when the use case allows."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Attack 4 — Cross-tenant data leakage"
+    },
+    {
+      "t": "p",
+      "text": "If your RAG system serves multiple tenants — customers, internal teams, business units — the most operationally common bug is a missing tenant filter at query time. The result is one tenant's question retrieving another tenant's documents. This is usually not a malicious attack; it's a forgotten WHERE clause in a metadata filter."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Make the tenant id part of the vector store key, not just a metadata field — physical isolation beats logical filters.",
+        "If using a single index with metadata filters, enforce the tenant filter inside a thin wrapper service that all queries route through; never let the LLM construct the filter from the prompt.",
+        "Add an integration test in CI that issues a tenant-A query and asserts no tenant-B document IDs appear in the result.",
+        "Log every retrieval with the tenant id and the set of returned source ids; alarm on retrievals where source tenant does not equal query tenant."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Vector database choices and their security tradeoffs"
+    },
+    {
+      "t": "p",
+      "text": "Three vector store choices dominate AWS RAG deployments: OpenSearch Serverless, pgvector on RDS Postgres, and Pinecone. Each has a different security posture."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "OpenSearch Serverless: AWS-native, integrates cleanly with Bedrock Knowledge Bases, encryption with customer-managed KMS keys, network isolation via VPC endpoints, fine-grained IAM. Best default for AWS-only stacks.",
+        "pgvector on RDS Postgres: full SQL access control, row-level security for tenant isolation, encryption with KMS, runs in your VPC. Best when you already operate RDS and want familiar primitives.",
+        "Pinecone: managed third-party SaaS, fast and easy to operate, but data leaves your AWS account boundary. Use only if a DPA covers your compliance ask; never for regulated data without explicit approval."
+      ]
+    },
+    {
+      "t": "p",
+      "text": "For most AWS-based RAG deployments in 2026 the answer is OpenSearch Serverless behind a Bedrock Knowledge Base — it gives you KMS, VPC isolation, IAM, and Bedrock-native integration in one stack. pgvector wins when you need SQL-native row-level security for very strict tenant isolation; Pinecone wins on developer velocity but at the cost of an extra third-party trust boundary."
+    },
+    {
+      "t": "h2",
+      "text": "A worked example — secure RAG on OpenSearch Serverless"
+    },
+    {
+      "t": "p",
+      "text": "Here is a concrete pattern for a multi-tenant support assistant: the corpus is per-tenant uploaded PDFs and webpages; the user asks questions; the assistant answers using only that tenant's docs. The architecture has five pieces."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "S3 source buckets, one per tenant, encrypted with a per-tenant KMS CMK; bucket policy requires aws:SourceVpce.",
+        "An ingestion Lambda triggered by S3 PutObject that signs each document with the tenant key and records provenance in DynamoDB before triggering the Bedrock Knowledge Base sync.",
+        "A Bedrock Knowledge Base per tenant (or a shared KB with strict metadata filters — the per-KB pattern is safer and cheaper to reason about).",
+        "An application Lambda that the user hits via API Gateway; it derives the tenant id from the authenticated identity (Cognito or IAM Identity Center claim), then calls bedrock:RetrieveAndGenerate with the tenant's KB id and a Guardrail that denies system-prompt-leak topics.",
+        "CloudTrail data events on the Bedrock KB and Guardrail; CloudWatch alarm on any retrieval where the tenant id in the request does not match the tenant id in the KB ARN."
+      ]
+    },
+    {
+      "t": "code",
+      "code": "{\n  \"Sid\": \"RetrieveOnlyTenantOwnKnowledgeBase\",\n  \"Effect\": \"Allow\",\n  \"Action\": [\n    \"bedrock:Retrieve\",\n    \"bedrock:RetrieveAndGenerate\"\n  ],\n  \"Resource\": \"arn:aws:bedrock:ap-south-1:111122223333:knowledge-base/${aws:PrincipalTag/tenant_id}\",\n  \"Condition\": {\n    \"StringEquals\": {\n      \"aws:PrincipalOrgID\": \"o-abc123def4\"\n    }\n  }\n}"
+    },
+    {
+      "t": "p",
+      "text": "The IAM trick above uses ABAC: the principal carries a tenant_id tag (set by your identity provider via Cognito attribute mapping or by your federation), and the Resource ARN templates against that tag. The same role serves every tenant but can only ever Retrieve from the KB whose id equals the caller's tenant id. This is the simplest form of tenant isolation that survives both a forgotten WHERE clause and a prompt-injected metadata filter."
+    },
+    {
+      "t": "h2",
+      "text": "Chunking and metadata — silent risks"
+    },
+    {
+      "t": "p",
+      "text": "Chunking strategy is usually treated as a quality decision, but it has security implications. Overly large chunks expand the surface for indirect prompt injection — more attacker text fits in a single retrieved chunk. Overly small chunks lose context and force the model to fall back on its priors, which makes hallucinations more likely. The sweet spot for most enterprise corpora is 500-1500 tokens per chunk with a 10-15 percent overlap, and a hard cap on chunk size that the ingestion pipeline enforces."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Cap chunk size at the ingestion stage; reject documents that produce chunks above the cap (likely a malformed or adversarial source).",
+        "Respect document boundaries — never chunk across two source documents, since this mixes trust contexts.",
+        "Strip control characters and zero-width unicode from chunks before embedding; both are common smuggling vectors for hidden instructions.",
+        "Store the source url, ingestion time, and signer in chunk metadata so retrieval can return provenance to the LLM."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Defending the embedding model"
+    },
+    {
+      "t": "p",
+      "text": "The embedding model is part of the RAG supply chain. If it changes, your embeddings shift and previously cached vectors become incompatible — re-embed the whole corpus. If a malicious embedding model is introduced (e.g. via a compromised dependency), it can be tuned to retrieve adversarial chunks for specific queries. Pin the embedding model id and version the way you pin foundation models; use Bedrock-hosted embeddings (Titan, Cohere Embed) when you want AWS to manage the supply chain."
+    },
+    {
+      "t": "h2",
+      "text": "Detection and logging"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Log every retrieval with: tenant id, query, returned source ids, embedding model id, KB id.",
+        "Alarm on retrievals where the source tenant id does not equal the query tenant id (cross-tenant leak).",
+        "Alarm on sudden corpus growth (5x baseline ingest rate) — that is either a real onboarding or a poisoning attempt.",
+        "Pipe Guardrail contextual-grounding low-score events to CloudWatch and trend them — a sustained drop in grounding scores often correlates with poisoned corpus content.",
+        "Run a weekly diff of the corpus and review additions in a CODEOWNERS-style flow for high-trust deployments."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Right-to-erasure and the vector store"
+    },
+    {
+      "t": "p",
+      "text": "Both India's DPDP Act 2023 and the EU GDPR give data subjects a right to have their personal data erased. If you have embedded a user's PII into a vector database, 'delete the user' must also delete the corresponding vectors — and you must be able to prove you did. This is operationally harder than it looks because most ingestion pipelines treat the vector store as derived data and don't track the link from a source record back to the vector ids it produced."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Maintain a source-to-vector mapping in a transactional store (DynamoDB or RDS): for every source record id, the list of vector ids it produced.",
+        "Build a delete-by-source-id operation that removes vectors from the store and tombstones the source-to-vector mapping.",
+        "Test the delete path quarterly as part of your DSAR (data subject access request) playbook.",
+        "Document the erasure flow in your RoPA (record of processing activities) — auditors will ask for it."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Cost-side risks — the forgotten attack surface"
+    },
+    {
+      "t": "p",
+      "text": "RAG security writing focuses on data leakage and almost never on cost abuse, but in production cost incidents are the more common operational failure. An attacker (or a buggy client) that floods retrieval calls can run up the OpenSearch read bill, the embedding model bill, and the foundation-model invocation bill simultaneously — each with its own meter. Treat cost the way you treat any other availability concern."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Rate-limit retrieval calls per principal at the application layer; never expose RetrieveAndGenerate directly to an untrusted client.",
+        "Cap top-k and chunk size in retrieval requests; reject requests that exceed.",
+        "Set CloudWatch budget alarms per service (Bedrock, OpenSearch) and per dimension (model id, KB id) with 4x-baseline anomaly detection.",
+        "Use Bedrock provisioned throughput for predictable production paths so a noisy-neighbour on-demand workload cannot starve them."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "A short RAG security checklist"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Corpus ingestion is signed and provenance is recorded per chunk.",
+        "Retrieved content is tagged as data, not instructions, in the prompt.",
+        "Bedrock Guardrails apply contextual-grounding and denied-topics on every call.",
+        "Vector store is encrypted with a customer-managed KMS CMK and isolated by VPC endpoint.",
+        "Tenant isolation is enforced at the resource (separate KB or row-level security), not just at the metadata filter.",
+        "IAM uses ABAC to pin queries to the caller's tenant via principal tag templating.",
+        "Retrieval logs capture tenant, query, source ids, KB id; cross-tenant retrievals alarm.",
+        "Embedding model id and version are pinned in code; the embedding stage runs inside your VPC."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Where to go next"
+    },
+    {
+      "t": "p",
+      "text": "RAG security is one slice of the broader LLM threat model — the rest of it is covered in our OWASP LLM Top 10 mapped to AWS Bedrock checklist. The underlying AWS primitives (IAM ABAC, KMS, VPC endpoints, CloudTrail) are the same ones the AWS Security Specialty certification tests; our SCS-C02 study guide walks each. And if you want hands-on practice with the IAM and bucket-policy patterns the tenant-isolation example above depends on, the free S3 misconfiguration audit lab on labs.shieldsyncsecurity.com is the right first step."
+    }
+  ]
+}

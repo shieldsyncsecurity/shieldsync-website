@@ -1,0 +1,259 @@
+{
+  "slug": "soc-analyst-roadmap",
+  "title": "From Zero to SOC Analyst: A 12-Week Self-Study Plan with Free Labs",
+  "excerpt": "A free 12-week SOC analyst roadmap — weekly milestones, the free tools to practise on, home-lab setup, interview prep, and how to land your first SOC role in India.",
+  "category": "Career",
+  "date": "Jun 30, 2026",
+  "read": "16 min",
+  "image": "/blog/soc-analyst-roadmap.webp",
+  "body": [
+    {
+      "t": "p",
+      "text": "A SOC analyst roadmap that actually works has three properties — it is sequenced (each week unlocks the next), it is hands-on (you spend most of your time in tools, not videos), and it is honest about how long the curve takes. This article is exactly that: a 12-week self-study plan to take you from zero to job-ready as a SOC analyst, using only free tools, building everything in a home lab you can run on a single laptop. It is written for the Indian SOC market in 2026, where demand is strong but the entry-level filter is hands-on competence with real SIEM data."
+    },
+    {
+      "t": "p",
+      "text": "If you are also weighing cloud security as a path, read the cloud security engineer roadmap on the ShieldSync blog as a sibling. The two paths overlap heavily — most modern SOCs now run substantially on cloud telemetry."
+    },
+    {
+      "t": "h2",
+      "text": "What a SOC analyst actually does"
+    },
+    {
+      "t": "p",
+      "text": "A Security Operations Centre is the team that watches the alerts, triages the noise, runs the investigations, and hands the worst incidents to the IR specialists. The day looks like a triage queue — alerts come in from EDR, SIEM, cloud detectors, network sensors, email security; you decide what is real, what is noise, what is suspicious enough to dig into, and what to escalate."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "L1 SOC analyst: alert triage, first-line investigation, ticket creation, follows runbooks",
+        "L2 SOC analyst: deeper investigations, owns incidents end to end, writes detection content",
+        "L3 SOC analyst / hunter: proactive threat hunting, detection engineering, malware analysis",
+        "SOC lead / manager: shift planning, KPIs, on-call, vendor management"
+      ]
+    },
+    {
+      "t": "p",
+      "text": "Entry-level openings in India are almost always L1, with a clear progression to L2 inside 18 to 24 months if you put the reps in. Some employers run a 24/7 rotating shift model; others are 9-to-9 with on-call. Ask in the interview."
+    },
+    {
+      "t": "h2",
+      "text": "The 12-week plan"
+    },
+    {
+      "t": "p",
+      "text": "Each week has a focus, a learning resource, and a deliverable. Do the deliverable — that is what builds the portfolio. Aim for 10 to 15 hours per week. Stretch to 16 weeks if you are studying around a full-time job."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Week 1 — Networking fundamentals. TCP/IP, OSI, common ports, DNS, HTTP, TLS handshake. Deliverable: a one-page diagram of an HTTPS request flow",
+        "Week 2 — Linux fundamentals. Filesystem, users and groups, permissions, systemd, journalctl, ps/lsof, bash basics. Deliverable: a bash script that parses /var/log/auth.log for failed SSH logins",
+        "Week 3 — Windows logging and Sysmon. Event IDs that matter (4624, 4625, 4688, 4720, 7045), Sysmon configuration (use SwiftOnSecurity's config), command-line auditing. Deliverable: deploy Sysmon on a Windows VM, generate suspicious activity, identify it in the logs",
+        "Week 4 — Log analysis at scale. Grep, awk, jq for log mining; structured vs unstructured logs; correlation basics. Deliverable: parse a week of nginx access logs and identify the top 10 suspicious source IPs",
+        "Week 5 — SIEM basics with a free SIEM. Install Wazuh or ELK locally; ingest Sysmon and auth logs; write your first detection rule. Deliverable: a Wazuh rule that fires on three failed RDP logins followed by a success",
+        "Week 6 — MITRE ATT&CK. Walk the matrix, map techniques to telemetry sources, study one APT group end to end. Deliverable: a one-page TTP profile of an APT of your choice with detection ideas per technique",
+        "Week 7 — Detection engineering. Sigma rules, writing detections from scratch, false positive management. Deliverable: three Sigma rules covering credential dumping, lateral movement, and persistence",
+        "Week 8 — Endpoint investigation. EDR concepts, process trees, parent/child relationships, hashing, sandboxing with any.run or Joe Sandbox. Deliverable: a writeup of one malware sample's process tree and IOCs",
+        "Week 9 — Threat hunting. Hypothesis-driven hunting, baseline vs anomaly, Jupyter notebooks against your SIEM data. Deliverable: a written hunt for living-off-the-land binary abuse on your lab",
+        "Week 10 — Network detection. Zeek/Suricata basics, JA3 fingerprints, DNS tunnelling, beacon detection. Deliverable: detect a Cobalt Strike beacon (use a known sample PCAP) in Zeek logs",
+        "Week 11 — Incident response. Containment, eradication, recovery; chain of custody; reporting. Deliverable: a 4-page IR report on an investigation from your lab",
+        "Week 12 — Portfolio polish and interview prep. Push everything to GitHub, write three blog posts on your hunts, mock interview with a friend or community"
+      ]
+    },
+    {
+      "t": "callout",
+      "text": "Most aspiring SOC analysts skip the weekly deliverable and just consume content. The deliverable is the portfolio. Without it, week 12 is the same as week 1 to a hiring manager."
+    },
+    {
+      "t": "h2",
+      "text": "Free tools to build your stack on"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "SIEM: Wazuh (open source, easiest to install) or Elastic Stack (more flexible, steeper curve)",
+        "EDR-style telemetry: Sysmon on Windows, auditd on Linux, osquery on both",
+        "Network: Zeek and Suricata, deployed inline on a small lab subnet",
+        "Case management: TheHive (open source, IR-focused)",
+        "Threat intel: MISP (open source TI platform), OTX (free feeds)",
+        "Sandboxing: any.run free tier, Joe Sandbox free, Hybrid Analysis",
+        "Test telemetry: Atomic Red Team for safe TTP simulation, BadBlood for AD population, Caldera for adversary emulation"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Building the home lab"
+    },
+    {
+      "t": "p",
+      "text": "You do not need expensive hardware. A laptop with 16 GB RAM and 100 GB free disk runs the full lab below comfortably. 32 GB is more comfortable if you can swing it."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Hypervisor: VMware Workstation Player (free for personal use), VirtualBox, or Hyper-V",
+        "Windows AD VM: a domain controller plus one workstation, both with Sysmon",
+        "Linux VM: Ubuntu server running auditd and sending logs to your SIEM",
+        "SIEM VM: Wazuh all-in-one, pointed at the others as agents",
+        "Network sensor VM: Security Onion 2 in standalone mode — bundles Zeek, Suricata, Stenographer, and an analyst UI",
+        "Optional attacker VM: Kali Linux or Caldera, on an isolated network",
+        "Cloud telemetry: a free-tier AWS account with CloudTrail forwarding to your SIEM"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "What to look for in your first SOC job"
+    },
+    {
+      "t": "p",
+      "text": "Not all SOC jobs are equal entry points. The best first roles for a junior analyst share four traits — they give you real telemetry exposure, they have a defined progression path to L2 within 18 months, they have at least one senior analyst willing to mentor, and they let you contribute to detection engineering early. Avoid roles that are pure ticket-flipping with no path beyond."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Good first SOC roles: MSSPs with internal cert support, in-house SOCs at well-funded SaaS companies, MNC GCCs",
+        "Risky first SOC roles: outsourced 24/7 shops that pay below market and never promote, 'L1 forever' shops with no L2/L3 progression",
+        "Stipend ranges in India 2026: L1 SOC analyst ₹4–9 LPA at MSSPs, ₹8–14 LPA at MNC GCCs, internships ₹15–60k per month"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Common SOC interview questions"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Walk me through the Windows event IDs you would look at for a failed brute-force attack — 4625 (logon failure) clustered by source, followed by a 4624 (logon success) with the same target account",
+        "What is the difference between an IOC and a TTP, and which is more durable for detection? TTPs — IOCs change per campaign but TTPs persist",
+        "Explain the MITRE ATT&CK matrix and walk one technique end to end — pick T1059 Command and Scripting Interpreter, talk about powershell.exe child of an Office process",
+        "How would you detect Cobalt Strike beaconing in network logs? Look for periodic small outbound connections to a single destination with low jitter, distinctive JA3 fingerprints, default URI patterns",
+        "Walk me through what you would do if EDR flagged mimikatz.exe on a finance laptop — isolate via EDR, capture memory, check parent process and timeline, hunt for the same hash across the fleet, escalate to IR",
+        "What is a Sysmon Event ID 1 and what fields matter? Process creation — CommandLine, ParentImage, ParentCommandLine, User, Hashes",
+        "How would you tune out a noisy alert? Baseline what is normal, write a more specific rule, suppress via exception list, never silently dropping",
+        "Describe your home lab in detail — this is the question that separates the candidates who built one from the ones who watched a video about one"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Certifications worth doing for SOC roles"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "CompTIA Security+: entry-level, recognised, useful for resume filters in India",
+        "CompTIA CySA+: SOC-specific, covers analysis and response — strong sophomore cert",
+        "Blue Team Level 1 (BTL1): the most respected hands-on SOC entry cert in 2026, 24-hour practical exam",
+        "GIAC GCIH or GCFA: gold standard but expensive, usually employer-funded",
+        "Vendor certs: Splunk Core Certified User, Elastic Certified Analyst, Microsoft SC-200"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "The reality of the SOC queue"
+    },
+    {
+      "t": "p",
+      "text": "Nothing in a SOC analyst job description prepares you for the actual texture of the work in your first month — the way the queue never empties, the way 90% of alerts close as false positive, the way the one real signal hides inside a hundred similar-looking benign events, the way an incident at 3 AM compresses three weeks of learning into three hours. Expect a steep two-month curve where the queue feels overwhelming, then a plateau where pattern recognition kicks in and the queue starts shrinking under your hands. Every analyst goes through this. The ones who survive are the ones who treat the first two months as compressed learning rather than failure."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Typical L1 alert volume: 50–300 alerts per shift depending on the SOC's tuning maturity",
+        "Typical false-positive rate: 80–95% — your job is to find the 5–20% that matter",
+        "Typical MTTD for the alerts that matter: 15–60 minutes from alert fire to escalation",
+        "Typical handover protocol: shift report at end of shift, open incidents documented in case management, on-call paged for actives"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "The shift model and what to expect on the floor"
+    },
+    {
+      "t": "p",
+      "text": "Many Indian SOC roles still run 24/7 coverage on a rotating shift model. The reality of working nights for the first time surprises most new analysts — sleep debt accumulates faster than you expect, social life takes a hit, and the post-shift commute home at 6 AM is rougher than it sounds. If you can pick, prefer employers running a follow-the-sun model with India covering the IST-aligned shift, or hybrid models with a small night roster you rotate into infrequently. If the role is hard 24/7 with rapid rotation, ask explicitly about the rotation length, blackout periods, and night-shift differential — and budget for the lifestyle change."
+    },
+    {
+      "t": "h2",
+      "text": "How to read alerts like an experienced analyst"
+    },
+    {
+      "t": "p",
+      "text": "The biggest single skill gap between L1 and L2 analysts is alert reading speed. L1 analysts read every field, get overwhelmed, and either escalate too aggressively or miss real signals in the noise. L2 analysts read three fields, form a hypothesis in 10 seconds, and confirm or reject it in two minutes. The shortcut is a triage script you run on every alert, mentally, in the same order, every time."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Who — user, source IP, process; is this principal expected to do this?",
+        "What — exact action; does the action match a known TTP?",
+        "When — time of day, business hours vs after-hours; does the timing fit normal patterns?",
+        "Where — source location, destination; is the geography expected?",
+        "Why — what is the most innocent explanation? Test the innocent explanation first; if it fails, escalate"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "The investigations notebook habit"
+    },
+    {
+      "t": "p",
+      "text": "Every L2 and above analyst keeps an investigations notebook — a private wiki or markdown repo where every non-trivial investigation gets a write-up. Pattern, hypothesis, evidence, conclusion, follow-ups. Three benefits: you build a library of TTPs you have personally seen, you compound learning across cases, and your write-ups become the source material for new detection content. Start the notebook in week 1 of your job; in two years you have the most valuable career asset a SOC analyst can own."
+    },
+    {
+      "t": "h2",
+      "text": "Common SOC analyst mistakes"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Closing alerts as false positive without writing a one-line reason — the next analyst hits the same alert and re-investigates from scratch",
+        "Escalating to L2 without doing the basic triage script — burns senior analyst time and signals you are not learning",
+        "Treating the SIEM as the source of truth without ever opening the raw log — the SIEM parses fields and sometimes parses them wrong",
+        "Ignoring the boring alerts (failed logins, low-severity Sysmon) — the boring alerts are where the early-kill-chain signal lives",
+        "Never reading the runbooks until an incident fires — read them on quiet shifts, find the gaps, file PRs to fix them",
+        "Not networking with other SOCs — every analyst's blind spots get covered by peers in other shops"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Building investigation muscle in the home lab"
+    },
+    {
+      "t": "p",
+      "text": "The home lab from earlier sections is where investigation muscle gets built. Generate suspicious activity, then investigate as if you had no prior knowledge of what you generated. Use Atomic Red Team for safe TTP simulation — pick three techniques (T1059, T1003, T1021), run them on your Windows VM, then open your SIEM and walk through the detection from scratch. Time yourself. Write up what you found, what you missed, and what additional telemetry would have caught the gap. Repeat with a different technique each week. After 8–10 weeks of this you have the pattern library that interviewers actually probe for in technical screens."
+    },
+    {
+      "t": "h2",
+      "text": "Detection content as a career accelerator"
+    },
+    {
+      "t": "p",
+      "text": "The single fastest path from L1 to L2 in any SOC is to start writing detection content. Sigma rules, Wazuh rules, Splunk SPL, EQL — whatever your SIEM speaks. Pick one alert that fires too often or too rarely on your team's queue, study it for a week, then propose a tuned version. Get it through review, ship it, measure the FP-rate change. Three of these in your first year and you are no longer an L1 — you are someone who improves the team's signal-to-noise ratio, which is the single thing every SOC manager rewards. Public Sigma rule contributions are also a strong portfolio signal for your next job search."
+    },
+    {
+      "t": "h2",
+      "text": "Cloud-aware SOC — the 2026 shift"
+    },
+    {
+      "t": "p",
+      "text": "Five years ago, a SOC was Windows event logs, firewall logs, and proxy logs. Today, a SOC at any modern company is at least half cloud — CloudTrail, GuardDuty findings, Azure Activity Logs, GCP Audit Logs, Kubernetes audit. SOC analysts who can read a CloudTrail event and trace an STS assumeRole chain are worth meaningfully more than those who cannot. Add a few weeks of cloud telemetry practice to your home-lab plan even if your first job is not cloud-focused — every SOC will be cloud-heavy within two years."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "CloudTrail event anatomy — eventName, userIdentity, sourceIPAddress, requestParameters, responseElements",
+        "Common attack signals in CloudTrail — ConsoleLogin from unusual geography, GetCallerIdentity from new IP for an instance role, mass GetObject across an S3 bucket",
+        "GuardDuty finding format and how to read severity and indicators",
+        "Multi-account log aggregation — the org-wide trail, the audit account, cross-account log queries"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Where to go from here"
+    },
+    {
+      "t": "p",
+      "text": "ShieldSync's dedicated SOC labs (the labs/soc track on labs.shieldsyncsecurity.com) are launching shortly — they bundle a shared Wazuh SIEM with per-user recorded log data, so you can hunt across real telemetry without standing up your own lab. Until they are live, the home-lab plan above gets you the same outcome. If you want a structured ramp with mentor reviews and a portfolio capstone, the ShieldSync internship covers the cross-section of SOC and cloud security in 8 weeks. Pick one path, start week 1 this weekend, and you will be interview-ready in three months. The SOC career is hands-on, fast-moving, and one of the few in cybersecurity where you can go from zero to employed inside a year."
+    }
+  ]
+}

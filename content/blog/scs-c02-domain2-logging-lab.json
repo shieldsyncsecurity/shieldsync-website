@@ -1,0 +1,213 @@
+{
+  "slug": "scs-c02-domain2-logging-lab",
+  "title": "AWS Security Specialty (SCS-C03) Domain 2 Logging Lab — updated from SCS-C02",
+  "excerpt": "Build the SCS-C03 logging domain in your hands — a step-by-step walkthrough of an Athena-backed detection pipeline plus the exact mental model AWS expects on every Domain 2 question. Updated from SCS-C02.",
+  "category": "Cloud / AWS",
+  "date": "Jun 30, 2026",
+  "read": "14 min",
+  "image": "/blog/scs-c02-domain2-logging-lab.webp",
+  "body": [
+    {
+      "t": "p",
+      "text": "AWS moved from SCS-C02 to SCS-C03 on December 2, 2025. One of the structural changes: Threat Detection & Incident Response — previously blended into this same logging domain — is now its own separate domain, and SCS-C03 adds GenAI/ML-security coverage elsewhere in the blueprint. The logging fundamentals below (CloudTrail, CloudWatch Logs, VPC Flow Logs, Athena) are unchanged and still squarely SCS-C03 Domain 2 material."
+    },
+    {
+      "t": "p",
+      "text": "The SCS-C03 logging domain — Domain 2, Security Logging & Monitoring — is 18% of the exam and the single most common reason people fail on a second attempt. It looks easy because the services involved (CloudTrail, CloudWatch Logs, VPC Flow Logs) are familiar from any AWS role. It trips people up because AWS tests the exact, often-counterintuitive details: management events vs data events, what's on by default and what isn't, which subscription filter goes where, when to use a metric filter vs CloudTrail Lake vs Athena. This walkthrough fixes that by building a Domain-2 detection pipeline end to end in the console, the way you'd do it on the job, with the exam-relevant gotchas flagged at every step."
+    },
+    {
+      "t": "p",
+      "text": "Treat this as a console-time substitute. If you can run through the steps in your own free-tier account and end up with a working Athena query → CloudWatch alarm → SNS pipeline, you've covered the muscle-memory side of the SCS-C02 logging domain in a single sitting. The conceptual review at the end pins the abstractions to the controls you just clicked."
+    },
+    {
+      "t": "h2",
+      "text": "Why Domain 2 trips people up"
+    },
+    {
+      "t": "p",
+      "text": "Three reasons. First, the defaults — CloudTrail captures management events by default but NOT data events. People assume their bucket access is logged when it isn't, and the exam loves to ask 'why are GetObject calls missing from your trail?' Second, the choice between similar-looking destinations: subscription filters vs metric filters, CloudWatch Logs vs S3, Athena vs CloudTrail Lake, real-time alarms vs scheduled queries. Each has a right answer for a specific scenario, and the exam recycles the same scenario shapes. Third, the role IAM around CloudWatch Logs cross-account delivery — the most operationally-correct multi-account setup, and the one most candidates have never built."
+    },
+    {
+      "t": "h2",
+      "text": "What AWS expects you to know cold"
+    },
+    {
+      "t": "p",
+      "text": "The exam-relevant facts you must have at instant recall, no looking up:"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "CloudTrail: management events vs data events — management on by default, data off and billed per event. Insights events also separate. Multi-region trail vs single-region trail. Organization trail vs single-account trail. Log file validation produces SHA-256 digests signed with an AWS key — the integrity proof for auditors.",
+        "CloudWatch Logs: subscription filters deliver matching events in near real-time to Kinesis Data Streams, Kinesis Data Firehose, or Lambda. Metric filters extract numeric values or count matches and publish to a CloudWatch metric, which can then trigger an alarm. Subscription filter and metric filter sound similar — they are not.",
+        "VPC Flow Logs: ACCEPT vs REJECT vs ALL. Destinations: CloudWatch Logs, S3, Kinesis Data Firehose. Custom formats with extra fields (pkt-dst-aws-service, tcp-flags, traffic-path) supported in S3 and Firehose destinations. NOT logged: traffic to/from 169.254.169.254 metadata, Windows license activation, DHCP, default-VPC reserved DNS.",
+        "Athena over CloudTrail: in-place SQL via the CloudTrail SerDe. Partition projection on region and date keeps scans cheap. Always filter by region and time first.",
+        "CloudTrail Lake: managed event data store, up to 10-year retention, native SQL, no DDL or partition management. Trades cost for convenience. Tamper-resistant — you can't StopLogging a Lake the way you can a trail.",
+        "S3 server access logs vs S3 CloudTrail data events: both log object access, but server access logs use a best-effort delivery model and a flat-file format with no integrity guarantee, while data events are CloudTrail-native, integrity-validated, and structured JSON. The exam prefers CloudTrail data events for compliance scenarios.",
+        "ELB access logs (S3 only, optional), CloudFront standard logs (S3 only), Route 53 query logging (CloudWatch Logs), AWS WAF logs (S3, CloudWatch Logs, or Firehose). Each has a specific destination set that the exam will quiz."
+      ]
+    },
+    {
+      "t": "callout",
+      "text": "If you remember only one thing from Domain 2: management events are on by default, data events are off. Almost every 'why is the call missing from my logs' question hinges on this."
+    },
+    {
+      "t": "h2",
+      "text": "The pipeline we're building"
+    },
+    {
+      "t": "p",
+      "text": "We'll build a detection that fires whenever any IAM user assumes a role that contains the string 'Admin' in its name. The pipeline: CloudTrail captures the AssumeRole management event → CloudTrail delivers to S3 → Athena queries the S3 prefix on a schedule → a CloudWatch alarm fires when the query returns non-zero rows → SNS notifies the on-call channel."
+    },
+    {
+      "t": "p",
+      "text": "This is a realistic Domain 2 scenario: 'we need to alert on privileged-role assumption with minimal operational overhead.' The exam will offer Lambda-polling or third-party SIEM as distractors. The right answer is the AWS-native event-driven combination. Building it once makes the question pattern instantly recognisable."
+    },
+    {
+      "t": "h2",
+      "text": "Step 1 — Enable a multi-region organization trail"
+    },
+    {
+      "t": "p",
+      "text": "In the CloudTrail console, create a trail. Name it security-trail. Pick a dedicated S3 bucket in a logging account (or just a new bucket in your test account for the lab). Enable: log file validation (the SHA-256 digest), SSE-KMS encryption with a customer-managed CMK, and the multi-region option. Leave data events off for now — we're capturing management events, which is enough for AssumeRole. The exam-relevant choices: validation on, KMS on, multi-region on, organization trail if you have an org."
+    },
+    {
+      "t": "code",
+      "code": "aws cloudtrail create-trail \\\n  --name security-trail \\\n  --s3-bucket-name my-org-cloudtrail-ap-south-1 \\\n  --is-multi-region-trail \\\n  --enable-log-file-validation \\\n  --kms-key-id alias/cloudtrail-cmk\n\naws cloudtrail start-logging --name security-trail"
+    },
+    {
+      "t": "h2",
+      "text": "Step 2 — Create the Athena table over the CloudTrail prefix"
+    },
+    {
+      "t": "p",
+      "text": "In the Athena console, set a query result location in S3 (Athena requires one). Then create a table using the CloudTrail SerDe pointed at the S3 prefix your trail writes to. Partition projection on region and date is critical — without it your queries scan the full trail history and cost real money per run."
+    },
+    {
+      "t": "code",
+      "code": "CREATE EXTERNAL TABLE cloudtrail_logs (\n  eventTime STRING,\n  eventName STRING,\n  awsRegion STRING,\n  sourceIPAddress STRING,\n  userIdentity STRUCT<\n    type: STRING,\n    arn: STRING,\n    userName: STRING,\n    accessKeyId: STRING>,\n  requestParameters STRING,\n  errorCode STRING\n)\nPARTITIONED BY (region STRING, dt STRING)\nROW FORMAT SERDE 'com.amazon.emr.hive.serde.CloudTrailSerde'\nSTORED AS INPUTFORMAT 'com.amazon.emr.cloudtrail.CloudTrailInputFormat'\nOUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'\nLOCATION 's3://my-org-cloudtrail-ap-south-1/AWSLogs/123456789012/CloudTrail/'\nTBLPROPERTIES (\n  'projection.enabled' = 'true',\n  'projection.region.type' = 'enum',\n  'projection.region.values' = 'ap-south-1,us-east-1,eu-west-1',\n  'projection.dt.type' = 'date',\n  'projection.dt.range' = '2024/01/01,NOW',\n  'projection.dt.format' = 'yyyy/MM/dd',\n  'storage.location.template' = 's3://my-org-cloudtrail-ap-south-1/AWSLogs/123456789012/CloudTrail/${region}/${dt}/'\n);"
+    },
+    {
+      "t": "p",
+      "text": "Now write the detection query. AssumeRole is the eventName, and we narrow to roles whose ARN contains 'Admin' — change the LIKE pattern to whatever you want to detect."
+    },
+    {
+      "t": "code",
+      "code": "SELECT eventTime,\n       userIdentity.arn       AS principal,\n       json_extract_scalar(requestParameters, '$.roleArn') AS assumed_role,\n       sourceIPAddress\nFROM cloudtrail_logs\nWHERE region = 'ap-south-1'\n  AND dt = date_format(current_date, '%Y/%m/%d')\n  AND eventName = 'AssumeRole'\n  AND json_extract_scalar(requestParameters, '$.roleArn') LIKE '%Admin%';"
+    },
+    {
+      "t": "h2",
+      "text": "Step 3 — Schedule the query and publish a metric"
+    },
+    {
+      "t": "p",
+      "text": "Athena doesn't natively publish CloudWatch metrics. The cleanest pattern is an EventBridge schedule (or scheduled Lambda) that runs the query, counts the rows, and calls cloudwatch:PutMetricData with the result. A 5-minute schedule is reasonable for AssumeRole — anything tighter wastes Athena cost and anything looser breaks the 'near-real-time' framing the exam expects."
+    },
+    {
+      "t": "code",
+      "code": "import boto3, time, os\nimport datetime as dt\n\nathena = boto3.client('athena')\ncw = boto3.client('cloudwatch')\n\nQUERY = open('/var/task/admin_assume.sql').read()\nDB    = os.environ['ATHENA_DB']\nOUT   = os.environ['ATHENA_OUTPUT']\n\ndef handler(event, ctx):\n    qid = athena.start_query_execution(\n        QueryString=QUERY,\n        QueryExecutionContext={'Database': DB},\n        ResultConfiguration={'OutputLocation': OUT}\n    )['QueryExecutionId']\n\n    # poll for completion\n    while True:\n        s = athena.get_query_execution(QueryExecutionId=qid)['QueryExecution']['Status']['State']\n        if s in ('SUCCEEDED','FAILED','CANCELLED'):\n            break\n        time.sleep(2)\n\n    rows = athena.get_query_results(QueryExecutionId=qid)['ResultSet']['Rows']\n    # first row is the header\n    count = max(0, len(rows) - 1)\n\n    cw.put_metric_data(\n        Namespace='Security/IAM',\n        MetricData=[{\n            'MetricName': 'AdminRoleAssumptions',\n            'Value': count,\n            'Unit': 'Count',\n            'Timestamp': dt.datetime.utcnow()\n        }]\n    )\n    return {'count': count}"
+    },
+    {
+      "t": "h2",
+      "text": "Step 4 — CloudWatch alarm to SNS"
+    },
+    {
+      "t": "p",
+      "text": "Create an SNS topic named security-pager and subscribe the on-call channel (email for the lab, a PagerDuty integration in real life). Then create a CloudWatch alarm on the Security/IAM AdminRoleAssumptions metric: threshold > 0, evaluation periods 1, period 5 minutes, alarm action = the SNS topic ARN."
+    },
+    {
+      "t": "code",
+      "code": "aws sns create-topic --name security-pager\n\naws cloudwatch put-metric-alarm \\\n  --alarm-name AdminAssumeRoleAlarm \\\n  --metric-name AdminRoleAssumptions \\\n  --namespace Security/IAM \\\n  --statistic Sum \\\n  --period 300 \\\n  --threshold 0 \\\n  --comparison-operator GreaterThanThreshold \\\n  --evaluation-periods 1 \\\n  --alarm-actions arn:aws:sns:ap-south-1:123456789012:security-pager \\\n  --treat-missing-data notBreaching"
+    },
+    {
+      "t": "h2",
+      "text": "Step 5 — Generate a test event and confirm the alarm fires"
+    },
+    {
+      "t": "p",
+      "text": "Create a test role with 'Admin' in its name and a trust policy allowing your own IAM user. Assume the role with sts:AssumeRole. Within a few minutes the scheduled Lambda runs, the Athena query returns a row, the metric goes from 0 to 1, the alarm crosses threshold, and you get an SNS notification. If you don't get one, debug in this order: (1) is CloudTrail actually delivering to S3 (check the bucket), (2) does the Athena query return rows when you run it manually, (3) is the Lambda publishing the metric (check CloudWatch Metrics console), (4) is the alarm evaluating (check alarm state in CloudWatch Alarms)."
+    },
+    {
+      "t": "p",
+      "text": "Cleanup: delete the test role, the alarm, the SNS topic, the Lambda, the Athena table, and stop CloudTrail logging if this is just a lab account. The CloudTrail bucket itself can be kept for further practice."
+    },
+    {
+      "t": "h2",
+      "text": "The metric-filter alternative"
+    },
+    {
+      "t": "p",
+      "text": "There's a simpler pattern: send CloudTrail to a CloudWatch Logs group, attach a metric filter that matches AssumeRole on Admin-named roles, and alarm on the resulting metric. No Athena, no Lambda. The exam often offers this as a distractor and a correct answer in different scenarios — knowing when each is right is the test."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Use a CloudWatch metric filter when: you need real-time-ish alerting (sub-minute), the match is a simple pattern, the volume of log data is moderate, and you don't need historical SQL queries.",
+        "Use Athena over S3 when: you also need ad-hoc historical investigation, the matching logic is complex (joins, regex, JSON path), data retention is long (years), and per-event CloudWatch Logs ingest cost would be too high.",
+        "Use CloudTrail Lake when: you want the Athena experience without managing the table, schema, or partitions; you need long retention (up to 10 years) with tamper-resistant storage; and you're willing to pay for the convenience."
+      ]
+    },
+    {
+      "t": "code",
+      "code": "# Metric-filter equivalent of the Athena query, in case the scenario prefers it\naws logs put-metric-filter \\\n  --log-group-name CloudTrail/security-trail \\\n  --filter-name AdminAssumeRole \\\n  --filter-pattern '{ ($.eventName = \"AssumeRole\") && ($.requestParameters.roleArn = \"*Admin*\") }' \\\n  --metric-transformations \\\n      metricName=AdminRoleAssumptions,metricNamespace=Security/IAM,metricValue=1,defaultValue=0"
+    },
+    {
+      "t": "h2",
+      "text": "Domain 2 gotchas to verify your grasp on"
+    },
+    {
+      "t": "p",
+      "text": "After building the pipeline, test yourself against these questions without looking anything up. If you stumble on any of them, that's the topic to rebuild before the exam."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A trail captures management events. Why does the team see no GetObject calls in CloudTrail for a specific S3 bucket? Answer: data events are off by default and must be enabled per bucket (or for all buckets) with selectors.",
+        "A subscription filter on a log group sends matching events to Kinesis Firehose. Which IAM principal needs which permission? Answer: logs.amazonaws.com must assume a role allowing firehose:PutRecord* on the delivery stream.",
+        "An organization trail captures events from all member accounts. A new account joins the org and its events are missing. Likely cause? Answer: organization-trail propagation can take time; verify IsOrganizationTrail is true and that the management account has the right Organizations service-linked role.",
+        "VPC Flow Logs need to capture custom fields. What's the minimum-overhead destination? Answer: S3 with Parquet format and Hive partitioning, queryable via Athena.",
+        "CloudTrail Lake vs Athena over S3 — which has lower management overhead? Answer: Lake, but at higher cost per event ingested.",
+        "Which CloudTrail feature provides cryptographic proof a log file hasn't been altered? Answer: log file validation (SHA-256 digests signed with an AWS key).",
+        "An IAM user with full CloudTrail permissions stops the trail. How do you detect this fast? Answer: GuardDuty Stealth:IAMUser/CloudTrailLoggingDisabled finding, or an EventBridge rule on the StopLogging API call routed to SNS."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Multi-account logging — the architecture the exam expects"
+    },
+    {
+      "t": "p",
+      "text": "Single-account is the lab. Real production environments centralise logs into a dedicated logging account that no workload role can write into or delete from. The canonical SCS-C02 architecture is: an organization trail in the management account → writes to an S3 bucket in the logging account → bucket policy denies delete/update for anything but a tightly-scoped admin role → logs replicate to a secondary region for resilience → CloudWatch Logs subscription destination in the logging account receives streams from member accounts via cross-account permissions."
+    },
+    {
+      "t": "p",
+      "text": "The exam rewards knowing this shape even if you've never built it. Read the AWS multi-account security reference architecture (free PDF) before the exam — it's the source of several Domain 2 and Domain 6 questions verbatim."
+    },
+    {
+      "t": "h2",
+      "text": "Common mistakes on Domain 2 questions"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Picking a Lambda-polling answer when an event-driven option (EventBridge, metric filter, subscription filter) is listed. AWS prefers managed event-driven solutions on every exam.",
+        "Confusing metric filters with subscription filters. Metric filters publish to a CloudWatch metric; subscription filters deliver matching events to a downstream service.",
+        "Assuming S3 server access logs are equivalent to CloudTrail S3 data events. They aren't — data events are integrity-validated and structured, server access logs are best-effort.",
+        "Forgetting that CloudWatch Logs ingest cost can be significant. The exam will sometimes call this out as a reason to choose S3 + Athena instead.",
+        "Not knowing which destinations VPC Flow Logs support (CloudWatch Logs, S3, Kinesis Firehose) — and that custom formats only work on the S3 and Firehose destinations."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Next concrete step"
+    },
+    {
+      "t": "p",
+      "text": "If you ran the pipeline above end to end, you've covered the muscle-memory side of the SCS-C02 logging domain. The remaining gap is breadth — every service that produces logs and every detection pattern the exam might ask about. The free S3 misconfiguration audit lab at labs.shieldsyncsecurity.com is the natural next step: it's a real isolated AWS account in your browser, it touches CloudTrail data events for S3 directly, and it pairs Domain 2 (logging) with Domain 5 (data protection) the way the exam frequently does. Pair this walkthrough with the full SCS-C02 study guide for the underlying syllabus and 6-week plan, and the AWS Security Certification page for the full lab catalog mapped to every domain."
+    },
+    {
+      "t": "p",
+      "text": "Domain 2 is 18% of the exam. Two evenings of focused console time on the pattern above — Athena, CloudWatch, SNS, metric filters as the alternative — covers most of that 18%. Don't read another Domain 2 article without first running the build."
+    }
+  ]
+}

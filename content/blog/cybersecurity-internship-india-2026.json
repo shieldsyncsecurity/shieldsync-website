@@ -1,0 +1,221 @@
+{
+  "slug": "cybersecurity-internship-india-2026",
+  "title": "Cybersecurity Internship in India 2026: How to Land a Cloud Security Role",
+  "excerpt": "A practical guide to landing a cybersecurity internship in India in 2026 — what employers want, where to find roles, how to interview, and the portfolio that gets replies.",
+  "category": "Career",
+  "date": "Jun 30, 2026",
+  "read": "14 min",
+  "image": "/blog/cybersecurity-internship-india-2026.webp",
+  "body": [
+    {
+      "t": "p",
+      "text": "Landing a cybersecurity internship in India in 2026 is both easier and harder than it was three years ago. Easier because the demand for security talent has outrun supply — every funded SaaS company, every bank, every healthtech, every fintech is hiring. Harder because every CSE undergrad in the country has now done two Coursera certificates and a CompTIA Security+, and that level of preparation no longer differentiates anyone. To get hired in 2026 you need real lab work, a public portfolio, and a focused narrative — and you need to know where to look."
+    },
+    {
+      "t": "p",
+      "text": "This guide walks the Indian cybersecurity internship market end to end: what employers actually screen for, how to build a resume and portfolio that get replies, where the roles are posted, and how to handle the technical interview. If you are at the start of a cloud security engineer roadmap, this is the bridge from study to your first paid role."
+    },
+    {
+      "t": "h2",
+      "text": "The Indian cybersecurity job market in 2026"
+    },
+    {
+      "t": "p",
+      "text": "India's cybersecurity workforce is estimated at roughly 400,000 professionals against an open demand for another 600,000 to 800,000 over the next three years. The largest pockets of demand are in Bengaluru, Hyderabad, Mumbai, Pune, Gurgaon, and Chennai, with growing remote-friendly demand from US- and EU-headquartered companies hiring through Indian GCCs. The DPDP Act coming into effect, RBI's tightening of cyber risk reporting for banks, and the rapid migration of Indian enterprises onto AWS, Azure, and GCP have all stretched the supply gap further."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Strongest demand areas in 2026: cloud security, application security, GRC and DPDP compliance, SOC operations, AI/ML security",
+        "Weakest demand areas: pure on-prem network security, signature-based AV, traditional GRC without cloud literacy",
+        "Hiring channels: LinkedIn (60% of openings), Naukri (mid- and senior-level), referrals (the largest single source), company websites for MNC GCCs"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "What Indian employers look for in a cybersecurity intern"
+    },
+    {
+      "t": "p",
+      "text": "The job description usually lists a dozen tools, but the recruiter and hiring manager are filtering on four things. Get clear on these and your application stands out."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Cloud literacy — at least one cloud, end to end. AWS is the most common; Azure is a strong second in BFSI; GCP is niche in India",
+        "Hands-on evidence — public labs, GitHub repos, blog posts. Anything that proves you have done the work, not just watched it",
+        "Communication — can you describe a CVE in two sentences? Can you write a Jira ticket a developer will actually action?",
+        "Curiosity and ownership — every hiring manager has been burned by interns who needed hand-holding. Show that you read the docs, try, fail, retry, ask a focused question"
+      ]
+    },
+    {
+      "t": "callout",
+      "text": "A single well-documented hands-on lab beats five Coursera certificates. Pick one lab, do it deeply, write the postmortem, push the GitHub repo. Then do it twice more. That is your portfolio."
+    },
+    {
+      "t": "h2",
+      "text": "How to stand out — the four-asset portfolio"
+    },
+    {
+      "t": "p",
+      "text": "Most internship applicants in India send a resume and a LinkedIn link. The 5% who get interviews send four things: a resume, a GitHub, a blog, and a portfolio page that ties them together. Build all four before you send a single application."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Resume: one page, projects above coursework, links to GitHub and live work, no clip-art icons",
+        "GitHub: at least three public repos with substantial READMEs. Quality > quantity. A hardened AWS Terraform module is more impressive than ten fork-and-rename clones",
+        "Blog: three to five posts on a free platform (Hashnode, Medium, or your own domain). Topics — what you broke and fixed during labs, a CVE walkthrough, an AWS service deep dive",
+        "Portfolio page or LinkedIn 'Featured' section: a single URL that bundles the above with one paragraph of narrative"
+      ]
+    },
+    {
+      "t": "p",
+      "text": "If you are short on project ideas, work through the S3 misconfiguration audit lab on labs.shieldsyncsecurity.com, then write the postmortem on your blog and push the remediation Terraform to GitHub. That single exercise gives you a lab, a blog post, and a GitHub repo — three of the four assets in one weekend."
+    },
+    {
+      "t": "h2",
+      "text": "Where to find cybersecurity internships in India"
+    },
+    {
+      "t": "p",
+      "text": "Most candidates rely on LinkedIn alone. That works for the first 20 applications but the conversion rate is low because every other applicant is doing the same. Diversify your channels."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "LinkedIn search strings: 'cybersecurity intern India', 'cloud security intern', 'SOC intern', 'GRC intern', 'application security intern'. Set alerts for each",
+        "Naukri and Internshala: more entry-level openings, especially at Indian SaaS startups and services firms",
+        "Wellfound (formerly AngelList) India: best for funded startups that hire interns into real engineering work",
+        "Direct outreach: identify 30 companies hiring in your city, find the security lead on LinkedIn, send a thoughtful note linking your portfolio",
+        "Communities: Null chapter meetups, OWASP India chapters, the SecurityBoat Slack, regional Defcon groups",
+        "Programmes with structured curriculum: the ShieldSync internship is purpose-built for the India market — 8 weeks, real AWS work in isolated accounts, mentor reviews, completion certificate, ₹9,999"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "How to write the application"
+    },
+    {
+      "t": "p",
+      "text": "The cover note matters more than people think because most resumes look the same. Three short paragraphs. First paragraph: why this company specifically (one product detail, one engineering blog post you read). Second paragraph: the one most relevant project from your portfolio, linked. Third paragraph: what you want to learn and the ask (a 20-minute call). No buzzwords, no 'kindly find attached', no padding. Hiring managers read these in 30 seconds."
+    },
+    {
+      "t": "h2",
+      "text": "Common cybersecurity intern interview questions"
+    },
+    {
+      "t": "p",
+      "text": "Indian cybersecurity intern interviews usually have three rounds — recruiter screen (resume + behavioural), technical screen (concepts + hands-on), and a wrap-up with the hiring manager (fit + scenario discussion). Prepare for these patterns."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Walk me through what happens when I type a URL in my browser and press enter — the DNS, TCP, TLS, HTTP, server response chain",
+        "Explain the difference between symmetric and asymmetric encryption, and where each is used in TLS",
+        "What is the difference between authentication and authorisation? Give an AWS example",
+        "Walk me through how you would investigate a GuardDuty 'CryptoCurrency' finding on an EC2 instance",
+        "Explain the IAM policy evaluation logic — explicit deny, explicit allow, implicit deny",
+        "Describe an OWASP Top 10 vulnerability you have studied and how you would test for it",
+        "What is the difference between a security group and a NACL in AWS?",
+        "Describe a project from your GitHub in detail — design choices, what you would do differently"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Coursera vs hands-on labs — why the lab wins"
+    },
+    {
+      "t": "p",
+      "text": "A Coursera or Udemy certificate proves you watched a video. A hands-on lab in a real AWS account proves you can do the work, hit the failure modes, debug them, and document the result. Indian employers in 2026 have largely caught onto this distinction — every senior security engineer has interviewed at least one candidate who could not open the AWS console despite a certificate that said they could. Spend your study budget on labs that run in real AWS environments, not simulators or video courses."
+    },
+    {
+      "t": "h2",
+      "text": "What an internship should actually teach you"
+    },
+    {
+      "t": "p",
+      "text": "Not all internships are equal. The best ones leave you with three things — a strong technical foundation in one specialism, a verifiable portfolio piece, and at least one mentor relationship you can call on for years. Avoid programmes that have you shadowing meetings or churning through generic videos. Ask explicitly in your screening call: what will I have built by the end of week 8 that I can show in a future interview?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Real environment access — AWS, Azure, or GCP with sandboxed accounts you can break things in",
+        "Mentor review on at least one piece of work per week",
+        "A capstone project you own and can talk about end to end",
+        "A verifiable completion certificate plus a reference letter",
+        "Honest feedback on whether you are ready for a junior role at the end"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Negotiating the internship offer"
+    },
+    {
+      "t": "p",
+      "text": "Paid cybersecurity internships in India in 2026 range from ₹15k to ₹60k per month at startups and Indian services firms, and ₹40k to ₹1.2L at MNC GCCs. Stipend matters less than the quality of the work and the brand on your resume — a six-month internship at a top MNC GCC at ₹50k is more career-changing than a year at an unknown firm at ₹70k. Where you can negotiate, ask for a learning budget (₹20–50k for certs and books), a mentor commitment in writing, and a clear path to a pre-placement offer."
+    },
+    {
+      "t": "h2",
+      "text": "Resume patterns that get shortlisted"
+    },
+    {
+      "t": "p",
+      "text": "Indian cybersecurity intern resumes share a few common failure modes that automatic resume parsers and human reviewers both reject. Fix these and your shortlist rate doubles without any change to your underlying experience. One page only for an intern resume — recruiters spend under 20 seconds on the first pass. Projects above coursework — coursework signals consumption, projects signal output. No clip-art icons or photos — they break ATS parsers and add nothing. Active verbs, measurable outcomes — 'investigated 200+ alerts/week with 92% triage accuracy' beats 'worked on SOC operations'. Tech stack listed once at the top, not repeated in every project. Links to live portfolio pieces — GitHub, blog, LinkedIn featured section."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Top section: name, one-line headline, contact, GitHub URL, blog URL, LinkedIn URL",
+        "Skills: 8–12 tools you can demonstrate in an interview; do not pad",
+        "Projects: 3 strong, each with 2–3 bullets — what, how, outcome, link",
+        "Experience or internship: most recent first, bullet outcomes not duties",
+        "Education: bottom, one line per degree",
+        "Certifications: bottom, only ones recognised in cybersecurity hiring"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Cold outreach that actually works"
+    },
+    {
+      "t": "p",
+      "text": "Most cold messages to hiring managers and security leads on LinkedIn are deleted in three seconds because they read like every other one. The ones that get replies follow a tight pattern — short, specific, no ask in the first message, evidence of having done the homework. Use this template as a starting point and adapt to each company."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Subject (if email) or first line (if LinkedIn): one specific reference to their work — a recent blog post, an open-source project, a conference talk",
+        "Paragraph 1: who you are in one sentence (where you are studying or your current role) and the specific reason you are reaching out (you want to learn how they solved X)",
+        "Paragraph 2: one piece of work from your portfolio that is relevant to their world, with a link",
+        "Paragraph 3: the small ask — 15 minutes for a virtual coffee, no expectation of a referral",
+        "Send 5 messages per week, not 50 per day — quality beats volume by a wide margin"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "What to do in the first 90 days of an internship"
+    },
+    {
+      "t": "p",
+      "text": "Getting the internship is half the job. The other half is converting it into a full-time offer or a portfolio piece strong enough to win the next role. The first 90 days set the tone — interns who follow this pattern get conversion offers; those who do not get a polite reference letter."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Days 1–14: meet everyone, read the runbooks, ask 'what does good look like by week 8?' explicitly to your manager",
+        "Days 15–45: own one ticket per week end to end, write up each one in a short Loom or doc — this becomes your portfolio later",
+        "Days 46–75: pick one improvement to the team's tooling or process and propose it; ship it if approved",
+        "Days 76–90: ask for written feedback, ask for a referral to a peer's team if conversion is not on the table, ask to keep using the lab environment for personal projects post-internship"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Where to go from here"
+    },
+    {
+      "t": "p",
+      "text": "If you have not yet picked a specialism, read the cloud security engineer roadmap on the ShieldSync blog and start at month 1. If you have the foundations and want a structured ramp, look at the ShieldSync internship — 8 weeks, real AWS work, ₹9,999, a portfolio piece at the end. If you want free lab time first, the AWS security labs catalog at labs.shieldsyncsecurity.com starts with the S3 misconfiguration audit lab. Pick one, finish it this week, and you are already ahead of most applicants. The Indian cybersecurity market in 2026 is genuinely candidate-friendly for people with hands-on evidence — your job is to be that candidate."
+    }
+  ]
+}

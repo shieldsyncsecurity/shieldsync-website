@@ -1,0 +1,223 @@
+{
+  "slug": "securing-amazon-bedrock",
+  "title": "Securing Amazon Bedrock: IAM, Guardrails, and Data Isolation in Production",
+  "excerpt": "A production-grade Amazon Bedrock security guide — IAM least privilege, Guardrails configuration, VPC endpoints, KMS encryption, and CloudTrail data events with concrete IAM JSON.",
+  "category": "AI Security",
+  "date": "Jun 30, 2026",
+  "read": "13 min",
+  "image": "/blog/securing-amazon-bedrock.webp",
+  "body": [
+    {
+      "t": "p",
+      "text": "Amazon Bedrock security is one of those topics where the AWS documentation gives you all the pieces but never assembles them. The pieces are familiar — IAM, KMS, VPC endpoints, CloudTrail — but the way Bedrock combines them is new, and the failure modes (an over-permissive bedrock:InvokeModel, a missing Guardrail, an un-encrypted Knowledge Base) are unique to generative AI. This article assembles the pieces into a production reference you can apply to your own AWS account, with IAM JSON you can paste and adapt."
+    },
+    {
+      "t": "p",
+      "text": "We will work through five layers in order: IAM least-privilege for Bedrock invocation and admin actions, Bedrock Guardrails configuration, VPC endpoints to keep traffic off the public internet, KMS encryption for prompts/responses/custom models/Knowledge Bases, and CloudWatch + CloudTrail logging for detection and response. The whole thing assumes a multi-account AWS Organisations setup because that is what production Bedrock deployments look like in 2026."
+    },
+    {
+      "t": "h2",
+      "text": "Why Amazon Bedrock security is different"
+    },
+    {
+      "t": "p",
+      "text": "Bedrock makes foundation models look like an AWS API — you call bedrock:InvokeModel the way you call s3:GetObject. That framing is mostly correct, and it is what makes Bedrock attractive: data stays in your account, IAM controls access, KMS encrypts state, CloudTrail logs activity. But three things break the analogy. First, the request payload (the prompt) and the response (the completion) are both unstructured natural language — IAM cannot tell whether a prompt is benign or an injection. Second, Bedrock primitives (Agents, Knowledge Bases, Guardrails) compose into multi-step workflows where a single InvokeModel triggers downstream Lambda invocations and S3 reads, each with their own permissions to scope. Third, generative AI introduces failure modes IAM was never designed to express — model output that leaks PII, agents that act outside their intent, prompts that exfiltrate the system prompt itself."
+    },
+    {
+      "t": "h2",
+      "text": "Layer 1 — IAM least-privilege for Bedrock"
+    },
+    {
+      "t": "p",
+      "text": "Bedrock IAM actions split into three families: invoke (bedrock:InvokeModel, bedrock:InvokeModelWithResponseStream, bedrock:Converse), admin (bedrock:CreateGuardrail, bedrock:CreateCustomModel, bedrock:CreateModelImportJob), and read (bedrock:GetFoundationModel, bedrock:ListFoundationModels). The split matters because the principals that need each family are different — an application role needs invoke, a platform team needs admin, and almost nothing should need cross-family permissions."
+    },
+    {
+      "t": "code",
+      "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"InvokeApprovedModelsOnly\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"bedrock:InvokeModel\",\n        \"bedrock:InvokeModelWithResponseStream\",\n        \"bedrock:Converse\",\n        \"bedrock:ConverseStream\"\n      ],\n      \"Resource\": [\n        \"arn:aws:bedrock:ap-south-1::foundation-model/anthropic.claude-3-5-sonnet-*\",\n        \"arn:aws:bedrock:ap-south-1::foundation-model/amazon.titan-embed-text-v2\"\n      ],\n      \"Condition\": {\n        \"StringEquals\": {\n          \"aws:PrincipalOrgID\": \"o-abc123def4\",\n          \"aws:SourceVpce\": \"vpce-0a1b2c3d4e5f6g7h8\"\n        },\n        \"Bool\": { \"aws:SecureTransport\": \"true\" }\n      }\n    },\n    {\n      \"Sid\": \"GuardrailMustBePresent\",\n      \"Effect\": \"Deny\",\n      \"Action\": [\"bedrock:InvokeModel\", \"bedrock:InvokeModelWithResponseStream\", \"bedrock:Converse\"],\n      \"Resource\": \"*\",\n      \"Condition\": {\n        \"Null\": { \"bedrock:GuardrailIdentifier\": \"true\" }\n      }\n    }\n  ]\n}"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Pin Resource to model ARNs you have approved — never use bedrock:InvokeModel on Resource '*'.",
+        "Add an aws:SourceVpce condition so calls must come through your VPC endpoint, blocking any leaked credential used from outside.",
+        "Add an aws:PrincipalOrgID condition so a leaked role can only be assumed from within your organisation.",
+        "Layer an explicit Deny that requires bedrock:GuardrailIdentifier — this is the most-effective single line to enforce Guardrails everywhere.",
+        "Keep admin actions (CreateGuardrail, CreateCustomModel, CreateModelCustomizationJob) on a separate role only platform engineers can assume, gated by MFA and SCP."
+      ]
+    },
+    {
+      "t": "p",
+      "text": "At the organisation level, write an SCP that denies bedrock:* outside your approved regions (ap-south-1 if you operate primarily from India, us-east-1 / eu-west-1 for global) and denies anyone disabling Bedrock invocation logging. Both are one-line additions to an existing data-protection SCP."
+    },
+    {
+      "t": "h2",
+      "text": "Layer 2 — Bedrock Guardrails"
+    },
+    {
+      "t": "p",
+      "text": "Guardrails are AWS's managed safety layer for Bedrock. They run on every InvokeModel call that carries a GuardrailIdentifier and can filter content on the way in and out across five dimensions: content policies (hate, insults, sexual, violence, misconduct), denied topics, sensitive information filtering, word filters, and contextual grounding checks. They are also the only Bedrock control that scales across model providers — the same guardrail works whether the underlying model is Anthropic Claude, Llama, or Titan."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Content policy: set thresholds to HIGH for hate/sexual/violence in customer-facing apps and MEDIUM for internal tools where false positives cost more than false negatives.",
+        "Denied topics: encode business-specific no-go zones (competitor names, regulated advice, internal system-prompt extraction patterns).",
+        "Sensitive information: enable PII redaction for both input and output — credit card, SSN, phone, email, Indian Aadhaar where relevant.",
+        "Contextual grounding: for RAG, set GROUNDING threshold to at least 0.7 and RELEVANCE to 0.5 — the model will refuse to answer when retrieved context doesn't support the answer.",
+        "Versioning: Guardrails are versioned — pin the application to a specific guardrail version so a tuning change doesn't change app behaviour silently."
+      ]
+    },
+    {
+      "t": "p",
+      "text": "Test guardrails the way you test any other safety control: write red-team prompts that try to defeat each filter, run them in CI on every guardrail change, and treat a regression as a release blocker."
+    },
+    {
+      "t": "h2",
+      "text": "Layer 3 — VPC endpoints and network isolation"
+    },
+    {
+      "t": "p",
+      "text": "By default a call to bedrock-runtime.ap-south-1.amazonaws.com leaves your VPC and traverses the public AWS edge. That is fine for many workloads but unacceptable for regulated data or for any architecture where private-link is mandatory. Bedrock supports interface endpoints for both the control plane (bedrock) and the data plane (bedrock-runtime, bedrock-agent-runtime)."
+    },
+    {
+      "t": "code",
+      "code": "{\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": \"*\",\n      \"Action\": [\n        \"bedrock:InvokeModel\",\n        \"bedrock:InvokeModelWithResponseStream\",\n        \"bedrock:Converse\"\n      ],\n      \"Resource\": [\n        \"arn:aws:bedrock:ap-south-1::foundation-model/anthropic.claude-3-5-sonnet-*\"\n      ],\n      \"Condition\": {\n        \"StringEquals\": { \"aws:PrincipalOrgID\": \"o-abc123def4\" }\n      }\n    }\n  ]\n}"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Create interface endpoints for com.amazonaws.<region>.bedrock-runtime and com.amazonaws.<region>.bedrock-agent-runtime in every VPC that calls Bedrock.",
+        "Attach an endpoint policy listing only the model ARNs and actions you approve — this is your second-line allowlist after IAM.",
+        "Set the security group on the endpoint to allow inbound 443 only from the application subnets, not 0.0.0.0/0.",
+        "Disable the public DNS option on the VPC endpoint so that bedrock-runtime resolves to the private endpoint IP from inside the VPC.",
+        "Add a bucket policy condition aws:SourceVpce on any S3 bucket that backs a Knowledge Base or holds invocation logs."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Layer 4 — KMS encryption for data at rest and in transit"
+    },
+    {
+      "t": "p",
+      "text": "Bedrock encrypts everything by default with AWS-owned keys. For production workloads with any compliance ask (PCI, HIPAA, SOC 2, ISO 27001, RBI guidelines for Indian fintech), you want customer-managed keys (CMKs) so you control rotation, audit, and the ability to revoke."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Custom models: pass a CMK at fine-tuning job creation; the resulting model artefacts are encrypted with that key.",
+        "Knowledge Bases: configure a CMK for the underlying OpenSearch Serverless collection and for the S3 source bucket; Bedrock requires kms:Decrypt on both.",
+        "Agents: agent session state is encrypted with a CMK you provide.",
+        "Invocation logs: when you enable Bedrock model invocation logging to S3, set the bucket's default encryption to SSE-KMS with your CMK.",
+        "Key policy: the key policy is the source of truth — list the Bedrock service principal (bedrock.amazonaws.com) with the specific kms:Encrypt/Decrypt/GenerateDataKey actions it needs, scoped via kms:ViaService and kms:EncryptionContext conditions."
+      ]
+    },
+    {
+      "t": "code",
+      "code": "{\n  \"Sid\": \"AllowBedrockUseOfTheKey\",\n  \"Effect\": \"Allow\",\n  \"Principal\": { \"Service\": \"bedrock.amazonaws.com\" },\n  \"Action\": [\n    \"kms:Decrypt\",\n    \"kms:GenerateDataKey\",\n    \"kms:DescribeKey\"\n  ],\n  \"Resource\": \"*\",\n  \"Condition\": {\n    \"StringEquals\": {\n      \"kms:ViaService\": \"bedrock.ap-south-1.amazonaws.com\",\n      \"aws:SourceAccount\": \"111122223333\"\n    }\n  }\n}"
+    },
+    {
+      "t": "h2",
+      "text": "Layer 5 — CloudWatch logging and CloudTrail data events"
+    },
+    {
+      "t": "p",
+      "text": "Bedrock generates three categories of telemetry you should capture: CloudTrail management events (who called CreateGuardrail, who updated a model), CloudTrail data events (every InvokeModel call), and Bedrock model invocation logs (the actual prompts and completions). The first two are free or cheap; the third is volumetric and you must encrypt it."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Enable a multi-region CloudTrail trail with management events; add a data event selector for AWS::Bedrock::AgentAlias, AWS::Bedrock::KnowledgeBase, and AWS::Bedrock::Guardrail.",
+        "Enable Bedrock model invocation logging via the Bedrock console; send to S3 (not CloudWatch Logs) for cost and queryability via Athena.",
+        "Stream Guardrail trace events to CloudWatch Logs; build a CloudWatch metric filter on 'GUARDRAIL_INTERVENED' and alarm on a 5x baseline spike.",
+        "Build an Athena view over the invocation logs partitioned by date and account; canonical queries to keep handy: top callers by token count, prompts longer than 5,000 tokens, completions containing patterns that look like credentials."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Bedrock Agents — IAM patterns for action groups"
+    },
+    {
+      "t": "p",
+      "text": "Bedrock Agents add another layer: an agent has an execution role that calls the model, and each action group has a Lambda whose own execution role does the actual work. The mistake we see most often in reviews is collapsing both roles into one, or pointing the action-group Lambda at an over-broad role 'so the agent can do anything it needs to'. Split them. The agent execution role needs bedrock:InvokeModel for the model the agent uses, plus lambda:InvokeFunction for the specific action-group Lambdas. The action-group Lambda role needs only the AWS APIs that specific tool requires — nothing more."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Agent execution role: bedrock:InvokeModel pinned to the agent's model ARN; lambda:InvokeFunction pinned to the action-group Lambda ARNs; nothing else.",
+        "Action-group Lambda role: only the specific AWS APIs that one tool needs (e.g. dynamodb:GetItem on one table, not dynamodb:* on Resource '*').",
+        "Knowledge-base association: bedrock:Retrieve and bedrock:RetrieveAndGenerate pinned to the KB ARN, with aws:SourceVpce condition where possible.",
+        "Sessions: use Bedrock Agents session state encryption with a CMK; the session can carry sensitive context across turns and should be treated as production data."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Bedrock Knowledge Bases — IAM, KMS, and OpenSearch"
+    },
+    {
+      "t": "p",
+      "text": "Knowledge Bases are the most-deployed Bedrock primitive after raw InvokeModel, and they have the largest surface area to misconfigure. A Knowledge Base ties together an S3 source bucket, an embedding model, an OpenSearch Serverless collection (or other supported vector store), and a service role that Bedrock assumes to ingest. Every one of those is a place to leak data."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Source bucket: encrypted with a CMK; bucket policy requires aws:SourceVpce; only the Bedrock service role and your ingestion pipeline can write.",
+        "OpenSearch Serverless collection: encryption policy points to your CMK; network policy is private (no public access); data-access policy lists the Bedrock service role and your application principal.",
+        "Embedding model: pinned to a specific Titan or Cohere model ARN; do not let the KB auto-upgrade.",
+        "Service role trust policy: trusts bedrock.amazonaws.com with an aws:SourceAccount condition to prevent confused-deputy abuse across AWS accounts."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Cross-account Knowledge Bases"
+    },
+    {
+      "t": "p",
+      "text": "A common production pattern is one central account hosting Bedrock Knowledge Bases shared with many spoke accounts. This works but requires three cross-account permissions to line up: the spoke account's IAM allows bedrock:Retrieve and bedrock:RetrieveAndGenerate on the central knowledge base ARN; the central knowledge base's resource policy allows the spoke account principal; and the KMS CMK encrypting the underlying OpenSearch collection allows kms:Decrypt for the spoke principal."
+    },
+    {
+      "t": "p",
+      "text": "If any of the three is missing the call fails with a generic AccessDenied — the failure mode is identical to the cross-account S3 pattern. Document the three permissions explicitly and check them with IAM Access Analyzer."
+    },
+    {
+      "t": "h2",
+      "text": "Region pinning and data-residency for Indian deployments"
+    },
+    {
+      "t": "p",
+      "text": "For organisations operating from India, the Bedrock region you choose is a compliance choice as much as a latency choice. ap-south-1 (Mumbai) hosts a growing set of foundation models, and for regulated data covered by the DPDP Act 2023 or sector regulators (RBI for financial services, IRDAI for insurance), keeping inference inside ap-south-1 simplifies the data-residency story. Encode the regional restriction as an SCP at the organisation root rather than relying on application-level discipline."
+    },
+    {
+      "t": "code",
+      "code": "{\n  \"Sid\": \"BedrockInIndiaOnly\",\n  \"Effect\": \"Deny\",\n  \"Action\": \"bedrock:*\",\n  \"Resource\": \"*\",\n  \"Condition\": {\n    \"StringNotEquals\": { \"aws:RequestedRegion\": \"ap-south-1\" }\n  }\n}"
+    },
+    {
+      "t": "p",
+      "text": "If you must use models that are only available in us-east-1, document the cross-border transfer in your DPDP / GDPR records of processing, contractually constrain the provider (the model EULA via AWS), and gate access with a separate role only the use cases that need it can assume."
+    },
+    {
+      "t": "h2",
+      "text": "Detection patterns for Bedrock abuse"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "GuardDuty has Bedrock-specific findings for unusual InvokeModel volumes and patterns; enable them and route to Security Hub.",
+        "Build a CloudWatch metric on InvokeModel call count per principal and alarm on a 4x daily-average anomaly per IAM role — the most common abuse pattern is a leaked CI/CD key being used to mine your model.",
+        "Alarm on any CreateModelCopyJob, CreateModelImportJob, or large-volume DescribeFoundationModel calls — these are model-extraction reconnaissance.",
+        "Pipe Guardrail denials to a SIEM and treat a sustained spike from a single user the way you treat WAF block spikes from a single IP."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Putting it all together"
+    },
+    {
+      "t": "p",
+      "text": "A production Bedrock deployment that you would be comfortable showing a SOC 2 auditor looks like this: every application calls Bedrock through a VPC interface endpoint; every InvokeModel is gated by an IAM policy that pins approved models and requires a GuardrailIdentifier; Guardrails redact PII and deny system-prompt-leak attempts; custom models, agents, and knowledge bases are encrypted with customer-managed KMS keys; invocation logging is on and CloudTrail data events capture every call; CloudWatch alarms catch spend anomalies and Guardrail denial spikes. None of these controls are exotic — they are the same IAM, KMS, VPC, and CloudTrail patterns you already apply to S3 and Lambda — but the combination is the entire defence."
+    },
+    {
+      "t": "p",
+      "text": "If you want the broader pattern these controls compose into, our LLM security checklist mapped to the OWASP LLM Top 10 walks every risk and the Bedrock primitive that mitigates it. And if you would like ShieldSync to do this review against your own AWS account, our advanced & emerging security service covers the full Bedrock attack surface end to end."
+    }
+  ]
+}

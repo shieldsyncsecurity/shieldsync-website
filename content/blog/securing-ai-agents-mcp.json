@@ -1,0 +1,238 @@
+{
+  "slug": "securing-ai-agents-mcp",
+  "title": "Securing AI Agents: Tool-Use, MCP, and Least-Privilege Patterns",
+  "excerpt": "An AI agent security guide covering the agent threat model, MCP server risks, least-privilege tool design, and concrete patterns for Bedrock Agents and Claude Code as agent runtimes.",
+  "category": "AI Security",
+  "date": "Jun 30, 2026",
+  "read": "13 min",
+  "image": "/blog/securing-ai-agents-mcp.webp",
+  "body": [
+    {
+      "t": "p",
+      "text": "AI agent security is the topic where 2026 generative-AI security work has shifted from the model itself to the actions the model is allowed to take. An agent is a loop: the model proposes a tool call, the runtime executes it, the result is fed back to the model, repeat. Every tool the model can call expands the blast radius of a successful prompt injection. The Model Context Protocol (MCP), which has become the default way to expose tools to agents in 2026, amplifies this further by making tool exposure a few lines of config. This article walks the agent threat model, what MCP changes, and the least-privilege patterns that keep agents safe in production."
+    },
+    {
+      "t": "p",
+      "text": "We will cover the agent-specific threats (tool over-permissioning, prompt-injection-to-tool-call, confirmation bypass, multi-step compromise), what MCP is and why it concentrates risk, concrete IAM and architectural patterns that keep agents bounded, and a short worked example using Bedrock Agents and Claude Code as the agent runtimes. The patterns apply equally to any agent framework — LangGraph, AutoGen, CrewAI — but the AWS-native examples are what most enterprise teams are deploying."
+    },
+    {
+      "t": "h2",
+      "text": "What makes an agent different from an LLM call"
+    },
+    {
+      "t": "p",
+      "text": "A plain LLM call has a small blast radius: the model returns text. An agent is allowed to take actions. That single change — from a function returning text to a function with side effects — is the entire reason agent security is a separate discipline. The model is not deterministic, its reasoning is not auditable in advance, and an adversarial prompt can flip it from helpful to harmful between turns. Every layer of defence has to account for that."
+    },
+    {
+      "t": "p",
+      "text": "The agent loop has three components, and each is an attack surface. The model decides what to do. The runtime (Bedrock Agents, Claude Code, LangGraph) marshals the tool call. The tool itself does something in the world — read a file, write a database row, send an email, hit an API. The model's decision is the hardest to constrain because natural language is not a typed interface. The runtime and the tool are where most of the practical defence lives."
+    },
+    {
+      "t": "h2",
+      "text": "Agent-specific threats"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Tool over-permissioning: the tool's IAM role can do far more than the tool's stated purpose, so a prompt-injected call abuses unused privileges.",
+        "Prompt-injection-to-tool-call: an adversarial document or input convinces the model to call a tool with parameters that benefit the attacker (transfer funds, exfiltrate data).",
+        "Confirmation bypass: the application asks for human confirmation on destructive actions, but the confirmation pattern can be bypassed (model fabricates a 'confirmed' flag, UI conflates two similar actions).",
+        "Multi-step compromise: each individual tool call looks safe, but a chain of calls produces a harmful outcome (read secret A, encode it, write to public endpoint B).",
+        "Plan poisoning: the model's plan or scratchpad is influenced by retrieved content that shifts the agent's goal mid-run."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "What is MCP and why it amplifies risk"
+    },
+    {
+      "t": "p",
+      "text": "The Model Context Protocol is a thin standard for exposing tools, resources, and prompts to an LLM. It was introduced in late 2024 and by 2026 is the dominant way developer-facing agents (Claude Code, Cursor, Windsurf, IDE assistants) discover tools. The good news is MCP standardises a previously chaotic integration layer. The bad news is it makes adding a new tool — and a new attack surface — a one-line config change, often in a JSON file the user edits at home."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "MCP servers run with the privileges of the user who launched them — a file-system MCP server can read everything the user can read.",
+        "MCP servers are commonly installed from third-party registries with the same supply-chain risk as npm packages; a compromised MCP server is a privileged foothold inside the developer's agent loop.",
+        "An MCP server can advertise tools that look harmless but execute arbitrary code (a 'read this file' tool that quietly POSTs the file to a remote endpoint).",
+        "Prompts and prompt templates exposed by an MCP server land in the model's context and can themselves carry indirect prompt injection."
+      ]
+    },
+    {
+      "t": "p",
+      "text": "Treat MCP servers the way you treat browser extensions in a corporate environment: install only from an allowlisted registry, vendor and version-pin the source, review the tool definitions and the underlying code before the first launch, and disable any server you are not actively using."
+    },
+    {
+      "t": "h2",
+      "text": "Pattern 1 — Per-tool IAM role"
+    },
+    {
+      "t": "p",
+      "text": "The biggest single improvement most agents can make is to give every tool its own IAM role, scoped to exactly the resources and actions that tool needs. The runtime (Bedrock Agents action groups, a Lambda invoker, a Kubernetes pod) assumes the per-tool role only for the duration of that tool call. A prompt-injected request to call 'delete_all_objects' fails because the role for the 'list_objects' tool doesn't have s3:DeleteObject in the first place."
+    },
+    {
+      "t": "code",
+      "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"ListReadOnlyTenantBucket\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\"s3:ListBucket\"],\n      \"Resource\": \"arn:aws:s3:::tenant-${aws:PrincipalTag/tenant_id}-data\",\n      \"Condition\": {\n        \"StringEquals\": { \"aws:SourceVpce\": \"vpce-0a1b2c3d4e5f6g7h8\" }\n      }\n    }\n  ]\n}"
+    },
+    {
+      "t": "h2",
+      "text": "Pattern 2 — Action allowlist at the runtime"
+    },
+    {
+      "t": "p",
+      "text": "The agent runtime is the right place to enforce a static allowlist of which tools are available in which agent. The model's plan is non-deterministic; the runtime is deterministic. In Bedrock Agents this is the action group configuration; in Claude Code it is the allowed_tools list in settings. Keep the allowlist small, audit it on every change, and version-control it."
+    },
+    {
+      "t": "h2",
+      "text": "Pattern 3 — Two-step confirmation for state-changing tools"
+    },
+    {
+      "t": "p",
+      "text": "Read-only tools can run without explicit confirmation. Any tool that changes state — write a database row, send an email, transfer money, deploy infrastructure — should require an explicit user click in the application UI, not just a 'confirmed=true' parameter the model can fabricate. The confirmation flow must surface the actual action and parameters to the user before they click, not after."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Separate plan from execute: the model proposes; a non-LLM check verifies; the user clicks; the tool runs.",
+        "Display every parameter in the confirmation UI verbatim; do not let the model render or summarise the confirmation prompt.",
+        "Log the confirmed action with a hash so the audit trail proves what the user actually approved.",
+        "For high-stakes actions, require a second factor (passkey, hardware key) at confirmation time, not just at session start."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Pattern 4 — Audit log of every agent action"
+    },
+    {
+      "t": "p",
+      "text": "An agent without an audit log is unaccountable. Every tool call should produce a structured log record: session id, user id, tool name, parameters, result hash, timestamp. For Bedrock Agents, CloudTrail data events on the agent alias capture invocation; route them to a write-once bucket with Object Lock for forensic-grade integrity."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Capture tool name, parameters, principal, session id, and a result hash — never the full tool result if it can contain sensitive data.",
+        "Send logs to an S3 bucket with Object Lock in compliance mode for high-stakes agents (financial, healthcare).",
+        "Alarm on tool calls that fall outside historical patterns per user (sudden new tool usage, parameter values far from typical).",
+        "Make the audit log queryable by user and by session — your incident-response runbook will need it."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Pattern 5 — Plan caps and step limits"
+    },
+    {
+      "t": "p",
+      "text": "An agent loop that can run forever is a DoS waiting to happen — for your budget, your tool quotas, and your data. Cap the number of tool calls per session (10 is a sane default for most user-facing agents, higher for code-writing agents), the wall-clock duration, and the total token spend. Surface the caps to the user; treat hitting them as a signal that the agent is stuck and needs human intervention."
+    },
+    {
+      "t": "h2",
+      "text": "Pattern 6 — Input and output filtering at the agent boundary"
+    },
+    {
+      "t": "p",
+      "text": "An agent runtime sits between two untrusted surfaces: the user's prompt on the inbound side and the model's proposed tool call on the outbound side. Both should be filtered before they pass. Inbound, run the user's prompt through a Bedrock Guardrail (or equivalent) to deny injection patterns and redact PII. Outbound, validate the proposed tool call's parameters against a JSON Schema and reject any that fail, before the runtime executes them."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Inbound: Guardrails on the user prompt; denied-topics list covers system-prompt-leak, ignore-previous-instructions, and your business-specific no-go patterns.",
+        "Outbound: every tool defines a JSON Schema for its parameters; the runtime validates the model's proposed call against the schema and rejects on any failure.",
+        "For tools that touch identifiers (user ids, order ids, account numbers), verify the identifier is one the authenticated user is authorised to operate on — not just well-formed.",
+        "Strip suspicious patterns from tool results before feeding them back to the model — if a database row contains text that looks like prompt-injection, treat it as untrusted retrieved data."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Pattern 7 — Session and identity binding"
+    },
+    {
+      "t": "p",
+      "text": "Every agent invocation must run as a specific authenticated identity, with the agent's privileges scoped to what that identity can do. The bad pattern is a single 'service account' that calls the agent on behalf of whichever user is logged in; the good pattern threads the user identity through the agent loop so every tool call is attributable and authorised against the user's permissions, not the agent's."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Use Cognito or your IdP to authenticate the user; pass the resulting identity to the agent runtime, not a shared service token.",
+        "Use IAM Identity Center trusted identity propagation (TIP) so the user's identity flows to the AWS APIs the tools call.",
+        "Carry the tenant id as a principal tag and template it into tool IAM resource ARNs (ABAC) so a tool physically cannot reach another tenant's resources.",
+        "Audit-log the user identity on every tool call; never log only the agent's service principal."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "A worked example — Bedrock Agent for an internal helpdesk"
+    },
+    {
+      "t": "p",
+      "text": "Consider an internal helpdesk agent built on Bedrock Agents. The agent has three action groups: lookup_user (read employee directory), create_ticket (open a Jira ticket), reset_password (the destructive action). The security design uses every pattern above."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "lookup_user has its own Lambda with an IAM role allowing only the specific directory API; no other AWS actions.",
+        "create_ticket has a separate Lambda with an IAM role allowing only the Jira API via a Secrets Manager-stored token, no Bedrock invoke, no S3, no anything else.",
+        "reset_password is gated behind a two-step confirmation in the application UI: the agent proposes, the user clicks a button that displays the target employee name and email, the click POSTs to a non-Bedrock endpoint that actually performs the reset.",
+        "All three action groups log to CloudTrail data events; logs land in an Object-Lock-protected bucket; an EventBridge rule alarms on more than 10 reset_password calls per hour.",
+        "The Bedrock Agent itself is wrapped in a Guardrail that denies system-prompt-leak topics and redacts PII from the model's output.",
+        "Plan cap: 6 tool calls per session; the helpdesk UI shows a 'this is taking longer than usual' message and offers a human handoff at step 5."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "A worked example — Claude Code as a developer agent"
+    },
+    {
+      "t": "p",
+      "text": "Claude Code is an agent runtime developers use against their own filesystems and shells. The security posture is different — the user is the privileged operator — but the same patterns apply, repackaged."
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Tool allowlist: configure settings.json with the smallest allowed_tools that lets the work get done; disable Bash by default for projects that don't need shell.",
+        "MCP server allowlist: install MCP servers only from an internal registry or vetted source; pin versions; review the tool list each server exposes before first launch.",
+        "Filesystem boundaries: rely on the working-directory boundary Claude Code enforces; do not grant tools that escape it (broad file-search servers, system-wide shell agents).",
+        "Audit trail: enable transcript saving and review periodically; treat transcripts as sensitive (they often contain code, credentials in error messages, and proprietary logic).",
+        "Confirmation: keep destructive-command confirmations on; do not blanket-approve hooks that auto-accept tool calls."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Detection — what to alarm on"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Tool calls outside the documented allowlist (should never happen; if it does, the runtime is misconfigured).",
+        "Sudden spike in tool-call rate per session — agent stuck in a loop or being driven by adversarial input.",
+        "Confirmation flow bypassed — destructive tool called without a corresponding confirmation log entry.",
+        "Cross-tenant tool call — tool invoked with a tenant id that does not match the session's authenticated tenant.",
+        "MCP server installation event in a developer workstation outside the allowlisted registry."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "An AI agent security checklist"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "Every tool has its own least-privilege IAM role; no shared 'agent role'.",
+        "Tool allowlist is configured at the runtime and version-controlled.",
+        "State-changing tools require a non-LLM confirmation step with verbatim parameter display.",
+        "Every tool call is audit-logged with session id, principal, tool, parameters, and result hash.",
+        "Plan caps (tool count, duration, token spend) are enforced and surfaced to the user.",
+        "Bedrock Guardrails (or equivalent) wrap every model invocation in the agent loop.",
+        "MCP servers are installed only from an allowlisted registry, version-pinned, and reviewed.",
+        "Tenant id is bound to the session and templated into IAM resource ARNs (ABAC), not inferred from the prompt."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Going further"
+    },
+    {
+      "t": "p",
+      "text": "Agent security depends on the underlying Bedrock and IAM patterns covered in our securing-Amazon-Bedrock and OWASP LLM Top 10 mapped to AWS Bedrock posts. The IAM ABAC pattern in the tenant-isolated tool role is the same one our SCS-C02 study guide walks for the AWS Security Specialty exam. And if you want a guided agent security review of your own deployment, ShieldSync's advanced & emerging security service covers agent and MCP attack surfaces end to end."
+    }
+  ]
+}

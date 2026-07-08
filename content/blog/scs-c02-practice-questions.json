@@ -1,0 +1,1109 @@
+{
+  "slug": "scs-c02-practice-questions",
+  "title": "AWS Security Specialty (SCS-C03) Practice Questions — updated from SCS-C02",
+  "excerpt": "Fifty original SCS-C03 practice questions written in the style of the real AWS Security Specialty exam, weighted by domain, with detailed explanations for every answer. Updated from SCS-C02.",
+  "category": "Cloud / AWS",
+  "date": "Jun 30, 2026",
+  "read": "22 min",
+  "image": "/blog/scs-c02-practice-questions.webp",
+  "body": [
+    {
+      "t": "p",
+      "text": "AWS transitioned the Certified Security Specialty exam from SCS-C02 to SCS-C03 on December 2, 2025 (SCS-C02 was retired December 1, 2025). SCS-C03 adds GenAI/ML-security questions and carves Threat Detection & Incident Response out into its own domain — the practice questions below are written against the current SCS-C03 blueprint. If you'd already been drilling SCS-C02 questions, the core domains (IAM, logging, infrastructure, data protection, governance) still transfer directly."
+    },
+    {
+      "t": "p",
+      "text": "SCS-C03 practice questions are the single most useful tool in the final two weeks of exam prep. Reading the AWS docs builds knowledge; running scenarios under timed conditions teaches you how AWS phrases them. This set of 50 original practice questions is written in the same voice as the real AWS Certified Security Specialty exam, weighted to the official blueprint (7 Domain 1, 9 Domain 2, 10 Domain 3, 8 Domain 4, 9 Domain 5, 7 Domain 6), and paired with explanations that go past the right letter into why the wrong ones are tempting."
+    },
+    {
+      "t": "p",
+      "text": "These are not copied from the AWS sample exam or any third-party bank. Treat them the way you'd treat a Tutorials Dojo set — work through under 170 minutes of time pressure, mark every question you spend more than three minutes on, and rebuild the topic for anything you miss. Pair this with the full SCS-C02 study guide for the underlying material."
+    },
+    {
+      "t": "callout",
+      "text": "Use this set after you've read the AWS Exam Guide and done at least one full hands-on lab. Practice questions are calibration, not first-pass learning — they tell you where the gaps are so you can close them."
+    },
+    {
+      "t": "h2",
+      "text": "Domain 1 — Threat Detection & Incident Response"
+    },
+    {
+      "t": "p",
+      "text": "Question 1. A security engineer receives a GuardDuty finding of type UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration.OutsideAWS for an EC2 instance running in a production VPC. The instance hosts a customer-facing API. What should the engineer do FIRST?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Terminate the instance to stop the active exfiltration.",
+        "B. Snapshot the attached EBS volumes for forensic analysis.",
+        "C. Replace the instance's security group with a deny-all quarantine security group and revoke active sessions on the instance role.",
+        "D. Rotate the IAM access keys associated with the account root user."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 1"
+    },
+    {
+      "t": "p",
+      "text": "C. Containment must come before forensics, and termination destroys evidence. Quarantining via a deny-all SG and revoking active sessions on the instance role stops the credential being used while preserving the host for snapshots. B is the second step, not the first. D is irrelevant — this finding is about an instance role, not root."
+    },
+    {
+      "t": "p",
+      "text": "Question 2. An organization has GuardDuty enabled in 14 regions across 5 accounts. The security team wants a single pane of glass for findings and the ability to apply suppression rules centrally. Which approach requires the LEAST operational overhead?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Configure each member account to publish findings to an S3 bucket in the security account.",
+        "B. Use the GuardDuty delegated administrator from AWS Organizations and add all accounts as members.",
+        "C. Build a Lambda function in each account that calls GetFindings and writes to a central DynamoDB table.",
+        "D. Enable Security Hub in each account with cross-region aggregation only."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 2"
+    },
+    {
+      "t": "p",
+      "text": "B. GuardDuty's delegated administrator pattern via Organizations gives centralized findings, suppression, and member management without custom code. A and C are roll-your-own. D aggregates Security Hub but does not give GuardDuty-native suppression."
+    },
+    {
+      "t": "p",
+      "text": "Question 3. A Detective investigation graph shows an IAM principal making AssumeRole calls into three different roles within 90 seconds, each in a different account. The principal normally only assumes one role per day. Which finding type is MOST likely to also appear in GuardDuty?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Recon:IAMUser/MaliciousIPCaller",
+        "B. UnauthorizedAccess:IAMUser/AnomalousBehavior",
+        "C. Stealth:IAMUser/CloudTrailLoggingDisabled",
+        "D. Policy:IAMUser/RootCredentialUsage"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 3"
+    },
+    {
+      "t": "p",
+      "text": "B. GuardDuty's anomaly-detection models flag AssumeRole patterns that deviate from a principal's historical baseline. A requires a known-bad IP. C and D are unrelated event types."
+    },
+    {
+      "t": "p",
+      "text": "Question 4. A company must capture forensic evidence from a suspected compromised EC2 instance before the IR team isolates it. Which combination of actions BEST preserves evidence?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Stop the instance, then create AMI from the stopped state.",
+        "B. Create EBS snapshots of all attached volumes, capture instance metadata, and dump memory using SSM Run Command before isolating the network.",
+        "C. Detach the volumes and attach them to a forensic instance immediately.",
+        "D. Terminate the instance and recover from the latest backup."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 4"
+    },
+    {
+      "t": "p",
+      "text": "B. Memory is volatile and lost on stop or terminate, so the live capture must happen first. Stopping (A) flushes memory; detaching (C) and terminating (D) destroy state. B sequences capture before containment correctly."
+    },
+    {
+      "t": "p",
+      "text": "Question 5. Security Hub has emitted a CRITICAL finding from the AWS Foundational Security Best Practices standard: 'S3 buckets should prohibit public read access.' The team wants the finding to automatically trigger remediation without human approval. Which design is MOST appropriate?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. EventBridge rule on the Security Hub finding → SSM Automation document that applies S3 Block Public Access.",
+        "B. CloudWatch alarm on the Security Hub findings metric → SNS to on-call.",
+        "C. AWS Config remediation action that runs every 24 hours on noncompliant resources.",
+        "D. Lambda function polling Security Hub every 5 minutes and remediating matches."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 5"
+    },
+    {
+      "t": "p",
+      "text": "A. EventBridge to SSM Automation is the AWS-preferred, event-driven, managed pattern. B alerts but does not remediate. C works but adds latency. D is polling, which AWS questions reliably reject when an event-driven option exists."
+    },
+    {
+      "t": "p",
+      "text": "Question 6. An auditor needs proof that a CloudTrail log file has not been tampered with. Which CloudTrail feature provides this evidence?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. SSE-KMS encryption on the destination bucket.",
+        "B. Log file validation, which produces SHA-256 digests signed with an AWS key.",
+        "C. MFA Delete on the destination bucket.",
+        "D. Versioning on the destination bucket."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 6"
+    },
+    {
+      "t": "p",
+      "text": "B. Log file validation is the explicit integrity control — it produces hourly digest files with SHA-256 hashes signed with an AWS private key. Encryption (A) protects confidentiality, not integrity. MFA Delete (C) and versioning (D) prevent destruction, not modification proof."
+    },
+    {
+      "t": "p",
+      "text": "Question 7. An incident responder must determine every API call made by a leaked IAM access key over the last 30 days. The organization has a multi-region CloudTrail trail writing to S3, and CloudTrail Lake is not enabled. Which method is FASTEST?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Open each CloudTrail JSON object in S3 manually.",
+        "B. Create an Athena table over the CloudTrail S3 prefix, partition on region and date, and query WHERE userIdentity.accessKeyId = the leaked key.",
+        "C. Stream historical logs into a new CloudWatch Logs group and run Logs Insights.",
+        "D. Use the CloudTrail console event history page."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 7"
+    },
+    {
+      "t": "p",
+      "text": "B. Athena queries CloudTrail JSON in place with partitioning to keep scans cheap. A is impossible at scale. C requires re-ingesting historical data. D only retains 90 days but is limited to per-page filters and is far slower for arbitrary fields."
+    },
+    {
+      "t": "h2",
+      "text": "Domain 2 — Security Logging & Monitoring"
+    },
+    {
+      "t": "p",
+      "text": "Question 8. A security team wants to alert when any IAM user signs into the AWS Management Console without MFA. Which approach is BEST?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Daily IAM credential report parsed by Lambda.",
+        "B. CloudTrail → CloudWatch Logs subscription with a metric filter matching {$.eventName = ConsoleLogin && $.additionalEventData.MFAUsed = \"No\"} and a CloudWatch alarm to SNS.",
+        "C. AWS Config rule iam-user-mfa-enabled.",
+        "D. GuardDuty finding UnauthorizedAccess:IAMUser/ConsoleLoginSuccess.B."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 8"
+    },
+    {
+      "t": "p",
+      "text": "B. The managed, event-driven path is CloudTrail to CloudWatch metric filter to alarm. C reports configuration state, not login events. D fires on anomalous geolocation, not on absent MFA. A polls, which is rejected in favor of event-driven options."
+    },
+    {
+      "t": "p",
+      "text": "Question 9. By default, which of the following events does CloudTrail capture?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. S3 GetObject calls on every bucket.",
+        "B. Lambda Invoke calls.",
+        "C. Management events such as CreateBucket, AssumeRole, and PutBucketPolicy.",
+        "D. DynamoDB GetItem calls."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 9"
+    },
+    {
+      "t": "p",
+      "text": "C. Management events are on by default. A, B, and D are data events and must be explicitly enabled (and are billed per event). This distinction is a frequent exam pivot."
+    },
+    {
+      "t": "p",
+      "text": "Question 10. A VPC Flow Logs custom format must capture the AWS account ID of the destination ENI, the TCP flags, and the traffic path. Which destination supports custom formats with the lowest operational overhead?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. CloudWatch Logs only.",
+        "B. S3 with Parquet format and Hive-compatible partitioning.",
+        "C. Kinesis Data Streams with consumer Lambda.",
+        "D. Direct ingestion into OpenSearch."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 10"
+    },
+    {
+      "t": "p",
+      "text": "B. S3 destination supports custom format fields (pkt-dst-aws-service, tcp-flags, traffic-path) and Parquet with Hive-style partitions for efficient Athena queries. CloudWatch Logs supports custom fields but is costlier at flow-log volumes; C and D require extra plumbing."
+    },
+    {
+      "t": "p",
+      "text": "Question 11. CloudTrail data events for an S3 bucket containing PII must be retained for 7 years and be queryable with SQL. The team wants minimal management. Which option is BEST?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. CloudTrail trail to S3 + Athena, with S3 Lifecycle to Glacier after 90 days.",
+        "B. CloudTrail Lake event data store with 7-year retention.",
+        "C. CloudWatch Logs subscription to Kinesis Firehose to S3.",
+        "D. CloudTrail trail to CloudWatch Logs with 7-year retention."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 11"
+    },
+    {
+      "t": "p",
+      "text": "B. CloudTrail Lake is purpose-built for this: SQL queries, up to 10-year retention, immutable storage, no DDL or table maintenance. A is workable but adds Athena + lifecycle plumbing. D has high CloudWatch ingest cost."
+    },
+    {
+      "t": "p",
+      "text": "Question 12. A subscription filter on a CloudWatch Logs group sends matching events to Kinesis Data Firehose. Which IAM principal needs permissions for the delivery to succeed?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. The Firehose service role only.",
+        "B. The CloudWatch Logs service principal must assume a role allowing firehose:PutRecord*.",
+        "C. The Lambda invocation role.",
+        "D. The CloudTrail service role."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 12"
+    },
+    {
+      "t": "p",
+      "text": "B. CloudWatch Logs (logs.amazonaws.com) assumes a role you provide to call firehose:PutRecord* on the delivery stream. The Firehose service role handles its own downstream destinations."
+    },
+    {
+      "t": "p",
+      "text": "Question 13. An organization trail captures management events across all accounts. A new account joins the org but its events are missing. What is the MOST likely cause?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. The destination bucket policy denies the new account's logs.",
+        "B. The organization trail does not have IsOrganizationTrail set to true, or the new account hasn't been granted the org-trail permissions yet (propagation).",
+        "C. CloudTrail is region-locked.",
+        "D. The new account requires a separate trail in each region."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 13"
+    },
+    {
+      "t": "p",
+      "text": "B. Organization trails apply to new accounts automatically, but propagation can take time and the trail must be marked as an organization trail. A is possible but less common; the bucket policy is set once for the org. C and D are incorrect."
+    },
+    {
+      "t": "p",
+      "text": "Question 14. Athena queries over a CloudTrail S3 prefix are scanning terabytes and costing too much. Which change reduces cost the MOST without rewriting queries?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Convert to columnar format (Parquet) via a CTAS or Glue job, and partition by region and date.",
+        "B. Reduce CloudTrail log retention.",
+        "C. Use S3 Select instead of Athena.",
+        "D. Switch to OpenSearch."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 14"
+    },
+    {
+      "t": "p",
+      "text": "A. Parquet plus partition pruning cuts scan size by an order of magnitude or more. B loses evidence. C does not support CloudTrail's nested JSON well. D is a re-platform."
+    },
+    {
+      "t": "p",
+      "text": "Question 15. Which AWS service produces logs that capture HTTP request bodies, evaluated rules, and matched rule actions for traffic hitting an ALB?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. ALB access logs.",
+        "B. AWS WAF logs.",
+        "C. VPC Flow Logs.",
+        "D. CloudFront standard logs."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 15"
+    },
+    {
+      "t": "p",
+      "text": "B. WAF logs capture rule evaluation results and (when enabled) request samples. ALB access logs (A) capture request metadata but no rule evaluation. C is layer-3/4. D is the wrong edge."
+    },
+    {
+      "t": "p",
+      "text": "Question 16. CloudWatch Logs in a centralized security account must receive subscription deliveries from log groups in 80 member accounts. Which design is MOST scalable?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. A destination policy on a Kinesis Data Stream in the security account, plus a CloudWatch Logs destination shared with all member accounts.",
+        "B. Lambda in every member account pushing to an SQS queue in the security account.",
+        "C. S3 cross-account replication of log groups.",
+        "D. Separate CloudWatch Logs group per account in the security account."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 16"
+    },
+    {
+      "t": "p",
+      "text": "A. A cross-account CloudWatch Logs destination targeting a central Kinesis Data Stream is the documented multi-account pattern. B is custom and brittle. C is not a thing. D doesn't solve delivery."
+    },
+    {
+      "t": "h2",
+      "text": "Domain 3 — Infrastructure Security"
+    },
+    {
+      "t": "p",
+      "text": "Question 17. An application in a private subnet must reach S3 without traversing the internet. Which design satisfies the requirement with the LOWEST cost?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. S3 interface endpoint (PrivateLink).",
+        "B. S3 gateway endpoint, with a route table entry for the prefix list.",
+        "C. NAT gateway to s3.amazonaws.com.",
+        "D. Transit Gateway with a VPC attachment to a shared services VPC."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 17"
+    },
+    {
+      "t": "p",
+      "text": "B. Gateway endpoints for S3 (and DynamoDB) are free; interface endpoints (A) are billed per ENI-hour and per GB. C still routes via the internet from the AWS Service perspective. D is unrelated."
+    },
+    {
+      "t": "p",
+      "text": "Question 18. A bucket policy must only allow access from a specific VPC endpoint. Which condition key is correct?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. aws:SourceVpc",
+        "B. aws:SourceVpce",
+        "C. aws:VpcSourceIp",
+        "D. ec2:Vpc"
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 18"
+    },
+    {
+      "t": "p",
+      "text": "B. aws:SourceVpce restricts to a specific VPC endpoint ID. aws:SourceVpc (A) restricts to a VPC. Exam distractors swap these constantly — both are valid keys but answer the wrong question."
+    },
+    {
+      "t": "p",
+      "text": "Question 19. A NACL on a private subnet allows outbound HTTPS to 0.0.0.0/0 but blocks all inbound by default. Outbound requests fail. What's the issue?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. The NAT gateway is misconfigured.",
+        "B. NACLs are stateless — the default deny on inbound is blocking the return traffic on ephemeral ports.",
+        "C. Security groups need a rule for inbound HTTPS.",
+        "D. Route table is missing a default route."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 19"
+    },
+    {
+      "t": "p",
+      "text": "B. NACLs do not track sessions, so return traffic on ephemeral ports (1024-65535) must be explicitly allowed inbound. This is the single most-tested NACL gotcha."
+    },
+    {
+      "t": "p",
+      "text": "Question 20. AWS WAF must block requests with bodies larger than 8 KB containing SQL injection patterns on an API Gateway REST API. What's the correct architecture?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. WAF web ACL associated with API Gateway, with the AWS managed SQL database rule group.",
+        "B. WAF web ACL on CloudFront in front of the API.",
+        "C. WAF web ACL on the underlying ALB.",
+        "D. AWS Shield Advanced with custom mitigations."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 20"
+    },
+    {
+      "t": "p",
+      "text": "A. WAF can be associated directly with API Gateway and the AWS managed SQLi rule group handles the patterns. B works but is over-architected. C is wrong — API Gateway doesn't sit behind an ALB. D doesn't do L7 rule matching."
+    },
+    {
+      "t": "p",
+      "text": "Question 21. A workload requires deep packet inspection on traffic leaving a VPC to detect IDS signatures. Which service is MOST appropriate?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. AWS WAF.",
+        "B. AWS Network Firewall with stateful Suricata-compatible rules.",
+        "C. Security groups with high-numbered port restrictions.",
+        "D. GuardDuty."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 21"
+    },
+    {
+      "t": "p",
+      "text": "B. Network Firewall is the only AWS-managed service that does DPI with Suricata rules. WAF is layer 7 HTTP. SGs are layer 3/4 stateful but don't inspect payloads. GuardDuty is detection from logs, not inline DPI."
+    },
+    {
+      "t": "p",
+      "text": "Question 22. A security group on an EC2 instance allows inbound TCP 443 from 0.0.0.0/0 and inbound TCP 22 from the corporate IP block. The instance also has an Elastic IP. After an internal review, the team must restrict SSH so it only works when accessed from inside the VPC. What change is BEST?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Add a NACL deny on 22 from the corporate block.",
+        "B. Remove the corporate-IP rule for 22 and require SSH access through SSM Session Manager.",
+        "C. Add inbound 22 from 10.0.0.0/8 only.",
+        "D. Move the instance to a private subnet without changing security groups."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 22"
+    },
+    {
+      "t": "p",
+      "text": "B. Session Manager eliminates the need for public SSH entirely, which is the security-best-practice answer the exam favors. C reduces blast radius but still exposes 22. D doesn't change SG rules. A creates an inconsistent control layered on top of an SG that still allows it."
+    },
+    {
+      "t": "p",
+      "text": "Question 23. Inspector v2 reports a critical CVE in an EC2 AMI used by 200 instances. What's the BEST remediation workflow?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Patch each instance with SSM Patch Manager.",
+        "B. Rebuild the AMI via EC2 Image Builder with the patched package, then roll forward via the Auto Scaling group.",
+        "C. Terminate all 200 instances immediately.",
+        "D. Disable Inspector to reduce noise while planning."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 23"
+    },
+    {
+      "t": "p",
+      "text": "B. Immutable infrastructure (rebuild AMI, roll forward) is the AWS-preferred pattern. A drifts the fleet and the next AMI launch re-introduces the CVE. C is destructive. D is willful blindness."
+    },
+    {
+      "t": "p",
+      "text": "Question 24. A CloudFront distribution must only serve content via HTTPS, with TLS 1.2 minimum. Which CloudFront feature enforces this?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Origin Access Control.",
+        "B. Viewer protocol policy = Redirect HTTP to HTTPS, plus security policy = TLSv1.2_2021.",
+        "C. Signed URLs.",
+        "D. Field-level encryption."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 24"
+    },
+    {
+      "t": "p",
+      "text": "B. Viewer protocol policy handles the redirect; security policy handles the minimum TLS. The other options solve different problems entirely."
+    },
+    {
+      "t": "p",
+      "text": "Question 25. A team must allow Lambda functions in account A to invoke a SageMaker endpoint in account B. Which combination is REQUIRED?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Identity policy on the Lambda role allowing sagemaker:InvokeEndpoint, plus a resource policy on the SageMaker endpoint allowing the Lambda role.",
+        "B. Identity policy alone.",
+        "C. Resource policy alone.",
+        "D. SCP allowing sagemaker:* on both accounts."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 25"
+    },
+    {
+      "t": "p",
+      "text": "A. Cross-account access requires both the identity-side permission and the resource-side trust. SCPs (D) can only restrict, not grant."
+    },
+    {
+      "t": "p",
+      "text": "Question 26. A bastion host pattern is being replaced. Which service provides browser-based, audited shell access to private EC2 instances without inbound SSH?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. AWS Client VPN.",
+        "B. EC2 Instance Connect Endpoint plus SSM Session Manager.",
+        "C. NAT gateway.",
+        "D. AWS Cloud9."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 26"
+    },
+    {
+      "t": "p",
+      "text": "B. Instance Connect Endpoint and Session Manager both eliminate the bastion. Session Manager additionally logs every keystroke to CloudWatch / S3 — the audit angle the exam loves."
+    },
+    {
+      "t": "h2",
+      "text": "Domain 4 — Identity & Access Management"
+    },
+    {
+      "t": "p",
+      "text": "Question 27. An IAM identity policy allows s3:GetObject on arn:aws:s3:::data/*. The bucket policy allows s3:GetObject for the principal. A permissions boundary on the principal allows only s3:ListBucket. Which actions does the principal effectively have?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. GetObject and ListBucket.",
+        "B. ListBucket only.",
+        "C. GetObject only.",
+        "D. No S3 actions."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 27"
+    },
+    {
+      "t": "p",
+      "text": "B. A permissions boundary caps the maximum permissions of the principal. GetObject is allowed by identity and resource policies but is outside the boundary, so it is denied. ListBucket is in the boundary but not in the identity policy — but the question's identity policy doesn't list it; the trick is the boundary caps maximum, and effective = intersection of identity and boundary. If GetObject is not in the boundary, it's denied even when identity and resource allow it. ListBucket is in the boundary but not in identity → also denied. Correct answer: D, no actions. Choose D."
+    },
+    {
+      "t": "p",
+      "text": "Question 28. A trust policy for a role allows sts:AssumeRole from account 222222222222. To prevent the confused-deputy problem when a third-party SaaS assumes the role, which condition should be added?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. aws:SourceIp matching the SaaS IP range.",
+        "B. sts:ExternalId equal to a value the SaaS provides per customer.",
+        "C. aws:MultiFactorAuthPresent true.",
+        "D. aws:PrincipalOrgID."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 28"
+    },
+    {
+      "t": "p",
+      "text": "B. ExternalId is the documented prevention for confused-deputy in cross-account-SaaS trust. IP allowlists drift; MFA doesn't apply to programmatic SaaS; PrincipalOrgID is for same-org access."
+    },
+    {
+      "t": "p",
+      "text": "Question 29. An SCP attached to an OU contains a Deny on every action with a Condition that aws:RequestedRegion is not ap-south-1. A user in a member account has AdministratorAccess. Can they launch EC2 in us-east-1?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Yes, because AdministratorAccess overrides SCPs.",
+        "B. No, because SCPs filter the maximum permissions in member accounts and Deny overrides Allow.",
+        "C. Yes, because SCPs do not apply to IAM users.",
+        "D. Yes, because SCPs only apply to roles."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 29"
+    },
+    {
+      "t": "p",
+      "text": "B. SCPs are guardrails: an explicit Deny in any policy wins. They apply to all principals in member accounts (except the management account)."
+    },
+    {
+      "t": "p",
+      "text": "Question 30. A policy includes \"NotAction\": [\"iam:*\"] with Effect Allow and Resource *. What does it permit?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Only IAM actions.",
+        "B. Everything except IAM actions.",
+        "C. No actions.",
+        "D. Everything including IAM."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 30"
+    },
+    {
+      "t": "p",
+      "text": "B. NotAction with Allow means 'allow every action except those listed.' This is a frequent exam trap — read NotAction the way you'd read NOT IN in SQL."
+    },
+    {
+      "t": "p",
+      "text": "Question 31. IAM Identity Center is used with an external IdP via SAML. Permission sets must be assigned based on the user's department attribute. Which feature enables this?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Attribute-based access control (ABAC) using SCIM-synced attributes and aws:PrincipalTag conditions.",
+        "B. IAM groups with manual mapping.",
+        "C. Federated tokens with role chaining.",
+        "D. Cognito user pools."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 31"
+    },
+    {
+      "t": "p",
+      "text": "A. ABAC with Identity Center is the documented pattern — sync attributes via SCIM, reference them as aws:PrincipalTag in permission set policies."
+    },
+    {
+      "t": "p",
+      "text": "Question 32. Which IAM action allows a principal to escalate privileges by attaching a policy to themselves?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. iam:GetUser.",
+        "B. iam:AttachUserPolicy combined with iam:ListPolicies.",
+        "C. iam:CreateLoginProfile on another user with admin.",
+        "D. Both B and C are well-known escalation paths."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 32"
+    },
+    {
+      "t": "p",
+      "text": "D. The IAM privilege escalation literature lists at least 21 paths; both AttachUserPolicy and CreateLoginProfile on a privileged user are among them. The exam tests pattern recognition of dangerous IAM permissions."
+    },
+    {
+      "t": "p",
+      "text": "Question 33. A role's trust policy uses Principal: { 'AWS': 'arn:aws:iam::333333333333:root' }. What does this allow?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Only the root user of 333333333333.",
+        "B. Any IAM principal in 333333333333 that has sts:AssumeRole permission in their identity policy.",
+        "C. Only IAM users in 333333333333.",
+        "D. The role can be assumed without any IAM permission in the source account."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 33"
+    },
+    {
+      "t": "p",
+      "text": "B. account:root in a trust policy delegates the decision to that account's IAM. Any principal there with sts:AssumeRole on this role's ARN can assume it. This is exactly why pinning specific role ARNs is recommended over account:root for cross-account trust."
+    },
+    {
+      "t": "p",
+      "text": "Question 34. An IAM Access Analyzer finding shows that an S3 bucket is shared with an external account. The team confirms it's intentional. How do they keep this finding from re-appearing?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Suppress findings for the specific resource via an archive rule.",
+        "B. Delete the bucket policy.",
+        "C. Disable Access Analyzer.",
+        "D. Add a tag aws:NoFindings to the bucket."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 34"
+    },
+    {
+      "t": "p",
+      "text": "A. Archive rules auto-archive matching findings while preserving the analyzer's coverage. B breaks the actual intent. C blinds the org. D is not a real mechanism."
+    },
+    {
+      "t": "h2",
+      "text": "Domain 5 — Data Protection"
+    },
+    {
+      "t": "p",
+      "text": "Question 35. A customer-managed KMS key (CMK) is used by an S3 bucket. A principal in another account must read objects from the bucket. Which three controls are required?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Bucket policy + KMS key policy + the principal's IAM policy.",
+        "B. Bucket policy + KMS grant only.",
+        "C. KMS key policy + the principal's IAM policy.",
+        "D. Bucket ACL + bucket policy."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 35"
+    },
+    {
+      "t": "p",
+      "text": "A. Cross-account encrypted-object access needs all three: bucket policy (s3:GetObject), KMS key policy (kms:Decrypt for the external principal), and the principal's IAM policy (both actions). Miss any one and the request fails."
+    },
+    {
+      "t": "p",
+      "text": "Question 36. Automatic key rotation is enabled on a symmetric CMK. Which statement is correct?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. The CMK's key material is rotated annually; old material is retained so existing ciphertext can still be decrypted.",
+        "B. A new CMK is created and the old one is deleted.",
+        "C. The key ARN changes.",
+        "D. Applications must re-encrypt all existing data."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 36"
+    },
+    {
+      "t": "p",
+      "text": "A. KMS rotation generates new backing material annually, but the key ID/ARN stays the same and old material is retained for decryption. This is why rotation is transparent to applications."
+    },
+    {
+      "t": "p",
+      "text": "Question 37. A workload needs to encrypt 200 MB of data per object with KMS. Which approach minimizes KMS API cost?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Call kms:Encrypt directly on each 200 MB payload.",
+        "B. Use envelope encryption: call GenerateDataKey, encrypt locally with the plaintext data key, store the encrypted data key.",
+        "C. Use a KMS asymmetric key.",
+        "D. Use S3 SSE-S3."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 37"
+    },
+    {
+      "t": "p",
+      "text": "B. KMS Encrypt is capped at 4 KB. Envelope encryption is the standard pattern for large payloads, and one GenerateDataKey call replaces many Encrypt calls."
+    },
+    {
+      "t": "p",
+      "text": "Question 38. Which S3 encryption option lets the customer supply the encryption key on every PUT, with AWS holding no copy of the key?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. SSE-S3.",
+        "B. SSE-KMS with a customer-managed CMK.",
+        "C. SSE-C (server-side encryption with customer-provided keys).",
+        "D. DSSE-KMS."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 38"
+    },
+    {
+      "t": "p",
+      "text": "C. SSE-C: the customer supplies the key per request via a header; AWS uses it for encryption and discards it. SSE-KMS still uses AWS-held key material."
+    },
+    {
+      "t": "p",
+      "text": "Question 39. A team needs to discover sensitive PII across hundreds of S3 buckets and prioritize remediation. Which service is purpose-built for this?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. AWS Glue.",
+        "B. Amazon Macie.",
+        "C. AWS Config.",
+        "D. CloudTrail Lake."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 39"
+    },
+    {
+      "t": "p",
+      "text": "B. Macie uses managed and custom data identifiers to find PII in S3, with severity-scored findings routed to Security Hub."
+    },
+    {
+      "t": "p",
+      "text": "Question 40. A regulated workload must guarantee that backups cannot be deleted by any principal — including root — for 7 years. Which control achieves this?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. S3 Object Lock in compliance mode with a 7-year retention.",
+        "B. S3 versioning with MFA Delete.",
+        "C. AWS Backup vault lock in governance mode.",
+        "D. KMS key with disabled rotation."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 40"
+    },
+    {
+      "t": "p",
+      "text": "A. Object Lock compliance mode is the only WORM control AWS offers that even root cannot override. MFA Delete (B) and governance modes (C) can be removed by root. Be careful — Backup vault lock has its own compliance mode that is similarly strict, so the exam often pairs them as both-correct in different scenarios."
+    },
+    {
+      "t": "p",
+      "text": "Question 41. Secrets Manager rotates a database credential every 30 days. The rotation Lambda fails. Which CloudWatch metric should trigger an alarm?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. SecretCount.",
+        "B. Lambda Errors on the rotation function.",
+        "C. SecretsManager.RotationFailed (via EventBridge events).",
+        "D. KMS Decrypt errors."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 41"
+    },
+    {
+      "t": "p",
+      "text": "C. Secrets Manager emits rotation events to EventBridge; the failure event is the right signal. Lambda errors (B) catch some cases but miss policy-driven rotation failures."
+    },
+    {
+      "t": "p",
+      "text": "Question 42. Which KMS condition key restricts a CMK so it can only be used through a particular AWS service?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. kms:ViaService.",
+        "B. kms:CallerAccount.",
+        "C. kms:EncryptionContext.",
+        "D. aws:SourceService."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 42"
+    },
+    {
+      "t": "p",
+      "text": "A. kms:ViaService restricts use of the key to requests originating from a named service (e.g., s3.ap-south-1.amazonaws.com). A leaked credential cannot then call kms:Decrypt directly against the KMS API."
+    },
+    {
+      "t": "p",
+      "text": "Question 43. A multi-region application must encrypt data once and decrypt in three regions without re-encrypting. Which KMS feature enables this?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. KMS multi-region keys (replicas).",
+        "B. Cross-region key grants.",
+        "C. KMS key aliasing.",
+        "D. CloudHSM replication."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 43"
+    },
+    {
+      "t": "p",
+      "text": "A. Multi-region keys share the same key material across regions, so ciphertext encrypted in one region can be decrypted in another. Grants don't cross regions; aliases are local."
+    },
+    {
+      "t": "h2",
+      "text": "Domain 6 — Management & Security Governance"
+    },
+    {
+      "t": "p",
+      "text": "Question 44. An organization requires that the root user of every member account is never used for daily operations. Which combination of controls BEST enforces this?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. SCP denying actions when aws:PrincipalType is Root, plus EventBridge rule for RootCredentialUsage CloudTrail event.",
+        "B. IAM password policy.",
+        "C. Disable root via account settings.",
+        "D. Add MFA to root and call it done."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 44"
+    },
+    {
+      "t": "p",
+      "text": "A. SCPs can deny most actions for the root principal in member accounts (the management account's root cannot be restricted), and detection catches anything that slips through. D is necessary but not sufficient."
+    },
+    {
+      "t": "p",
+      "text": "Question 45. AWS Control Tower deploys preventive guardrails using which mechanism?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. AWS Config rules.",
+        "B. Service Control Policies on OUs.",
+        "C. Lambda functions in the management account.",
+        "D. CloudFormation StackSets."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 45"
+    },
+    {
+      "t": "p",
+      "text": "B. Preventive guardrails are SCPs; detective guardrails are AWS Config rules. The exam will pair this distinction."
+    },
+    {
+      "t": "p",
+      "text": "Question 46. AWS Config conformance packs are used for what?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Distributing a collection of AWS Config rules and remediation actions as a deployable package across an organization.",
+        "B. Encrypting Config data.",
+        "C. Multi-region Config aggregation only.",
+        "D. Replacing CloudFormation StackSets."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 46"
+    },
+    {
+      "t": "p",
+      "text": "A. Conformance packs bundle Config rules + remediation as a single deployable artifact, useful for compliance frameworks (CIS, PCI, HIPAA)."
+    },
+    {
+      "t": "p",
+      "text": "Question 47. A new workload must run only in ap-south-1 and eu-west-1. What control enforces this org-wide?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. IAM policies on every role denying aws:RequestedRegion not in the allow list.",
+        "B. SCP on the OU with Deny on every action whose Condition uses aws:RequestedRegion StringNotEquals the allow list (with a NotAction for global services).",
+        "C. AWS Config rule.",
+        "D. VPC peering restrictions."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 47"
+    },
+    {
+      "t": "p",
+      "text": "B. SCPs are the org-level region restriction. IAM policies (A) can be edited per account; SCPs cannot. Remember to exclude global services like iam:, route53:, cloudfront: via NotAction."
+    },
+    {
+      "t": "p",
+      "text": "Question 48. AWS Audit Manager helps with what?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Continuously collecting evidence for compliance frameworks like PCI DSS and HIPAA.",
+        "B. Patching EC2 instances.",
+        "C. Logging API calls.",
+        "D. Detecting anomalous IAM behavior."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 48"
+    },
+    {
+      "t": "p",
+      "text": "A. Audit Manager continuously gathers evidence (Config snapshots, CloudTrail events, screenshots of console settings) and maps them to controls in standard frameworks."
+    },
+    {
+      "t": "p",
+      "text": "Question 49. The management account in AWS Organizations should ideally contain which workloads?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. Production workloads, because they're highest priority.",
+        "B. No workloads — only org management, billing, and identity. Workloads belong in member accounts.",
+        "C. All security tools.",
+        "D. Logging infrastructure."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 49"
+    },
+    {
+      "t": "p",
+      "text": "B. AWS best practice and exam-correct: the management account holds only Organizations management. Workloads, logging, security tooling, and identity each go in dedicated member accounts."
+    },
+    {
+      "t": "p",
+      "text": "Question 50. A team must prove that no IAM principal in the organization can disable CloudTrail. Which control is BEST?"
+    },
+    {
+      "t": "ul",
+      "items": [
+        "A. SCP at the org root denying cloudtrail:StopLogging, cloudtrail:DeleteTrail, cloudtrail:UpdateTrail with Effect Deny on the org trail's ARN.",
+        "B. IAM policy on every role.",
+        "C. CloudWatch alarm on StopLogging.",
+        "D. AWS Config rule for cloudtrail-enabled."
+      ]
+    },
+    {
+      "t": "h2",
+      "text": "Answer 50"
+    },
+    {
+      "t": "p",
+      "text": "A. SCPs at the org level prevent the action across every member account. C and D are detective controls — they tell you it happened, they don't stop it. B drifts."
+    },
+    {
+      "t": "h2",
+      "text": "What to do with these results"
+    },
+    {
+      "t": "p",
+      "text": "Score yourself per domain. Anything below 70% in a domain means rebuild that material before sitting the real exam: read the AWS Exam Guide section, work through a hands-on lab in that domain (start with the free S3 misconfiguration audit on labs.shieldsyncsecurity.com), and write a one-paragraph summary in your own words for every concept you missed. Pair this set with our full SCS-C02 study guide for the underlying syllabus and a 6-week study plan. When you're ready to invest in real console time across all six domains, the AWS Security Certification page lists every lab mapped to the blueprint."
+    }
+  ]
+}
