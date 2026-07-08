@@ -44,7 +44,7 @@ export const CONTACT = {
 export type NavItem = { label: string; href: string };
 
 // Top-nav (Model B — audience-first, owner call 2026-07-07). TWO doors matching
-// the homepage fork: "Businesses" (services + training + hiring assessments)
+// the homepage fork: "Businesses" (services + hiring assessments)
 // and "Learners" (labs + certification + foundation program), plus Blog. Both doors are
 // dropdowns (BUSINESSES_MENU / LEARNERS_MENU below, rendered by site-header).
 // The labs USP stays instantly reachable via the header's primary
@@ -86,12 +86,12 @@ export const DOORS: Door[] = [
     icon: "shield",
     accent: "cyan",
     title: "Secure your cloud",
-    desc: "Practitioner-led cloud security — assessments, compliance readiness, and corporate training, mapped to the attack paths that actually matter to your business.",
+    desc: "Practitioner-led cloud security — assessments, compliance readiness, and 24/7 detection & response, mapped to the attack paths that actually matter to your business.",
     points: [
       "AWS security assessments",
       "Attack-path analysis",
       "SOC 2 / ISO / GDPR readiness",
-      "Corporate training",
+      "24/7 detection & response",
     ],
     href: "/services",
     cta: "Explore services",
@@ -233,7 +233,8 @@ export const LAB_TRACKS: LabTrack[] = [
 // KEEP THESE SHORT (owner, 2026-07-07: "so many links"). One row per offering
 // category — the detail lives on the landing pages, not in the menu.
 
-// "Businesses" door — 3 rows. The five individual service pages are listed on
+// "Businesses" door — 2 rows (corporate training removed 2026-07-08, owner:
+// "we don't do that"). The five individual service pages are listed on
 // /services; do NOT spread SERVICES_MENU here again.
 export const BUSINESSES_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
   { label: "Security Services", desc: "Assessments, SOC, AppSec, GRC — practitioner-led", href: "/services" },
@@ -675,9 +676,6 @@ export const SOC_LABS: SocLab[] = [
   { slug: "soar-response-playbooks", product: "SOAR", title: "Automated response playbooks", desc: "Wire detections to automated actions and cut mean-time-to-respond.", tags: ["SOAR", "Automation"], minutes: 45, skills: ["SOAR playbook design", "Detection-to-action automation", "Mean-time-to-respond reduction"], roles: ["SOC Analyst", "Security Automation Engineer", "SOAR Engineer"] },
   { slug: "soar-enrichment-workflows", product: "SOAR", title: "Enrichment & case workflows", desc: "Auto-enrich alerts and orchestrate end-to-end incident workflows.", tags: ["SOAR", "IR"], minutes: 45, skills: ["Alert auto-enrichment", "Case & incident orchestration", "End-to-end IR workflows"], roles: ["SOC Analyst", "Incident Responder", "Security Automation Engineer"] },
 ];
-
-/* Training programs ----------------------------------------------------------- */
-
 
 /* Blog ------------------------------------------------------------------------ */
 

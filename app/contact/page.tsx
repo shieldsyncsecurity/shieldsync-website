@@ -12,7 +12,7 @@ import { CONTACT, SITE } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Contact Us",
   description:
-    "Talk to ShieldSync Security about cloud security services, corporate training, hands-on labs, or the internship. WhatsApp, email, phone, or the form.",
+    "Talk to ShieldSync Security about cloud security services, hiring assessments, hands-on labs, or the Foundation Program. WhatsApp, email, phone, or the form.",
   alternates: { canonical: "/contact" },
 };
 
@@ -21,7 +21,7 @@ const PAGE_SCHEMA = [
   webPageSchema({
     url: PAGE_URL,
     name: "Contact — ShieldSync Security",
-    description: "Get in touch about services, training, labs, or the internship.",
+    description: "Get in touch about services, hiring assessments, labs, or the Foundation Program.",
     dateModified: "2026-06-04",
     breadcrumb: [
       { name: "Home", url: SITE.url },

@@ -20,7 +20,7 @@ import { VideoEmbed } from "@/components/video-embed";
 //    "hero"      → video REPLACES the AWS-console mock in the hero right
 //                  column. Use when the video is ≤ ~90 seconds.
 //    "mid-page"  → video renders in the "See it in action" section
-//                  between Team Training and the SCS-C02 callout. Use for
+//                  just before the SCS-C02 callout. Use for
 //                  ~2–3 min videos that qualify their own slot.
 //    "off"       → no video on homepage anywhere. Use if the explainer
 //                  ended up too long (3 min+); embed it on /free-lab or
@@ -96,8 +96,8 @@ export default function HomePage() {
             <p className="mt-3 max-w-xl text-base leading-7 text-muted">
               Practitioner-led cloud security for businesses: AWS-deep <span className="font-medium text-fg">assessments</span>,{" "}
               <span className="font-medium text-fg">compliance readiness</span>, and{" "}
-              <span className="font-medium text-fg">detection &amp; response</span> — plus hands-on training that
-              upskills your team on your actual stack.
+              <span className="font-medium text-fg">detection &amp; response</span> — plus hiring assessments that
+              test candidates in real AWS before you make the offer.
             </p>
 
             <div className="mt-4 flex flex-col gap-3 sm:flex-row">
@@ -186,7 +186,7 @@ export default function HomePage() {
             <SectionHeading
               eyebrow="What we do"
               title="Security services, end to end"
-              description="From cloud and application security to 24/7 detection and team training — practitioner-led work mapped to the attack paths that actually matter to your business."
+              description="From cloud and application security to 24/7 detection — practitioner-led work mapped to the attack paths that actually matter to your business."
             />
           </Reveal>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

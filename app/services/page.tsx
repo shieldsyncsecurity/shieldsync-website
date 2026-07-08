@@ -10,9 +10,9 @@ import { ArrowRight, Cloud, Shield, Flask, Compliance, Cap, Radar, Check, Code, 
 import { SERVICES, FAQS, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Cloud Security Services — Assessments, Compliance, Training",
+  title: "Cloud Security Services — Assessments, Compliance, Detection",
   description:
-    "Practitioner-led cloud security for businesses: AWS security assessments, compliance readiness (SOC 2 / ISO 27001 / GDPR), corporate training, and labs-as-a-service.",
+    "Practitioner-led cloud security for businesses: AWS security assessments, compliance readiness (SOC 2 / ISO 27001 / GDPR), 24/7 detection & response, and labs-as-a-service.",
   alternates: { canonical: "/services" },
 };
 
@@ -21,7 +21,7 @@ const PAGE_SCHEMA = [
   webPageSchema({
     url: PAGE_URL,
     name: "Cloud Security Services — ShieldSync Security",
-    description: "AWS security assessments, compliance readiness, corporate training, and labs-as-a-service.",
+    description: "AWS security assessments, compliance readiness, 24/7 detection & response, and labs-as-a-service.",
     dateModified: "2026-06-04",
     breadcrumb: [
       { name: "Home", url: SITE.url },
