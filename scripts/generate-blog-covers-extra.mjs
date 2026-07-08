@@ -1,7 +1,11 @@
-// Generate on-brand covers for every content/blog/*.json article (cycling styles).
-//   node scripts/generate-blog-covers-extra.mjs
+// Generate on-brand covers for content/blog/*.json articles that are missing one.
+// A cover already present in public/blog/ is SKIPPED — a default run never rewrites
+// a live cover. Style is a stable hash of the slug (not list position), so adding or
+// removing posts never restyles another post's cover, even with --force.
+//   node scripts/generate-blog-covers-extra.mjs           # write missing covers only
+//   node scripts/generate-blog-covers-extra.mjs --force   # rewrite ALL covers (restyles live ones)
 import sharp from "sharp";
-import { readdirSync, readFileSync, mkdirSync } from "node:fs";
+import { readdirSync, readFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 const CONTENT = join(process.cwd(), "content", "blog");
@@ -55,11 +59,25 @@ const posts = readdirSync(CONTENT)
   .map((f) => JSON.parse(readFileSync(join(CONTENT, f), "utf8")))
   .sort((x, y) => x.slug.localeCompare(y.slug));
 
-let i = 0;
+const FORCE = process.argv.includes("--force");
+
+// djb2 hash of the slug — style depends only on the slug, never on the file set
+function styleFor(slug) {
+  let h = 5381;
+  for (let j = 0; j < slug.length; j++) h = ((h * 33) ^ slug.charCodeAt(j)) >>> 0;
+  return STYLES[h % STYLES.length];
+}
+
+let written = 0;
+let skipped = 0;
 for (const p of posts) {
   const file = p.image.replace("/blog/", "");
-  await sharp(Buffer.from(cover(STYLES[i % STYLES.length]))).webp({ quality: 88 }).toFile(join(OUT, file));
+  if (!FORCE && existsSync(join(OUT, file))) {
+    skipped++;
+    continue;
+  }
+  await sharp(Buffer.from(cover(styleFor(p.slug)))).webp({ quality: 88 }).toFile(join(OUT, file));
   console.log("wrote", file);
-  i++;
+  written++;
 }
-console.log("done:", posts.length, "covers");
+console.log(`done: ${written} written, ${skipped} skipped (cover already exists)`);
