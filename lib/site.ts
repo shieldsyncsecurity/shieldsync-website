@@ -108,8 +108,8 @@ export const DOORS: Door[] = [
       "1:1 career mentorship",
       "Completion certificate",
     ],
-    href: "/training",
-    cta: "Explore training",
+    href: "/aws-security-labs",
+    cta: "Explore labs",
   },
 ];
 
@@ -160,13 +160,6 @@ export const SERVICES: Service[] = [
     desc: "Get audit-ready against the frameworks your customers ask about — with risk assessments, control mapping, and evidence, not paperwork.",
     points: ["SOC 2 & ISO 27001 readiness", "GDPR & DPDP data protection", "Risk assessments & control mapping"],
     href: "/services/governance-risk-compliance",
-  },
-  {
-    icon: "cap",
-    title: "Corporate Training",
-    desc: "Hands-on security training delivered to your team — built around your stack and real risks, across infrastructure, endpoint, cloud, and SOC.",
-    points: ["À la carte training by domain", "Tailored to your environment", "Practical, scenario-based sessions"],
-    href: "/training",
   },
   {
     icon: "flask",
@@ -244,7 +237,6 @@ export const LAB_TRACKS: LabTrack[] = [
 // /services; do NOT spread SERVICES_MENU here again.
 export const BUSINESSES_MENU: { label: string; desc: string; href: string; tag?: string }[] = [
   { label: "Security Services", desc: "Assessments, SOC, AppSec, GRC — practitioner-led", href: "/services" },
-  { label: "Corporate Training", desc: "Team training across infra, cloud & SOC — tailored to your stack", href: "/training" },
   { label: "Hiring Assessments", desc: "Test candidates on real cloud-security tasks before you hire", href: SITE.enterpriseUrl },
 ];
 
@@ -456,7 +448,6 @@ export const FOOTER_NAV: { heading: string; links: NavItem[] }[] = [
     links: [
       { label: "Start here", href: "/start-here" },
       { label: "Foundation Program", href: "/cybersecurity-foundation-program" },
-      { label: "Training", href: "/training" },
       { label: "Blog", href: "/blog" },
     ],
   },
@@ -687,41 +678,6 @@ export const SOC_LABS: SocLab[] = [
 
 /* Training programs ----------------------------------------------------------- */
 
-export const TRAINING_PROGRAMS: {
-  name: string;
-  audience: string;
-  desc: string;
-  points: string[];
-  href: string;
-  cta: string;
-  featured?: boolean;
-}[] = [
-  {
-    name: "Cybersecurity Foundation Program",
-    audience: "Students & career-changers",
-    desc: "An 8-week, hands-on foundation program — real AWS cloud security projects, 1:1 mentorship, and a completion certificate.",
-    points: ["Hands-on AWS & cloud security projects", "1:1 career mentorship", "Completion certificate"],
-    href: "/cybersecurity-foundation-program",
-    cta: "Apply now",
-    featured: true,
-  },
-  {
-    name: "Career-transformation track",
-    audience: "Professionals upskilling",
-    desc: "A structured cloud-security path that takes motivated professionals from current role to job-ready.",
-    points: ["Cloud security depth", "Hands-on labs", "Portfolio & interview prep"],
-    href: "/contact",
-    cta: "Book a call",
-  },
-  {
-    name: "Corporate cohorts",
-    audience: "Teams",
-    desc: "Custom team training built around your stack and your real risks — delivered remotely, lab-backed.",
-    points: ["Tailored curriculum", "Team labs", "Outcome reporting"],
-    href: "/contact",
-    cta: "Request a cohort",
-  },
-];
 
 /* Blog ------------------------------------------------------------------------ */
 
@@ -864,11 +820,6 @@ export const FAQS: Record<string, { q: string; a: string }[]> = {
     { q: "Which clouds do you cover?", a: "AWS today — Azure, GCP and more are on our roadmap." },
     { q: "Do you do penetration testing?", a: "We offer it on request through trusted partners; our core is cloud security and detection & response." },
     { q: "Can you help with SOC 2 / ISO 27001 / GDPR readiness?", a: "Yes — we map security work to the frameworks your customers ask about, with evidence and control mapping." },
-  ],
-  training: [
-    { q: "Do I need prior experience?", a: "No — our Foundation Program and entry tracks are built for beginners and career-changers." },
-    { q: "Is it remote?", a: "Yes — training and labs are remote-first and globally accessible." },
-    { q: "Do I get a certificate?", a: "Yes — you receive a certificate from ShieldSync Security Private Limited on completion." },
   ],
   labs: [
     { q: "What do I need to start a lab?", a: "Just a browser. Labs run in managed cloud environments — no AWS account, no install, no credit card for the free lab." },

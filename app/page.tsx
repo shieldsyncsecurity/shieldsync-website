@@ -74,8 +74,6 @@ const SERVICE_ICONS = { cloud: Cloud, shield: Shield, flask: Flask, compliance: 
 
 const FRAMEWORKS = ["SOC 2", "ISO 27001", "GDPR", "PCI DSS", "DPDP", "NIST CSF"];
 
-const TRAINING_VERTICALS = ["Infrastructure", "Endpoint", "Cloud", "SOC — SIEM & SOAR"];
-
 export default function HomePage() {
   return (
     <>
@@ -300,58 +298,6 @@ export default function HomePage() {
                   ))}
                 </div>
               </div>
-            </Reveal>
-          </div>
-        </Container>
-      </section>
-
-      {/* -------------------------------------------------------- Team training */}
-      <section className="border-b border-line py-8 sm:py-10">
-        <Container>
-          <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
-            <Reveal>
-              <span className="inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-bright">
-                <span className="h-1 w-1 rounded-full bg-brand" />
-                Team training
-              </span>
-              <h2 className="mt-4 text-2xl font-bold tracking-tight text-fg sm:text-3xl">
-                Upskill your team across the domains that matter
-              </h2>
-              <p className="mt-5 text-lg leading-8 text-muted">
-                À la carte, practitioner-led training — pick the domains your team needs, tailored to your stack and
-                delivered remote or on-site.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-2">
-                {TRAINING_VERTICALS.map((v) => (
-                  <span key={v} className="rounded-full border border-line bg-panel px-4 py-1.5 text-sm font-semibold text-fg">
-                    {v}
-                  </span>
-                ))}
-              </div>
-              <div className="mt-8">
-                <Button href="/training">
-                  Explore training
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </div>
-            </Reveal>
-            <Reveal delay={120}>
-              <Card hover={false} className="p-7 sm:p-8">
-                <h3 className="text-base font-bold uppercase tracking-wide text-muted">Built around your team</h3>
-                <ul className="mt-5 grid gap-3.5">
-                  {[
-                    "Tailored to your environment and risks",
-                    "Live, practitioner-led — remote or on-site",
-                    "Hands-on and scenario-based",
-                    "Role-based for engineers, ops, or leadership",
-                  ].map((p) => (
-                    <li key={p} className="flex items-start gap-3 text-base text-fg/90">
-                      <Check className="mt-1 h-4 w-4 shrink-0 text-brand" />
-                      {p}
-                    </li>
-                  ))}
-                </ul>
-              </Card>
             </Reveal>
           </div>
         </Container>

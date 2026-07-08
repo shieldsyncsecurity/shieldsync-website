@@ -50,12 +50,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${base}/training`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
-    {
       url: `${base}/cybersecurity-foundation-program`,
       lastModified: now,
       changeFrequency: "weekly",

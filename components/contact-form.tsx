@@ -9,7 +9,6 @@ const INPUT =
 
 const SUBJECTS = [
   { value: "services", label: "Cloud security services (business)" },
-  { value: "training", label: "Training / career tracks" },
   { value: "internship", label: "The Foundation Program" },
   { value: "labs", label: "Hands-on labs" },
   { value: "other", label: "Something else" },

@@ -55,7 +55,6 @@ const PAGE_SCHEMA = [
   }),
   breadcrumbSchema(PAGE_URL, [
     { name: "Home", url: SITE.url },
-    { name: "Training", url: `${SITE.url}/training` },
     { name: "Cybersecurity Foundation Program", url: PAGE_URL },
   ]),
   foundationProgramSchema(),
