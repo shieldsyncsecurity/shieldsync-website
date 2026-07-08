@@ -793,6 +793,13 @@ export const BLOG_POSTS: BlogPost[] = [...BLOG_SEED, ...(blogExtra as unknown as
   (a, b) => +new Date(b.date) - +new Date(a.date),
 );
 
+// Body-free projection for every preview surface (carousels, explorer, card
+// grids). Full bodies belong only to /blog/[slug] — passing BLOG_POSTS into a
+// client component serializes every post's full body into that page's RSC
+// payload (the /blog explorer alone was ~576 KB of HTML because of this).
+export type BlogPostCard = Omit<BlogPost, "body">;
+export const BLOG_POST_CARDS: BlogPostCard[] = BLOG_POSTS.map(({ body: _body, ...card }) => card);
+
 /* About ----------------------------------------------------------------------- */
 
 export const ABOUT = {

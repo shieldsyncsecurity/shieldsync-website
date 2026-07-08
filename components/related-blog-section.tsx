@@ -2,7 +2,7 @@ import { Container, SectionHeading, Button } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { BlogCarousel } from "@/components/blog-carousel";
 import { ArrowRight } from "@/components/icons";
-import { BLOG_POSTS } from "@/lib/site";
+import { BLOG_POST_CARDS } from "@/lib/site";
 
 /* ----------------------------------------------------------------------------
    Shared "From the blog" / related-reads block. Every page used to hand-roll
@@ -28,9 +28,9 @@ export function RelatedBlogSection({
   className?: string;
 }) {
   const matched = keywords.length
-    ? BLOG_POSTS.filter((p) => keywords.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
+    ? BLOG_POST_CARDS.filter((p) => keywords.some((k) => p.category.toLowerCase().includes(k.toLowerCase())))
     : [];
-  const rest = BLOG_POSTS.filter((p) => !matched.includes(p));
+  const rest = BLOG_POST_CARDS.filter((p) => !matched.includes(p));
   const posts = [...matched, ...rest].slice(0, count);
 
   if (posts.length === 0) return null;

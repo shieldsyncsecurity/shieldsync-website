@@ -4,7 +4,7 @@ import { PageHero, CtaBand } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
 import { BlogExplorer } from "@/components/blog-explorer";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
-import { BLOG_POSTS, SITE } from "@/lib/site";
+import { BLOG_POST_CARDS, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Blog — Cloud Security, SOC & Cyber Career",
@@ -48,7 +48,7 @@ export default function BlogPage() {
 
       <section className="py-8 sm:py-10">
         <Container>
-          <BlogExplorer posts={BLOG_POSTS} />
+          <BlogExplorer posts={BLOG_POST_CARDS} />
         </Container>
       </section>
 

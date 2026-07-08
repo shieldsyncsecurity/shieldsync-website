@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Card } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { ArrowRight, Close, Search } from "@/components/icons";
-import type { BlogPost } from "@/lib/site";
+import type { BlogPostCard } from "@/lib/site";
 
 const ALL = "All";
 
@@ -21,13 +21,13 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
   return debounced;
 }
 
-function matches(post: BlogPost, query: string): boolean {
+function matches(post: BlogPostCard, query: string): boolean {
   if (!query) return true;
   const haystack = `${post.title} ${post.excerpt} ${post.category}`.toLowerCase();
   return haystack.includes(query);
 }
 
-function PostCard({ post, priority = false }: { post: BlogPost; priority?: boolean }) {
+function PostCard({ post, priority = false }: { post: BlogPostCard; priority?: boolean }) {
   return (
     <Link href={`/blog/${post.slug}`} className="group block h-full">
       <Card className="flex h-full flex-col overflow-hidden p-0 border-transparent hover:border-brand/40">
@@ -62,7 +62,7 @@ function PostCard({ post, priority = false }: { post: BlogPost; priority?: boole
   );
 }
 
-function FeaturedCard({ post }: { post: BlogPost }) {
+function FeaturedCard({ post }: { post: BlogPostCard }) {
   return (
     <Link href={`/blog/${post.slug}`} className="group block">
       <Card className="grid overflow-hidden p-0 border-transparent hover:border-brand/40 md:grid-cols-2">
@@ -104,7 +104,7 @@ function FeaturedCard({ post }: { post: BlogPost }) {
   );
 }
 
-export function BlogExplorer({ posts }: { posts: BlogPost[] }) {
+export function BlogExplorer({ posts }: { posts: BlogPostCard[] }) {
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebouncedValue(query, 120).trim().toLowerCase();
   const [active, setActive] = useState(ALL);

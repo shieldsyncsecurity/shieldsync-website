@@ -6,7 +6,7 @@ import { CtaBand } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
 import { webPageSchema, breadcrumbSchema, courseListSchema } from "@/lib/schema";
 import { ArrowRight, Shield, Lock, Code } from "@/components/icons";
-import { SITE, BLOG_POSTS } from "@/lib/site";
+import { SITE, BLOG_POST_CARDS } from "@/lib/site";
 import { InDevelopmentBadge } from "@/components/status-badge";
 
 export const metadata: Metadata = {
@@ -50,7 +50,7 @@ const AI_SECURITY_SLUGS = [
 ] as const;
 
 const AI_POSTS = AI_SECURITY_SLUGS
-  .map((slug) => BLOG_POSTS.find((p) => p.slug === slug))
+  .map((slug) => BLOG_POST_CARDS.find((p) => p.slug === slug))
   .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
 const PAGE_SCHEMA = [

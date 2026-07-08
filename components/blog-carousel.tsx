@@ -3,11 +3,10 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "@/components/icons";
-import type { BlogPost } from "@/lib/site";
+import type { BlogPostCard } from "@/lib/site";
 
-function excerpt(post: BlogPost, max = 120): string {
-  const p = post.body.find((b) => b.t === "p");
-  const text = p ? p.text : "";
+function excerpt(post: BlogPostCard, max = 120): string {
+  const text = post.excerpt;
   return text.length > max ? text.slice(0, max).trimEnd() + "…" : text;
 }
 
@@ -15,7 +14,7 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 }
 
-export function BlogCarousel({ posts }: { posts: BlogPost[] }) {
+export function BlogCarousel({ posts }: { posts: BlogPostCard[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [idx, setIdx] = useState(0);
   const visible = 3; // cards visible at once on desktop
