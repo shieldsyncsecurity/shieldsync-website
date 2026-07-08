@@ -4,6 +4,7 @@
 ---------------------------------------------------------------------------- */
 
 import blogExtra from "./blog-extra.json";
+import { applyLabSettings } from "./lab-settings";
 
 export const SITE = {
   name: "ShieldSync",
@@ -584,7 +585,7 @@ export function launchPolicyText(level: LabLevel, free?: boolean): string {
 // CANONICAL shared fields (slug/title/level/free/tags/minutes) mirror each lab's
 // labs-platform/app/content/labs/<slug>/lab.json — keep them in sync; `desc`,
 // `added`, `skills`, `roles` are marketing-only and live here.
-export const AWS_LABS: LabItem[] = [
+const AWS_LABS_BASE: LabItem[] = [
   {
     slug: "s3-misconfiguration-audit",
     title: "S3 misconfiguration & data exposure",
@@ -619,11 +620,13 @@ export const AWS_LABS: LabItem[] = [
     roles: ["Cloud Security Engineer", "Penetration Tester", "Security Consultant"],
   },
 ];
+// Settings overrides (keywords/free) applied — see lib/lab-settings.ts.
+export const AWS_LABS: LabItem[] = AWS_LABS_BASE.map(applyLabSettings);
 
 // AI security labs — the FLAGSHIP track (owner, 2026-07-07). One free lab live on
 // the platform today; paid AI labs follow. CANONICAL shared fields mirror
 // labs-platform/app/content/labs/<slug>/lab.json.
-export const AI_LABS: LabItem[] = [
+const AI_LABS_BASE: LabItem[] = [
   {
     slug: "bedrock-prompt-injection",
     title: "Bedrock assistant — prompt injection & lockdown",
@@ -642,12 +645,14 @@ export const AI_LABS: LabItem[] = [
     roles: ["AI Security Engineer", "Cloud Security Engineer", "GenAI Developer"],
   },
 ];
+// Settings overrides (keywords/free) applied — see lib/lab-settings.ts.
+export const AI_LABS: LabItem[] = AI_LABS_BASE.map(applyLabSettings);
 
 // Azure security labs — the SECOND cloud track (mirrors AWS_LABS shape). The lab is
 // built in labs-platform; surfaced here as "Coming soon" until the Azure engine path
 // is wired live (no purchase/launch route yet — a coming-soon card only, not a live
 // CTA). CANONICAL shared fields mirror labs-platform/app/content/labs/<slug>/lab.json.
-export const AZURE_LABS: LabItem[] = [
+const AZURE_LABS_BASE: LabItem[] = [
   {
     slug: "storage-public-exposure-audit",
     title: "Storage account public exposure & data leak",
@@ -666,6 +671,8 @@ export const AZURE_LABS: LabItem[] = [
     roles: ["Cloud Security Engineer", "Cloud Security Analyst", "DevSecOps Engineer"],
   },
 ];
+// Settings overrides (keywords/free) applied — see lib/lab-settings.ts.
+export const AZURE_LABS: LabItem[] = AZURE_LABS_BASE.map(applyLabSettings);
 
 // SOC track: SIEM + SOAR, under one roof.
 // NOTE: underlying tool names stay hidden on the public site until a user is inside the lab.

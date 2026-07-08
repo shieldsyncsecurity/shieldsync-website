@@ -26,12 +26,12 @@ export const AWS_PRICE: Record<string, Money> = {
 };
 export const AWS_MONTHLY: Money = { usd: 25, inr: 2000 };
 
-// Optional per-lab price override (e.g. a launch promo). Empty = pure level
-// pricing. (Held the temporary IAM ₹99 during Paytm review; reverted 2026-07-04.)
-export const AWS_LAB_PRICE_OVERRIDE: Record<string, Money> = {};
-/** Per-lab price: the temporary override if set, else the per-level price. */
+// Per-lab price overrides come from lib/lab-settings.json (the /admin/labs
+// panel on the labs platform commits both copies; null = flat pricing).
+import { withPriceOverride } from "./lab-settings";
+/** Per-lab price: settings override merged over the level price. */
 export function awsLabPrice(slug: string, level: string): Money {
-  return AWS_LAB_PRICE_OVERRIDE[slug] ?? AWS_PRICE[level] ?? FREE;
+  return withPriceOverride(slug, AWS_PRICE[level] ?? FREE);
 }
 // SOC (SIEM/SOAR) is partner-priced — placeholders until finalised.
 export const SOC_PRICE: Money = { usd: 3.49, inr: 299 };
