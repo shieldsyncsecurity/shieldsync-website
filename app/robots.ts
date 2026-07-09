@@ -10,7 +10,11 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/_next/", "/dashboard/", "/admin/"],
+        // Only disallow build assets. The old list advertised sensitive-looking
+        // paths (/api /admin /dashboard) that do NOT exist on this static
+        // marketing site — pointless noise a scan flagged; those surfaces live
+        // on the labs/enterprise subdomains and are protected server-side there.
+        disallow: ["/_next/"],
       },
     ],
     sitemap: `${SITE.url}/sitemap.xml`,
