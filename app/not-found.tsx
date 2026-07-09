@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import { Container, Button } from "@/components/ui";
+
+// Without this, the root layout's site-wide `robots: index,follow` metadata
+// stacks on top of Next's automatic noindex for notFound()-reached pages,
+// producing two conflicting <meta name="robots"> tags in the rendered HTML.
+// Google resolves conflicts to the most restrictive either way, but this makes
+// the noindex intent explicit and unambiguous for every crawler.
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default function NotFound() {
   return (

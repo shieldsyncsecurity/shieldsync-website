@@ -439,6 +439,7 @@ export const FOOTER_NAV: { heading: string; links: NavItem[] }[] = [
     heading: "Explore",
     links: [
       { label: "Services", href: "/services" },
+      { label: "AI Security", href: "/ai-security" },
       { label: "Hands-on Labs", href: "/aws-security-labs" },
       { label: "Hiring Assessments", href: SITE.enterpriseUrl },
       { label: "Certifications", href: "/aws-security-certification" },

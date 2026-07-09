@@ -31,7 +31,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   // Excerpts run long for on-page use; SERP descriptions get cut at ~165 chars,
   // so truncate at a word boundary for the meta tag only.
   const description = post.excerpt.length > 160 ? `${post.excerpt.slice(0, 157).replace(/\s+\S*$/, "")}…` : post.excerpt;
-  return { title: post.title, description, alternates: { canonical: `/blog/${slug}` } };
+  // Headlines are written long for the on-page H1; the rendered <title> also
+  // carries the " | ShieldSync Security" suffix (~22 chars), so cap the base
+  // title well below Google's ~60-char SERP display budget, same word-boundary
+  // truncation as the description above. The full headline still shows as the
+  // H1 and in JSON-LD — only the <title>/og:title meta is shortened.
+  const title = post.title.length > 55 ? `${post.title.slice(0, 52).replace(/\s+\S*$/, "")}…` : post.title;
+  return { title, description, alternates: { canonical: `/blog/${slug}` } };
 }
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {

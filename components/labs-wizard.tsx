@@ -226,6 +226,11 @@ export function LabsWizard({
     <section className="py-3 sm:py-4">
       <Container>
         <div className="mx-auto max-w-4xl">
+          {/* Page-level H1 — the stepper below had no heading at all (SEO gap:
+              this route is priority 0.9 in the sitemap). Kept compact/restrained
+              per the site's typography rules, not a big banner. */}
+          <h1 className="sr-only">Start a {trackName} lab</h1>
+
           {/* Currency toggle */}
           <div className="mb-2 flex items-center justify-end gap-3">
             <span className="text-xs text-muted">Prices shown for your region</span>

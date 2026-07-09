@@ -37,7 +37,12 @@ export const metadata: Metadata = {
 // likewise resolved client-side (browser timezone → INR for India).
 export default function LabsWizardPage() {
   return (
-    <Suspense>
+    // The fallback carries a real H1 into the STATIC HTML (the client
+    // component behind it renders nothing until hydration, so without this
+    // fallback the page ships zero heading tags to a raw-HTML crawler —
+    // matches <h1 className="sr-only"> in labs-wizard.tsx so there's no
+    // visible flash when the client view takes over.
+    <Suspense fallback={<h1 className="sr-only">Start an AWS Security Lab</h1>}>
       <LabsWizardLauncher />
     </Suspense>
   );
