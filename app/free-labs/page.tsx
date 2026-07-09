@@ -91,8 +91,11 @@ export default function FreeLabsHubPage() {
             </p>
           </Reveal>
 
-          {/* Stacked vertically (owner call 2026-07-07) — one lab per row. */}
-          <div className="mt-8 grid max-w-3xl gap-5">
+          {/* Responsive card grid (owner call 2026-07-09): 1-up mobile, 2-up
+              from tablet, equal-height cards with aligned CTAs. Capped at 2
+              columns while there are 2 live labs so the row stays balanced; add
+              `lg:grid-cols-3` (and widen to max-w-5xl) when a 3rd free lab ships. */}
+          <div className="mt-8 grid max-w-4xl gap-6 sm:grid-cols-2">
             {FREE_LABS.map((lab, i) => {
               const Icon = lab.icon;
               const inner = (
@@ -115,27 +118,28 @@ export default function FreeLabsHubPage() {
                   <h2 className="mt-1 text-lg font-bold text-fg">{lab.title}</h2>
                   <p className="mt-2 text-sm leading-6 text-muted">{lab.desc}</p>
                   {lab.ready ? (
-                    <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-bright">
+                    <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-semibold text-brand-bright">
                       Start free <ArrowRight className="h-4 w-4" />
                     </span>
                   ) : (
-                    <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-muted">
+                    <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-semibold text-muted">
                       In development
                     </span>
                   )}
                 </>
               );
               return lab.ready ? (
-                <Reveal key={lab.href} delay={i * 80}>
+                <Reveal key={lab.href} delay={i * 80} className="h-full">
                   <Link
                     href={lab.href}
-                    className="flex h-full flex-col rounded-2xl border border-line bg-panel p-6 transition hover:border-brand"
+                    aria-label={`Start free lab: ${lab.title}`}
+                    className="flex h-full flex-col rounded-2xl border border-line bg-panel p-6 transition hover:-translate-y-0.5 hover:border-brand hover:shadow-lg"
                   >
                     {inner}
                   </Link>
                 </Reveal>
               ) : (
-                <Reveal key={lab.href} delay={i * 80}>
+                <Reveal key={lab.href} delay={i * 80} className="h-full">
                   <div className="flex h-full flex-col rounded-2xl border border-line bg-panel/60 p-6 opacity-75">
                     {inner}
                   </div>
