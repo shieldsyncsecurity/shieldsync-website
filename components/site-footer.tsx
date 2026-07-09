@@ -71,6 +71,8 @@ export function SiteFooter() {
             <Link href="/terms" className="transition hover:text-brand-bright">Terms</Link>
             <Link href="/refund" className="transition hover:text-brand-bright">Refund &amp; Cancellation</Link>
             <Link href="/shipping" className="transition hover:text-brand-bright">Shipping &amp; Delivery</Link>
+            {/* Static file at /.well-known/ — plain anchor, not next/link (not a route). */}
+            <a href="/.well-known/security.txt" className="transition hover:text-brand-bright">Security</a>
           </div>
         </div>
       </div>
