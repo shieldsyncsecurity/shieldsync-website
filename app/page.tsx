@@ -76,7 +76,7 @@ const SERVICE_ICONS = { cloud: Cloud, shield: Shield, flask: Flask, compliance: 
 // false compliance claim (owner, 2026-07-10: "replace these with something else").
 // Compliance FLUENCY (helping clients get audit-ready) is true and lives in the
 // hero prose + the GRC service page.
-const CAPABILITIES = ["Practitioner-led", "AWS · Azure · GCP", "Real, isolated environments", "Compliance-fluent", "Remote-first · global"];
+const CAPABILITIES = ["Practitioner-led", "AWS · Azure", "Real, isolated environments", "Compliance-fluent"];
 
 export default function HomePage() {
   return (
