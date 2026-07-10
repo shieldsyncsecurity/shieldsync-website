@@ -87,7 +87,7 @@ export default function StartHerePage() {
                 A clear path from zero to job-ready, where every step is a real lab in a real AWS console. Pick your stage below and start — your first lab is free.
               </p>
               <div className="mt-5 flex flex-wrap gap-3">
-                <Button href="/free-labs/aws-security">
+                <Button href="/labs-wizard?track=free-security-labs">
                   Start free — Stage 1
                   <ArrowRight className="h-4 w-4" />
                 </Button>
@@ -152,7 +152,7 @@ export default function StartHerePage() {
 
                     <div className="mt-auto pt-5">
                       <Button
-                        href={i === 0 ? "/free-labs/aws-security" : s.track === "aws" ? `/labs-wizard?track=aws&level=${s.level}` : "/labs-wizard?track=soc"}
+                        href={i === 0 ? "/labs-wizard?track=free-security-labs" : s.track === "aws" ? `/labs-wizard?track=aws&level=${s.level}` : "/labs-wizard?track=soc"}
                         variant={i === 0 ? "primary" : "secondary"}
                         className="w-full justify-center whitespace-nowrap"
                       >
@@ -202,7 +202,7 @@ export default function StartHerePage() {
       <CtaBand
         title="Start Stage 1 — free"
         subtitle="Your first cloud security lab is on us. No account, no setup — just a browser."
-        primary={{ label: "Start free lab", href: "/free-labs/aws-security" }}
+        primary={{ label: "Start free lab", href: "/labs-wizard?track=free-security-labs" }}
       />
     </>
   );

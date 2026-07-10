@@ -33,7 +33,7 @@ const TIERS: Tier[] = [
     price: () => "Free",
     blurb: "Your first beginner lab, on us.",
     points: ["One real, isolated AWS account", "S3 misconfiguration scenario", "Auto-graded against live state", "No credit card"],
-    cta: { label: "Start free lab", href: "/free-labs/aws-security" },
+    cta: { label: "Start free lab", href: "/labs-wizard?track=free-security-labs" },
   },
   {
     name: "Pay per lab",

@@ -108,7 +108,7 @@ export default function AiSecurityPage() {
                 See the SCS-C03 track
                 <ArrowRight className="h-4 w-4" />
               </Button>
-              <Button href={SITE.freeLabUrl} variant="secondary" external newTab>
+              <Button href={SITE.freeLabUrl} variant="secondary">
                 Start free lab
               </Button>
             </div>

@@ -25,11 +25,11 @@ export const SITE = {
   // ai-security-labs, azure-security-labs, soc-labs, free-security-labs
   // (legacy short values aws/soc still accepted by the launcher).
   startUrl: "/labs-wizard?track=aws-security-labs",
-  // Fastest free-lab path: jump straight to the platform's free lab page. The
-  // learner signs in and then clicks "Launch lab" themselves — we deliberately do
-  // NOT auto-start (that would provision a scarce free AWS account before they're
-  // ready). Used by the "Start free lab" CTAs.
-  freeLabUrl: "https://labs.shieldsyncsecurity.com/labs/s3-misconfiguration-audit",
+  // Every "Start free lab" CTA routes through the wizard's free view (owner,
+  // 2026-07-10: free/paid is surfaced ONLY via the wizard, uniformly across every
+  // track). The free view lists the live free labs; the learner picks one and
+  // launches it on the platform. There are no standalone /free-labs pages anymore.
+  freeLabUrl: "/labs-wizard?track=free-security-labs",
 } as const;
 
 export const CONTACT = {
@@ -53,9 +53,6 @@ export type NavItem = { label: string; href: string };
 export const NAV: NavItem[] = [
   { label: "Businesses", href: "/services" },
   { label: "Learners", href: "/aws-security-labs" },
-  // Standalone acquisition door (owner call 2026-07-07). Plain label — never
-  // show a count of free labs here.
-  { label: "Free Labs", href: "/free-labs" },
   { label: "Blog", href: "/blog" },
 ];
 
@@ -251,7 +248,8 @@ export const LEARNERS_MENU: { label: string; desc: string; href: string; tag?: s
   { label: "AWS Security Labs", desc: "Cloud security in real AWS — pick a lab or go monthly", href: "/labs-wizard?track=aws-security-labs" },
   { label: "Azure Security Labs", desc: "Cloud security in real Azure — storage exposure & more", href: "/labs-wizard?track=azure-security-labs", tag: "Coming soon" },
   { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/labs-wizard?track=soc-labs", tag: "Coming soon" },
-  // Free Labs is NOT listed here — it has its own top-level nav item.
+  // Free labs aren't a separate row — every track leads into the wizard, whose
+  // free view is the single place free/paid is surfaced (owner, 2026-07-10).
   { label: "AWS Certification (SCS-C03)", desc: "Every exam domain mapped to a hands-on lab", href: "/aws-security-certification" },
   { label: "Foundation Program", desc: "8-week guided beginner program — projects, labs & certificate", href: "/cybersecurity-foundation-program" },
 ];

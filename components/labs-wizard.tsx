@@ -181,7 +181,7 @@ export function LabsWizard({
               ))}
             </div>
             <p className="mt-4 text-sm text-muted">
-              Prefer the details first? <a href="/free-labs" className="font-semibold text-brand-bright">See the free-labs pages</a>.
+              Real, isolated cloud accounts — auto-graded, auto-wiped. Nothing to install.
             </p>
           </div>
         </Container>

@@ -1,5 +1,8 @@
 [
-  { "source": "/free-lab", "target": "/free-labs/aws-security", "status": "301" },
+  { "source": "/free-lab", "target": "/labs-wizard?track=free-security-labs", "status": "301" },
+  { "source": "/free-labs", "target": "/labs-wizard?track=free-security-labs", "status": "301" },
+  { "source": "/free-labs/aws-security", "target": "/labs-wizard?track=free-security-labs", "status": "301" },
+  { "source": "/free-labs/ai-security", "target": "/labs-wizard?track=free-security-labs", "status": "301" },
   { "source": "/pricing", "target": "/labs-wizard", "status": "301" },
   { "source": "/labs", "target": "/aws-security-labs", "status": "301" },
   { "source": "/labs/soc", "target": "/soc-labs", "status": "301" },

@@ -156,7 +156,7 @@ export function SiteHeader() {
             USP one click away now that Labs lives inside the Learners door).
             Book a call = secondary (higher-intent B2B path). */}
         <div className="hidden items-center gap-3 md:flex">
-          <Button href="/free-labs/aws-security" variant="primary" className="px-4 py-2">
+          <Button href="/labs-wizard?track=free-security-labs" variant="primary" className="px-4 py-2">
             Start free lab
           </Button>
           <Button href="/contact" variant="secondary" className="px-4 py-2">
@@ -234,7 +234,7 @@ export function SiteHeader() {
               );
             })}
             <div className="my-2 h-px bg-line" />
-            <Button href="/free-labs/aws-security" variant="primary" className="mt-1">
+            <Button href="/labs-wizard?track=free-security-labs" variant="primary" className="mt-1">
               Start free lab
             </Button>
             <Button href="/contact" variant="secondary" className="mt-1">
