@@ -53,7 +53,7 @@ export function FoundationApplyForm() {
 
   if (status === "success") {
     return (
-      <div className="rounded-2xl border border-brand/30 bg-brand/5 p-7 text-center">
+      <div role="status" className="rounded-2xl border border-brand/30 bg-brand/5 p-7 text-center">
         <p className="text-2xl font-extrabold text-fg">Application received!</p>
         <p className="mt-2 text-base text-muted">Thanks for applying. We&apos;ll review your details and reply within 24 hours.</p>
       </div>
@@ -126,10 +126,10 @@ export function FoundationApplyForm() {
       <input type="checkbox" name="botcheck" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" />
 
       {status === "error" && (
-        <p className="rounded-lg border border-rose-300/40 bg-rose-50/60 px-4 py-2.5 text-sm text-rose-700">{errorMsg}</p>
+        <p role="alert" className="rounded-lg border border-rose-300/40 bg-rose-50/60 px-4 py-2.5 text-sm text-rose-700">{errorMsg}</p>
       )}
 
-      <button type="submit" disabled={submitting}
+      <button type="submit" disabled={submitting} aria-busy={submitting}
         className="glow-brand w-full rounded-xl bg-gradient-to-r from-brand to-cyan px-6 py-3 text-base font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60">
         {submitting ? "Submitting…" : "Submit application →"}
       </button>
