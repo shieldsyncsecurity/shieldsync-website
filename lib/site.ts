@@ -250,7 +250,6 @@ export const LEARNERS_MENU: { label: string; desc: string; href: string; tag?: s
   { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/labs-wizard?track=soc-labs", tag: "Coming soon" },
   // Free labs aren't a separate row — every track leads into the wizard, whose
   // free view is the single place free/paid is surfaced (owner, 2026-07-10).
-  { label: "AWS Certification (SCS-C03)", desc: "Every exam domain mapped to a hands-on lab", href: "/aws-security-certification" },
   { label: "Foundation Program", desc: "8-week guided beginner program — projects, labs & certificate", href: "/cybersecurity-foundation-program" },
 ];
 
@@ -440,7 +439,6 @@ export const FOOTER_NAV: { heading: string; links: NavItem[] }[] = [
       { label: "AI Security", href: "/ai-security" },
       { label: "Hands-on Labs", href: "/aws-security-labs" },
       { label: "Hiring Assessments", href: SITE.enterpriseUrl },
-      { label: "Certifications", href: "/aws-security-certification" },
     ],
   },
   {

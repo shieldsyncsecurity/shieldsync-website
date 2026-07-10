@@ -23,8 +23,7 @@ import { VideoEmbed } from "@/components/video-embed";
 //                  just before the SCS-C02 callout. Use for
 //                  ~2–3 min videos that qualify their own slot.
 //    "off"       → no video on homepage anywhere. Use if the explainer
-//                  ended up too long (3 min+); embed it on /free-lab or
-//                  /aws-security-certification instead.
+//                  ended up too long (3 min+); embed it on a labs page instead.
 //
 //  Fallback logic (so the page never looks broken mid-edit):
 //    • placement="hero" but no id  → hero shows the mock (today's state)
@@ -72,7 +71,12 @@ export const metadata: Metadata = {
 
 const SERVICE_ICONS = { cloud: Cloud, shield: Shield, flask: Flask, compliance: Compliance, cap: Cap, radar: Radar, code: Code, lock: Lock } as const;
 
-const FRAMEWORKS = ["SOC 2", "ISO 27001", "GDPR", "PCI DSS", "DPDP", "NIST CSF"];
+// Honest capability chips — NOT certification badges. ShieldSync is not itself
+// SOC 2 / ISO 27001 / PCI DSS certified, so listing those as bare pills read as a
+// false compliance claim (owner, 2026-07-10: "replace these with something else").
+// Compliance FLUENCY (helping clients get audit-ready) is true and lives in the
+// hero prose + the GRC service page.
+const CAPABILITIES = ["Practitioner-led", "AWS · Azure · GCP", "Real, isolated environments", "Compliance-fluent", "Remote-first · global"];
 
 export default function HomePage() {
   return (
@@ -118,7 +122,7 @@ export default function HomePage() {
             </div>
 
             <div className="mt-5 flex flex-wrap gap-2">
-              {FRAMEWORKS.map((f) => (
+              {CAPABILITIES.map((f) => (
                 <span key={f} className="rounded-full border border-line bg-panel px-3 py-1 text-xs font-semibold text-muted">
                   {f}
                 </span>
@@ -344,39 +348,6 @@ export default function HomePage() {
           </Container>
         </section>
       )}
-
-      {/* ---------------------------------------------- AWS SCS-C03 cert callout */}
-      <section className="border-b border-line py-8 sm:py-10">
-        <Container>
-          <Reveal>
-            <Link
-              href="/aws-security-certification"
-              className="group flex flex-col items-start justify-between gap-4 rounded-3xl border border-line bg-gradient-to-br from-brand/[0.08] to-transparent p-6 transition hover:border-brand sm:flex-row sm:items-center sm:p-8"
-            >
-              <div className="flex items-start gap-4">
-                <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-brand/25 bg-brand/10 text-brand-bright">
-                  <Cloud className="h-6 w-6" />
-                </span>
-                <div>
-                  <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-bright">
-                    AWS Certification prep
-                  </span>
-                  <h2 className="mt-1 text-xl font-bold text-fg sm:text-2xl">
-                    AWS Security Specialty (SCS-C03) — every domain mapped to a hands-on lab
-                  </h2>
-                  <p className="mt-1 max-w-2xl text-sm leading-6 text-muted">
-                    Skip the walkthroughs. Practise IAM, S3, KMS, VPC, GenAI/ML security, GuardDuty, and CloudTrail in real, isolated AWS accounts. First lab free. Upgraded from SCS-C02.
-                  </p>
-                </div>
-              </div>
-              <span className="shrink-0 inline-flex items-center gap-1.5 rounded-xl border border-brand bg-brand px-5 py-2.5 text-sm font-semibold text-white transition group-hover:brightness-110">
-                Explore SCS-C03 prep
-                <ArrowRight className="h-4 w-4" />
-              </span>
-            </Link>
-          </Reveal>
-        </Container>
-      </section>
 
       {/* ------------------------------------------------------------ Blog posts */}
       <RelatedBlogSection title="Insights on cloud security" />

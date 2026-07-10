@@ -104,12 +104,9 @@ export default function AiSecurityPage() {
               Specialty (SCS-C03) track now includes GenAI security as part of the syllabus.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
-              <Button href="/aws-security-certification">
-                See the SCS-C03 track
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-              <Button href={SITE.freeLabUrl} variant="secondary">
+              <Button href={SITE.freeLabUrl}>
                 Start free lab
+                <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
           </Reveal>

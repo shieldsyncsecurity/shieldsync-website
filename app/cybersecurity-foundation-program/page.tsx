@@ -173,10 +173,6 @@ export default function FoundationProgramPage() {
                 <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-bright">Plus — exam ready</p>
                 <h3 className="mt-2 text-lg font-bold text-fg">Toward AWS Security Specialty (SCS-C03)</h3>
                 <p className="mt-2 text-sm leading-6 text-muted">{FOUNDATION_PROGRAM.certificate.examReadiness}</p>
-                <Button href="/aws-security-certification" variant="secondary" className="mt-4 self-start">
-                  See the SCS-C03 path
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
               </div>
             </Reveal>
           </div>

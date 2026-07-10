@@ -62,7 +62,7 @@ export function SiteHeader() {
   // so "Learners" stays active across the whole learner funnel.
   const RELATED: Record<string, string[]> = {
     "/services": ["/services"],
-    "/aws-security-labs": ["/aws-security-labs", "/labs", "/labs-wizard", "/aws-security-certification", "/internship", "/ai-security", "/start-here"],
+    "/aws-security-labs": ["/aws-security-labs", "/labs", "/labs-wizard", "/internship", "/ai-security", "/start-here"],
   };
   const isActive = (href: string) => {
     const group = RELATED[href];
