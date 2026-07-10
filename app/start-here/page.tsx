@@ -91,7 +91,7 @@ export default function StartHerePage() {
                   Start free — Stage 1
                   <ArrowRight className="h-4 w-4" />
                 </Button>
-                <Button href="/aws-security-labs" variant="secondary">
+                <Button href="/labs-wizard?track=aws-security-labs" variant="secondary">
                   Browse all AWS labs
                 </Button>
               </div>

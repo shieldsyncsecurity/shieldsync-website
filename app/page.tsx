@@ -139,7 +139,7 @@ export default function HomePage() {
               <div className="rounded-3xl border border-line bg-panel p-3 shadow-xl shadow-slate-900/5">
                 <VideoEmbed videoId={HOMEPAGE_VIDEO_ID} title={HOMEPAGE_VIDEO_TITLE} />
                 <Link
-                  href="/aws-security-labs"
+                  href="/labs-wizard?track=aws-security-labs"
                   className="group mt-1 flex items-center justify-between gap-3 rounded-b-2xl px-3 py-4 transition hover:bg-surface"
                 >
                   <span className="text-sm text-muted">Real, hands-on AWS cloud security in your browser.</span>
@@ -169,7 +169,7 @@ export default function HomePage() {
                   </span>
                 </Link>
                 <Link
-                  href="/aws-security-labs"
+                  href="/labs-wizard?track=aws-security-labs"
                   className="group flex items-center justify-between gap-3 rounded-b-2xl px-3 py-4 transition hover:bg-surface"
                 >
                   <span className="text-sm text-muted">Real, hands-on AWS cloud security in your browser.</span>

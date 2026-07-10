@@ -23,7 +23,7 @@ const DROPDOWNS: Record<
     menu: BUSINESSES_MENU,
     width: "w-72",
   },
-  "/aws-security-labs": {
+  "/labs-wizard": {
     menu: LEARNERS_MENU,
     width: "w-80",
     footer: { href: "/start-here", lead: "New to cloud security?", strong: "Start here" },
@@ -62,7 +62,7 @@ export function SiteHeader() {
   // so "Learners" stays active across the whole learner funnel.
   const RELATED: Record<string, string[]> = {
     "/services": ["/services"],
-    "/aws-security-labs": ["/aws-security-labs", "/labs", "/labs-wizard", "/internship", "/ai-security", "/start-here"],
+    "/labs-wizard": ["/labs-wizard", "/labs", "/internship", "/ai-security", "/start-here"],
   };
   const isActive = (href: string) => {
     const group = RELATED[href];

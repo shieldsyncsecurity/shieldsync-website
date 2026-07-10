@@ -52,7 +52,7 @@ export type NavItem = { label: string; href: string };
 // the top level. Contact is covered by the "Book a call" button.
 export const NAV: NavItem[] = [
   { label: "Businesses", href: "/services" },
-  { label: "Learners", href: "/aws-security-labs" },
+  { label: "Learners", href: "/labs-wizard" },
   { label: "Blog", href: "/blog" },
 ];
 
@@ -105,7 +105,7 @@ export const DOORS: Door[] = [
       "1:1 career mentorship",
       "Completion certificate",
     ],
-    href: "/aws-security-labs",
+    href: "/labs-wizard?track=aws-security-labs",
     cta: "Explore labs",
   },
 ];
@@ -163,7 +163,7 @@ export const SERVICES: Service[] = [
     title: "Labs-as-a-Service",
     desc: "Managed, real-world cyber ranges your team launches on demand — cloud security, SIEM, and SOAR scenarios in isolated environments.",
     points: ["AWS security scenarios", "SIEM detection labs", "SOAR automation labs"],
-    href: "/aws-security-labs",
+    href: "/labs-wizard?track=aws-security-labs",
   },
 ];
 
@@ -437,7 +437,7 @@ export const FOOTER_NAV: { heading: string; links: NavItem[] }[] = [
     links: [
       { label: "Services", href: "/services" },
       { label: "AI Security", href: "/ai-security" },
-      { label: "Hands-on Labs", href: "/aws-security-labs" },
+      { label: "Hands-on Labs", href: "/labs-wizard?track=aws-security-labs" },
       { label: "Hiring Assessments", href: SITE.enterpriseUrl },
     ],
   },
