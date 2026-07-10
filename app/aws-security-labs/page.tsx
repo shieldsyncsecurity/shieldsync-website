@@ -81,7 +81,11 @@ const PAGE_SCHEMA = [
   faqSchema(FAQS.labs),
 ];
 
-const FREE_LAB_HREF = `${SITE.labsUrl}/labs/${AWS_LABS.find((l) => l.free)?.slug ?? "s3-misconfiguration-audit"}`;
+// Every "Start free lab" CTA routes through the wizard's free view, never straight
+// to the platform (owner: labs are reached ONLY via the wizard). The lab cards below
+// still deep-link to the /labs/<slug> SEO detail pages, whose own CTA also funnels
+// into the wizard — so there is no path to launch a lab that skips it.
+const FREE_LAB_HREF = "/labs-wizard?track=free-security-labs";
 
 export default function LabsPage() {
   return (
@@ -110,7 +114,7 @@ export default function LabsPage() {
                 </p>
               </div>
               <div className="flex shrink-0 gap-2">
-                <Button href={FREE_LAB_HREF} external>
+                <Button href={FREE_LAB_HREF}>
                   Start free lab <ArrowRight className="h-4 w-4" />
                 </Button>
                 <Button href="#pricing" variant="secondary">
@@ -178,7 +182,7 @@ export default function LabsPage() {
                   <li className="px-1 pt-1 text-xs text-muted">More AWS labs added regularly.</li>
                 </ul>
                 <div className="mt-4">
-                  <Button href={FREE_LAB_HREF} external variant="secondary" className="w-full sm:w-fit">
+                  <Button href={FREE_LAB_HREF} variant="secondary" className="w-full sm:w-fit">
                     Start free lab <ArrowRight className="h-4 w-4" />
                   </Button>
                 </div>

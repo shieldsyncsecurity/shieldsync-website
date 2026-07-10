@@ -2269,7 +2269,7 @@
       },
       {
         "t": "p",
-        "text": "The single most useful hour you can spend on SAA-C03 security prep is running the free S3 misconfiguration audit lab end to end. It exercises IAM, bucket policies, encryption, and Block Public Access — four of the most-tested concepts — in a real isolated AWS account in your browser. Pair it with a read of the AWS Exam Guide and the 4-week plan above and you've covered the security domain to the depth SAA-C03 actually rewards. The full AWS Security Certification page on shieldsyncsecurity.com lists every lab mapped to both SAA-C03 security and SCS-C02 domains if you're planning to ladder up."
+        "text": "The single most useful hour you can spend on SAA-C03 security prep is running the free S3 misconfiguration audit lab end to end. It exercises IAM, bucket policies, encryption, and Block Public Access — four of the most-tested concepts — in a real isolated AWS account in your browser. Pair it with a read of the AWS Exam Guide and the 4-week plan above and you've covered the security domain to the depth SAA-C03 actually rewards. The AWS security labs on shieldsyncsecurity.com cover the same SAA-C03 security and SCS-C02 domains hands-on if you're planning to ladder up."
       }
     ]
   },
@@ -2478,7 +2478,7 @@
       },
       {
         "t": "p",
-        "text": "If you ran the pipeline above end to end, you've covered the muscle-memory side of the SCS-C02 logging domain. The remaining gap is breadth — every service that produces logs and every detection pattern the exam might ask about. The free S3 misconfiguration audit lab at labs.shieldsyncsecurity.com is the natural next step: it's a real isolated AWS account in your browser, it touches CloudTrail data events for S3 directly, and it pairs Domain 2 (logging) with Domain 5 (data protection) the way the exam frequently does. Pair this walkthrough with the full SCS-C02 study guide for the underlying syllabus and 6-week plan, and the AWS Security Certification page for the full lab catalog mapped to every domain."
+        "text": "If you ran the pipeline above end to end, you've covered the muscle-memory side of the SCS-C02 logging domain. The remaining gap is breadth — every service that produces logs and every detection pattern the exam might ask about. The free S3 misconfiguration audit lab at labs.shieldsyncsecurity.com is the natural next step: it's a real isolated AWS account in your browser, it touches CloudTrail data events for S3 directly, and it pairs Domain 2 (logging) with Domain 5 (data protection) the way the exam frequently does. Pair this walkthrough with the full SCS-C02 study guide for the underlying syllabus and 6-week plan, and the AWS security labs for hands-on practice across every domain."
       },
       {
         "t": "p",
@@ -3591,7 +3591,7 @@
       },
       {
         "t": "p",
-        "text": "Score yourself per domain. Anything below 70% in a domain means rebuild that material before sitting the real exam: read the AWS Exam Guide section, work through a hands-on lab in that domain (start with the free S3 misconfiguration audit on labs.shieldsyncsecurity.com), and write a one-paragraph summary in your own words for every concept you missed. Pair this set with our full SCS-C02 study guide for the underlying syllabus and a 6-week study plan. When you're ready to invest in real console time across all six domains, the AWS Security Certification page lists every lab mapped to the blueprint."
+        "text": "Score yourself per domain. Anything below 70% in a domain means rebuild that material before sitting the real exam: read the AWS Exam Guide section, work through a hands-on lab in that domain (start with the free S3 misconfiguration audit on labs.shieldsyncsecurity.com), and write a one-paragraph summary in your own words for every concept you missed. Pair this set with our full SCS-C02 study guide for the underlying syllabus and a 6-week study plan. When you're ready to invest in real console time across all six domains, the AWS security labs give you hands-on practice across the blueprint."
       }
     ]
   },
