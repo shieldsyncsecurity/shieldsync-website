@@ -225,7 +225,9 @@ export function LabsWizard({
   return (
     <section className="py-3 sm:py-4">
       <Container>
-        <div className="mx-auto max-w-4xl">
+        {/* Step 1 (track chooser) gets a wider shell so the 4 track cards sit in a
+            single row on desktop; the other steps stay at the tighter max-w-4xl. */}
+        <div className={`mx-auto ${step === 1 ? "max-w-6xl" : "max-w-4xl"}`}>
           {/* Page-level H1 — the stepper below had no heading at all (SEO gap:
               this route is priority 0.9 in the sitemap). Kept compact/restrained
               per the site's typography rules, not a big banner. */}
@@ -275,7 +277,7 @@ export function LabsWizard({
                   <span className="rounded-full border border-line bg-surface px-3 py-1">Launches in your browser</span>
                   <span className="rounded-full border border-line bg-surface px-3 py-1">Auto-cleanup when you&apos;re done</span>
                 </div>
-                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   {/* Track cards share one design in flagship order (AI, AWS, Azure,
                       SOC); not-yet-live tracks render the same card disabled with a
                       Coming-soon tag — every track gets the wizard treatment as it

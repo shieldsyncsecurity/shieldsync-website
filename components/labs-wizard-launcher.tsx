@@ -34,5 +34,18 @@ export function LabsWizardLauncher() {
   const initialLevel =
     level === "Beginner" || level === "Intermediate" || level === "Advanced" ? level : undefined;
 
-  return <LabsWizard initialTrack={initialTrack} initialPlan={initialPlan} initialLevel={initialLevel} />;
+  // KEY on the deep-link params so a client-side nav to a DIFFERENT track (e.g.
+  // ai-security-labs -> aws-security-labs via the Learners dropdown) REMOUNTS the
+  // wizard and re-derives its initial state. Without this, LabsWizard reads
+  // initialTrack only in useState() on first mount, so switching tracks left the
+  // wizard stuck on the old one (owner-reported). The wizard never mutates the URL
+  // itself, so this only remounts on real navigation — never mid-flow.
+  return (
+    <LabsWizard
+      key={`${track ?? ""}|${plan ?? ""}|${level ?? ""}`}
+      initialTrack={initialTrack}
+      initialPlan={initialPlan}
+      initialLevel={initialLevel}
+    />
+  );
 }
