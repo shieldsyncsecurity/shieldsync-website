@@ -208,7 +208,6 @@ export function BlogExplorer({ posts }: { posts: BlogPostCard[] }) {
     return out;
   }, [posts, active, length, debouncedQuery, sort]);
 
-  const lengthLabel = LENGTHS.find((l) => l.key === length)?.label ?? "";
   const hasFilters = active !== ALL || length !== "all" || debouncedQuery.length > 0;
 
   function resetFilters() {
@@ -295,41 +294,6 @@ export function BlogExplorer({ posts }: { posts: BlogPostCard[] }) {
             })}
           </ul>
 
-          {/* Reading time */}
-          <p className="mb-1.5 mt-5 px-1 text-[11px] font-bold uppercase tracking-[0.14em] text-muted">Reading time</p>
-          <div className="space-y-0.5">
-            {LENGTHS.map((l) => {
-              const on = l.key === length;
-              const count = lengthCounts[l.key];
-              return (
-                <button
-                  key={l.key}
-                  type="button"
-                  onClick={() => setLength(l.key)}
-                  aria-pressed={on}
-                  className={`flex w-full items-center gap-2.5 rounded-xl px-2 py-1.5 text-left transition ${
-                    on ? "bg-brand/10" : "hover:bg-surface"
-                  }`}
-                >
-                  <span
-                    className={`grid h-4 w-4 shrink-0 place-items-center rounded-full border transition ${
-                      on ? "border-brand bg-brand" : "border-line-strong bg-bg"
-                    }`}
-                  >
-                    {on ? <span className="h-1.5 w-1.5 rounded-full bg-white" /> : null}
-                  </span>
-                  <span className="flex-1 min-w-0">
-                    <span className={`block truncate text-sm ${on ? "font-semibold text-brand-bright" : "font-medium text-fg/80"}`}>
-                      {l.label}
-                    </span>
-                    {l.hint ? <span className="block text-[11px] text-muted">{l.hint}</span> : null}
-                  </span>
-                  <span className="shrink-0 text-[11px] font-semibold tabular-nums text-muted">{count}</span>
-                </button>
-              );
-            })}
-          </div>
-
           {hasFilters ? (
             <button
               type="button"
@@ -344,44 +308,69 @@ export function BlogExplorer({ posts }: { posts: BlogPostCard[] }) {
 
       {/* ---- Right: results ---- */}
       <div className="min-w-0">
-        {/* Results header: count + active chips + sort */}
-        <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2">
-          <p className="text-sm text-muted">
-            <span className="font-semibold text-fg">{filtered.length}</span> article{filtered.length === 1 ? "" : "s"}
-          </p>
+        {/* Results toolbar — Reading-time filter across the top of the blogs, Sort on
+            the right; topic stays in the left rail as the primary taxonomy. */}
+        <div className="mb-5 flex flex-col gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="mr-0.5 text-[11px] font-bold uppercase tracking-[0.14em] text-muted">Reading time</span>
+            <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Filter by reading time">
+              {LENGTHS.map((l) => {
+                const on = l.key === length;
+                return (
+                  <button
+                    key={l.key}
+                    type="button"
+                    onClick={() => setLength(l.key)}
+                    aria-pressed={on}
+                    title={l.hint || undefined}
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition ${
+                      on
+                        ? "border-brand bg-brand/10 text-brand-bright"
+                        : "border-line text-muted hover:border-line-strong hover:text-fg"
+                    }`}
+                  >
+                    {l.label}
+                    <span className={`text-[11px] tabular-nums ${on ? "text-brand-bright/80" : "text-muted"}`}>{lengthCounts[l.key]}</span>
+                  </button>
+                );
+              })}
+            </div>
 
-          {/* removable active-filter chips */}
-          <div className="flex flex-wrap items-center gap-1.5">
-            {active !== ALL ? (
-              <FilterChip label={active} onClear={() => setActive(ALL)} />
-            ) : null}
-            {length !== "all" ? (
-              <FilterChip label={lengthLabel} onClear={() => setLength("all")} />
-            ) : null}
-            {debouncedQuery ? (
-              <FilterChip label={`“${query.trim()}”`} onClear={() => { setQuery(""); inputRef.current?.focus(); }} />
-            ) : null}
+            {/* sort — pushed to the right */}
+            <label className="ml-auto flex items-center gap-2 text-sm text-muted">
+              <span className="hidden sm:inline">Sort</span>
+              <div className="relative">
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value as SortKey)}
+                  aria-label="Sort articles"
+                  className="appearance-none rounded-lg border border-line bg-panel py-1.5 pl-3 pr-8 text-sm font-medium text-fg outline-none transition hover:border-line-strong focus:border-brand/50 focus:ring-2 focus:ring-brand/20"
+                >
+                  {SORTS.map((s) => (
+                    <option key={s.key} value={s.key}>{s.label}</option>
+                  ))}
+                </select>
+                <svg viewBox="0 0 24 24" className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </div>
+            </label>
           </div>
 
-          {/* sort — pushed to the right */}
-          <label className="ml-auto flex items-center gap-2 text-sm text-muted">
-            <span className="hidden sm:inline">Sort</span>
-            <div className="relative">
-              <select
-                value={sort}
-                onChange={(e) => setSort(e.target.value as SortKey)}
-                aria-label="Sort articles"
-                className="appearance-none rounded-lg border border-line bg-panel py-1.5 pl-3 pr-8 text-sm font-medium text-fg outline-none transition hover:border-line-strong focus:border-brand/50 focus:ring-2 focus:ring-brand/20"
-              >
-                {SORTS.map((s) => (
-                  <option key={s.key} value={s.key}>{s.label}</option>
-                ))}
-              </select>
-              <svg viewBox="0 0 24 24" className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <path d="M6 9l6 6 6-6" />
-              </svg>
+          {/* count + active chips (topic + search; reading time shows its own active pill above) */}
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-line pt-3">
+            <p className="text-sm text-muted">
+              <span className="font-semibold text-fg">{filtered.length}</span> article{filtered.length === 1 ? "" : "s"}
+            </p>
+            <div className="flex flex-wrap items-center gap-1.5">
+              {active !== ALL ? (
+                <FilterChip label={active} onClear={() => setActive(ALL)} />
+              ) : null}
+              {debouncedQuery ? (
+                <FilterChip label={`“${query.trim()}”`} onClear={() => { setQuery(""); inputRef.current?.focus(); }} />
+              ) : null}
             </div>
-          </label>
+          </div>
         </div>
 
         {filtered.length > 0 ? (
