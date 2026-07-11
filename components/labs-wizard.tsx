@@ -25,21 +25,21 @@ export function LabsWizard({
   initialLevel?: string;
 }) {
   // Deep-links (ads + the "Start here" roadmap) can pre-select a track, plan, and lab level.
-  // Azure + SOC labs are in development — ignore those deep-links so they can't
-  // enter a not-yet-built funnel; land on track selection instead (where their
-  // cards show Coming soon). AWS, AI, and the free view are live.
-  const blockedTrack = initialTrack === "soc";
-  const safeTrack: Track = blockedTrack ? null : (initialTrack ?? null);
-  // If the requested track was blocked, drop any pre-set plan/level intent too —
-  // otherwise picking a track on step 1 silently fast-forwards past the Plan step
-  // to a plan the user never chose. The AI track is free-only today, so pre-set
-  // paid plans are dropped for it as well.
+  // EVERY track opens inside the wizard the same way — including not-yet-live ones.
+  // SOC has no purchasable lab yet, so it lands on its Plan step where the plans
+  // render as "coming soon" (no checkout) with a pointer to the live AWS track,
+  // instead of being a disabled card stuck on the chooser (owner 2026-07-12:
+  // "soc labs wizard should be just like other tracks").
+  const safeTrack: Track = initialTrack ?? null;
+  // AI/Azure are free-first today and SOC has no live plan, so a pre-set paid
+  // plan/level is dropped for them — otherwise picking the track would fast-forward
+  // past the Plan step to a plan the user never chose. AWS honours the deep fast-path.
   const startMode: Mode =
-    blockedTrack ? null
-    : initialTrack === "ai" || initialTrack === "azure" ? "free"
+    initialTrack === "ai" || initialTrack === "azure" ? "free"
+    : initialTrack === "soc" ? null
     : initialLevel ? "per-lab"
     : initialPlan ?? null;
-  const startStep = safeTrack ? (initialLevel || initialPlan ? 3 : 2) : 1;
+  const startStep = safeTrack ? (initialTrack !== "soc" && (initialLevel || initialPlan) ? 3 : 2) : 1;
   const [step, setStep] = useState(startStep);
   const [track, setTrack] = useState<Track>(safeTrack);
   const [mode, setMode] = useState<Mode>(startMode);
@@ -189,11 +189,9 @@ export function LabsWizard({
     );
   }
 
-  // ?track=soc-labs lands on the wizard's track chooser (step 1) with SOC shown as
-  // a disabled "Coming soon" card — the SAME wizard every other track opens, instead
-  // of a bespoke dead-end page (owner, 2026-07-10: soc-labs "does not show our
-  // intended wizard"). `blockedTrack` above keeps safeTrack null so soc can't drop
-  // into the (nonexistent) SOC purchase funnel — it just can't be selected yet.
+  // ?track=soc-labs opens the SOC track inside the wizard exactly like the others
+  // (Track ✓ -> Plan). Its plans render as "coming soon" (no checkout) with a pointer
+  // to the live AWS track, so it can't drop into a nonexistent SOC purchase funnel.
 
   return (
     <section className="py-3 sm:py-4">
@@ -204,7 +202,7 @@ export function LabsWizard({
           {/* Page-level H1 — the stepper below had no heading at all (SEO gap:
               this route is priority 0.9 in the sitemap). Kept compact/restrained
               per the site's typography rules, not a big banner. */}
-          <h1 className="sr-only">Start an {trackName} lab</h1>
+          <h1 className="sr-only">Start your {trackName} lab</h1>
 
           {/* Currency toggle */}
           <div className="mb-2 flex items-center justify-end gap-3">
@@ -266,13 +264,9 @@ export function LabsWizard({
                       <button
                         key={o.id}
                         type="button"
-                        disabled={o.soon}
-                        aria-disabled={o.soon}
-                        onClick={() => { if (!o.soon) chooseTrack(o.key); }}
+                        onClick={() => chooseTrack(o.key)}
                         className={`rounded-2xl border p-5 text-left transition ${
-                          o.soon
-                            ? "cursor-not-allowed border-line bg-panel opacity-60"
-                            : track === o.key
+                          track === o.key
                             ? "border-brand bg-brand/[0.05] ring-2 ring-brand/40"
                             : "border-line bg-panel hover:border-line-strong"
                         }`}
@@ -288,7 +282,7 @@ export function LabsWizard({
                           ) : null}
                         </div>
                         <h3 className="mt-4 text-lg font-bold text-fg">{o.title}</h3>
-                        <p className="mt-1.5 text-sm leading-6 text-muted">{o.desc}{o.soon ? " — in development; the AWS track is live now." : ""}</p>
+                        <p className="mt-1.5 text-sm leading-6 text-muted">{o.desc}{o.soon ? " Launching soon — the AWS track is live today." : ""}</p>
                       </button>
                     );
                   })}
@@ -370,7 +364,39 @@ export function LabsWizard({
                       ))
                     : null}
 
-                  {(track === "aws" || track === "soc" || track === "azure" ? [
+                  {/* SOC labs aren't live yet — same 3-box treatment as the AI track:
+                      render the plan cards disabled Coming-soon so the SOC track opens
+                      inside the wizard like every other track, but no one can buy a lab
+                      that doesn't exist. A note below points at the live AWS track. */}
+                  {track === "soc"
+                    ? [
+                        {
+                          title: "Pay per lab",
+                          pts: ["Buy only the SOC labs you want", "One-time payment", "SIEM detections + SOAR playbooks"],
+                        },
+                        {
+                          title: "Monthly — full SOC access",
+                          pts: ["Every SOC lab unlocked", "New labs included", "Cancel anytime"],
+                        },
+                      ].map((o) => (
+                        <div key={o.title} className="flex cursor-not-allowed flex-col rounded-2xl border border-line bg-panel p-5 opacity-60">
+                          <div className="flex items-start justify-between gap-3">
+                            <h3 className="text-base font-bold text-fg">{o.title}</h3>
+                            <span className="shrink-0 rounded-full bg-amber-500/15 px-2.5 py-0.5 text-[11px] font-bold text-amber-600">Coming soon</span>
+                          </div>
+                          <ul className="mt-3 space-y-1.5">
+                            {o.pts.map((p) => (
+                              <li key={p} className="flex items-center gap-2 text-sm text-muted">
+                                <Check className="h-3.5 w-3.5 shrink-0 text-brand" /> {p}
+                              </li>
+                            ))}
+                          </ul>
+                          <span className="mt-auto pt-4 text-sm font-semibold text-muted">Launching soon</span>
+                        </div>
+                      ))
+                    : null}
+
+                  {(track === "aws" || track === "azure" ? [
                     {
                       key: "per-lab" as const,
                       title: "Pay per lab",
@@ -384,7 +410,7 @@ export function LabsWizard({
                       title: `Monthly — ${accessLabel}`,
                       price: `${money(monthly)}/mo`,
                       badge: "Best value",
-                      pts: [`Every ${track === "soc" ? "SOC" : track === "azure" ? "Azure" : "AWS"} lab unlocked`, "New labs included", "Cancel anytime"],
+                      pts: [`Every ${track === "azure" ? "Azure" : "AWS"} lab unlocked`, "New labs included", "Cancel anytime"],
                       cta: "Get started →",
                     },
                   ] : []).map((o) => (
@@ -418,6 +444,22 @@ export function LabsWizard({
                     </button>
                   ))}
                 </div>
+
+                {track === "soc" ? (
+                  <div className="mt-4 flex flex-col items-start gap-3 rounded-2xl border border-line bg-panel p-5 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-sm text-muted">
+                      SOC labs (SIEM &amp; SOAR) are launching soon — nothing to pay until they&apos;re live.
+                      Want a heads-up? <a href="/contact" className="font-semibold text-brand-bright hover:underline">Tell us to notify you</a>.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => chooseTrack("aws")}
+                      className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-brand/30 bg-brand/10 px-4 py-2 text-sm font-semibold text-brand-bright transition hover:bg-brand/15"
+                    >
+                      Explore the AWS track <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : null}
               </div>
             ) : null}
 

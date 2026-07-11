@@ -40,7 +40,7 @@ export default function BlogPage() {
         eyebrow="Security Blog"
         title={
           <>
-            Hands-on <span className="text-gradient">cloud security</span> &amp; career insight.
+            Hands-on <span className="text-gradient">cloud security</span>{" "}&amp; career insight.
           </>
         }
         description="Practical tutorials, career roadmaps, and AWS / SOC security writing from the team."

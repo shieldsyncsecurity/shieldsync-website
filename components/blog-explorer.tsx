@@ -40,15 +40,32 @@ function ChipIcon(props: SVGProps<SVGSVGElement>) {
 
 const CATEGORY_ICON: Record<string, IconCmp> = {
   [ALL]: AllIcon,
-  "Cloud / AWS": Cloud as IconCmp,
+  "Cloud Security": Cloud as IconCmp,
   "AI Security": ChipIcon,
-  "Career": Cap as IconCmp,
-  "Compliance": Compliance as IconCmp,
   "Detection & Response": Radar as IconCmp,
+  "Compliance": Compliance as IconCmp,
+  "Career": Cap as IconCmp,
 };
 
 function catIcon(label: string): IconCmp {
   return CATEGORY_ICON[label] ?? (AllIcon as IconCmp);
+}
+
+/* Canonical topic taxonomy — a deliberate, scalable pillar order that holds as the
+ * blog grows, instead of reshuffling by article count. New posts slot into one of
+ * these five pillars; anything uncategorised is appended after them. Cloud is
+ * intentionally provider-neutral ("Cloud Security", not "AWS") so Azure/GCP posts
+ * fit the same pillar. */
+const CANONICAL_ORDER = [
+  "Cloud Security",
+  "AI Security",
+  "Detection & Response",
+  "Compliance",
+  "Career",
+];
+function categoryRank(label: string): number {
+  const i = CANONICAL_ORDER.indexOf(label);
+  return i === -1 ? CANONICAL_ORDER.length : i;
 }
 
 /* ---- reading-length + sort ------------------------------------------------ */
@@ -159,7 +176,10 @@ export function BlogExplorer({ posts }: { posts: BlogPostCard[] }) {
   const categories = useMemo(() => {
     const counts = new Map<string, number>();
     for (const p of posts) counts.set(p.category, (counts.get(p.category) ?? 0) + 1);
-    const sorted = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+    // Fixed pillar order (see CANONICAL_ORDER); ties broken by article count.
+    const sorted = [...counts.entries()].sort(
+      (a, b) => categoryRank(a[0]) - categoryRank(b[0]) || b[1] - a[1],
+    );
     return [{ label: ALL, count: posts.length }, ...sorted.map(([label, count]) => ({ label, count }))];
   }, [posts]);
 
