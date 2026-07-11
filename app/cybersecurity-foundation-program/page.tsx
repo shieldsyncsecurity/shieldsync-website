@@ -25,6 +25,10 @@ export const metadata: Metadata = {
     "online cybersecurity course india",
   ],
   alternates: { canonical: "/cybersecurity-foundation-program" },
+  // Hidden 2026-07-10 (owner): removed from nav + sitemap and noindexed. The page
+  // still resolves at its URL (e.g. for the /internship redirect or a direct link)
+  // but won't be indexed or surfaced in navigation.
+  robots: { index: false, follow: false },
   openGraph: {
     title: "Cybersecurity Foundation Program — 8 Weeks, AWS Labs, Certificate",
     description:

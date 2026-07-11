@@ -250,7 +250,8 @@ export const LEARNERS_MENU: { label: string; desc: string; href: string; tag?: s
   { label: "SOC Labs", desc: "Blue-team detection & response — SIEM & SOAR", href: "/labs-wizard?track=soc-labs", tag: "Coming soon" },
   // Free labs aren't a separate row — every track leads into the wizard, whose
   // free view is the single place free/paid is surfaced (owner, 2026-07-10).
-  { label: "Foundation Program", desc: "8-week guided beginner program — projects, labs & certificate", href: "/cybersecurity-foundation-program" },
+  // Foundation Program removed from nav + hidden 2026-07-10 (owner); page still
+  // exists at /cybersecurity-foundation-program but is noindexed + unlinked.
 ];
 
 /* Headline training offer ----------------------------------------------------- */
@@ -445,7 +446,6 @@ export const FOOTER_NAV: { heading: string; links: NavItem[] }[] = [
     heading: "Learn",
     links: [
       { label: "Start here", href: "/start-here" },
-      { label: "Foundation Program", href: "/cybersecurity-foundation-program" },
       { label: "Blog", href: "/blog" },
     ],
   },

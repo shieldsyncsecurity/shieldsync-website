@@ -32,12 +32,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${base}/cybersecurity-foundation-program`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
       url: `${base}/ai-security`,
       lastModified: now,
       changeFrequency: "weekly",

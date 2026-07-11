@@ -189,38 +189,11 @@ export function LabsWizard({
     );
   }
 
-  // ?track=soc-labs — SOC is still in development: a focused coming-soon view
-  // instead of dropping the visitor into a 5-step purchase stepper for a funnel
-  // that doesn't exist yet (owner: "fix the stepper"). Same no-stepper pattern
-  // as the free view. Repeat for any future pre-launch track deep-link.
-  if (initialTrack === "soc") {
-    return (
-      <section className="py-6 sm:py-8">
-        <Container>
-          <div className="mx-auto max-w-3xl">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-bright">SOC Labs</p>
-            <div className="mt-1 flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">SOC labs are in development</h1>
-              <span className="inline-flex rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-bold text-amber-600">Coming soon</span>
-            </div>
-            <p className="mt-2 max-w-xl text-base leading-7 text-muted">
-              Blue-team detection &amp; response — SIEM and SOAR — in managed, hands-on environments.
-              While we finish them, the AI, AWS, and Azure tracks are live with free labs.
-            </p>
-            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-              <Button href="/labs-wizard">
-                Explore live tracks
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-              <Button href="/soc-labs" variant="secondary">
-                About the SOC track
-              </Button>
-            </div>
-          </div>
-        </Container>
-      </section>
-    );
-  }
+  // ?track=soc-labs lands on the wizard's track chooser (step 1) with SOC shown as
+  // a disabled "Coming soon" card — the SAME wizard every other track opens, instead
+  // of a bespoke dead-end page (owner, 2026-07-10: soc-labs "does not show our
+  // intended wizard"). `blockedTrack` above keeps safeTrack null so soc can't drop
+  // into the (nonexistent) SOC purchase funnel — it just can't be selected yet.
 
   return (
     <section className="py-3 sm:py-4">
