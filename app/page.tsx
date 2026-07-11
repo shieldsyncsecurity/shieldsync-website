@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container, Button, SectionHeading, Card } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
-import { LabWorkspacePreview } from "@/components/lab-workspace-preview";
+import { HeroAttackMap } from "@/components/hero-attack-map";
 import { ArrowRight, Check, Shield, Cloud, Compliance, Radar, Cap, Flask, Code, Lock } from "@/components/icons";
 import { SERVICES, WHY, SOCIAL_PROOF, SITE } from "@/lib/site";
 import { RelatedBlogSection } from "@/components/related-blog-section";
@@ -35,7 +35,8 @@ const HOMEPAGE_VIDEO_ID: string = "XBLtcjQaXZE";
 const HOMEPAGE_VIDEO_PLACEMENT: VideoPlacement = "hero" as VideoPlacement;
 const HOMEPAGE_VIDEO_TITLE = "See ShieldSync in action — full walkthrough";
 
-const VIDEO_IN_HERO = HOMEPAGE_VIDEO_PLACEMENT === "hero" && HOMEPAGE_VIDEO_ID !== "";
+// The hero now always shows the animated attack-path visual (HeroAttackMap);
+// the optional explainer video only ever appears mid-page.
 const VIDEO_MID_PAGE = HOMEPAGE_VIDEO_PLACEMENT === "mid-page";
 
 export const metadata: Metadata = {
@@ -130,55 +131,12 @@ export default function HomePage() {
             </div>
           </Reveal>
 
-          {/* Right column: video OR the AWS-console mock.
-              When VIDEO_IN_HERO (= placement="hero" + video id set), the explainer
-              replaces the mock. Otherwise the mock renders as today. Both render
-              at the same 16:9-ish footprint so the hero grid never shifts. */}
+          {/* Right column: auto-cycling attack-path visual (HeroAttackMap).
+              Replaced the hero video 2026-07-10 — it shows the product story
+              (an attacker's path into your AWS/Azure cloud, then locked down)
+              rather than telling it, and drops the third-party YouTube embed. */}
           <Reveal delay={140}>
-            {VIDEO_IN_HERO ? (
-              <div className="rounded-3xl border border-line bg-panel p-3 shadow-xl shadow-slate-900/5">
-                <VideoEmbed videoId={HOMEPAGE_VIDEO_ID} title={HOMEPAGE_VIDEO_TITLE} />
-                <Link
-                  href="/labs-wizard?track=aws-security-labs"
-                  className="group mt-1 flex items-center justify-between gap-3 rounded-b-2xl px-3 py-4 transition hover:bg-surface"
-                >
-                  <span className="text-sm text-muted">Real, hands-on AWS cloud security in your browser.</span>
-                  <span className="shrink-0 text-sm font-semibold text-brand-bright transition group-hover:translate-x-0.5">
-                    Explore →
-                  </span>
-                </Link>
-              </div>
-            ) : (
-              <div className="rounded-3xl border border-line bg-panel p-3 shadow-xl shadow-slate-900/5">
-                <Link
-                  href={SITE.startUrl}
-                  aria-label="Open the guided lab picker"
-                  className="group relative block overflow-hidden rounded-2xl border border-line bg-surface px-4 pb-4 pt-11 transition hover:border-line-strong hover:shadow-md"
-                >
-                  <span className="absolute left-3 top-3 rounded-md bg-cyan px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white shadow">
-                    ★ AWS Security Labs
-                  </span>
-                  <span className="absolute right-3 top-3 rounded-md border border-line bg-panel px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
-                    Preview
-                  </span>
-                  <div className="pointer-events-none select-none">
-                    <LabWorkspacePreview />
-                  </div>
-                  <span className="mt-3 flex items-center justify-center gap-1 text-sm font-semibold text-brand-bright opacity-80 transition group-hover:opacity-100">
-                    Start a hands-on lab →
-                  </span>
-                </Link>
-                <Link
-                  href="/labs-wizard?track=aws-security-labs"
-                  className="group flex items-center justify-between gap-3 rounded-b-2xl px-3 py-4 transition hover:bg-surface"
-                >
-                  <span className="text-sm text-muted">Real, hands-on AWS cloud security in your browser.</span>
-                  <span className="shrink-0 text-sm font-semibold text-brand-bright transition group-hover:translate-x-0.5">
-                    Explore →
-                  </span>
-                </Link>
-              </div>
-            )}
+            <HeroAttackMap />
           </Reveal>
         </Container>
       </section>
