@@ -27,76 +27,36 @@ function matches(post: BlogPostCard, query: string): boolean {
   return haystack.includes(query);
 }
 
+/* Compact card — sized for a 4-up grid. Denser padding + a 2-line title so more
+ * posts fit per screen (owner: less wasted space, 4 per row). */
 function PostCard({ post, priority = false }: { post: BlogPostCard; priority?: boolean }) {
   return (
     <Link href={`/blog/${post.slug}`} className="group block h-full">
-      <Card className="flex h-full flex-col overflow-hidden p-0 border-transparent hover:border-brand/40">
+      <Card className="flex h-full flex-col overflow-hidden p-0 border-transparent transition hover:border-brand/40 hover:shadow-md">
         <div className="relative aspect-video overflow-hidden border-b border-line">
           <Image
             src={post.image}
             alt={post.title}
             fill
             priority={priority}
-            sizes="(min-width:1024px) 33vw, (min-width:768px) 50vw, 100vw"
+            sizes="(min-width:1280px) 22vw, (min-width:1024px) 30vw, (min-width:640px) 45vw, 100vw"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </div>
-        <div className="flex flex-1 flex-col p-7">
-          <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide">
-            <span className="rounded-md border border-brand/30 bg-brand/10 px-2 py-0.5 text-brand-bright">
+        <div className="flex flex-1 flex-col p-4">
+          <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide">
+            <span className="rounded-md border border-brand/30 bg-brand/10 px-1.5 py-0.5 text-brand-bright">
               {post.category}
             </span>
             <span className="text-muted">{post.read}</span>
           </div>
-          <h2 className="mt-4 text-xl font-bold leading-snug text-fg group-hover:text-brand-bright line-clamp-2">
+          <h2 className="mt-2.5 text-[15px] font-bold leading-snug text-fg transition group-hover:text-brand-bright line-clamp-2">
             {post.title}
           </h2>
-          <p className="mt-3 flex-1 text-base leading-7 text-muted line-clamp-3">{post.excerpt}</p>
-          <div className="mt-5 flex items-center justify-between">
-            <span className="text-sm text-muted">{post.date}</span>
+          <p className="mt-2 flex-1 text-[13px] leading-6 text-muted line-clamp-2">{post.excerpt}</p>
+          <div className="mt-3 flex items-center justify-between border-t border-line pt-3">
+            <span className="text-xs text-muted">{post.date}</span>
             <ArrowRight className="h-4 w-4 text-brand transition-transform group-hover:translate-x-1" />
-          </div>
-        </div>
-      </Card>
-    </Link>
-  );
-}
-
-function FeaturedCard({ post }: { post: BlogPostCard }) {
-  return (
-    <Link href={`/blog/${post.slug}`} className="group block">
-      <Card className="grid overflow-hidden p-0 border-transparent hover:border-brand/40 md:grid-cols-2">
-        <div className="relative aspect-video overflow-hidden border-b border-line md:aspect-auto md:border-b-0 md:border-r">
-          <Image
-            src={post.image}
-            alt={post.title}
-            fill
-            priority
-            sizes="(min-width:768px) 50vw, 100vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        </div>
-        <div className="flex flex-col justify-center p-7 sm:p-9">
-          <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide">
-            <span className="rounded-full border border-brand/30 bg-brand/10 px-2.5 py-1 text-brand-bright">
-              Latest
-            </span>
-            <span className="rounded-md border border-brand/30 bg-brand/10 px-2 py-0.5 text-brand-bright">
-              {post.category}
-            </span>
-            <span className="text-muted">{post.read}</span>
-          </div>
-          <h2 className="mt-4 text-2xl font-extrabold leading-snug tracking-tight text-fg group-hover:text-brand-bright sm:text-3xl">
-            {post.title}
-          </h2>
-          <p className="mt-3 text-base leading-7 text-muted line-clamp-3">{post.excerpt}</p>
-          <div className="mt-6 flex items-center gap-2 text-sm font-semibold text-brand-bright">
-            <span>{post.date}</span>
-            <span className="text-muted">·</span>
-            <span className="inline-flex items-center gap-1">
-              Read article
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </span>
           </div>
         </div>
       </Card>
@@ -132,15 +92,9 @@ export function BlogExplorer({ posts }: { posts: BlogPostCard[] }) {
     return [{ label: ALL, count: posts.length }, ...sorted.map(([label, count]) => ({ label, count }))];
   }, [posts]);
 
-  const isFiltering = active !== ALL || debouncedQuery !== "";
-
-  const featured = !isFiltering ? posts[0] : null;
-  const gridSource = featured ? posts.slice(1) : posts;
-
   const filtered = useMemo(
-    () =>
-      gridSource.filter((p) => (active === ALL || p.category === active) && matches(p, debouncedQuery)),
-    [gridSource, active, debouncedQuery],
+    () => posts.filter((p) => (active === ALL || p.category === active) && matches(p, debouncedQuery)),
+    [posts, active, debouncedQuery],
   );
 
   function resetFilters() {
@@ -150,92 +104,87 @@ export function BlogExplorer({ posts }: { posts: BlogPostCard[] }) {
   }
 
   return (
-    <>
-      {/* Search box */}
-      <div className="relative mb-6 max-w-xl">
-        <Search className="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted" />
-        <input
-          ref={inputRef}
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search articles…"
-          aria-label="Search articles"
-          className="w-full rounded-xl border border-line bg-panel py-3 pl-11 pr-11 text-base text-fg shadow-sm outline-none transition placeholder:text-muted focus:border-brand/50 focus:ring-2 focus:ring-brand/20 [&::-webkit-search-cancel-button]:appearance-none"
-        />
-        {query && (
-          <button
-            type="button"
-            onClick={() => {
-              setQuery("");
-              inputRef.current?.focus();
-            }}
-            aria-label="Clear search"
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-muted transition hover:bg-surface hover:text-fg"
-          >
-            <Close className="h-4 w-4" />
-          </button>
+    <div className="grid gap-8 lg:grid-cols-[210px_minmax(0,1fr)]">
+      {/* ---- Left filter rail (search + categories), sticky on desktop ---- */}
+      <aside className="lg:sticky lg:top-24 lg:self-start">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+          <input
+            ref={inputRef}
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search…"
+            aria-label="Search articles"
+            className="w-full rounded-lg border border-line bg-panel py-2.5 pl-10 pr-9 text-sm text-fg shadow-sm outline-none transition placeholder:text-muted focus:border-brand/50 focus:ring-2 focus:ring-brand/20 [&::-webkit-search-cancel-button]:appearance-none"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => { setQuery(""); inputRef.current?.focus(); }}
+              aria-label="Clear search"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-1 text-muted transition hover:bg-surface hover:text-fg"
+            >
+              <Close className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        <p className="mb-1 mt-6 px-2 text-[11px] font-bold uppercase tracking-[0.14em] text-muted">Categories</p>
+        <ul className="space-y-0.5">
+          {categories.map((c) => {
+            const on = c.label === active;
+            return (
+              <li key={c.label}>
+                <button
+                  type="button"
+                  onClick={() => setActive(c.label)}
+                  aria-pressed={on}
+                  className={`flex w-full items-center justify-between gap-2 rounded-lg px-3 py-1.5 text-sm transition ${
+                    on
+                      ? "bg-brand/10 font-semibold text-brand-bright"
+                      : "font-medium text-muted hover:bg-surface hover:text-fg"
+                  }`}
+                >
+                  <span className="truncate">{c.label}</span>
+                  <span className={`shrink-0 text-xs ${on ? "text-brand-bright" : "text-muted"}`}>{c.count}</span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </aside>
+
+      {/* ---- Right: results grid, 4-up on wide screens ---- */}
+      <div className="min-w-0">
+        <p className="mb-4 text-sm text-muted">
+          {filtered.length} article{filtered.length === 1 ? "" : "s"}
+          {active !== ALL ? <> in <span className="font-semibold text-fg">{active}</span></> : null}
+        </p>
+
+        {filtered.length > 0 ? (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {filtered.map((post, i) => (
+              <Reveal key={post.slug} delay={Math.min(i, 7) * 35}>
+                <PostCard post={post} priority={i < 4} />
+              </Reveal>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-line py-16 text-center">
+            <p className="text-base text-muted">
+              No articles match {query ? <>&ldquo;{query}&rdquo;</> : "your filters"} — try clearing filters.
+            </p>
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="inline-flex items-center gap-2 rounded-xl border border-line bg-panel px-4 py-2 text-sm font-semibold text-fg transition hover:border-line-strong hover:bg-surface"
+            >
+              Clear filters
+            </button>
+          </div>
         )}
       </div>
-
-      {/* Category chips */}
-      <div className="mb-5 flex flex-wrap gap-2">
-        {categories.map((c) => {
-          const on = c.label === active;
-          return (
-            <button
-              key={c.label}
-              type="button"
-              onClick={() => setActive(c.label)}
-              aria-pressed={on}
-              className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-semibold transition ${
-                on
-                  ? "border-brand bg-brand text-white shadow-sm"
-                  : "border-line bg-panel text-muted hover:border-line-strong hover:text-fg"
-              }`}
-            >
-              {c.label}
-              <span className={`text-xs ${on ? "text-white/80" : "text-muted"}`}>{c.count}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Result count */}
-      <p className="mb-6 text-sm text-muted">
-        {filtered.length + (featured ? 1 : 0)} article{filtered.length + (featured ? 1 : 0) === 1 ? "" : "s"}
-      </p>
-
-      {/* Featured post — only when nothing is filtered */}
-      {featured && (
-        <Reveal className="mb-8">
-          <FeaturedCard post={featured} />
-        </Reveal>
-      )}
-
-      {/* Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((post, i) => (
-          <Reveal key={post.slug} delay={i * 40}>
-            <PostCard post={post} />
-          </Reveal>
-        ))}
-      </div>
-
-      {filtered.length === 0 && !featured && (
-        <div className="mt-8 flex flex-col items-center gap-4 rounded-2xl border border-dashed border-line py-16 text-center">
-          <p className="text-base text-muted">
-            No articles match {query ? <>&ldquo;{query}&rdquo;</> : "your filters"} — try clearing filters.
-          </p>
-          <button
-            type="button"
-            onClick={resetFilters}
-            className="inline-flex items-center gap-2 rounded-xl border border-line bg-panel px-4 py-2 text-sm font-semibold text-fg transition hover:border-line-strong hover:bg-surface"
-          >
-            Clear filters
-          </button>
-        </div>
-      )}
-    </>
+    </div>
   );
 }
