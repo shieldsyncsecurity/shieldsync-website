@@ -1,14 +1,84 @@
 "use client";
 
+import type { SVGProps } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Card } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
-import { ArrowRight, Close, Search } from "@/components/icons";
+import { ArrowRight, Close, Search, Cloud, Cap, Radar, Compliance } from "@/components/icons";
 import type { BlogPostCard } from "@/lib/site";
 
 const ALL = "All";
+
+/* ---- category iconography ------------------------------------------------- *
+ * Each topic gets a visual anchor so the rail reads as a designed filter panel,
+ * not a text list. Two categories have no natural icon in the shared set, so we
+ * draw them inline in the same 24x24 / currentColor style. */
+type IconCmp = (props: SVGProps<SVGSVGElement>) => React.ReactElement;
+
+function AllIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
+      <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+      <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+      <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+      <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+    </svg>
+  );
+}
+
+function ChipIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
+      <rect x="7" y="7" width="10" height="10" rx="2" />
+      <rect x="10" y="10" width="4" height="4" rx="0.5" />
+      <path d="M9 4v3M12 4v3M15 4v3M9 17v3M12 17v3M15 17v3M4 9h3M4 12h3M4 15h3M17 9h3M17 12h3M17 15h3" />
+    </svg>
+  );
+}
+
+const CATEGORY_ICON: Record<string, IconCmp> = {
+  [ALL]: AllIcon,
+  "Cloud / AWS": Cloud as IconCmp,
+  "AI Security": ChipIcon,
+  "Career": Cap as IconCmp,
+  "Compliance": Compliance as IconCmp,
+  "Detection & Response": Radar as IconCmp,
+};
+
+function catIcon(label: string): IconCmp {
+  return CATEGORY_ICON[label] ?? (AllIcon as IconCmp);
+}
+
+/* ---- reading-length + sort ------------------------------------------------ */
+type LenKey = "all" | "quick" | "deep";
+const LENGTHS: { key: LenKey; label: string; hint: string }[] = [
+  { key: "all", label: "Any length", hint: "" },
+  { key: "quick", label: "Quick reads", hint: "Under 10 min" },
+  { key: "deep", label: "Deep dives", hint: "10 min +" },
+];
+
+type SortKey = "new" | "old" | "short";
+const SORTS: { key: SortKey; label: string }[] = [
+  { key: "new", label: "Newest first" },
+  { key: "old", label: "Oldest first" },
+  { key: "short", label: "Shortest first" },
+];
+
+function readMins(post: BlogPostCard): number {
+  const m = post.read?.match(/\d+/);
+  return m ? parseInt(m[0], 10) : 0;
+}
+function inLength(mins: number, key: LenKey): boolean {
+  if (key === "quick") return mins > 0 && mins < 10;
+  if (key === "deep") return mins >= 10;
+  return true;
+}
+function postTime(post: BlogPostCard): number {
+  const t = new Date(post.date).getTime();
+  return Number.isNaN(t) ? 0 : t;
+}
 
 /* Small debounce hook — keeps typing snappy while filtering only settles
  * ~120ms after the user stops. Pure client-side; no network involved. */
@@ -27,8 +97,7 @@ function matches(post: BlogPostCard, query: string): boolean {
   return haystack.includes(query);
 }
 
-/* Compact card — sized for a 4-up grid. Denser padding + a 2-line title so more
- * posts fit per screen (owner: less wasted space, 4 per row). */
+/* Compact card — sized for a 3-up grid. */
 function PostCard({ post, priority = false }: { post: BlogPostCard; priority?: boolean }) {
   return (
     <Link href={`/blog/${post.slug}`} className="group block h-full">
@@ -68,6 +137,8 @@ export function BlogExplorer({ posts }: { posts: BlogPostCard[] }) {
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebouncedValue(query, 120).trim().toLowerCase();
   const [active, setActive] = useState(ALL);
+  const [length, setLength] = useState<LenKey>("all");
+  const [sort, setSort] = useState<SortKey>("new");
   const inputRef = useRef<HTMLInputElement>(null);
 
   // "/" focuses the search box, unless the user is already typing somewhere.
@@ -92,75 +163,203 @@ export function BlogExplorer({ posts }: { posts: BlogPostCard[] }) {
     return [{ label: ALL, count: posts.length }, ...sorted.map(([label, count]) => ({ label, count }))];
   }, [posts]);
 
-  const filtered = useMemo(
-    () => posts.filter((p) => (active === ALL || p.category === active) && matches(p, debouncedQuery)),
-    [posts, active, debouncedQuery],
-  );
+  const lengthCounts = useMemo(() => {
+    const c: Record<LenKey, number> = { all: posts.length, quick: 0, deep: 0 };
+    for (const p of posts) {
+      const m = readMins(p);
+      if (inLength(m, "quick")) c.quick += 1;
+      if (inLength(m, "deep")) c.deep += 1;
+    }
+    return c;
+  }, [posts]);
+
+  const filtered = useMemo(() => {
+    const out = posts.filter(
+      (p) =>
+        (active === ALL || p.category === active) &&
+        inLength(readMins(p), length) &&
+        matches(p, debouncedQuery),
+    );
+    out.sort((a, b) => {
+      if (sort === "short") return readMins(a) - readMins(b);
+      const diff = postTime(b) - postTime(a);
+      return sort === "old" ? -diff : diff;
+    });
+    return out;
+  }, [posts, active, length, debouncedQuery, sort]);
+
+  const lengthLabel = LENGTHS.find((l) => l.key === length)?.label ?? "";
+  const hasFilters = active !== ALL || length !== "all" || debouncedQuery.length > 0;
 
   function resetFilters() {
     setQuery("");
     setActive(ALL);
+    setLength("all");
     inputRef.current?.focus();
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[210px_minmax(0,1fr)]">
-      {/* ---- Left filter rail (search + categories), sticky on desktop ---- */}
+    <div className="grid gap-8 lg:grid-cols-[248px_minmax(0,1fr)]">
+      {/* ---- Left filter panel, sticky on desktop ---- */}
       <aside className="lg:sticky lg:top-24 lg:self-start">
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
-          <input
-            ref={inputRef}
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search…"
-            aria-label="Search articles"
-            className="w-full rounded-lg border border-line bg-panel py-2.5 pl-10 pr-9 text-sm text-fg shadow-sm outline-none transition placeholder:text-muted focus:border-brand/50 focus:ring-2 focus:ring-brand/20 [&::-webkit-search-cancel-button]:appearance-none"
-          />
-          {query && (
-            <button
-              type="button"
-              onClick={() => { setQuery(""); inputRef.current?.focus(); }}
-              aria-label="Clear search"
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-1 text-muted transition hover:bg-surface hover:text-fg"
-            >
-              <Close className="h-4 w-4" />
-            </button>
-          )}
-        </div>
+        <div className="rounded-2xl border border-line bg-panel/60 p-3.5">
+          {/* Search */}
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+            <input
+              ref={inputRef}
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search articles…"
+              aria-label="Search articles"
+              className="w-full rounded-lg border border-line bg-bg py-2.5 pl-10 pr-9 text-sm text-fg shadow-sm outline-none transition placeholder:text-muted focus:border-brand/50 focus:ring-2 focus:ring-brand/20 [&::-webkit-search-cancel-button]:appearance-none"
+            />
+            {query ? (
+              <button
+                type="button"
+                onClick={() => { setQuery(""); inputRef.current?.focus(); }}
+                aria-label="Clear search"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-1 text-muted transition hover:bg-surface hover:text-fg"
+              >
+                <Close className="h-4 w-4" />
+              </button>
+            ) : (
+              <kbd className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 rounded border border-line bg-surface px-1.5 py-0.5 text-[10px] font-semibold text-muted sm:block">
+                /
+              </kbd>
+            )}
+          </div>
 
-        <p className="mb-1 mt-6 px-2 text-[11px] font-bold uppercase tracking-[0.14em] text-muted">Categories</p>
-        <ul className="space-y-0.5">
-          {categories.map((c) => {
-            const on = c.label === active;
-            return (
-              <li key={c.label}>
+          {/* Topics */}
+          <p className="mb-1.5 mt-5 px-1 text-[11px] font-bold uppercase tracking-[0.14em] text-muted">Topics</p>
+          <ul className="space-y-0.5">
+            {categories.map((c) => {
+              const on = c.label === active;
+              const Icon = catIcon(c.label);
+              return (
+                <li key={c.label}>
+                  <button
+                    type="button"
+                    onClick={() => setActive(c.label)}
+                    aria-pressed={on}
+                    className={`group/cat flex w-full items-center gap-2.5 rounded-xl px-2 py-1.5 text-left transition ${
+                      on ? "bg-brand/10" : "hover:bg-surface"
+                    }`}
+                  >
+                    <span
+                      className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg border transition ${
+                        on
+                          ? "border-brand/40 bg-brand text-white"
+                          : "border-line bg-bg text-muted group-hover/cat:text-fg"
+                      }`}
+                    >
+                      <Icon className="h-[18px] w-[18px]" />
+                    </span>
+                    <span className={`flex-1 truncate text-sm ${on ? "font-semibold text-brand-bright" : "font-medium text-fg/80 group-hover/cat:text-fg"}`}>
+                      {c.label}
+                    </span>
+                    <span
+                      className={`shrink-0 rounded-full px-1.5 py-0.5 text-[11px] font-semibold tabular-nums ${
+                        on ? "bg-brand/15 text-brand-bright" : "bg-surface text-muted"
+                      }`}
+                    >
+                      {c.count}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* Reading time */}
+          <p className="mb-1.5 mt-5 px-1 text-[11px] font-bold uppercase tracking-[0.14em] text-muted">Reading time</p>
+          <div className="space-y-0.5">
+            {LENGTHS.map((l) => {
+              const on = l.key === length;
+              const count = lengthCounts[l.key];
+              return (
                 <button
+                  key={l.key}
                   type="button"
-                  onClick={() => setActive(c.label)}
+                  onClick={() => setLength(l.key)}
                   aria-pressed={on}
-                  className={`flex w-full items-center justify-between gap-2 rounded-lg px-3 py-1.5 text-sm transition ${
-                    on
-                      ? "bg-brand/10 font-semibold text-brand-bright"
-                      : "font-medium text-muted hover:bg-surface hover:text-fg"
+                  className={`flex w-full items-center gap-2.5 rounded-xl px-2 py-1.5 text-left transition ${
+                    on ? "bg-brand/10" : "hover:bg-surface"
                   }`}
                 >
-                  <span className="truncate">{c.label}</span>
-                  <span className={`shrink-0 text-xs ${on ? "text-brand-bright" : "text-muted"}`}>{c.count}</span>
+                  <span
+                    className={`grid h-4 w-4 shrink-0 place-items-center rounded-full border transition ${
+                      on ? "border-brand bg-brand" : "border-line-strong bg-bg"
+                    }`}
+                  >
+                    {on ? <span className="h-1.5 w-1.5 rounded-full bg-white" /> : null}
+                  </span>
+                  <span className="flex-1 min-w-0">
+                    <span className={`block truncate text-sm ${on ? "font-semibold text-brand-bright" : "font-medium text-fg/80"}`}>
+                      {l.label}
+                    </span>
+                    {l.hint ? <span className="block text-[11px] text-muted">{l.hint}</span> : null}
+                  </span>
+                  <span className="shrink-0 text-[11px] font-semibold tabular-nums text-muted">{count}</span>
                 </button>
-              </li>
-            );
-          })}
-        </ul>
+              );
+            })}
+          </div>
+
+          {hasFilters ? (
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-lg border border-line py-2 text-xs font-semibold text-muted transition hover:border-line-strong hover:text-fg"
+            >
+              <Close className="h-3.5 w-3.5" /> Clear all filters
+            </button>
+          ) : null}
+        </div>
       </aside>
 
-      {/* ---- Right: results grid, 4-up on wide screens ---- */}
+      {/* ---- Right: results ---- */}
       <div className="min-w-0">
-        <p className="mb-4 text-sm text-muted">
-          {filtered.length} article{filtered.length === 1 ? "" : "s"}
-          {active !== ALL ? <> in <span className="font-semibold text-fg">{active}</span></> : null}
-        </p>
+        {/* Results header: count + active chips + sort */}
+        <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2">
+          <p className="text-sm text-muted">
+            <span className="font-semibold text-fg">{filtered.length}</span> article{filtered.length === 1 ? "" : "s"}
+          </p>
+
+          {/* removable active-filter chips */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            {active !== ALL ? (
+              <FilterChip label={active} onClear={() => setActive(ALL)} />
+            ) : null}
+            {length !== "all" ? (
+              <FilterChip label={lengthLabel} onClear={() => setLength("all")} />
+            ) : null}
+            {debouncedQuery ? (
+              <FilterChip label={`“${query.trim()}”`} onClear={() => { setQuery(""); inputRef.current?.focus(); }} />
+            ) : null}
+          </div>
+
+          {/* sort — pushed to the right */}
+          <label className="ml-auto flex items-center gap-2 text-sm text-muted">
+            <span className="hidden sm:inline">Sort</span>
+            <div className="relative">
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as SortKey)}
+                aria-label="Sort articles"
+                className="appearance-none rounded-lg border border-line bg-panel py-1.5 pl-3 pr-8 text-sm font-medium text-fg outline-none transition hover:border-line-strong focus:border-brand/50 focus:ring-2 focus:ring-brand/20"
+              >
+                {SORTS.map((s) => (
+                  <option key={s.key} value={s.key}>{s.label}</option>
+                ))}
+              </select>
+              <svg viewBox="0 0 24 24" className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </div>
+          </label>
+        </div>
 
         {filtered.length > 0 ? (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -186,5 +385,21 @@ export function BlogExplorer({ posts }: { posts: BlogPostCard[] }) {
         )}
       </div>
     </div>
+  );
+}
+
+function FilterChip({ label, onClear }: { label: string; onClear: () => void }) {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full border border-brand/30 bg-brand/10 py-0.5 pl-2.5 pr-1 text-xs font-semibold text-brand-bright">
+      {label}
+      <button
+        type="button"
+        onClick={onClear}
+        aria-label={`Remove ${label} filter`}
+        className="grid h-4 w-4 place-items-center rounded-full text-brand-bright/70 transition hover:bg-brand/20 hover:text-brand-bright"
+      >
+        <Close className="h-3 w-3" />
+      </button>
+    </span>
   );
 }
