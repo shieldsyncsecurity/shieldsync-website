@@ -269,10 +269,13 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                <Button href={`${SITE.enterpriseUrl}/demo/report`} external newTab>
-                  See a sample report
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <Button href={`${SITE.enterpriseUrl}/demo/try`} external newTab>
+                  Try the assessment
                   <ArrowRight className="h-4 w-4" />
+                </Button>
+                <Button href={`${SITE.enterpriseUrl}/demo/report`} external newTab variant="secondary">
+                  See a sample report
                 </Button>
                 <Button href={SITE.enterpriseUrl} external variant="secondary">
                   Explore hiring assessments
