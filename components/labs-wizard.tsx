@@ -299,7 +299,7 @@ export function LabsWizard({
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-bright">{trackName}</p>
                 <h1 className="mt-1 text-2xl font-bold tracking-tight text-fg sm:text-3xl">How do you want to learn?</h1>
                 <p className="mt-1 text-sm text-muted">Pick what fits — you can change this anytime.</p>
-                <div className={`mt-4 grid gap-4 ${track === "aws" || track === "ai" || track === "azure" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
+                <div className={`mt-4 grid gap-4 ${track === "aws" || track === "ai" || track === "azure" || track === "soc" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
                   {/* FREE — a first-class card alongside the paid plans (AWS + AI
                       tracks). Same select-then-Continue behaviour as the paid cards:
                       clicking sets mode="free"; Continue navigates to the free lab. */}
@@ -364,12 +364,17 @@ export function LabsWizard({
                       ))
                     : null}
 
-                  {/* SOC labs aren't live yet — same 3-box treatment as the AI track:
-                      render the plan cards disabled Coming-soon so the SOC track opens
-                      inside the wizard like every other track, but no one can buy a lab
-                      that doesn't exist. A note below points at the live AWS track. */}
+                  {/* SOC labs aren't live yet — same 3-box layout + card design as the
+                      other tracks (Free / Pay per lab / Monthly), all rendered disabled
+                      Coming-soon so the SOC track opens inside the wizard like every other
+                      track, but no one can buy a lab that doesn't exist. A note below
+                      points at the live AWS track. */}
                   {track === "soc"
                     ? [
+                        {
+                          title: "Free lab",
+                          pts: ["Your first SOC lab — no card", "Real, isolated SIEM workspace", "Hands-on detection & triage"],
+                        },
                         {
                           title: "Pay per lab",
                           pts: ["Buy only the SOC labs you want", "One-time payment", "SIEM detections + SOAR playbooks"],
