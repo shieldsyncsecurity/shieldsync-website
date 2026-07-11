@@ -222,7 +222,10 @@ export function BlogExplorer({ posts }: { posts: BlogPostCard[] }) {
     <div className="grid gap-8 lg:grid-cols-[248px_minmax(0,1fr)]">
       {/* ---- Left filter panel, sticky on desktop ---- */}
       <aside className="lg:sticky lg:top-24 lg:self-start">
-        <div className="rounded-2xl border border-line bg-panel/60 p-3.5">
+        {/* Cap the sticky panel to the viewport and scroll INSIDE its border, so on
+            short laptop screens the lower filters (Reading time, Clear all) stay
+            reachable instead of being cut off below the fold with no way to scroll. */}
+        <div className="rounded-2xl border border-line bg-panel/60 p-3.5 lg:max-h-[calc(100dvh-7rem)] lg:overflow-y-auto [scrollbar-width:thin]">
           {/* Search */}
           <div className="relative">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
