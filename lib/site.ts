@@ -53,7 +53,7 @@ export type NavItem = { label: string; href: string };
 export const NAV: NavItem[] = [
   { label: "Businesses", href: "/services" },
   { label: "Learners", href: "/labs-wizard" },
-  { label: "Blog", href: "/blog" },
+  { label: "Security Blog", href: "/blog" },
 ];
 
 /* Social proof ---------------------------------------------------------------- */
@@ -446,7 +446,7 @@ export const FOOTER_NAV: { heading: string; links: NavItem[] }[] = [
     heading: "Learn",
     links: [
       { label: "Start here", href: "/start-here" },
-      { label: "Blog", href: "/blog" },
+      { label: "Security Blog", href: "/blog" },
     ],
   },
   {

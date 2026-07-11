@@ -7,7 +7,7 @@ import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
 import { BLOG_POST_CARDS, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Blog — Cloud Security, SOC & Cyber Career",
+  title: "Security Blog — Cloud Security, SOC & Cyber Career",
   description:
     "Hands-on tutorials, career guidance, and cloud / AWS security insight from the ShieldSync Security team.",
   alternates: { canonical: "/blog" },
@@ -37,7 +37,7 @@ export default function BlogPage() {
       <SchemaOrg schema={PAGE_SCHEMA} />
 
       <PageHero
-        eyebrow="Blog"
+        eyebrow="Security Blog"
         title={
           <>
             Hands-on <span className="text-gradient">cloud security</span> &amp; career insight.
