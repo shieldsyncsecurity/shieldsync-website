@@ -39,7 +39,7 @@ function PostCard({ post, priority = false }: { post: BlogPostCard; priority?: b
             alt={post.title}
             fill
             priority={priority}
-            sizes="(min-width:1280px) 22vw, (min-width:1024px) 30vw, (min-width:640px) 45vw, 100vw"
+            sizes="(min-width:1024px) 28vw, (min-width:640px) 45vw, 100vw"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </div>
@@ -163,10 +163,10 @@ export function BlogExplorer({ posts }: { posts: BlogPostCard[] }) {
         </p>
 
         {filtered.length > 0 ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((post, i) => (
               <Reveal key={post.slug} delay={Math.min(i, 7) * 35}>
-                <PostCard post={post} priority={i < 4} />
+                <PostCard post={post} priority={i < 3} />
               </Reveal>
             ))}
           </div>
