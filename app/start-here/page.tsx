@@ -2,12 +2,12 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Container, Button, Card } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
-import { CtaBand } from "@/components/sections";
+import { CtaBand, FaqSection } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
 import { RelatedBlogSection } from "@/components/related-blog-section";
-import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
+import { webPageSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
 import { Check, ArrowRight, Shield, Cap } from "@/components/icons";
-import { ROADMAP, ROADMAP_ROLES, SITE } from "@/lib/site";
+import { ROADMAP, ROADMAP_ROLES, SITE, FAQS } from "@/lib/site";
 import { ROADMAP_LEVEL_TONE, toneClass, toneDotClass } from "@/components/status-badge";
 
 export const metadata: Metadata = {
@@ -55,6 +55,7 @@ const PAGE_SCHEMA = [
     { name: "Home", url: SITE.url },
     { name: "Start here", url: PAGE_URL },
   ]),
+  faqSchema(FAQS.labs),
 ];
 
 const WHO = [
@@ -196,6 +197,8 @@ export default function StartHerePage() {
           </div>
         </Container>
       </section>
+
+      <FaqSection faqs={FAQS.labs} title="Labs — frequently asked questions" />
 
       <RelatedBlogSection keywords={["Cloud", "AWS", "Training", "IAM", "Career"]} />
 
