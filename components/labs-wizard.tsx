@@ -207,9 +207,9 @@ export function LabsWizard({
           {/* Currency toggle */}
           <div className="mb-2 flex items-center justify-end gap-3">
             <span className="text-xs text-muted">Prices shown for your region</span>
-            <div className="inline-flex rounded-lg border border-line bg-panel p-0.5 text-sm font-semibold">
-              <button type="button" onClick={() => pickCurrency("INR")} className={curBtn(currency === "INR")}>₹ INR</button>
-              <button type="button" onClick={() => pickCurrency("USD")} className={curBtn(currency === "USD")}>$ USD</button>
+            <div role="group" aria-label="Currency" className="inline-flex rounded-lg border border-line bg-panel p-0.5 text-sm font-semibold">
+              <button type="button" aria-pressed={currency === "INR"} onClick={() => pickCurrency("INR")} className={curBtn(currency === "INR")}>₹ INR</button>
+              <button type="button" aria-pressed={currency === "USD"} onClick={() => pickCurrency("USD")} className={curBtn(currency === "USD")}>$ USD</button>
             </div>
           </div>
 
@@ -264,6 +264,7 @@ export function LabsWizard({
                       <button
                         key={o.id}
                         type="button"
+                        aria-pressed={track === o.key}
                         onClick={() => chooseTrack(o.key)}
                         className={`rounded-2xl border p-5 text-left transition ${
                           track === o.key
@@ -276,7 +277,7 @@ export function LabsWizard({
                             <Icon className="h-6 w-6" />
                           </span>
                           {o.soon ? (
-                            <span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-bold text-amber-600">Coming soon</span>
+                            <span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-bold text-amber-700">Coming soon</span>
                           ) : o.tag ? (
                             <span className="rounded-full bg-brand/10 px-2.5 py-0.5 text-xs font-bold text-brand-bright">★ {o.tag}</span>
                           ) : null}
@@ -306,6 +307,7 @@ export function LabsWizard({
                   {track === "aws" || track === "ai" || track === "azure" ? (
                     <button
                       type="button"
+                      aria-pressed={mode === "free"}
                       onClick={() => setMode("free")}
                       className={`flex flex-col rounded-2xl border p-5 text-left transition ${
                         mode === "free" ? "border-brand bg-brand/[0.05] ring-2 ring-brand/40" : "border-line bg-panel hover:border-line-strong"
@@ -352,7 +354,7 @@ export function LabsWizard({
                         <div key={o.title} className="flex cursor-not-allowed flex-col rounded-2xl border border-line bg-panel p-5 opacity-60">
                           <div className="flex items-start justify-between gap-3">
                             <h3 className="text-base font-bold text-fg">{o.title}</h3>
-                            <span className="shrink-0 rounded-full bg-amber-500/15 px-2.5 py-0.5 text-[11px] font-bold text-amber-600">Coming soon</span>
+                            <span className="shrink-0 rounded-full bg-amber-500/15 px-2.5 py-0.5 text-[11px] font-bold text-amber-700">Coming soon</span>
                           </div>
                           <ul className="mt-3 space-y-1.5">
                             {o.pts.map((p) => (
@@ -389,7 +391,7 @@ export function LabsWizard({
                         <div key={o.title} className="flex cursor-not-allowed flex-col rounded-2xl border border-line bg-panel p-5 opacity-60">
                           <div className="flex items-start justify-between gap-3">
                             <h3 className="text-base font-bold text-fg">{o.title}</h3>
-                            <span className="shrink-0 rounded-full bg-amber-500/15 px-2.5 py-0.5 text-[11px] font-bold text-amber-600">Coming soon</span>
+                            <span className="shrink-0 rounded-full bg-amber-500/15 px-2.5 py-0.5 text-[11px] font-bold text-amber-700">Coming soon</span>
                           </div>
                           <ul className="mt-3 space-y-1.5">
                             {o.pts.map((p) => (
@@ -424,6 +426,7 @@ export function LabsWizard({
                     <button
                       key={o.key}
                       type="button"
+                      aria-pressed={mode === o.key}
                       onClick={() => setMode(o.key)}
                       className={`relative flex flex-col rounded-2xl border p-5 text-left transition ${
                         mode === o.key ? "border-brand bg-brand/[0.05] ring-2 ring-brand/40" : "border-line bg-panel hover:border-line-strong"
@@ -480,6 +483,7 @@ export function LabsWizard({
                     <button
                       key={c}
                       type="button"
+                      aria-pressed={cat === c}
                       onClick={() => setCat(c)}
                       className={`rounded-lg border px-3 py-1.5 text-sm font-semibold transition ${
                         cat === c ? "border-brand bg-brand/10 text-brand-bright" : "border-line text-muted hover:text-fg"
@@ -501,6 +505,7 @@ export function LabsWizard({
                       <button
                         key={l.slug}
                         type="button"
+                        aria-pressed={selected === l.slug}
                         onClick={() => setSelected(l.slug)}
                         className={`flex flex-col rounded-2xl border p-5 text-left transition ${
                           sel ? "border-brand bg-brand/[0.05] ring-2 ring-brand/40" : "border-line bg-panel hover:border-line-strong"

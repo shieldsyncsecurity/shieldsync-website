@@ -6,7 +6,8 @@ import { CtaBand } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
 import { webPageSchema, breadcrumbSchema, blogPostingSchema } from "@/lib/schema";
 import Image from "next/image";
-import { BLOG_POSTS, SITE } from "@/lib/site";
+import { SITE } from "@/lib/site";
+import { BLOG_POSTS } from "@/lib/blog";
 
 // Posts that map to a LIVE hands-on lab get a direct link to that lab page — a
 // targeted internal link that passes ranking signal to the lab page (and is better

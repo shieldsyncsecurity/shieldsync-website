@@ -2,7 +2,7 @@ import { Container, SectionHeading, Button } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { BlogCarousel } from "@/components/blog-carousel";
 import { ArrowRight } from "@/components/icons";
-import { BLOG_POST_CARDS } from "@/lib/site";
+import { BLOG_POST_CARDS } from "@/lib/blog";
 
 /* ----------------------------------------------------------------------------
    Shared "From the blog" / related-reads block. Every page used to hand-roll

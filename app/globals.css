@@ -108,13 +108,19 @@ body {
     0 12px 28px -18px rgba(15, 23, 42, 0.16);
 }
 
-/* Scroll reveal (driven by components/reveal.tsx) */
+/* Scroll reveal (driven by components/reveal.tsx). The hidden start state is gated
+ * behind html.js (set by an inline script in app/layout.tsx before first paint), so
+ * with JS disabled or failed the content stays visible instead of a permanently blank
+ * page — and no-JS crawlers get an instant paint. */
 .reveal {
-  opacity: 0;
-  transform: translateY(22px);
   transition:
     opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.js .reveal {
+  opacity: 0;
+  transform: translateY(22px);
 }
 
 .reveal.is-in {
@@ -123,7 +129,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
+  .js .reveal {
     opacity: 1;
     transform: none;
     transition: none;

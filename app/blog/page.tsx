@@ -4,7 +4,8 @@ import { PageHero, CtaBand } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
 import { BlogExplorer } from "@/components/blog-explorer";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
-import { BLOG_POST_CARDS, SITE } from "@/lib/site";
+import { SITE } from "@/lib/site";
+import { BLOG_POST_CARDS } from "@/lib/blog";
 
 export const metadata: Metadata = {
   title: "Security Blog — Cloud Security, SOC & Cyber Career",
@@ -55,6 +56,8 @@ export default function BlogPage() {
       <CtaBand
         title="Want this hands-on, not just read?"
         subtitle="Jump into a real AWS security lab, or explore our training tracks."
+        primary={{ label: "Start the free lab", href: "/labs-wizard?track=free-security-labs" }}
+        secondary={{ label: "Explore all tracks", href: "/labs-wizard" }}
       />
     </>
   );

@@ -115,6 +115,19 @@ export default function HomePage() {
               </Button>
             </div>
 
+            {/* Free-lab entry for learners — the paid-ad funnel target. The header
+                "Start free lab" pill is md:hidden, so without this mobile ad traffic
+                has no above-the-fold free-lab link. */}
+            <p className="mt-3 text-sm text-muted">
+              Learning, not buying?{" "}
+              <Link
+                href="/labs-wizard?track=free-security-labs"
+                className="inline-flex items-center gap-1 font-semibold text-brand-bright hover:underline"
+              >
+                Start the free lab <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </p>
+
             <div className="mt-6 flex items-center gap-2">
               <Check className="h-4 w-4 shrink-0 text-brand" />
               <p className="text-base text-muted">

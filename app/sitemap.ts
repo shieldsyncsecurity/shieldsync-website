@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
-import { SITE, AWS_LABS, SOC_LABS, BLOG_POSTS } from "@/lib/site";
+import { SITE, AWS_LABS, SOC_LABS } from "@/lib/site";
+import { BLOG_POSTS } from "@/lib/blog";
 import { SERVICE_PAGES } from "@/lib/service-pages";
 
 // Required for `output: export` (static Amplify build) — emit a static sitemap.xml

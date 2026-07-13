@@ -6,7 +6,7 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Start an AWS Security Lab — Pick a plan and launch",
   description:
-    "Pick your plan and start a hands-on AWS security lab in a real, isolated AWS account. Free first lab, pay-per-lab from ₹199, or monthly access to every AWS security lab.",
+    "Pick your plan and start a hands-on AWS security lab in a real, isolated AWS account. Free first lab, pay-per-lab ₹249, or monthly access to every AWS security lab.",
   keywords: [
     "AWS security lab",
     "AWS security training",

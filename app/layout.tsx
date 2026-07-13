@@ -98,6 +98,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${jetbrains.variable} ${fraunces.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="flex min-h-full flex-col">
+        {/* JS-enabled flag, set before first paint. The scroll-reveal hidden state
+            (.js .reveal{opacity:0}) only applies when JS is present to un-hide it, so
+            no-JS / failed-JS renders content immediately instead of a blank page. */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
         {/* Region detection before first paint. Three tiers:
             1. Cached IP result from a previous visit (localStorage, 7d TTL) —
                instant, correct even for VPN/travel/wrong-timezone edge cases.

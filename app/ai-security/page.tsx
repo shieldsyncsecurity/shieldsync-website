@@ -6,7 +6,8 @@ import { CtaBand } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
 import { webPageSchema, breadcrumbSchema, courseListSchema } from "@/lib/schema";
 import { ArrowRight, Shield, Lock, Code } from "@/components/icons";
-import { SITE, BLOG_POST_CARDS } from "@/lib/site";
+import { SITE } from "@/lib/site";
+import { BLOG_POST_CARDS } from "@/lib/blog";
 import { InDevelopmentBadge } from "@/components/status-badge";
 
 export const metadata: Metadata = {
