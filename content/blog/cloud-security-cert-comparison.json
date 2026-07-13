@@ -1,15 +1,15 @@
 {
   "slug": "cloud-security-cert-comparison",
-  "title": "SCS-C02 vs CCSP vs CISSP: Which Cloud Security Certification Should You Take?",
+  "title": "SCS-C03 vs CCSP vs CISSP: Which Cloud Security Certification Should You Take?",
   "excerpt": "A working engineer's side-by-side of the three certifications hiring managers actually recognise for cloud security roles — with a decision framework, India-market context, and stacking strategy.",
-  "category": "Cloud / AWS",
+  "category": "Cloud Security",
   "date": "Jun 30, 2026",
   "read": "13 min",
   "image": "/blog/cloud-security-cert-comparison.webp",
   "body": [
     {
       "t": "p",
-      "text": "SCS-C02 vs CISSP is the single most-asked question by cloud security professionals planning their next 12 months of certification. Add CCSP into the comparison and the answer depends on where you are in your career, which side of the build/audit line you sit on, and which job market you're targeting. This guide compares the AWS Certified Security Specialty (SCS-C02), the (ISC)² Certified Cloud Security Professional (CCSP), and the (ISC)² Certified Information Systems Security Professional (CISSP) across every axis hiring managers care about, gives a decision framework based on your role and goals, and tells you how to stack them if you're going to sit more than one."
+      "text": "SCS-C03 vs CISSP is the single most-asked question by cloud security professionals planning their next 12 months of certification. Add CCSP into the comparison and the answer depends on where you are in your career, which side of the build/audit line you sit on, and which job market you're targeting. This guide compares the AWS Certified Security Specialty (SCS-C03), the (ISC)² Certified Cloud Security Professional (CCSP), and the (ISC)² Certified Information Systems Security Professional (CISSP) across every axis hiring managers care about, gives a decision framework based on your role and goals, and tells you how to stack them if you're going to sit more than one."
     },
     {
       "t": "p",
@@ -17,7 +17,7 @@
     },
     {
       "t": "h2",
-      "text": "Side-by-side: SCS-C02 vs CCSP vs CISSP"
+      "text": "Side-by-side: SCS-C03 vs CCSP vs CISSP"
     },
     {
       "t": "p",
@@ -26,15 +26,15 @@
     {
       "t": "ul",
       "items": [
-        "Vendor — SCS-C02: AWS (single cloud). CCSP: (ISC)² (vendor-neutral, cloud-focused). CISSP: (ISC)² (vendor-neutral, broad infosec).",
-        "Scope — SCS-C02: deep, hands-on AWS security across IAM, KMS, VPC, GuardDuty, CloudTrail, SCPs. CCSP: conceptual cloud security across all major providers, governance, and architecture. CISSP: the full information security body of knowledge — risk, asset, security architecture, comms & network, IAM, security assessment, security operations, software development security.",
-        "Format — SCS-C02: 65 multiple choice / multiple response, 170 minutes, scored 100-1000 (pass 750). CCSP: 125 questions, 4 hours, scored 100-1000 (pass 700). CISSP: 125-175 adaptive (CAT) questions, up to 4 hours, pass at the (ISC)²-defined threshold.",
-        "Cost — SCS-C02: USD 300. CCSP: USD 599. CISSP: USD 749 (plus annual AMF of USD 125 once certified).",
-        "Prerequisites — SCS-C02: none formally; AWS recommends 5 years general IT + 2 years securing AWS. CCSP: 5 years of cumulative paid full-time IT experience including 3 years infosec and 1 year in one of the 6 CCSP domains. CISSP: 5 years of cumulative paid full-time work experience in 2 or more of the 8 domains (1 year reducible with a degree or approved cert).",
-        "Validity — SCS-C02: 3 years; renew by passing the current version. CCSP: 3 years; renew via 90 CPE credits + USD 125 AMF. CISSP: 3 years; renew via 120 CPE credits + USD 125 AMF.",
-        "India-market recognition — SCS-C02: increasingly required in AWS-heavy Indian product companies, fintechs, and consulting practices; the standard cloud security ask for AWS engineering roles. CCSP: respected by Indian banking and BFSI compliance teams; also widely required for cloud security architect roles in large IT services. CISSP: still the gold standard for senior security roles in Indian enterprises, banks, and government PSUs; often a literal box on the JD.",
-        "Who it's for — SCS-C02: cloud security engineers building on AWS day to day. CCSP: cloud security architects, governance-and-risk professionals working across clouds. CISSP: senior security generalists, managers, CISOs, anyone whose job spans more than just the cloud.",
-        "Average prep hours — SCS-C02: 80-150 hours over 6-12 weeks. CCSP: 100-200 hours over 3-4 months. CISSP: 150-300 hours over 4-6 months."
+        "Vendor — SCS-C03: AWS (single cloud). CCSP: (ISC)² (vendor-neutral, cloud-focused). CISSP: (ISC)² (vendor-neutral, broad infosec).",
+        "Scope — SCS-C03: deep, hands-on AWS security across IAM, KMS, VPC, GuardDuty, CloudTrail, SCPs. CCSP: conceptual cloud security across all major providers, governance, and architecture. CISSP: the full information security body of knowledge — risk, asset, security architecture, comms & network, IAM, security assessment, security operations, software development security.",
+        "Format — SCS-C03: 65 multiple choice / multiple response, 170 minutes, scored 100-1000 (pass 750). CCSP: 125 questions, 4 hours, scored 100-1000 (pass 700). CISSP: 125-175 adaptive (CAT) questions, up to 4 hours, pass at the (ISC)²-defined threshold.",
+        "Cost — SCS-C03: USD 300. CCSP: USD 599. CISSP: USD 749 (plus annual AMF of USD 125 once certified).",
+        "Prerequisites — SCS-C03: none formally; AWS recommends 5 years general IT + 2 years securing AWS. CCSP: 5 years of cumulative paid full-time IT experience including 3 years infosec and 1 year in one of the 6 CCSP domains. CISSP: 5 years of cumulative paid full-time work experience in 2 or more of the 8 domains (1 year reducible with a degree or approved cert).",
+        "Validity — SCS-C03: 3 years; renew by passing the current version. CCSP: 3 years; renew via 90 CPE credits + USD 125 AMF. CISSP: 3 years; renew via 120 CPE credits + USD 125 AMF.",
+        "India-market recognition — SCS-C03: increasingly required in AWS-heavy Indian product companies, fintechs, and consulting practices; the standard cloud security ask for AWS engineering roles. CCSP: respected by Indian banking and BFSI compliance teams; also widely required for cloud security architect roles in large IT services. CISSP: still the gold standard for senior security roles in Indian enterprises, banks, and government PSUs; often a literal box on the JD.",
+        "Who it's for — SCS-C03: cloud security engineers building on AWS day to day. CCSP: cloud security architects, governance-and-risk professionals working across clouds. CISSP: senior security generalists, managers, CISOs, anyone whose job spans more than just the cloud.",
+        "Average prep hours — SCS-C03: 80-150 hours over 6-12 weeks. CCSP: 100-200 hours over 3-4 months. CISSP: 150-300 hours over 4-6 months."
       ]
     },
     {
@@ -43,7 +43,7 @@
     },
     {
       "t": "p",
-      "text": "Certifications signal different things, and the most common mistake is treating them as interchangeable. SCS-C02 proves you can design and operate a secure AWS environment — you understand IAM policy evaluation, you can read a KMS key policy, you know which GuardDuty findings matter, you can write an SCP to enforce a region restriction. The proof is operational. The exam is unforgiving toward candidates who only watched videos because the question writers actively design distractors that catch rote memorisation."
+      "text": "Certifications signal different things, and the most common mistake is treating them as interchangeable. SCS-C03 proves you can design and operate a secure AWS environment — you understand IAM policy evaluation, you can read a KMS key policy, you know which GuardDuty findings matter, you can write an SCP to enforce a region restriction. The proof is operational. The exam is unforgiving toward candidates who only watched videos because the question writers actively design distractors that catch rote memorisation."
     },
     {
       "t": "p",
@@ -64,12 +64,12 @@
     {
       "t": "ul",
       "items": [
-        "You work primarily on AWS, your job title contains 'engineer' (cloud security engineer, DevSecOps engineer, security engineer), and you want to grow into a senior IC role on AWS → SCS-C02. Direct match for the job description.",
+        "You work primarily on AWS, your job title contains 'engineer' (cloud security engineer, DevSecOps engineer, security engineer), and you want to grow into a senior IC role on AWS → SCS-C03. Direct match for the job description.",
         "You work across two or more clouds (AWS + Azure, AWS + GCP, or all three) and your job is about architecture or governance rather than day-to-day engineering → CCSP. Vendor-neutral, cloud-focused.",
         "You're moving into a manager, lead, or CISO role and your responsibilities span more than just the cloud (on-prem, third-party risk, GRC, awareness, IR) → CISSP. The senior security generalist credential.",
         "You're in BFSI, government, or a regulated industry in India where the JD literally lists 'CISSP preferred' → CISSP. The market expects it, even if the work is cloud-heavy.",
-        "You're a security analyst or SOC engineer who hasn't yet specialised in cloud → CISSP first (covers your day job), then SCS-C02 within a year to specialise.",
-        "You're early in your career (under 3 years), can't yet meet CISSP's 5-year requirement, and you work on AWS → SCS-C02 first. No prerequisite, fastest ROI, and CISSP can wait until you have the years."
+        "You're a security analyst or SOC engineer who hasn't yet specialised in cloud → CISSP first (covers your day job), then SCS-C03 within a year to specialise.",
+        "You're early in your career (under 3 years), can't yet meet CISSP's 5-year requirement, and you work on AWS → SCS-C03 first. No prerequisite, fastest ROI, and CISSP can wait until you have the years."
       ]
     },
     {
@@ -78,7 +78,7 @@
     },
     {
       "t": "p",
-      "text": "Indian hiring patterns differ from the US/EU. A quick snapshot from current job posts: AWS-heavy product companies (Razorpay, CRED, Swiggy, Zerodha, the Tata Digital stack) explicitly ask for SCS-C02 for cloud security engineer roles, often as 'preferred' alongside hands-on AWS experience. Mid-tier IT services and consulting (Wipro, TCS, Infosys, LTIMindtree) ask for CCSP and CISSP much more often than they ask for SCS-C02, because the work is typically cloud-architect-shaped and vendor-neutral. Banks, NBFCs, and regulated entities (HDFC Bank, ICICI Bank, Axis, Aditya Birla Capital) ask for CISSP as a literal filter, with CCSP a frequent runner-up."
+      "text": "Indian hiring patterns differ from the US/EU. A quick snapshot from current job posts: AWS-heavy product companies (Razorpay, CRED, Swiggy, Zerodha, the Tata Digital stack) explicitly ask for SCS-C03 for cloud security engineer roles, often as 'preferred' alongside hands-on AWS experience. Mid-tier IT services and consulting (Wipro, TCS, Infosys, LTIMindtree) ask for CCSP and CISSP much more often than they ask for SCS-C03, because the work is typically cloud-architect-shaped and vendor-neutral. Banks, NBFCs, and regulated entities (HDFC Bank, ICICI Bank, Axis, Aditya Birla Capital) ask for CISSP as a literal filter, with CCSP a frequent runner-up."
     },
     {
       "t": "p",
@@ -94,11 +94,11 @@
     },
     {
       "t": "p",
-      "text": "Stack A — Hands-on engineer path: SCS-C02 → CCSP → CISSP. Start hands-on with the cloud you actually use day to day; it's the fastest to prep and the most immediately applicable to your work. CCSP next, because the AWS knowledge you've internalised will make the IaaS/PaaS portions of CCSP almost trivial — you can focus on the governance, legal, and compliance portions you don't know. CISSP last, in your fifth year of experience when you naturally cross the threshold of senior responsibility."
+      "text": "Stack A — Hands-on engineer path: SCS-C03 → CCSP → CISSP. Start hands-on with the cloud you actually use day to day; it's the fastest to prep and the most immediately applicable to your work. CCSP next, because the AWS knowledge you've internalised will make the IaaS/PaaS portions of CCSP almost trivial — you can focus on the governance, legal, and compliance portions you don't know. CISSP last, in your fifth year of experience when you naturally cross the threshold of senior responsibility."
     },
     {
       "t": "p",
-      "text": "Stack B — Generalist-to-specialist path: CISSP → SCS-C02 → CCSP. Start with CISSP if you're already at the senior level and need the credential to back up your seniority. SCS-C02 next because by then your AWS work will be deep enough to make the hands-on detail click. CCSP optional, only if your role broadens to multi-cloud or if the BFSI sector you're moving into requires it."
+      "text": "Stack B — Generalist-to-specialist path: CISSP → SCS-C03 → CCSP. Start with CISSP if you're already at the senior level and need the credential to back up your seniority. SCS-C03 next because by then your AWS work will be deep enough to make the hands-on detail click. CCSP optional, only if your role broadens to multi-cloud or if the BFSI sector you're moving into requires it."
     },
     {
       "t": "p",
@@ -119,14 +119,14 @@
     {
       "t": "ul",
       "items": [
-        "SCS-C02 — 80-150 prep hours, USD 300 exam, USD 0 annual (renew by re-passing in year 3) — first 3-year cost: ~USD 300 + your time",
+        "SCS-C03 — 80-150 prep hours, USD 300 exam, USD 0 annual (renew by re-passing in year 3) — first 3-year cost: ~USD 300 + your time",
         "CCSP — 100-200 prep hours, USD 599 exam, USD 125 AMF + 30 CPEs per year — first 3-year cost: ~USD 974 + your time",
         "CISSP — 150-300 prep hours, USD 749 exam, USD 125 AMF + 40 CPEs per year — first 3-year cost: ~USD 1124 + your time"
       ]
     },
     {
       "t": "p",
-      "text": "If your employer reimburses certifications (most product companies and consulting firms in India do, up to a cap), check the policy — many policies cover the exam fee but not the prep material, while some cover both. CISSP's annual maintenance fee is the longest-term cost; SCS-C02 has none."
+      "text": "If your employer reimburses certifications (most product companies and consulting firms in India do, up to a cap), check the policy — many policies cover the exam fee but not the prep material, while some cover both. CISSP's annual maintenance fee is the longest-term cost; SCS-C03 has none."
     },
     {
       "t": "h2",
@@ -135,7 +135,7 @@
     {
       "t": "ul",
       "items": [
-        "SCS-C02 — AWS Skill Builder Exam Prep (free), Stephane Maarek on Udemy (paid), Tutorials Dojo practice exams (paid), the SCS-C02 study guide and free hands-on labs on shieldsyncsecurity.com",
+        "SCS-C03 — AWS Skill Builder Exam Prep (free), Stephane Maarek on Udemy (paid), Tutorials Dojo practice exams (paid), the SCS-C03 study guide and free hands-on labs on shieldsyncsecurity.com",
         "CCSP — (ISC)² Official Study Guide (Sybex), Mike Chapple's CCSP course on LinkedIn Learning, the (ISC)² CCSP practice tests",
         "CISSP — (ISC)² Official Study Guide and Practice Tests (Sybex), Destination Certification's CISSP MindMap and YouTube series (free), the Boson CISSP practice exams"
       ]
@@ -146,7 +146,7 @@
     },
     {
       "t": "p",
-      "text": "'Is SCS-C02 enough on its own to land a cloud security engineer role in India?' For an AWS-heavy product company or fintech, yes — provided you can pair it with demonstrable hands-on experience (open-source contributions, lab walkthroughs, real production AWS work). For services companies and banks, you'll usually need CCSP or CISSP as well."
+      "text": "'Is SCS-C03 enough on its own to land a cloud security engineer role in India?' For an AWS-heavy product company or fintech, yes — provided you can pair it with demonstrable hands-on experience (open-source contributions, lab walkthroughs, real production AWS work). For services companies and banks, you'll usually need CCSP or CISSP as well."
     },
     {
       "t": "p",
@@ -154,7 +154,7 @@
     },
     {
       "t": "p",
-      "text": "'Will CCSP help me as an AWS-only engineer?' Marginally. The vendor-neutral framing is useful for architecture discussions, but you'll get more done with SCS-C02 + real AWS work."
+      "text": "'Will CCSP help me as an AWS-only engineer?' Marginally. The vendor-neutral framing is useful for architecture discussions, but you'll get more done with SCS-C03 + real AWS work."
     },
     {
       "t": "p",
@@ -166,7 +166,7 @@
     },
     {
       "t": "p",
-      "text": "If after all that you still aren't sure, default to SCS-C02 — it has the lowest cost of entry, no prerequisites, the fastest prep cycle, and the most direct line to a salary bump in the Indian cloud security market right now. Start with one free hands-on lab to see whether the day-to-day work appeals to you. The S3 misconfiguration audit at labs.shieldsyncsecurity.com runs in a real isolated AWS account in your browser, takes about half an hour, and gives you a concrete taste of what the SCS-C02 syllabus actually looks like in practice. If that clicks, the full SCS-C02 study guide on the blog walks the rest of the path."
+      "text": "If after all that you still aren't sure, default to SCS-C03 — it has the lowest cost of entry, no prerequisites, the fastest prep cycle, and the most direct line to a salary bump in the Indian cloud security market right now. Start with one free hands-on lab to see whether the day-to-day work appeals to you. The S3 misconfiguration audit at labs.shieldsyncsecurity.com runs in a real isolated AWS account in your browser, takes about half an hour, and gives you a concrete taste of what the SCS-C03 syllabus actually looks like in practice. If that clicks, the full SCS-C03 study guide on the blog walks the rest of the path."
     },
     {
       "t": "p",

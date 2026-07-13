@@ -245,7 +245,7 @@
     },
     {
       "t": "p",
-      "text": "RAG security is one slice of the broader LLM threat model — the rest of it is covered in our OWASP LLM Top 10 mapped to AWS Bedrock checklist. The underlying AWS primitives (IAM ABAC, KMS, VPC endpoints, CloudTrail) are the same ones the AWS Security Specialty certification tests; our SCS-C02 study guide walks each. And if you want hands-on practice with the IAM and bucket-policy patterns the tenant-isolation example above depends on, the free S3 misconfiguration audit lab on labs.shieldsyncsecurity.com is the right first step."
+      "text": "RAG security is one slice of the broader LLM threat model — the rest of it is covered in our OWASP LLM Top 10 mapped to AWS Bedrock checklist. The underlying AWS primitives (IAM ABAC, KMS, VPC endpoints, CloudTrail) are the same ones the AWS Security Specialty certification tests; our SCS-C03 study guide walks each. And if you want hands-on practice with the IAM and bucket-policy patterns the tenant-isolation example above depends on, the free S3 misconfiguration audit lab on labs.shieldsyncsecurity.com is the right first step."
     }
   ]
 }

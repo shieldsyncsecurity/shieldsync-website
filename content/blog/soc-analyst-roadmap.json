@@ -253,7 +253,7 @@
     },
     {
       "t": "p",
-      "text": "ShieldSync's dedicated SOC labs (the labs/soc track on labs.shieldsyncsecurity.com) are launching shortly — they bundle a shared Wazuh SIEM with per-user recorded log data, so you can hunt across real telemetry without standing up your own lab. Until they are live, the home-lab plan above gets you the same outcome. If you want a structured ramp with mentor reviews and a portfolio capstone, the ShieldSync internship covers the cross-section of SOC and cloud security in 8 weeks. Pick one path, start week 1 this weekend, and you will be interview-ready in three months. The SOC career is hands-on, fast-moving, and one of the few in cybersecurity where you can go from zero to employed inside a year."
+      "text": "ShieldSync's dedicated SOC labs (the labs/soc track on labs.shieldsyncsecurity.com) are launching shortly — they bundle a managed SIEM with per-user recorded log data, so you can hunt across real telemetry without standing up your own lab. Until they are live, the home-lab plan above gets you the same outcome. If you want a structured ramp with mentor reviews and a portfolio capstone, the ShieldSync Foundation Program covers the cross-section of SOC and cloud security in 8 weeks. Pick one path, start week 1 this weekend, and you will be interview-ready in three months. The SOC career is hands-on, fast-moving, and one of the few in cybersecurity where you can go from zero to employed inside a year."
     }
   ]
 }

@@ -605,7 +605,7 @@
       },
       {
         "t": "p",
-        "text": "The ShieldSync internship is designed exactly for this — eight weeks, real AWS labs in isolated accounts, a mentor who reviews your work, and a verifiable completion certificate plus a portfolio piece at the end. Pricing is intentionally accessible (₹9,999) and there is no equity or full-time conversion expectation — it exists to get you employable. See the internship page for the current cohort dates."
+        "text": "The ShieldSync Foundation Program is designed exactly for this — eight weeks, real AWS labs in isolated accounts, a mentor who reviews your work, and a verifiable completion certificate plus a portfolio piece at the end. Pricing is intentionally accessible (₹9,999) and there is no equity or full-time conversion expectation — it exists to get you employable. See the internship page for the current cohort dates."
       },
       {
         "t": "h2",
@@ -709,7 +709,7 @@
       },
       {
         "t": "p",
-        "text": "Start with the cloud security start-here page if you want a structured intro to the field. If you are at the certification stage, the SCS-C03 study guide is the single most useful sibling to this roadmap. If you want guided practice on real AWS accounts, the AWS security labs catalog on labs.shieldsyncsecurity.com is free to try (start with the S3 misconfiguration audit lab). And if you want a mentor and a structured 8-week ramp with a portfolio piece at the end, the ShieldSync internship is built for that exact purpose. The roadmap is long but the steps are concrete — pick month 1, finish it, and the next eleven take care of themselves."
+        "text": "Start with the cloud security start-here page if you want a structured intro to the field. If you are at the certification stage, the SCS-C03 study guide is the single most useful sibling to this roadmap. If you want guided practice on real AWS accounts, the AWS security labs catalog on labs.shieldsyncsecurity.com is free to try (start with the S3 misconfiguration audit lab). And if you want a mentor and a structured 8-week ramp with a portfolio piece at the end, the ShieldSync Foundation Program is built for that exact purpose. The roadmap is long but the steps are concrete — pick month 1, finish it, and the next eleven take care of themselves."
       }
     ]
   },
@@ -910,7 +910,7 @@
       },
       {
         "t": "p",
-        "text": "If you are at the start of your cloud security journey and the salary numbers above are why you are here, read the cloud security engineer roadmap on the ShieldSync blog for the path that gets you to those numbers. If you need a structured 8-week ramp with mentor support and a portfolio piece at the end, the ShieldSync internship is built for exactly this gap. Salary follows skill, which follows hands-on work. Start the work this week — the difference between the bottom and top of every range above is hands-on evidence, not years of experience."
+        "text": "If you are at the start of your cloud security journey and the salary numbers above are why you are here, read the cloud security engineer roadmap on the ShieldSync blog for the path that gets you to those numbers. If you need a structured 8-week ramp with mentor support and a portfolio piece at the end, the ShieldSync Foundation Program is built for exactly this gap. Salary follows skill, which follows hands-on work. Start the work this week — the difference between the bottom and top of every range above is hands-on evidence, not years of experience."
       }
     ]
   },
@@ -1005,7 +1005,7 @@
           "Wellfound (formerly AngelList) India: best for funded startups that hire interns into real engineering work",
           "Direct outreach: identify 30 companies hiring in your city, find the security lead on LinkedIn, send a thoughtful note linking your portfolio",
           "Communities: Null chapter meetups, OWASP India chapters, the SecurityBoat Slack, regional Defcon groups",
-          "Programmes with structured curriculum: the ShieldSync internship is purpose-built for the India market — 8 weeks, real AWS work in isolated accounts, mentor reviews, completion certificate, ₹9,999"
+          "Programmes with structured curriculum: the ShieldSync Foundation Program is purpose-built for the India market — 8 weeks, real AWS work in isolated accounts, mentor reviews, completion certificate, ₹9,999"
         ]
       },
       {
@@ -1131,7 +1131,7 @@
       },
       {
         "t": "p",
-        "text": "If you have not yet picked a specialism, read the cloud security engineer roadmap on the ShieldSync blog and start at month 1. If you have the foundations and want a structured ramp, look at the ShieldSync internship — 8 weeks, real AWS work, ₹9,999, a portfolio piece at the end. If you want free lab time first, the AWS security labs catalog at labs.shieldsyncsecurity.com starts with the S3 misconfiguration audit lab. Pick one, finish it this week, and you are already ahead of most applicants. The Indian cybersecurity market in 2026 is genuinely candidate-friendly for people with hands-on evidence — your job is to be that candidate."
+        "text": "If you have not yet picked a specialism, read the cloud security engineer roadmap on the ShieldSync blog and start at month 1. If you have the foundations and want a structured ramp, look at the ShieldSync Foundation Program — 8 weeks, real AWS work, ₹9,999, a portfolio piece at the end. If you want free lab time first, the AWS security labs catalog at labs.shieldsyncsecurity.com starts with the S3 misconfiguration audit lab. Pick one, finish it this week, and you are already ahead of most applicants. The Indian cybersecurity market in 2026 is genuinely candidate-friendly for people with hands-on evidence — your job is to be that candidate."
       }
     ]
   },
@@ -2269,7 +2269,7 @@
       },
       {
         "t": "p",
-        "text": "The single most useful hour you can spend on SAA-C03 security prep is running the free S3 misconfiguration audit lab end to end. It exercises IAM, bucket policies, encryption, and Block Public Access — four of the most-tested concepts — in a real isolated AWS account in your browser. Pair it with a read of the AWS Exam Guide and the 4-week plan above and you've covered the security domain to the depth SAA-C03 actually rewards. The AWS security labs on shieldsyncsecurity.com cover the same SAA-C03 security and SCS-C03 domains hands-on if you're planning to ladder up."
+        "text": "The single most useful hour you can spend on SAA-C03 security prep is running the free S3 misconfiguration audit lab end to end. It exercises IAM, bucket policies, encryption, and Block Public Access — four of the most-tested concepts — in a real isolated AWS account in your browser. Pair it with a read of the AWS Exam Guide and the 4-week plan above and you've covered the security domain to the depth SAA-C03 actually rewards. The full AWS Security Certification page on shieldsyncsecurity.com lists every lab mapped to both SAA-C03 security and SCS-C03 domains if you're planning to ladder up."
       }
     ]
   },
@@ -2478,7 +2478,7 @@
       },
       {
         "t": "p",
-        "text": "If you ran the pipeline above end to end, you've covered the muscle-memory side of the SCS-C03 logging domain. The remaining gap is breadth — every service that produces logs and every detection pattern the exam might ask about. The free S3 misconfiguration audit lab at labs.shieldsyncsecurity.com is the natural next step: it's a real isolated AWS account in your browser, it touches CloudTrail data events for S3 directly, and it pairs Domain 2 (logging) with Domain 5 (data protection) the way the exam frequently does. Pair this walkthrough with the full SCS-C03 study guide for the underlying syllabus and 6-week plan, and the AWS security labs for hands-on practice across every domain."
+        "text": "If you ran the pipeline above end to end, you've covered the muscle-memory side of the SCS-C03 logging domain. The remaining gap is breadth — every service that produces logs and every detection pattern the exam might ask about. The free S3 misconfiguration audit lab at labs.shieldsyncsecurity.com is the natural next step: it's a real isolated AWS account in your browser, it touches CloudTrail data events for S3 directly, and it pairs Domain 2 (logging) with Domain 5 (data protection) the way the exam frequently does. Pair this walkthrough with the full SCS-C03 study guide for the underlying syllabus and 6-week plan, and the AWS Security Certification page for the full lab catalog mapped to every domain."
       },
       {
         "t": "p",
@@ -3591,7 +3591,7 @@
       },
       {
         "t": "p",
-        "text": "Score yourself per domain. Anything below 70% in a domain means rebuild that material before sitting the real exam: read the AWS Exam Guide section, work through a hands-on lab in that domain (start with the free S3 misconfiguration audit on labs.shieldsyncsecurity.com), and write a one-paragraph summary in your own words for every concept you missed. Pair this set with our full SCS-C03 study guide for the underlying syllabus and a 6-week study plan. When you're ready to invest in real console time across all six domains, the AWS security labs give you hands-on practice across the blueprint."
+        "text": "Score yourself per domain. Anything below 70% in a domain means rebuild that material before sitting the real exam: read the AWS Exam Guide section, work through a hands-on lab in that domain (start with the free S3 misconfiguration audit on labs.shieldsyncsecurity.com), and write a one-paragraph summary in your own words for every concept you missed. Pair this set with our full SCS-C03 study guide for the underlying syllabus and a 6-week study plan. When you're ready to invest in real console time across all six domains, the AWS Security Certification page lists every lab mapped to the blueprint."
       }
     ]
   },
@@ -4864,7 +4864,7 @@
       },
       {
         "t": "p",
-        "text": "ShieldSync's dedicated SOC labs (the labs/soc track on labs.shieldsyncsecurity.com) are launching shortly — they bundle a shared Wazuh SIEM with per-user recorded log data, so you can hunt across real telemetry without standing up your own lab. Until they are live, the home-lab plan above gets you the same outcome. If you want a structured ramp with mentor reviews and a portfolio capstone, the ShieldSync internship covers the cross-section of SOC and cloud security in 8 weeks. Pick one path, start week 1 this weekend, and you will be interview-ready in three months. The SOC career is hands-on, fast-moving, and one of the few in cybersecurity where you can go from zero to employed inside a year."
+        "text": "ShieldSync's dedicated SOC labs (the labs/soc track on labs.shieldsyncsecurity.com) are launching shortly — they bundle a managed SIEM with per-user recorded log data, so you can hunt across real telemetry without standing up your own lab. Until they are live, the home-lab plan above gets you the same outcome. If you want a structured ramp with mentor reviews and a portfolio capstone, the ShieldSync Foundation Program covers the cross-section of SOC and cloud security in 8 weeks. Pick one path, start week 1 this weekend, and you will be interview-ready in three months. The SOC career is hands-on, fast-moving, and one of the few in cybersecurity where you can go from zero to employed inside a year."
       }
     ]
   },

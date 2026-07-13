@@ -2,7 +2,7 @@
   "slug": "scs-c02-practice-questions",
   "title": "AWS Security Specialty (SCS-C03) Practice Questions — updated from SCS-C02",
   "excerpt": "Fifty original SCS-C03 practice questions written in the style of the real AWS Security Specialty exam, weighted by domain, with detailed explanations for every answer. Updated from SCS-C02.",
-  "category": "Cloud / AWS",
+  "category": "Cloud Security",
   "date": "Jun 30, 2026",
   "read": "22 min",
   "image": "/blog/scs-c02-practice-questions.webp",
@@ -17,7 +17,7 @@
     },
     {
       "t": "p",
-      "text": "These are not copied from the AWS sample exam or any third-party bank. Treat them the way you'd treat a Tutorials Dojo set — work through under 170 minutes of time pressure, mark every question you spend more than three minutes on, and rebuild the topic for anything you miss. Pair this with the full SCS-C02 study guide for the underlying material."
+      "text": "These are not copied from the AWS sample exam or any third-party bank. Treat them the way you'd treat a Tutorials Dojo set — work through under 170 minutes of time pressure, mark every question you spend more than three minutes on, and rebuild the topic for anything you miss. Pair this with the full SCS-C03 study guide for the underlying material."
     },
     {
       "t": "callout",
@@ -1103,7 +1103,7 @@
     },
     {
       "t": "p",
-      "text": "Score yourself per domain. Anything below 70% in a domain means rebuild that material before sitting the real exam: read the AWS Exam Guide section, work through a hands-on lab in that domain (start with the free S3 misconfiguration audit on labs.shieldsyncsecurity.com), and write a one-paragraph summary in your own words for every concept you missed. Pair this set with our full SCS-C02 study guide for the underlying syllabus and a 6-week study plan. When you're ready to invest in real console time across all six domains, the AWS Security Certification page lists every lab mapped to the blueprint."
+      "text": "Score yourself per domain. Anything below 70% in a domain means rebuild that material before sitting the real exam: read the AWS Exam Guide section, work through a hands-on lab in that domain (start with the free S3 misconfiguration audit on labs.shieldsyncsecurity.com), and write a one-paragraph summary in your own words for every concept you missed. Pair this set with our full SCS-C03 study guide for the underlying syllabus and a 6-week study plan. When you're ready to invest in real console time across all six domains, the AWS Security Certification page lists every lab mapped to the blueprint."
     }
   ]
 }

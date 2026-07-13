@@ -23,7 +23,7 @@
       "t": "ul",
       "items": [
         "Junior Cloud Security Engineer (0–2 yrs): ₹6–12 LPA at metros; ₹4–8 LPA at tier-2 cities. Internship-to-FTE conversion is typically at the lower end",
-        "Cloud Security Engineer (2–5 yrs): ₹15–25 LPA at Indian SaaS startups; ₹20–35 LPA at MNC GCCs. SCS-C02 plus real Terraform experience pushes you to the top",
+        "Cloud Security Engineer (2–5 yrs): ₹15–25 LPA at Indian SaaS startups; ₹20–35 LPA at MNC GCCs. SCS-C03 plus real Terraform experience pushes you to the top",
         "Sr. Cloud Security Engineer (5–8 yrs): ₹30–50 LPA at most Indian employers; ₹45–75 LPA at top MNC GCCs",
         "Cloud Security Architect / Staff (8+ yrs): ₹50 LPA to ₹1 Cr+ total comp at top employers, with RSUs forming a meaningful chunk",
         "vCISO / Fractional CISO (consulting): ₹15–40k per day for project work; retainer engagements ₹3–10L per month depending on scope",
@@ -58,17 +58,17 @@
     },
     {
       "t": "p",
-      "text": "Certifications do not directly determine salary — experience and the company do — but they shift the band you can access. The biggest single jump is from no cert to SCS-C02. For a deeper take on the cert sequence, read the cloud security engineer roadmap on the ShieldSync blog, and for the SCS-C02 specifically, see the dedicated study guide or the AWS security certification page."
+      "text": "Certifications do not directly determine salary — experience and the company do — but they shift the band you can access. The biggest single jump is from no cert to SCS-C03. For a deeper take on the cert sequence, read the cloud security engineer roadmap on the ShieldSync blog, and for the SCS-C03 specifically, see the dedicated study guide or the AWS security certification page."
     },
     {
       "t": "ul",
       "items": [
         "No certs: limited to junior roles and the lower half of the ranges; resume filters at large companies often gate you out",
         "AWS SAA-C03 only: gets you past the filter for junior cloud security roles; mid-range of junior bands",
-        "AWS SCS-C02: opens mid-level cloud security roles; top of junior and mid of mid bands",
-        "SCS-C02 + CCSP: gates many senior cloud security roles at MNCs and BFSI; top of mid and bottom of senior bands",
-        "SCS-C02 + CISSP: standard senior infosec cert combo; opens architect and management tracks",
-        "Multi-cloud (SCS-C02 + AZ-500 + Google PCSE): rare and valuable for senior architect roles at multi-cloud shops; 10–20% premium"
+        "AWS SCS-C03: opens mid-level cloud security roles; top of junior and mid of mid bands",
+        "SCS-C03 + CCSP: gates many senior cloud security roles at MNCs and BFSI; top of mid and bottom of senior bands",
+        "SCS-C03 + CISSP: standard senior infosec cert combo; opens architect and management tracks",
+        "Multi-cloud (SCS-C03 + AZ-500 + Google PCSE): rare and valuable for senior architect roles at multi-cloud shops; 10–20% premium"
       ]
     },
     {
@@ -195,7 +195,7 @@
     },
     {
       "t": "p",
-      "text": "If you are at the start of your cloud security journey and the salary numbers above are why you are here, read the cloud security engineer roadmap on the ShieldSync blog for the path that gets you to those numbers. If you need a structured 8-week ramp with mentor support and a portfolio piece at the end, the ShieldSync internship is built for exactly this gap. Salary follows skill, which follows hands-on work. Start the work this week — the difference between the bottom and top of every range above is hands-on evidence, not years of experience."
+      "text": "If you are at the start of your cloud security journey and the salary numbers above are why you are here, read the cloud security engineer roadmap on the ShieldSync blog for the path that gets you to those numbers. If you need a structured 8-week ramp with mentor support and a portfolio piece at the end, the ShieldSync Foundation Program is built for exactly this gap. Salary follows skill, which follows hands-on work. Start the work this week — the difference between the bottom and top of every range above is hands-on evidence, not years of experience."
     }
   ]
 }

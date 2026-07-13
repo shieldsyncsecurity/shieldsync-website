@@ -71,7 +71,7 @@
         "Month 7 — Encryption and data protection. KMS deeply, S3 encryption modes, Secrets Manager, Certificate Manager, Macie. Output: a multi-account KMS design with key policies and grants.",
         "Month 8 — Infrastructure as code. Terraform end-to-end, then a security module library. Output: a Terraform module that deploys a hardened S3 bucket with encryption, logging, public-access block, and versioning.",
         "Month 9 — Incident response and forensics on AWS. Snapshot capture, session revocation, isolation, log aggregation. Output: a written IR runbook for a compromised EC2 instance.",
-        "Month 10 — AWS Security Specialty (SCS-C02). The single most recognisable cloud security certification on the Indian and global market. See the full study guide on the ShieldSync blog.",
+        "Month 10 — AWS Security Specialty (SCS-C03). The single most recognisable cloud security certification on the Indian and global market. See the full study guide on the ShieldSync blog.",
         "Month 11 — Portfolio polish. Write three blog posts, push three GitHub repos, complete three hands-on labs. Update LinkedIn.",
         "Month 12 — Job hunt. Apply, interview, negotiate. See the cybersecurity internship guide for the India market specifically."
       ]
@@ -128,7 +128,7 @@
       "items": [
         "AWS Certified Cloud Practitioner (CLF-C02): two to four weeks of study, a wide gentle tour of AWS",
         "AWS Certified Solutions Architect Associate (SAA-C03): six to ten weeks, the breadth credential everybody respects",
-        "AWS Certified Security Specialty (SCS-C02): eight to twelve weeks, the cloud security credential — see the dedicated SCS-C02 study guide on the ShieldSync blog or the AWS security certification landing page",
+        "AWS Certified Security Specialty (SCS-C03): eight to twelve weeks, the cloud security credential — see the dedicated SCS-C03 study guide on the ShieldSync blog or the AWS security certification landing page",
         "Optional senior credentials: ISC2 CCSP (vendor-neutral cloud security), ISC2 CISSP (broad infosec management, gates a lot of senior roles in MNCs)",
         "Optional offensive credentials: OffSec OSCP if you want to pivot into cloud pentest; AWS / Azure / GCP specific red-team trainings exist but are niche"
       ]
@@ -166,7 +166,7 @@
     },
     {
       "t": "p",
-      "text": "The ShieldSync internship is designed exactly for this — eight weeks, real AWS labs in isolated accounts, a mentor who reviews your work, and a verifiable completion certificate plus a portfolio piece at the end. Pricing is intentionally accessible (₹9,999) and there is no equity or full-time conversion expectation — it exists to get you employable. See the internship page for the current cohort dates."
+      "text": "The ShieldSync Foundation Program is designed exactly for this — eight weeks, real AWS labs in isolated accounts, a mentor who reviews your work, and a verifiable completion certificate plus a portfolio piece at the end. Pricing is intentionally accessible (₹9,999) and there is no equity or full-time conversion expectation — it exists to get you employable. See the internship page for the current cohort dates."
     },
     {
       "t": "h2",
@@ -188,7 +188,7 @@
     },
     {
       "t": "p",
-      "text": "The single biggest lever on your salary is the company, not the cert. The same SCS-C02-holding engineer can earn ₹8 LPA at a small Indian services firm and ₹35 LPA at a Bangalore-based MNC GCC. Apply broadly, negotiate hard, and remember that base salary anchors every future raise."
+      "text": "The single biggest lever on your salary is the company, not the cert. The same SCS-C03-holding engineer can earn ₹8 LPA at a small Indian services firm and ₹35 LPA at a Bangalore-based MNC GCC. Apply broadly, negotiate hard, and remember that base salary anchors every future raise."
     },
     {
       "t": "h2",
@@ -240,7 +240,7 @@
     {
       "t": "ul",
       "items": [
-        "Azure: AZ-500 is the Microsoft analog to SCS-C02 — useful for BFSI and large enterprise roles",
+        "Azure: AZ-500 is the Microsoft analog to SCS-C03 — useful for BFSI and large enterprise roles",
         "GCP: Professional Cloud Security Engineer (PCSE) — relevant for data-platform and ML-shop employers",
         "Multi-cloud architect roles are real and pay 15–25% above single-cloud equivalents at senior level"
       ]
@@ -270,7 +270,7 @@
     },
     {
       "t": "p",
-      "text": "Start with the cloud security start-here page if you want a structured intro to the field. If you are at the certification stage, the SCS-C02 study guide is the single most useful sibling to this roadmap. If you want guided practice on real AWS accounts, the AWS security labs catalog on labs.shieldsyncsecurity.com is free to try (start with the S3 misconfiguration audit lab). And if you want a mentor and a structured 8-week ramp with a portfolio piece at the end, the ShieldSync internship is built for that exact purpose. The roadmap is long but the steps are concrete — pick month 1, finish it, and the next eleven take care of themselves."
+      "text": "Start with the cloud security start-here page if you want a structured intro to the field. If you are at the certification stage, the SCS-C03 study guide is the single most useful sibling to this roadmap. If you want guided practice on real AWS accounts, the AWS security labs catalog on labs.shieldsyncsecurity.com is free to try (start with the S3 misconfiguration audit lab). And if you want a mentor and a structured 8-week ramp with a portfolio piece at the end, the ShieldSync Foundation Program is built for that exact purpose. The roadmap is long but the steps are concrete — pick month 1, finish it, and the next eleven take care of themselves."
     }
   ]
 }

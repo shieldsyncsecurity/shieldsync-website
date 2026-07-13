@@ -268,7 +268,7 @@
     },
     {
       "t": "p",
-      "text": "If you want to test how much of this checklist you can configure from scratch in a real AWS account, start with the free S3 misconfiguration audit lab on labs.shieldsyncsecurity.com — it builds the IAM and bucket-policy muscle every control in this list depends on. From there, work the AWS Security Specialty certification path — our SCS-C02 study guide walks the same primitives (IAM, KMS, VPC endpoints, CloudTrail) the LLM controls above are built on. And if you want a guided LLM security review of your own stack, ShieldSync's advanced & emerging security service covers the full Bedrock attack surface end to end."
+      "text": "If you want to test how much of this checklist you can configure from scratch in a real AWS account, start with the free S3 misconfiguration audit lab on labs.shieldsyncsecurity.com — it builds the IAM and bucket-policy muscle every control in this list depends on. From there, work the AWS Security Specialty certification path — our SCS-C03 study guide walks the same primitives (IAM, KMS, VPC endpoints, CloudTrail) the LLM controls above are built on. And if you want a guided LLM security review of your own stack, ShieldSync's advanced & emerging security service covers the full Bedrock attack surface end to end."
     }
   ]
 }

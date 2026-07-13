@@ -200,7 +200,7 @@
     },
     {
       "t": "p",
-      "text": "Securing the coding assistants is one slice of the broader AI security posture; the other slices are covered in our OWASP LLM Top 10 mapped to AWS Bedrock and securing AI agents posts. The IAM, KMS, and CloudTrail patterns that underpin the secret-rotation and audit-log flows above are the same ones the AWS Security Specialty (SCS-C02) exam tests — our study guide walks them with hands-on labs. And if you want a guided review of your own AI tooling posture, ShieldSync's advanced & emerging security service covers AI coding assistants, agent runtimes, and the broader generative-AI threat surface end to end."
+      "text": "Securing the coding assistants is one slice of the broader AI security posture; the other slices are covered in our OWASP LLM Top 10 mapped to AWS Bedrock and securing AI agents posts. The IAM, KMS, and CloudTrail patterns that underpin the secret-rotation and audit-log flows above are the same ones the AWS Security Specialty (SCS-C03) exam tests — our study guide walks them with hands-on labs. And if you want a guided review of your own AI tooling posture, ShieldSync's advanced & emerging security service covers AI coding assistants, agent runtimes, and the broader generative-AI threat surface end to end."
     }
   ]
 }

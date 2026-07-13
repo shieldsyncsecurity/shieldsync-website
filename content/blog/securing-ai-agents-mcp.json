@@ -232,7 +232,7 @@
     },
     {
       "t": "p",
-      "text": "Agent security depends on the underlying Bedrock and IAM patterns covered in our securing-Amazon-Bedrock and OWASP LLM Top 10 mapped to AWS Bedrock posts. The IAM ABAC pattern in the tenant-isolated tool role is the same one our SCS-C02 study guide walks for the AWS Security Specialty exam. And if you want a guided agent security review of your own deployment, ShieldSync's advanced & emerging security service covers agent and MCP attack surfaces end to end."
+      "text": "Agent security depends on the underlying Bedrock and IAM patterns covered in our securing-Amazon-Bedrock and OWASP LLM Top 10 mapped to AWS Bedrock posts. The IAM ABAC pattern in the tenant-isolated tool role is the same one our SCS-C03 study guide walks for the AWS Security Specialty exam. And if you want a guided agent security review of your own deployment, ShieldSync's advanced & emerging security service covers agent and MCP attack surfaces end to end."
     }
   ]
 }

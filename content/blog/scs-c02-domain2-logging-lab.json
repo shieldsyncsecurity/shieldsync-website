@@ -2,7 +2,7 @@
   "slug": "scs-c02-domain2-logging-lab",
   "title": "AWS Security Specialty (SCS-C03) Domain 2 Logging Lab — updated from SCS-C02",
   "excerpt": "Build the SCS-C03 logging domain in your hands — a step-by-step walkthrough of an Athena-backed detection pipeline plus the exact mental model AWS expects on every Domain 2 question. Updated from SCS-C02.",
-  "category": "Cloud / AWS",
+  "category": "Cloud Security",
   "date": "Jun 30, 2026",
   "read": "14 min",
   "image": "/blog/scs-c02-domain2-logging-lab.webp",
@@ -17,7 +17,7 @@
     },
     {
       "t": "p",
-      "text": "Treat this as a console-time substitute. If you can run through the steps in your own free-tier account and end up with a working Athena query → CloudWatch alarm → SNS pipeline, you've covered the muscle-memory side of the SCS-C02 logging domain in a single sitting. The conceptual review at the end pins the abstractions to the controls you just clicked."
+      "text": "Treat this as a console-time substitute. If you can run through the steps in your own free-tier account and end up with a working Athena query → CloudWatch alarm → SNS pipeline, you've covered the muscle-memory side of the SCS-C03 logging domain in a single sitting. The conceptual review at the end pins the abstractions to the controls you just clicked."
     },
     {
       "t": "h2",
@@ -177,7 +177,7 @@
     },
     {
       "t": "p",
-      "text": "Single-account is the lab. Real production environments centralise logs into a dedicated logging account that no workload role can write into or delete from. The canonical SCS-C02 architecture is: an organization trail in the management account → writes to an S3 bucket in the logging account → bucket policy denies delete/update for anything but a tightly-scoped admin role → logs replicate to a secondary region for resilience → CloudWatch Logs subscription destination in the logging account receives streams from member accounts via cross-account permissions."
+      "text": "Single-account is the lab. Real production environments centralise logs into a dedicated logging account that no workload role can write into or delete from. The canonical SCS-C03 architecture is: an organization trail in the management account → writes to an S3 bucket in the logging account → bucket policy denies delete/update for anything but a tightly-scoped admin role → logs replicate to a secondary region for resilience → CloudWatch Logs subscription destination in the logging account receives streams from member accounts via cross-account permissions."
     },
     {
       "t": "p",
@@ -203,7 +203,7 @@
     },
     {
       "t": "p",
-      "text": "If you ran the pipeline above end to end, you've covered the muscle-memory side of the SCS-C02 logging domain. The remaining gap is breadth — every service that produces logs and every detection pattern the exam might ask about. The free S3 misconfiguration audit lab at labs.shieldsyncsecurity.com is the natural next step: it's a real isolated AWS account in your browser, it touches CloudTrail data events for S3 directly, and it pairs Domain 2 (logging) with Domain 5 (data protection) the way the exam frequently does. Pair this walkthrough with the full SCS-C02 study guide for the underlying syllabus and 6-week plan, and the AWS Security Certification page for the full lab catalog mapped to every domain."
+      "text": "If you ran the pipeline above end to end, you've covered the muscle-memory side of the SCS-C03 logging domain. The remaining gap is breadth — every service that produces logs and every detection pattern the exam might ask about. The free S3 misconfiguration audit lab at labs.shieldsyncsecurity.com is the natural next step: it's a real isolated AWS account in your browser, it touches CloudTrail data events for S3 directly, and it pairs Domain 2 (logging) with Domain 5 (data protection) the way the exam frequently does. Pair this walkthrough with the full SCS-C03 study guide for the underlying syllabus and 6-week plan, and the AWS Security Certification page for the full lab catalog mapped to every domain."
     },
     {
       "t": "p",

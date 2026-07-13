@@ -2,7 +2,7 @@
   "slug": "scs-c02-study-guide",
   "title": "AWS Security Specialty (SCS-C03) Study Guide — updated from SCS-C02",
   "excerpt": "A practitioner's SCS-C03 study guide — every domain mapped to the services it really tests, the gotchas the exam loves, and free hands-on AWS labs you can use to build console-time before exam day. Updated from SCS-C02.",
-  "category": "Cloud / AWS",
+  "category": "Cloud Security",
   "date": "Jun 30, 2026",
   "read": "16 min",
   "image": "/blog/scs-c02-study-guide.webp",
@@ -21,11 +21,11 @@
     },
     {
       "t": "h2",
-      "text": "The SCS-C02 exam at a glance"
+      "text": "The SCS-C03 exam at a glance"
     },
     {
       "t": "p",
-      "text": "Before we get into content, the format. SCS-C02 is 65 questions, 170 minutes, scored on a scaled 100–1000 with 750 to pass. About 50 of the questions are scored and the rest are unscored research questions; you can't tell them apart, so answer everything. Question types are single-select multiple choice and multiple-response (pick two or three). There are no labs in the exam itself — every question is text on a screen — but the wrong-answer distractors are written for people who skipped console time, so console time is what separates a pass from a fail."
+      "text": "Before we get into content, the format. SCS-C03 is 65 questions, 170 minutes, scored on a scaled 100–1000 with 750 to pass. About 50 of the questions are scored and the rest are unscored research questions; you can't tell them apart, so answer everything. Question types are single-select multiple choice and multiple-response (pick two or three). There are no labs in the exam itself — every question is text on a screen — but the wrong-answer distractors are written for people who skipped console time, so console time is what separates a pass from a fail."
     },
     {
       "t": "ul",
@@ -67,11 +67,11 @@
     },
     {
       "t": "p",
-      "text": "If you're a cloud security engineer or working towards becoming one, SCS-C02 maps to your job. If you're a generalist cloud engineer who wants to specialise in security, it forces the focused reading you need. If you're preparing for a cloud security engineer role on the Indian or global market, it's the credential most hiring managers recognise alongside CCSP and CISSP for cloud-native work. It's a poor fit for people who only want a piece of paper without the underlying skill — the question writers go out of their way to detect rote memorisation."
+      "text": "If you're a cloud security engineer or working towards becoming one, SCS-C03 maps to your job. If you're a generalist cloud engineer who wants to specialise in security, it forces the focused reading you need. If you're preparing for a cloud security engineer role on the Indian or global market, it's the credential most hiring managers recognise alongside CCSP and CISSP for cloud-native work. It's a poor fit for people who only want a piece of paper without the underlying skill — the question writers go out of their way to detect rote memorisation."
     },
     {
       "t": "h2",
-      "text": "A 6-week SCS-C02 study plan"
+      "text": "A 6-week SCS-C03 study plan"
     },
     {
       "t": "p",
@@ -244,7 +244,7 @@
     },
     {
       "t": "p",
-      "text": "There is no shortage of SCS-C02 prep material. There is a shortage of good prep material. These are the resources we recommend, in order."
+      "text": "There is no shortage of SCS-C03 prep material. There is a shortage of good prep material. These are the resources we recommend, in order."
     },
     {
       "t": "ul",
@@ -254,7 +254,7 @@
         "AWS Well-Architected Security Pillar whitepaper (free): the design principles the exam expects you to internalise",
         "AWS Skill Builder Exam Prep (free, 20+ hours): the AWS-authored video course; weakest on hands-on but the closest match to question phrasing",
         "Stephane Maarek's AWS Security Specialty course on Udemy: most popular paid prep course; strong service walkthroughs",
-        "Tutorials Dojo SCS-C02 practice exams: the standard for full-length timed practice; use these in the final 2 weeks",
+        "Tutorials Dojo SCS-C03 practice exams: the standard for full-length timed practice; use these in the final 2 weeks",
         "AWS service FAQ pages for every service in the blueprint — these contain the edge cases the exam writers source from"
       ]
     },
@@ -264,7 +264,7 @@
     },
     {
       "t": "p",
-      "text": "Reading the FAQ pages and watching videos will not build the muscle memory you need for scenario questions. Real console time will. These ShieldSync labs are free or pay-per-lab, launch in your browser, and each one maps to an SCS-C02 domain."
+      "text": "Reading the FAQ pages and watching videos will not build the muscle memory you need for scenario questions. Real console time will. These ShieldSync labs are free or pay-per-lab, launch in your browser, and each one maps to an SCS-C03 domain."
     },
     {
       "t": "ul",
@@ -333,7 +333,7 @@
     },
     {
       "t": "p",
-      "text": "You can retake SCS-C02 after a 14-day cool-off. Use the cool-off to rebuild the weakest domain — the score report breaks down 'needs improvement' by domain, and that's the most honest feedback you'll get. Most second attempts pass because the gap is usually one or two specific topics, not a general weakness."
+      "text": "You can retake SCS-C03 after a 14-day cool-off. Use the cool-off to rebuild the weakest domain — the score report breaks down 'needs improvement' by domain, and that's the most honest feedback you'll get. Most second attempts pass because the gap is usually one or two specific topics, not a general weakness."
     },
     {
       "t": "h2",
@@ -341,7 +341,7 @@
     },
     {
       "t": "p",
-      "text": "Start with one free lab today. The S3 Misconfiguration & Data Exposure lab takes about 30 minutes, runs in a real isolated AWS account in your browser, and covers a slice of Domain 5 end to end. If it clicks for you, the rest of the AWS Security Labs catalog will get you the console time SCS-C02 actually rewards. Pair it with the official Exam Guide and the 6-week plan above, and you've got everything you need to pass."
+      "text": "Start with one free lab today. The S3 Misconfiguration & Data Exposure lab takes about 30 minutes, runs in a real isolated AWS account in your browser, and covers a slice of Domain 5 end to end. If it clicks for you, the rest of the AWS Security Labs catalog will get you the console time SCS-C03 actually rewards. Pair it with the official Exam Guide and the 6-week plan above, and you've got everything you need to pass."
     }
   ]
 }
