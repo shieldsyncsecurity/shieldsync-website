@@ -38,8 +38,21 @@ function icoChip(x: number, y: number) { return `<g transform="translate(${x},${
 function icoMail(x: number, y: number) { return `<g transform="translate(${x},${y})" stroke="#5cc7ff" stroke-width="1.7" fill="none"><rect x="-9" y="-7" width="18" height="14" rx="2.5" fill="rgba(92,199,255,.14)"/><path d="M-9 -5 L0 2 L9 -5"/></g>`; }
 const ICONS: Record<IcoName, (x: number, y: number) => string> = { bucket: icoBucket, key: icoKey, shield: icoShield, server: icoServer, chip: icoChip, mail: icoMail };
 
-function logoAWS(x: number, y: number) { return `<g transform="translate(${x},${y})"><text x="0" y="2" text-anchor="middle" font-weight="800" font-size="27" letter-spacing="-1.5" fill="#f2f6ff">aws</text><path d="M-21 12 C-9 20 9 20 20 13" fill="none" stroke="#ff9900" stroke-width="3.2" stroke-linecap="round"/><path d="M20 13 L14.5 12.5 M20 13 L18.5 18" fill="none" stroke="#ff9900" stroke-width="3.2" stroke-linecap="round"/></g>`; }
-function logoAzure(x: number, y: number) { return `<g transform="translate(${x},${y})"><path d="M2 -16 L17 15 L4 15 L-2 2 Z" fill="#2f9de0"/><path d="M-2 2 L-15 15 L4 15 L-1 6 Z" fill="#4fd0f7"/><text x="0" y="30" text-anchor="middle" font-weight="800" font-size="12" fill="#8fd6f8">Azure</text></g>`; }
+/* Provider mark for the destination node. ShieldSync is NOT an AWS/Azure partner,
+ * so we deliberately DON'T use the trademarked corporate logos (the "aws" smile or
+ * the Azure logotype) — a prominent brand logo would imply a partnership/endorsement
+ * we don't have, and both companies' guidelines restrict non-partner logo use.
+ * Instead: a clean, provider-COLOURED cloud glyph (AWS orange / Azure blue). The
+ * node's own "Your AWS/Azure cloud" caption names the provider, so this is plain
+ * nominative use inside a technical diagram — no logo, no endorsement claim. */
+function logoCloud(x: number, y: number, accent: string) {
+  return `<g transform="translate(${x},${y})" fill="${accent}">` +
+    `<ellipse cx="0" cy="3" rx="21" ry="9"/>` +
+    `<circle cx="-9" cy="-2" r="9"/>` +
+    `<circle cx="5" cy="-7" r="12"/>` +
+    `<circle cx="15" cy="-1" r="8"/>` +
+    `</g>`;
+}
 
 export function HeroAttackMap() {
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -60,7 +73,7 @@ export function HeroAttackMap() {
       let lines = "";
       for (let gx = 24; gx < 420; gx += 34) lines += `<line class="ham-grid" x1="${gx}" y1="20" x2="${gx}" y2="280"/>`;
       for (let gy = 28; gy < 280; gy += 34) lines += `<line class="ham-grid" x1="20" y1="${gy}" x2="420" y2="${gy}"/>`;
-      const logo = provider === "AWS" ? logoAWS(360, 118) : logoAzure(360, 112);
+      const logo = logoCloud(360, 116, provider === "AWS" ? "#ff9900" : "#38bdf8");
       svg!.innerHTML =
         `<g opacity=".6">${lines}</g>` +
         `<path class="ham-edge" id="ham-edge" d="${PATH_D}"/>` +
