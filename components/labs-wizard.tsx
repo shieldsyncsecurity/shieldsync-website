@@ -6,6 +6,7 @@ import { Check, ArrowRight, Shield, Cloud, Radar } from "@/components/icons";
 import { AWS_LABS, AZURE_LABS, AI_LABS, SOC_LABS, SITE } from "@/lib/site";
 import { AWS_PRICE, SOC_PRICE, AWS_MONTHLY, SOC_MONTHLY, FREE, awsLabPrice, formatMoney, type Money, type Currency } from "@/lib/region";
 import { levelDotClass, toneDotClass, PRODUCT_TONE } from "@/components/status-badge";
+import { trackEvent } from "@/lib/track";
 
 const FREE_SLUG = "s3-misconfiguration-audit";
 const AI_FREE_SLUG = "bedrock-prompt-injection";
@@ -59,6 +60,13 @@ export function LabsWizard({
     window.addEventListener("ss:region", onRegion);
     return () => window.removeEventListener("ss:region", onRegion);
   }, []);
+
+  // Funnel instrumentation — one GA4 event per wizard step (a no-op until GA4 loads
+  // with cookie consent). Shows where in Track -> Plan -> Pick -> Confirm -> Launch
+  // people drop off, so ad spend can be optimised against real progression.
+  useEffect(() => {
+    trackEvent("wizard_step_view", { step, track: track ?? "none", plan: mode ?? "none" });
+  }, [step, track, mode]);
 
   // Manual toggle: write the shared region attributes (and cache) so the choice
   // holds across every priced surface and can't be stomped by a late IP result.
@@ -626,6 +634,7 @@ export function LabsWizard({
               {step === 4 && mode === "monthly" ? (
                 <a
                   href={launchHref}
+                  onClick={() => trackEvent("lab_checkout_click", { track: track ?? "none", plan: "monthly" })}
                   className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-base font-bold glow-brand bg-gradient-to-r from-brand to-cyan text-white hover:brightness-110 transition"
                 >
                   Continue to payment
@@ -634,6 +643,7 @@ export function LabsWizard({
               ) : step === 2 && mode === "free" ? (
                 <a
                   href={launchHref}
+                  onClick={() => trackEvent("free_lab_launch_click", { track: track ?? "none" })}
                   className="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-base font-bold glow-brand bg-gradient-to-r from-brand to-cyan text-white hover:brightness-110 transition"
                 >
                   Start free lab
