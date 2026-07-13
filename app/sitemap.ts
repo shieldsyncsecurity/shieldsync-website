@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { SITE, AWS_LABS, SOC_LABS } from "@/lib/site";
+import { SITE, AWS_LABS } from "@/lib/site";
 import { BLOG_POSTS } from "@/lib/blog";
 import { SERVICE_PAGES } from "@/lib/service-pages";
 
@@ -72,7 +72,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
-    ...[...AWS_LABS, ...SOC_LABS].map((l) => ({
+    // Only LIVE lab detail pages belong in the sitemap. SOC labs are "coming soon"
+    // (not built) — their /labs/<slug> pages still resolve for direct links, but
+    // submitting them for indexing as in-stock courses would be wrong. The funnel
+    // for not-yet-live tracks is the wizard, not indexed detail pages.
+    ...AWS_LABS.map((l) => ({
       url: `${base}/labs/${l.slug}`,
       lastModified: now,
       changeFrequency: "monthly" as const,

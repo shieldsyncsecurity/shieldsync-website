@@ -38,7 +38,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   // truncation as the description above. The full headline still shows as the
   // H1 and in JSON-LD — only the <title>/og:title meta is shortened.
   const title = post.title.length > 55 ? `${post.title.slice(0, 52).replace(/\s+\S*$/, "")}…` : post.title;
-  return { title, description, alternates: { canonical: `/blog/${slug}` } };
+  return {
+    title,
+    description,
+    alternates: { canonical: `/blog/${slug}` },
+    // Per-post social image (was falling back to the site-wide default). metadataBase
+    // (app/layout.tsx) resolves the relative /blog/*.webp path to an absolute URL.
+    openGraph: { title, description, url: `/blog/${slug}`, type: "article", images: [{ url: post.image }] },
+    twitter: { card: "summary_large_image", title, description, images: [post.image] },
+  };
 }
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -55,7 +63,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       url,
       name: post.title,
       description: post.excerpt,
-      dateModified: "2026-06-04",
+      // Drive off the post's real date instead of a hardcoded constant that
+      // predated some posts (which emitted a modified-before-published schema).
+      dateModified: datePublished,
       breadcrumb: [
         { name: "Home", url: SITE.url },
         { name: "Blog", url: `${SITE.url}/blog` },

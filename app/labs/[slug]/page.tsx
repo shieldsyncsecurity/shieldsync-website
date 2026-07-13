@@ -99,7 +99,7 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
             name: `${lab.title} — AWS Security Lab`,
             description: lab.desc,
             url,
-            provider: { "@type": "Organization", name: "ShieldSync Security", url: SITE.url },
+            provider: { "@id": `${SITE.url}/#organization` },
             educationalLevel: lab.level,
             inLanguage: "en",
             teaches: lab.skills,
