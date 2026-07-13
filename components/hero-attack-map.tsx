@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { awsLogo, azureLogo } from "./hero-logos";
 
 /**
  * Homepage hero visual: an indigo "blueprint" panel that auto-cycles through four
@@ -38,21 +39,10 @@ function icoChip(x: number, y: number) { return `<g transform="translate(${x},${
 function icoMail(x: number, y: number) { return `<g transform="translate(${x},${y})" stroke="#5cc7ff" stroke-width="1.7" fill="none"><rect x="-9" y="-7" width="18" height="14" rx="2.5" fill="rgba(92,199,255,.14)"/><path d="M-9 -5 L0 2 L9 -5"/></g>`; }
 const ICONS: Record<IcoName, (x: number, y: number) => string> = { bucket: icoBucket, key: icoKey, shield: icoShield, server: icoServer, chip: icoChip, mail: icoMail };
 
-/* Provider mark for the destination node. ShieldSync is NOT an AWS/Azure partner,
- * so we deliberately DON'T use the trademarked corporate logos (the "aws" smile or
- * the Azure logotype) — a prominent brand logo would imply a partnership/endorsement
- * we don't have, and both companies' guidelines restrict non-partner logo use.
- * Instead: a clean, provider-COLOURED cloud glyph (AWS orange / Azure blue). The
- * node's own "Your AWS/Azure cloud" caption names the provider, so this is plain
- * nominative use inside a technical diagram — no logo, no endorsement claim. */
-function logoCloud(x: number, y: number, accent: string) {
-  return `<g transform="translate(${x},${y})" fill="${accent}">` +
-    `<ellipse cx="0" cy="3" rx="21" ry="9"/>` +
-    `<circle cx="-9" cy="-2" r="9"/>` +
-    `<circle cx="5" cy="-7" r="12"/>` +
-    `<circle cx="15" cy="-1" r="8"/>` +
-    `</g>`;
-}
+/* Provider mark for the destination node = the official AWS / Azure logo (see
+ * hero-logos.ts, generated from the vendors' published brand SVGs). These are
+ * trademarks used nominatively to name the cloud in a technical diagram — the
+ * standard, permitted use; no partnership implied or claimed. */
 
 export function HeroAttackMap() {
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -73,7 +63,7 @@ export function HeroAttackMap() {
       let lines = "";
       for (let gx = 24; gx < 420; gx += 34) lines += `<line class="ham-grid" x1="${gx}" y1="20" x2="${gx}" y2="280"/>`;
       for (let gy = 28; gy < 280; gy += 34) lines += `<line class="ham-grid" x1="20" y1="${gy}" x2="420" y2="${gy}"/>`;
-      const logo = logoCloud(360, 116, provider === "AWS" ? "#ff9900" : "#38bdf8");
+      const logo = provider === "AWS" ? awsLogo(360, 112) : azureLogo(360, 111);
       svg!.innerHTML =
         `<g opacity=".6">${lines}</g>` +
         `<path class="ham-edge" id="ham-edge" d="${PATH_D}"/>` +
