@@ -62,7 +62,14 @@ export default async function LabDetailPage({ params }: { params: Promise<{ slug
   // SOC (SIEM/SOAR) labs are advertised but not yet built — show them as "Coming
   // soon" (no launch CTA, no auto-grader claim) instead of a checkout dead-end.
   const soon = lab.kind === "soc";
-  const startHref = `/labs-wizard?track=aws&level=${lab.kind === "aws" ? lab.level : "Beginner"}`;
+  // Free labs must NOT deep-link the wizard's paid per-lab picker — that picker excludes
+  // free labs, so a Beginner-only paid picker is empty → "more paid labs coming" (a dead
+  // end for the free lab's own CTA). Route the free lab to the wizard's free view; paid
+  // AWS labs still go to the per-lab picker at their level.
+  const startHref =
+    lab.kind === "aws" && lab.free
+      ? "/labs-wizard?track=free-security-labs"
+      : `/labs-wizard?track=aws&level=${lab.kind === "aws" ? lab.level : "Beginner"}`;
   const related = (lab.kind === "aws" ? AWS_LABS : SOC_LABS).filter((l) => l.slug !== slug).slice(0, 4);
   const schema = [
     webPageSchema({

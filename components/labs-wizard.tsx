@@ -333,20 +333,22 @@ export function LabsWizard({
                     </button>
                   ) : null}
 
-                  {/* AI paid plans don't exist yet — render the SAME 3-box layout as
-                      AWS (owner: the 3-box plan step is the design), with the two
-                      paid cards disabled Coming-soon until AI labs ship. */}
-                  {track === "ai"
-                    ? [
-                        {
-                          title: "Pay per lab",
-                          pts: ["Buy only the AI labs you want", "One-time payment", "Agents, RAG pipelines, guardrail bypasses"],
-                        },
-                        {
-                          title: "Monthly — full AI access",
-                          pts: ["Every AI lab unlocked", "New labs included", "Cancel anytime"],
-                        },
-                      ].map((o) => (
+                  {/* AI + Azure: the FREE lab is live (card above), but the PAID plans
+                      aren't built yet — render the two paid cards disabled Coming-soon (same
+                      3-box design as AWS) so neither track can check out a lab that doesn't
+                      exist. (Azure previously used the live/selectable AWS cards, which
+                      dead-ended: an empty per-lab picker and a monthly checkout for 0 labs.) */}
+                  {track === "ai" || track === "azure"
+                    ? (track === "ai"
+                        ? [
+                            { title: "Pay per lab", pts: ["Buy only the AI labs you want", "One-time payment", "Agents, RAG pipelines, guardrail bypasses"] },
+                            { title: "Monthly — full AI access", pts: ["Every AI lab unlocked", "New labs included", "Cancel anytime"] },
+                          ]
+                        : [
+                            { title: "Pay per lab", pts: ["Buy only the Azure labs you want", "One-time payment", "Storage, identity & network security"] },
+                            { title: "Monthly — full Azure access", pts: ["Every Azure lab unlocked", "New labs included", "Cancel anytime"] },
+                          ]
+                      ).map((o) => (
                         <div key={o.title} className="flex cursor-not-allowed flex-col rounded-2xl border border-line bg-panel p-5 opacity-60">
                           <div className="flex items-start justify-between gap-3">
                             <h3 className="text-base font-bold text-fg">{o.title}</h3>
@@ -401,7 +403,7 @@ export function LabsWizard({
                       ))
                     : null}
 
-                  {(track === "aws" || track === "azure" ? [
+                  {(track === "aws" ? [
                     {
                       key: "per-lab" as const,
                       title: "Pay per lab",
@@ -415,7 +417,7 @@ export function LabsWizard({
                       title: `Monthly — ${accessLabel}`,
                       price: `${money(monthly)}/mo`,
                       badge: "Best value",
-                      pts: [`Every ${track === "azure" ? "Azure" : "AWS"} lab unlocked`, "New labs included", "Cancel anytime"],
+                      pts: ["Every AWS lab unlocked", "New labs included", "Cancel anytime"],
                       cta: "Get started →",
                     },
                   ] : []).map((o) => (
