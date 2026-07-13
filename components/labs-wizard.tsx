@@ -241,7 +241,7 @@ export function LabsWizard({
             {/* STEP 1 — choose track */}
             {step === 1 ? (
               <div>
-                <h1 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">Which track?</h1>
+                <h2 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">Which track?</h2>
                 <p className="mt-2 text-base text-muted">Start with the skills you want to build.</p>
                 <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-muted">
                   <span className="rounded-full border border-line bg-surface px-3 py-1">Real AWS console</span>
@@ -298,7 +298,7 @@ export function LabsWizard({
             {step === 2 ? (
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-bright">{trackName}</p>
-                <h1 className="mt-1 text-2xl font-bold tracking-tight text-fg sm:text-3xl">How do you want to learn?</h1>
+                <h2 className="mt-1 text-2xl font-bold tracking-tight text-fg sm:text-3xl">How do you want to learn?</h2>
                 <p className="mt-1 text-sm text-muted">Pick what fits — you can change this anytime.</p>
                 <div className={`mt-4 grid gap-4 ${track === "aws" || track === "ai" || track === "azure" || track === "soc" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
                   {/* FREE — a first-class card alongside the paid plans (AWS + AI
@@ -476,7 +476,7 @@ export function LabsWizard({
             {/* STEP 3 — pick a lab / review plan */}
             {step === 3 && mode === "per-lab" ? (
               <div>
-                <h1 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">Pick your lab</h1>
+                <h2 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">Pick your lab</h2>
                 <p className="mt-3 text-lg text-muted">Choose one to start — you can buy more later.</p>
                 <div className="mt-6 flex flex-wrap gap-2">
                   {cats.map((c) => (
@@ -531,7 +531,7 @@ export function LabsWizard({
 
             {step === 3 && mode === "monthly" ? (
               <div>
-                <h1 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">Your plan</h1>
+                <h2 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">Your plan</h2>
                 <p className="mt-3 text-lg text-muted">Full access to every {track === "soc" ? "SOC" : track === "azure" ? "Azure" : "AWS"} lab.</p>
                 <Card hover={false} className="mt-6 border-brand/30 bg-gradient-to-br from-brand/[0.08] to-transparent p-8">
                   <div className="flex items-end gap-2">
@@ -553,7 +553,7 @@ export function LabsWizard({
             {/* STEP 4 — review order (sign-in, payment & launch all happen on the labs platform) */}
             {step === 4 ? (
               <div>
-                <h1 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">Review your order</h1>
+                <h2 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">Review your order</h2>
                 <p className="mt-3 text-lg text-muted">
                   {total.usd === 0
                     ? "No payment needed — you'll sign in on ShieldSync Labs and launch."
@@ -586,9 +586,9 @@ export function LabsWizard({
                 <span className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-full bg-brand/10 text-brand">
                   <Check className="h-8 w-8" />
                 </span>
-                <h1 className="mt-6 text-2xl font-bold tracking-tight text-fg sm:text-3xl">
+                <h2 className="mt-6 text-2xl font-bold tracking-tight text-fg sm:text-3xl">
                   {total.usd === 0 ? "One step left — sign in to launch" : mode === "monthly" ? "You're almost set" : "One step left — sign in & pay"}
-                </h1>
+                </h2>
                 <p className="mx-auto mt-3 max-w-md text-lg text-muted">
                   {mode === "monthly"
                     ? `Sign in on ShieldSync Labs to start your subscription — every ${track === "soc" ? "SOC" : track === "azure" ? "Azure" : "AWS"} lab unlocks instantly.`

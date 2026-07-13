@@ -111,16 +111,22 @@ export function HeroAttackMap() {
   }, [provider]);
 
   return (
-    <div className="ham-panel" role="img" aria-label="Animation: an external attacker traces a path — through an exposed foothold and weak identity — into your AWS or Azure cloud, which is then locked down.">
+    <div className="ham-panel">
       <style>{HAM_CSS}</style>
-      <div className="ham-head" aria-hidden="true">
-        <span ref={labelRef}>attack-path · storage exposure</span>
-        <span className="ham-prov">
-          <button type="button" className={provider === "AWS" ? "on" : ""} onClick={() => setProvider("AWS")}>AWS</button>
-          <button type="button" className={provider === "Azure" ? "on" : ""} onClick={() => setProvider("Azure")}>Azure</button>
+      <div className="ham-head">
+        <span ref={labelRef} aria-hidden="true">attack-path · storage exposure</span>
+        <span className="ham-prov" role="group" aria-label="Cloud provider">
+          <button type="button" aria-pressed={provider === "AWS"} aria-label="Show the AWS attack path" className={provider === "AWS" ? "on" : ""} onClick={() => setProvider("AWS")}>AWS</button>
+          <button type="button" aria-pressed={provider === "Azure"} aria-label="Show the Azure attack path" className={provider === "Azure" ? "on" : ""} onClick={() => setProvider("Azure")}>Azure</button>
         </span>
       </div>
-      <svg ref={svgRef} className="ham-svg" viewBox="0 38 440 224" aria-hidden="true" />
+      <svg
+        ref={svgRef}
+        className="ham-svg"
+        viewBox="0 38 440 224"
+        role="img"
+        aria-label="Animation: an external attacker traces a path — through an exposed foothold and weak identity — into your AWS or Azure cloud, which is then locked down."
+      />
     </div>
   );
 }

@@ -6,7 +6,11 @@
     "dev": "next dev -p 3000",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=22"
   },
   "dependencies": {
     "jspdf": "^4.2.1",

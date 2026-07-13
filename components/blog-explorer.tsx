@@ -408,7 +408,7 @@ function FilterChip({ label, onClear }: { label: string; onClear: () => void }) 
         type="button"
         onClick={onClear}
         aria-label={`Remove ${label} filter`}
-        className="grid h-4 w-4 place-items-center rounded-full text-brand-bright/70 transition hover:bg-brand/20 hover:text-brand-bright"
+        className="-my-1 grid h-6 w-6 place-items-center rounded-full text-brand-bright/70 transition hover:bg-brand/20 hover:text-brand-bright"
       >
         <Close className="h-3 w-3" />
       </button>

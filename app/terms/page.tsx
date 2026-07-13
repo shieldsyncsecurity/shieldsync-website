@@ -31,7 +31,7 @@ const PAGE_SCHEMA = [
 
 const SECTIONS: LegalSection[] = [
   { h: "Acceptance of terms", p: [`By using ${SITE.url} or any ${SITE.legalName} service, you agree to these terms. If you do not agree, please do not use our services.`] },
-  { h: "Our services", p: ["We provide cybersecurity services, training programs, an internship, and hands-on labs. Service availability and content may change over time."] },
+  { h: "Our services", p: ["We provide cybersecurity services, training programs, the Foundation Program, and hands-on labs. Service availability and content may change over time."] },
   { h: "Accounts", p: ["You are responsible for keeping your account credentials secure and for activity under your account. Provide accurate information when you register or apply."] },
   { h: "Acceptable use", p: ["Our labs are for learning and authorised practice only. You agree not to use any techniques learned against systems you do not own or have explicit written permission to test, and not to misuse, disrupt, or attempt to breach our platform."] },
   { h: "Payments & access", p: ["Paid programs, services, and labs are billed as described at the point of purchase. Access is granted for the stated scope and duration. Pricing may be shown in your local currency at checkout."] },

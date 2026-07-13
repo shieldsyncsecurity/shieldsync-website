@@ -87,14 +87,14 @@ export function ContactForm() {
     <form onSubmit={onSubmit} className="space-y-5">
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label htmlFor="name" className="mb-2 block text-sm font-semibold text-fg">Name</label>
+          <label htmlFor="name" className="mb-2 block text-sm font-semibold text-fg">Name *</label>
           <input
             id="name" name="name" type="text" required placeholder="Your name"
             value={name} onChange={(e) => setName(e.target.value)} className={INPUT}
           />
         </div>
         <div>
-          <label htmlFor="email" className="mb-2 block text-sm font-semibold text-fg">Email</label>
+          <label htmlFor="email" className="mb-2 block text-sm font-semibold text-fg">Email *</label>
           <input
             id="email" name="email" type="email" required placeholder="you@example.com"
             value={email} onChange={(e) => setEmail(e.target.value)} className={INPUT}
@@ -115,7 +115,7 @@ export function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="message" className="mb-2 block text-sm font-semibold text-fg">Message</label>
+        <label htmlFor="message" className="mb-2 block text-sm font-semibold text-fg">Message *</label>
         <textarea
           id="message" name="message" rows={5} required placeholder="Tell us what you need..."
           value={message} onChange={(e) => setMessage(e.target.value)} className={`${INPUT} resize-none`}

@@ -34,14 +34,14 @@ const SECTIONS: LegalSection[] = [
   {
     h: "Digital products only — no physical shipping",
     p: [
-      `${SITE.legalName} provides digital services: cybersecurity training, hands-on cloud-security labs, an internship program, and professional services. We do not sell or ship any physical goods, so no shipping method, shipping charge, or courier is involved.`,
+      `${SITE.legalName} provides digital services: cybersecurity training, hands-on cloud-security labs, the Foundation Program, and professional services. We do not sell or ship any physical goods, so no shipping method, shipping charge, or courier is involved.`,
     ],
   },
   {
     h: "How and when you receive access",
     p: [
       "Hands-on labs: access is provisioned electronically and is available immediately on the platform after a successful payment — you launch your own isolated lab environment directly from your account, typically within a few minutes.",
-      "Training, cohorts & internship: joining details (schedule, access links, and instructions) are sent to your registered email address, generally within 24 hours of a successful payment, and before the program start date for scheduled cohorts.",
+      "Training, cohorts & the Foundation Program: joining details (schedule, access links, and instructions) are sent to your registered email address, generally within 24 hours of a successful payment, and before the program start date for scheduled cohorts.",
       "Professional services: delivery is governed by the specific statement of work or agreement signed for that engagement.",
     ],
   },

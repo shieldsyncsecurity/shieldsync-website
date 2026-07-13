@@ -163,8 +163,9 @@ export default function AiSecurityPage() {
                     <InDevelopmentBadge />
                   </p>
                   <p className="mt-1 text-sm leading-6 text-muted">
-                    A hands-on Amazon Bedrock security lab — find and fix real IAM, Guardrails, and data-isolation
-                    misconfigurations in a live AWS account, the same way our AWS security labs work today.
+                    Beyond the free Bedrock lab you can launch today, deeper paid AI labs are on the way — find and fix
+                    real IAM, Guardrails, and data-isolation misconfigurations in a live AWS account, the same way our
+                    AWS security labs work.
                   </p>
                 </div>
               </div>

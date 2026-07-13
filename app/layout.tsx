@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Fraunces } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SiteChrome } from "@/components/site-chrome";
 import { SchemaOrg } from "@/components/schema-org";
@@ -17,14 +17,6 @@ const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains",
   weight: ["400", "500", "600"],
-  display: "swap",
-});
-
-// v4 enterprise theme — display serif for headings (paired with Inter for body)
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-fraunces",
-  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -96,7 +88,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrains.variable} ${fraunces.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${jetbrains.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="flex min-h-full flex-col">
         {/* JS-enabled flag, set before first paint. The scroll-reveal hidden state
             (.js .reveal{opacity:0}) only applies when JS is present to un-hide it, so

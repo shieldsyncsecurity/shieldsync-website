@@ -7,7 +7,7 @@ import { SITE, CONTACT } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Refund & Cancellation Policy",
-  description: "ShieldSync Security's refund and cancellation policy for training, the internship, and labs.",
+  description: "ShieldSync Security's refund and cancellation policy for training, the Foundation Program, and labs.",
   alternates: { canonical: "/refund" },
 };
 
@@ -16,7 +16,7 @@ const PAGE_SCHEMA = [
   webPageSchema({
     url: PAGE_URL,
     name: "Refund Policy — ShieldSync Security",
-    description: "Refund and cancellation policy for training, internship, and labs.",
+    description: "Refund and cancellation policy for training, the Foundation Program, and labs.",
     dateModified: "2026-06-04",
     breadcrumb: [
       { name: "Home", url: SITE.url },
@@ -32,7 +32,7 @@ const PAGE_SCHEMA = [
 const SECTIONS: LegalSection[] = [
   { h: "Overview", p: ["We want you to be confident in enrolling. This policy explains when refunds apply across our programs and services."] },
   { h: "Free labs", p: ["Free labs carry no charge and therefore no refund."] },
-  { h: "Internship & paid programs", p: ["You may request a full refund within 7 days of enrolment, provided the program has not yet started and you have not received substantial materials. Once a program has begun, fees are non-refundable, except where required by law."] },
+  { h: "Foundation Program & paid programs", p: ["You may request a full refund within 7 days of enrolment, provided the program has not yet started and you have not received substantial materials. Once a program has begun, fees are non-refundable, except where required by law."] },
   { h: "Paid labs & subscriptions", p: ["Each hands-on lab provisions a real, dedicated cloud environment for you, so a one-time lab purchase is non-refundable once the lab has been launched. If you purchased a lab but have not launched it, you may request a refund within 7 days of purchase.", "Subscriptions can be cancelled anytime from your account or by emailing us; cancellation stops future renewals and your access continues until the end of the current paid period. Partial or unused periods are not refunded."] },
   { h: "Cancellation", p: ["You can cancel an order or subscription before access is delivered/launched for a full refund. To cancel, email us at the address below with your order details."] },
   { h: "Services engagements", p: ["Professional services are governed by the specific statement of work or agreement signed for that engagement."] },
@@ -44,7 +44,7 @@ export default function RefundPage() {
   return (
     <>
       <SchemaOrg schema={PAGE_SCHEMA} />
-      <PageHero eyebrow="Legal" title="Refund & Cancellation Policy" description="Our refund and cancellation policy for training, the internship, and labs." />
+      <PageHero eyebrow="Legal" title="Refund & Cancellation Policy" description="Our refund and cancellation policy for training, the Foundation Program, and labs." />
       <LegalDoc updated="June 4, 2026" sections={SECTIONS} />
     </>
   );
