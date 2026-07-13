@@ -47,13 +47,16 @@ const ICONS: Record<IcoName, (x: number, y: number) => string> = { bucket: icoBu
 export function HeroAttackMap() {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const labelRef = useRef<HTMLSpanElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
   const [provider, setProvider] = useState<"AWS" | "Azure">("AWS");
 
   useEffect(() => {
     const svg = svgRef.current;
-    if (!svg) return;
+    const panel = panelRef.current;
+    if (!svg || !panel) return;
     let flow = 0;
     let raf = 0;
+    let running = false;
     const timers: number[] = [];
     const timer = (fn: () => void, ms: number) => { const id = window.setTimeout(fn, ms); timers.push(id); return id; };
 
@@ -106,12 +109,20 @@ export function HeroAttackMap() {
       raf = requestAnimationFrame(frame);
     }
 
-    cycle();
-    return () => { cancelAnimationFrame(raf); timers.forEach(clearTimeout); };
+    const stop = () => { running = false; cancelAnimationFrame(raf); timers.forEach(clearTimeout); timers.length = 0; };
+    const start = () => { if (running) return; running = true; cycle(); };
+    // Pause the rAF loop while the panel is off-screen — no reason to animate a hero
+    // nobody's looking at (saves CPU/battery, esp. on the mobile ad traffic this feeds).
+    const io = new IntersectionObserver(
+      (entries) => { for (const e of entries) { if (e.isIntersecting) start(); else stop(); } },
+      { threshold: 0.15 },
+    );
+    io.observe(panel);
+    return () => { io.disconnect(); stop(); };
   }, [provider]);
 
   return (
-    <div className="ham-panel">
+    <div ref={panelRef} className="ham-panel">
       <style>{HAM_CSS}</style>
       <div className="ham-head">
         <span ref={labelRef} aria-hidden="true">attack-path · storage exposure</span>

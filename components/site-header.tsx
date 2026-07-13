@@ -36,6 +36,7 @@ export function SiteHeader() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileGroup, setMobileGroup] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     setOpen(false);
@@ -50,6 +51,19 @@ export function SiteHeader() {
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
   }, []);
+
+  // Escape closes an open dropdown and returns focus to its trigger (keyboard a11y).
+  useEffect(() => {
+    if (!openDropdown) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setOpenDropdown(null);
+        triggerRef.current?.focus();
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [openDropdown]);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -86,8 +100,11 @@ export function SiteHeader() {
                   <div key={item.href} className="relative" ref={isOpen ? dropdownRef : undefined}>
                     <button
                       type="button"
+                      ref={isOpen ? triggerRef : undefined}
                       onClick={() => setOpenDropdown((v) => (v === item.href ? null : item.href))}
                       aria-expanded={isOpen}
+                      aria-haspopup="true"
+                      aria-controls={`ddmenu-${item.href.replace(/\W+/g, "")}`}
                       className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-[15px] font-semibold transition ${
                         isActive(item.href) || isOpen ? "text-fg" : "text-slate-700 hover:text-fg"
                       }`}
@@ -97,7 +114,7 @@ export function SiteHeader() {
                     </button>
 
                     {isOpen ? (
-                      <div className={`absolute left-0 top-full z-50 mt-2 ${dd.width} overflow-hidden rounded-xl border border-line bg-panel p-2 shadow-2xl`}>
+                      <div id={`ddmenu-${item.href.replace(/\W+/g, "")}`} className={`absolute left-0 top-full z-50 mt-2 ${dd.width} overflow-hidden rounded-xl border border-line bg-panel p-2 shadow-2xl`}>
                         {dd.menu.map((m) => (
                           <Link
                             key={m.label}
