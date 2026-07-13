@@ -237,3 +237,16 @@ export function Search(props: IconProps) {
     </svg>
   );
 }
+
+/* Maps a Service.icon key to its component. This identical map was copy-pasted in
+   three route files (home, /services, /services/[slug]); one source of truth here. */
+export const SERVICE_ICONS = {
+  cloud: Cloud,
+  shield: Shield,
+  flask: Flask,
+  compliance: Compliance,
+  cap: Cap,
+  radar: Radar,
+  code: Code,
+  lock: Lock,
+} as const;

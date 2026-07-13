@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Container, Button, SectionHeading, Card } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { HeroAttackMap } from "@/components/hero-attack-map";
-import { ArrowRight, Check, Shield, Cloud, Compliance, Radar, Cap, Flask, Code, Lock } from "@/components/icons";
+import { ArrowRight, Check, SERVICE_ICONS } from "@/components/icons";
 import { SERVICES, WHY, SOCIAL_PROOF, SITE } from "@/lib/site";
 import { RelatedBlogSection } from "@/components/related-blog-section";
 import { VideoEmbed } from "@/components/video-embed";
@@ -70,7 +70,6 @@ export const metadata: Metadata = {
   },
 };
 
-const SERVICE_ICONS = { cloud: Cloud, shield: Shield, flask: Flask, compliance: Compliance, cap: Cap, radar: Radar, code: Code, lock: Lock } as const;
 
 // Honest capability chips — NOT certification badges. ShieldSync is not itself
 // SOC 2 / ISO 27001 / PCI DSS certified, so listing those as bare pills read as a

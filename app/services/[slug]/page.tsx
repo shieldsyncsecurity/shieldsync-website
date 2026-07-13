@@ -6,11 +6,10 @@ import { FaqSection } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
 import { RelatedBlogSection } from "@/components/related-blog-section";
 import { webPageSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
-import { ArrowRight, Check, Cloud, Shield, Flask, Compliance, Cap, Radar, Code, Lock } from "@/components/icons";
+import { ArrowRight, Check, SERVICE_ICONS } from "@/components/icons";
 import { SERVICE_PAGES } from "@/lib/service-pages";
 import { SITE, CONTACT } from "@/lib/site";
 
-const ICONS = { cloud: Cloud, shield: Shield, flask: Flask, compliance: Compliance, cap: Cap, radar: Radar, code: Code, lock: Lock } as const;
 const WA_BASE = CONTACT.whatsappHref.split("?")[0];
 
 // Match each service slug to the blog category keyword(s) we want to surface
@@ -64,7 +63,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
   const p = SERVICE_PAGES.find((x) => x.slug === slug);
   if (!p) notFound();
 
-  const Icon = ICONS[p.icon];
+  const Icon = SERVICE_ICONS[p.icon];
   const PAGE_URL = `${SITE.url}/services/${slug}`;
   const crumbs = [
     { name: "Home", url: SITE.url },

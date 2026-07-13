@@ -62,53 +62,6 @@ export const SOCIAL_PROOF = {
   label: "learners and teams trained with ShieldSync",
 };
 
-/* Homepage: the two-door audience fork --------------------------------------- */
-
-export type Door = {
-  audience: string;
-  icon: "shield" | "cap";
-  accent: "brand" | "cyan";
-  title: string;
-  desc: string;
-  points: string[];
-  href: string;
-  cta: string;
-  highlight?: string;
-};
-
-export const DOORS: Door[] = [
-  {
-    audience: "For businesses",
-    icon: "shield",
-    accent: "cyan",
-    title: "Secure your cloud",
-    desc: "Practitioner-led cloud security — assessments, compliance readiness, and 24/7 detection & response, mapped to the attack paths that actually matter to your business.",
-    points: [
-      "AWS security assessments",
-      "Attack-path analysis",
-      "SOC 2 / ISO / GDPR readiness",
-      "24/7 detection & response",
-    ],
-    href: "/services",
-    cta: "Explore services",
-  },
-  {
-    audience: "For individuals",
-    icon: "cap",
-    accent: "brand",
-    title: "Launch your security career",
-    desc: "Hands-on training and real labs that take you from motivated to job-ready — built around cloud security, with 1:1 mentorship and a completion certificate.",
-    points: [
-      "Hands-on AWS security labs",
-      "SIEM & SOAR labs",
-      "1:1 career mentorship",
-      "Completion certificate",
-    ],
-    href: "/labs-wizard?track=aws-security-labs",
-    cta: "Explore labs",
-  },
-];
-
 /* Services -------------------------------------------------------------------- */
 
 export type Service = {
@@ -194,36 +147,6 @@ export const WHY: Why[] = [
   },
 ];
 
-/* Labs showcase --------------------------------------------------------------- */
-
-export type LabTrack = {
-  tag: string;
-  title: string;
-  desc: string;
-  status: "Live" | "In build" | "Coming soon";
-};
-
-export const LAB_TRACKS: LabTrack[] = [
-  {
-    tag: "Cloud",
-    title: "AWS Security Labs",
-    desc: "IAM hardening, misconfiguration audits, encryption, and detection across realistic AWS accounts.",
-    status: "Live",
-  },
-  {
-    tag: "SIEM",
-    title: "SIEM Detection Labs",
-    desc: "Build detections, triage alerts, and analyze telemetry in a hands-on SIEM environment.",
-    status: "Coming soon",
-  },
-  {
-    tag: "SOAR",
-    title: "SOAR Automation Labs",
-    desc: "Wire detections to automated response playbooks and cut mean-time-to-action with SOAR.",
-    status: "Coming soon",
-  },
-];
-
 /* Audience dropdowns (header, Model B) ---------------------------------------- */
 
 // KEEP THESE SHORT (owner, 2026-07-07: "so many links"). One row per offering
@@ -252,23 +175,6 @@ export const LEARNERS_MENU: { label: string; desc: string; href: string; tag?: s
   // Foundation Program removed from nav + hidden 2026-07-10 (owner); page still
   // exists at /cybersecurity-foundation-program but is noindexed + unlinked.
 ];
-
-/* Headline training offer ----------------------------------------------------- */
-
-export const OFFER = {
-  badge: "Limited seats",
-  title: "Launch your cybersecurity career",
-  price: "₹9,999",
-  priceNote: "all-inclusive",
-  summary:
-    "A focused foundation program plus 1:1 career guidance — hands-on cloud security projects, real AWS labs, and a completion certificate from ShieldSync Security Private Limited.",
-  bullets: [
-    "8-week structured program",
-    "Hands-on AWS & cloud security projects",
-    "1:1 career guidance and mentorship",
-    "Certificate on completion",
-  ],
-};
 
 /* Cybersecurity Foundation Program (dedicated page) ---------------------------
    Renamed from "Cybersecurity Internship" (owner call 2026-07-07): charging

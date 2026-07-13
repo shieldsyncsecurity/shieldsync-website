@@ -6,7 +6,7 @@ import { CtaBand, FaqSection, PageHero } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
 import { RelatedBlogSection } from "@/components/related-blog-section";
 import { webPageSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
-import { ArrowRight, Cloud, Shield, Flask, Compliance, Cap, Radar, Check, Code, Lock } from "@/components/icons";
+import { ArrowRight, Check, SERVICE_ICONS } from "@/components/icons";
 import { SERVICES, FAQS, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -35,7 +35,6 @@ const PAGE_SCHEMA = [
   faqSchema(FAQS.services),
 ];
 
-const ICONS = { cloud: Cloud, shield: Shield, flask: Flask, compliance: Compliance, cap: Cap, radar: Radar, code: Code, lock: Lock } as const;
 const FRAMEWORKS = ["SOC 2", "ISO 27001", "GDPR", "PCI DSS", "DPDP Act", "NIST CSF"];
 
 export default function ServicesPage() {
@@ -58,7 +57,7 @@ export default function ServicesPage() {
         <Container>
           <div className="grid gap-6 md:grid-cols-2">
             {SERVICES.map((s, i) => {
-              const Icon = ICONS[s.icon];
+              const Icon = SERVICE_ICONS[s.icon];
               return (
                 <Reveal key={s.title} delay={i * 70}>
                   <Link
