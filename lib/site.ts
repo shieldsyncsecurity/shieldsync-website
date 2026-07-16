@@ -463,16 +463,19 @@ export type LabItem = {
 
 // Launch caps surfaced on lab pages so the limit isn't a surprise. MIRRORS
 // labs-platform/app/lib/access-rules.ts (FREE_RULE / ACCESS_RULES) — keep in sync.
+// Paid labs: 3 launches within a 7-day (168h) window (owner 2026-07-14). KEEP IN SYNC
+// with labs-platform app/lib/access-rules.ts (ACCESS_RULES) + engine labinfra.mjs (LEVEL_RULES).
 const LAUNCH_RULES: Record<LabLevel, { maxLaunches: number; windowHours: number }> = {
-  Beginner: { maxLaunches: 3, windowHours: 72 },
-  Intermediate: { maxLaunches: 2, windowHours: 48 },
-  Advanced: { maxLaunches: 2, windowHours: 48 },
+  Beginner: { maxLaunches: 3, windowHours: 168 },
+  Intermediate: { maxLaunches: 3, windowHours: 168 },
+  Advanced: { maxLaunches: 3, windowHours: 168 },
 };
 const FREE_LAUNCH_RULE = { maxLaunches: 2, windowHours: 24 }; // KEEP IN SYNC w/ labs FREE_RULE (temporarily 2)
 
 export function launchPolicyText(level: LabLevel, free?: boolean): string {
   const r = free ? FREE_LAUNCH_RULE : LAUNCH_RULES[level];
-  return `${r.maxLaunches} launch${r.maxLaunches === 1 ? "" : "es"} / ${r.windowHours}h`;
+  const win = r.windowHours % 24 === 0 && r.windowHours >= 48 ? `${r.windowHours / 24}-day` : `${r.windowHours}h`;
+  return `${r.maxLaunches} launch${r.maxLaunches === 1 ? "" : "es"} · ${win} window`;
 }
 
 // Flagship: AWS security labs (our #1 USP). `added` = date the lab went live (ISO).

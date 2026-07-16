@@ -41,7 +41,7 @@ const TIERS: Tier[] = [
     // "From" qualifier needed.
     price: (c) => `${money(AWS_PRICE.Beginner, c)}`,
     blurb: "Buy only the labs you want.",
-    points: ["One-time payment per lab", "30 launches within 7 days", "Every level — one flat price", "Great for targeted practice"],
+    points: ["One-time payment per lab", "3 launches within 7 days", "Every level — one flat price", "Great for targeted practice"],
     cta: { label: "Pick a lab", href: "/labs-wizard?track=aws&plan=per-lab" },
   },
   {
