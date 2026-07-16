@@ -49,7 +49,7 @@ const TIERS: Tier[] = [
     price: (c) => `${money(AWS_MONTHLY, c)}`,
     cadence: "/ month",
     blurb: "Every AWS security lab, unlocked.",
-    points: ["All AWS labs included", "New labs as we ship them", "Unlimited launches (fair use)", "Cancel anytime"],
+    points: ["All AWS labs included", "New labs as we ship them", "Launch any lab (fair use: 5/day)", "Cancel anytime"],
     cta: { label: "Go monthly", href: "/labs-wizard?track=aws&plan=monthly" },
     badge: "Best value",
     featured: true,
