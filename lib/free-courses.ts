@@ -44,12 +44,13 @@ export const CCAF_COURSE = {
 
 export const CCAF_LESSONS: CourseLesson[] = [
   {
-    slug: "",
+    slug: "exam-orientation",
     num: "0",
     title: "Exam orientation: format, scenarios, scoring, registration",
-    desc: "How scenario-anchored questions work, the 4-of-6 scenario draw, proctoring rules, and who should sit this exam. Covered on the course hub below.",
+    desc: "How scenario-anchored questions work, the 4-of-6 scenario draw, proctoring rules, who should sit this exam, and a 4-week study plan.",
     minutes: 15,
     status: "live",
+    progressIds: ["d0-s1", "d0-s2", "d0-s3", "d0-s4", "d0-s5", "d0-s6"],
   },
   {
     slug: "agentic-architecture",
