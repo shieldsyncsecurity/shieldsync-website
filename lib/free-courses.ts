@@ -67,7 +67,8 @@ export const CCAF_LESSONS: CourseLesson[] = [
     title: "Domain 2: Tool Design & MCP Integration (18%)",
     desc: "MCP primitives, tool descriptions that drive selection, structured error responses, .mcp.json, transports, building servers and clients, per-role tool scoping.",
     minutes: 40,
-    status: "soon",
+    status: "live",
+    progressIds: ["d2-s1", "d2-s2", "d2-s3", "d2-s4", "d2-s5", "d2-s6"],
   },
   {
     slug: "claude-code-workflows",
@@ -75,7 +76,8 @@ export const CCAF_LESSONS: CourseLesson[] = [
     title: "Domain 3: Claude Code Configuration & Workflows (20%)",
     desc: "CLAUDE.md hierarchy, .claude/rules/ with YAML frontmatter, skills and slash commands, plan mode vs direct execution, headless -p mode and CI/CD patterns.",
     minutes: 45,
-    status: "soon",
+    status: "live",
+    progressIds: ["d3-s1", "d3-s2", "d3-s3", "d3-s4", "d3-s5", "d3-s6"],
   },
   {
     slug: "prompt-engineering-structured-output",
@@ -83,7 +85,8 @@ export const CCAF_LESSONS: CourseLesson[] = [
     title: "Domain 4: Prompt Engineering & Structured Output (20%)",
     desc: "Explicit criteria, few-shot design, tool_use with JSON schemas, nullable fields against hallucination, validation-retry loops, multi-pass review, Message Batches API.",
     minutes: 45,
-    status: "soon",
+    status: "live",
+    progressIds: ["d4-s1", "d4-s2", "d4-s3", "d4-s4", "d4-s5", "d4-s6"],
   },
   {
     slug: "context-management-reliability",
@@ -91,7 +94,8 @@ export const CCAF_LESSONS: CourseLesson[] = [
     title: "Domain 5: Context Management & Reliability (15%)",
     desc: "Long-session information preservation, agent handoffs, escalation via deterministic thresholds, error propagation, provenance, prompt caching.",
     minutes: 35,
-    status: "soon",
+    status: "live",
+    progressIds: ["d5-s1", "d5-s2", "d5-s3", "d5-s4", "d5-s5"],
   },
   {
     slug: "exam-scenarios",
@@ -99,7 +103,8 @@ export const CCAF_LESSONS: CourseLesson[] = [
     title: "The 6 exam scenarios, deconstructed",
     desc: "Support agent, Claude Code rollout, multi-agent research, developer productivity, CI/CD, structured extraction - what each scenario is really testing.",
     minutes: 30,
-    status: "soon",
+    status: "live",
+    progressIds: ["d6-s1", "d6-s2", "d6-s3", "d6-s4", "d6-s5", "d6-s6"],
   },
   {
     slug: "anti-patterns",
@@ -107,7 +112,8 @@ export const CCAF_LESSONS: CourseLesson[] = [
     title: "The 7 anti-patterns (how wrong answers are built)",
     desc: "Every distractor in the exam is a plausible architectural mistake. Learn the seven failure modes the exam recycles and eliminate options on sight.",
     minutes: 25,
-    status: "soon",
+    status: "live",
+    progressIds: ["d7-s1", "d7-s2", "d7-s3", "d7-s4", "d7-s5", "d7-s6", "d7-s7"],
   },
   {
     slug: "readiness-exam",
