@@ -186,3 +186,48 @@ body {
 .ss-video-frame .yt-lite.lyt-activated .lty-playbtn::before {
   display: none !important;
 }
+
+/* ----------------------------------------------------------------------------
+   Free-course animated diagrams (components/course-diagrams.tsx).
+   One-time staggered reveal driven by the .dgm-in class (IntersectionObserver);
+   edges draw via dash-offset. Flow dots are SMIL and are only rendered when
+   motion is allowed, so they need no rules here. ASCII only in this file.
+---------------------------------------------------------------------------- */
+.dgm .dgm-node {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.dgm.dgm-in .dgm-node {
+  opacity: 1;
+  transform: none;
+}
+.dgm .dgm-edge {
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  opacity: 0;
+}
+.dgm.dgm-in .dgm-edge {
+  animation: dgm-draw 0.7s ease forwards;
+}
+@keyframes dgm-draw {
+  from {
+    stroke-dashoffset: 900;
+    opacity: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dgm .dgm-node,
+  .dgm .dgm-edge {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+}

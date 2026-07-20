@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { SITE, AWS_LABS } from "@/lib/site";
 import { BLOG_POSTS } from "@/lib/blog";
 import { SERVICE_PAGES } from "@/lib/service-pages";
+import { CCAF_BASE, CCAF_LIVE_ROUTES } from "@/lib/free-courses";
 
 // Required for `output: export` (static Amplify build) — emit a static sitemap.xml
 // at build time. Harmless on the Cloudflare build (already static there).
@@ -62,6 +63,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.6,
     },
+    {
+      url: `${base}/free-courses`,
+      lastModified: new Date("2026-07-21"),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${base}${CCAF_BASE}`,
+      lastModified: new Date("2026-07-21"),
+      changeFrequency: "weekly",
+      priority: 0.85,
+    },
+    // Only LIVE lesson routes are indexed (mirrors the labs rule above):
+    // "coming soon" lessons have no pages yet, so nothing to list.
+    ...CCAF_LIVE_ROUTES.map((l) => ({
+      url: `${base}${CCAF_BASE}/${l.slug}`,
+      lastModified: new Date("2026-07-21"),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })),
     { url: `${base}/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/terms`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/refund`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
