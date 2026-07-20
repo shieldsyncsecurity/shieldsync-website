@@ -248,7 +248,7 @@ export default function AgenticArchitectureLesson() {
       <section className="py-6 sm:py-8">
         <Container>
           <LessonChipNav items={TOC} />
-          <div className="grid gap-8 lg:grid-cols-[250px_minmax(0,1fr)]">
+          <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[230px_minmax(0,1fr)]">
             <aside className="sticky top-24 hidden self-start lg:block">
               <LessonToc items={TOC} />
             </aside>

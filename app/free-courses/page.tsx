@@ -78,7 +78,7 @@ export default function FreeCoursesPage() {
 
       <section className="py-10 sm:py-14">
         <Container>
-          <div className="grid gap-5 lg:max-w-4xl">
+          <div className="mx-auto grid max-w-4xl gap-5">
             <Card className="p-6 sm:p-7">
               <div className="flex flex-wrap items-center gap-2">
                 <Pill tone="brand">Certification prep</Pill>

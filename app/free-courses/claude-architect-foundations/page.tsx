@@ -101,6 +101,7 @@ export default function CcafHubPage() {
 
       <section className="py-8 sm:py-10">
         <Container>
+          <div className="mx-auto max-w-5xl">
           {/* exam facts + resume */}
           <div className="flex flex-wrap items-center gap-2">
             <Pill tone="brand">Free · no signup</Pill>
@@ -218,6 +219,7 @@ export default function CcafHubPage() {
                 </div>
               );
             })}
+          </div>
           </div>
         </Container>
       </section>
