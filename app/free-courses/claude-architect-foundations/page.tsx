@@ -7,6 +7,7 @@ import { PageHero, CtaBand, FaqSection } from "@/components/sections";
 import { SchemaOrg } from "@/components/schema-org";
 import { breadcrumbSchema, courseSchema, faqSchema, webPageSchema } from "@/lib/schema";
 import { CourseStatusChips, LessonProgressRing } from "@/components/course-progress";
+import { CourseGlossary } from "@/components/course-glossary";
 
 export const metadata: Metadata = {
   title: "Claude Certified Architect (CCA-F) Free Prep Course — All 5 Domains",
@@ -179,6 +180,10 @@ export default function CcafHubPage() {
                 Try the readiness exam
               </Link>
             </Card>
+          </div>
+
+          <div className="mt-6">
+            <CourseGlossary />
           </div>
 
           {/* lessons */}

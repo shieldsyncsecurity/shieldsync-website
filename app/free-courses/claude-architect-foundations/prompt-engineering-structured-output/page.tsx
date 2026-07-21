@@ -9,6 +9,7 @@ import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { MarkCompleteButton } from "@/components/course-progress";
 import { LessonToc, LessonChipNav, type TocItem } from "@/components/course-toc";
 import { CheckpointQuiz, type QuizQuestion } from "@/components/course-quiz";
+import { CourseGlossary } from "@/components/course-glossary";
 import {
   StructuredOutputDiagram,
   ValidationRetryLoopDiagram,
@@ -148,10 +149,10 @@ const QUIZ: QuizQuestion[] = [
     question:
       "A CI pipeline runs Claude against every pull request with the instruction \"review this code for quality issues,\" and the results are inconsistent and hard to grade across 500 PRs a week. What should replace the vague instruction?",
     options: [
-      "A larger max_tokens value so Claude can write a longer, more thorough review",
-      "Explicit, checkable categories to review (SQL injection risk, missing null checks, unbounded loops, hardcoded secrets) with a required output format per category",
-      "A stricter refusal policy so Claude declines to review risky-looking code",
-      "Run the review twice per PR and keep whichever response is longer",
+      "A larger max_tokens value, giving Claude more room to write a longer and seemingly more thorough review each time",
+      "Explicit, checkable categories to review — injection risk, missing null checks, unbounded loops, hardcoded secrets — plus a required output format per category",
+      "A stricter refusal policy, so Claude simply declines to review any pull request that looks risky or insecure",
+      "Running the same review twice per pull request and keeping whichever of the two responses turns out longer",
     ],
     answer: 1,
     explanation:
@@ -163,10 +164,10 @@ const QUIZ: QuizQuestion[] = [
     question:
       "A team extracts 6 fixed fields from vendor invoices at 500/day. They currently ask Claude to \"please respond in valid JSON only\" in plain text, then call JSON.parse on the response — which occasionally throws on extra prose or malformed output. What is the architecturally correct fix?",
     options: [
-      "Add \"IMPORTANT: return ONLY the JSON object, nothing else\" in bold at the top of the prompt",
-      "Give Claude a tool definition with an input_schema for the invoice fields, and read the schema-validated tool_use.input instead of parsing free text",
-      "Lower temperature to make the plain-text output more consistent",
-      "Wrap the JSON.parse call in a try/catch and silently retry the identical prompt on failure",
+      "Add the instruction \"IMPORTANT: return ONLY the JSON object, nothing else\" in bold at the very top of the prompt text",
+      "Give Claude a tool definition with an input_schema for the invoice fields, and read the validated tool_use.input instead of parsing free text",
+      "Lower the sampling temperature, so the plain-text JSON output comes back more consistently formatted across repeated calls",
+      "Wrap the JSON.parse call in a try/catch block, and silently retry the identical prompt again whenever it fails",
     ],
     answer: 1,
     explanation:
@@ -191,12 +192,12 @@ const QUIZ: QuizQuestion[] = [
     id: "d4-q4",
     scenario: "Structured Data Extraction",
     question:
-      "An invoice-extraction pipeline marks po_number as nullable in the schema and instructs \"if the PO number is absent, return null — do not guess.\" Downstream, a validator also checks that due_date is after invoice_date, retrying the extraction call (with the validation error appended to the prompt) up to a bounded count before flagging the record for human review. A teammate suggests removing the validation and retry step entirely, arguing the nullable field already solves the hallucination problem. Why is this wrong?",
+      "An invoice-extraction pipeline marks po_number as nullable and instructs Claude to return null — never guess — when the PO number is missing from the invoice. A downstream validator also checks that due_date falls after invoice_date. When that check fails, the pipeline retries the extraction, appending the validation error to the prompt, up to a bounded number of attempts before flagging the record for human review. A teammate wants to drop that validation-retry step entirely, arguing the nullable field alone already prevents every extraction error. Why is the teammate wrong?",
     options: [
-      "It is not wrong — nullable fields alone fully prevent every extraction error, so the validation step is redundant",
-      "Nullable fields prevent one failure mode (inventing a required field the document doesn't contain); validation-retry catches a different failure mode (logically inconsistent extracted values) — removing it drops error correction the schema alone can't express",
-      "The validation step should be removed because it only adds latency with no measurable benefit",
-      "Retry loops should never be bounded, so the \"bounded count\" limit is itself the bug worth removing",
+      "The teammate is right — nullable fields alone already catch every possible extraction error, so the validation-retry step is pure redundancy",
+      "The teammate is wrong — nullable fields stop invented values for missing data, while validation-retry separately catches logically inconsistent values that no schema alone can express",
+      "The teammate is right — the validation step only adds processing latency and delivers no measurable improvement in data quality",
+      "The teammate is right, though for a different reason — bounded retry loops are themselves the real bug worth removing",
     ],
     answer: 1,
     explanation:
@@ -206,12 +207,12 @@ const QUIZ: QuizQuestion[] = [
     id: "d4-q5",
     scenario: "Multi-Agent Research System",
     question:
-      "A multi-agent research system finishes crawling 20,000 archived documents each night and needs them turned into structured citation records before the next day's research runs start — no user is waiting on the extraction step itself. The coordinator proposes calling the real-time Messages API in a loop over all 20,000 documents, reasoning that it is simpler to code than setting up a separate batch job. Is this the right call?",
+      "A multi-agent research system crawls 20,000 archived documents every night. The results need to become structured citation records before the next day's research runs start, but no user is waiting on the extraction step itself. The coordinator (the agent orchestrating the pipeline) proposes looping the real-time Messages API over all 20,000 documents instead, reasoning that it is simpler to code than setting up a separate batch job. Is that the right call?",
     options: [
-      "Yes — simplicity of implementation should always win when the volume is this large",
-      "No — with no one waiting synchronously and a tolerance for up to a 24-hour turnaround, the Message Batches API is the correct choice, at roughly 50% lower cost for the same tokens",
-      "No — the Batches API should be reserved for user-facing chat responses to guarantee freshness",
-      "Yes, but only if the real-time loop also sleeps between requests to imitate batching behavior",
+      "Yes — when the request volume is this large, simplicity of implementation should always outweigh any potential cost savings",
+      "No — no one is waiting synchronously, the 24-hour turnaround is acceptable, and the Message Batches API costs roughly 50% less for the same tokens",
+      "No — the Batches API should only ever be used for user-facing chat responses, in order to guarantee response freshness",
+      "Yes, but only if the real-time loop also adds sleeps between requests, to roughly imitate how batching behaves",
     ],
     answer: 1,
     explanation:
@@ -536,6 +537,10 @@ Category:`}</CodeBlock>
               </Sec>
 
               <CheckpointQuiz title="Checkpoint quiz — Domain 4" questions={QUIZ} />
+
+              <div className="mt-5">
+                <CourseGlossary compact />
+              </div>
 
               <div className="mt-5 flex flex-wrap gap-3">
                 <Link

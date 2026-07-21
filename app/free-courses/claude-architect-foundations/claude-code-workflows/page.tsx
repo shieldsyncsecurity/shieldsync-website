@@ -9,6 +9,7 @@ import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { MarkCompleteButton } from "@/components/course-progress";
 import { LessonToc, LessonChipNav, type TocItem } from "@/components/course-toc";
 import { CheckpointQuiz, type QuizQuestion } from "@/components/course-quiz";
+import { CourseGlossary } from "@/components/course-glossary";
 import {
   ClaudeMdHierarchyDiagram,
   PlanVsDirectDiagram,
@@ -209,10 +210,10 @@ const QUIZ: QuizQuestion[] = [
     id: "d3-q5",
     scenario: "Claude Code in CI/CD",
     question:
-      "A CI pipeline needs Claude Code to review each PR's diff and post structured findings a bot can parse and turn into inline comments, running unattended on a shared runner shared across many concurrent PRs. Which invocation is correct?",
+      "A CI pipeline needs Claude Code to review each PR's diff and post structured findings a bot can parse and turn into inline comments. This runs unattended on a shared runner used across many concurrent PRs. Which invocation is correct?",
     options: [
       "Interactive claude session on the runner, piping the diff into stdin",
-      "claude -p \"review this diff for security issues\" --output-format json, one fresh session per PR, scoped to just the diff",
+      "claude -p \"review this diff for security issues\" --output-format json, one fresh session per PR",
       "claude -p with default text output, parsed downstream with regular expressions",
       "One long-lived claude session shared across all PRs in the queue to save startup cost",
     ],
@@ -508,6 +509,10 @@ additions. You have no write access — report findings only.`}</CodeBlock>
               </Sec>
 
               <CheckpointQuiz title="Checkpoint quiz — Domain 3" questions={QUIZ} />
+
+              <div className="mt-5">
+                <CourseGlossary compact />
+              </div>
 
               <div className="mt-5 flex flex-wrap gap-3">
                 <Link

@@ -9,6 +9,7 @@ import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { MarkCompleteButton } from "@/components/course-progress";
 import { LessonToc, LessonChipNav, type TocItem } from "@/components/course-toc";
 import { CheckpointQuiz, type QuizQuestion } from "@/components/course-quiz";
+import { CourseGlossary } from "@/components/course-glossary";
 import { MCPPrimitivesDiagram, ToolSelectionDiagram, MCPTransportDiagram } from "@/components/course-diagrams-mcp";
 
 const LESSON_URL = `${SITE.url}${CCAF_BASE}/tool-design-mcp`;
@@ -535,6 +536,10 @@ You do not deploy, release, or modify infrastructure under any circumstance.`}</
               </Sec>
 
               <CheckpointQuiz title="Checkpoint quiz — Domain 2" questions={QUIZ} />
+
+              <div className="mt-5">
+                <CourseGlossary compact />
+              </div>
 
               <div className="mt-5 flex flex-wrap gap-3">
                 <Link

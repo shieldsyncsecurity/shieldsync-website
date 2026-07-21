@@ -9,6 +9,7 @@ import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { MarkCompleteButton } from "@/components/course-progress";
 import { LessonToc, LessonChipNav, type TocItem } from "@/components/course-toc";
 import { CheckpointQuiz, type QuizQuestion } from "@/components/course-quiz";
+import { CourseGlossary } from "@/components/course-glossary";
 import {
   PromptCachingDiagram,
   EscalationTriggersDiagram,
@@ -145,10 +146,10 @@ const QUIZ: QuizQuestion[] = [
     id: "d5-q1",
     scenario: "Claude Code in CI/CD",
     question:
-      "A coding agent re-sends the same 40,000-token codebase context (system prompt + file tree + tool definitions) on every turn of a long session, with only the latest instruction changing. What should the architect do to control cost and latency?",
+      "A coding agent re-sends the same 40,000-token codebase context (system prompt + file tree + tool definitions) on every turn of a long session. Only the latest instruction changes each turn. What should the architect do to control cost and latency?",
     options: [
       "Switch to the Batch API so the repeated context is processed asynchronously",
-      "Mark the stable codebase-context prefix as cacheable and place the volatile latest instruction at the end of the prompt",
+      "Mark the stable codebase-context prefix as cacheable, with the volatile instruction placed last",
       "Ask the model to summarise the codebase context itself before each turn to shorten it",
       "Increase max_tokens so the repeated context is never truncated",
     ],
@@ -178,7 +179,7 @@ const QUIZ: QuizQuestion[] = [
       "Which of these is the correct set of escalation triggers for handing a case to a human, per the architecture the exam expects?",
     options: [
       "The model reports it is only 55% confident in its proposed resolution",
-      "A refund amount exceeds the policy limit, N consecutive tool calls have failed, or the customer explicitly asks for a human",
+      "A refund over the policy limit, N consecutive tool failures, or an explicit human request",
       "The conversation has run long enough that the model 'feels' the customer is frustrated",
       "The model's own assessment that the case is 'complex'",
     ],
@@ -193,7 +194,7 @@ const QUIZ: QuizQuestion[] = [
       "In a three-hop pipeline (data-collector subagent -> analysis subagent -> report subagent), the data-collector partially fails after gathering 60% of its sources before an API quota error stops it. What should happen next?",
     options: [
       "The data-collector returns its 60% of results as a normal, complete-looking report so the pipeline keeps moving",
-      "The data-collector returns a structured report noting what succeeded, what failed and why, and that the result is partial; the analysis subagent treats that input as degraded, not complete",
+      "The data-collector returns a structured report of what succeeded and failed, marked partial; the analysis subagent treats it as degraded",
       "The whole multi-agent system crashes immediately so a human notices something went wrong",
       "The data-collector silently retries in an unbounded loop until it either succeeds or the process is killed",
     ],
@@ -210,7 +211,7 @@ const QUIZ: QuizQuestion[] = [
       "Take the majority answer (Q2, 2 votes to 1) and present it as the confirmed fact",
       "Re-run all three subagents until they agree, then report the agreed answer",
       "Blend the two dates into a hedged statement like 'shipped in Q2 or Q3'",
-      "Flag the conflict explicitly in the output, noting the unsourced claim contradicts two sourced ones, and exclude or separately verify it rather than silently resolving it",
+      "Flag the conflict and the unsourced claim in the output, then exclude it or verify it separately",
     ],
     answer: 3,
     explanation:
@@ -465,6 +466,10 @@ messages = [
               </Sec>
 
               <CheckpointQuiz title="Checkpoint quiz — Domain 5" questions={QUIZ} />
+
+              <div className="mt-5">
+                <CourseGlossary compact />
+              </div>
 
               <div className="mt-5 flex flex-wrap gap-3">
                 <Link

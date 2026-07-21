@@ -6,6 +6,7 @@ import { Container } from "@/components/ui";
 import { SchemaOrg } from "@/components/schema-org";
 import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { ReadinessExam } from "@/components/ccaf-readiness-exam";
+import { CourseGlossary } from "@/components/course-glossary";
 
 const PAGE_URL = `${SITE.url}${CCAF_BASE}/readiness-exam`;
 
@@ -76,6 +77,9 @@ export default function ReadinessExamPage() {
       <section className="py-6 sm:py-8">
         <Container>
           <div className="mx-auto max-w-3xl">
+            <div className="mb-6">
+              <CourseGlossary compact />
+            </div>
             <ReadinessExam />
             <p className="mt-6 text-xs leading-5 text-muted">
               All questions are original ShieldSync items written in the exam&apos;s format — we do not publish exam

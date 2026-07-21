@@ -8,6 +8,7 @@ import { SchemaOrg } from "@/components/schema-org";
 import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { MarkCompleteButton } from "@/components/course-progress";
 import { LessonToc, LessonChipNav, type TocItem } from "@/components/course-toc";
+import { CourseGlossary } from "@/components/course-glossary";
 
 const LESSON_URL = `${SITE.url}${CCAF_BASE}/exam-orientation`;
 
@@ -304,6 +305,8 @@ export default function ExamOrientationLesson() {
                   track each lesson. Start with Domain 1.
                 </P>
               </Sec>
+
+              <CourseGlossary compact />
 
               <div className="mt-5 flex flex-wrap gap-3">
                 <Link

@@ -9,6 +9,7 @@ import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { MarkCompleteButton } from "@/components/course-progress";
 import { LessonToc, LessonChipNav, type TocItem } from "@/components/course-toc";
 import { CheckpointQuiz, type QuizQuestion } from "@/components/course-quiz";
+import { CourseGlossary } from "@/components/course-glossary";
 import {
   AgenticLoopDiagram,
   TopologyDiagram,
@@ -154,7 +155,7 @@ const QUIZ: QuizQuestion[] = [
     question: "Your support agent calls get_order_status and the warehouse API times out. What should the tool layer return to Claude?",
     options: [
       "An empty tool_result so the conversation can continue smoothly",
-      "A tool_result with is_error: true stating the timeout, that it is retryable, and what to tell the customer meanwhile",
+      "A tool_result with is_error: true, noting the timeout is retryable and how to respond",
       "Raise an exception and terminate the agent session to avoid wrong answers",
       "Have the agent apologise and immediately escalate to a human",
     ],
@@ -169,7 +170,7 @@ const QUIZ: QuizQuestion[] = [
     options: [
       "Search subagent messages the analysis subagent directly to reduce coordinator load",
       "All subagents share one context window so everyone sees everything",
-      "Search returns a structured summary to the coordinator, which includes the relevant parts in the analysis subagent's task prompt",
+      "The coordinator receives a structured summary from search and forwards it to analysis",
       "Analysis subagent re-runs the searches itself to stay independent",
     ],
     answer: 2,
@@ -181,7 +182,7 @@ const QUIZ: QuizQuestion[] = [
     scenario: "Developer Productivity",
     question: "Company policy: Claude must never write to infra/prod/. Where does this rule belong?",
     options: [
-      "A PreToolUse hook (or deny permission rule) that blocks Edit/Write on that path",
+      "A PreToolUse hook or permission rule blocking that path",
       "A prominent instruction at the top of CLAUDE.md",
       "A system-prompt warning repeated in every subagent definition",
       "Training the team to review diffs before committing",
@@ -210,7 +211,7 @@ const QUIZ: QuizQuestion[] = [
     question: "Turn 3: customer's identity verified. Turn 45: the long conversation gets compacted. How should the architecture have protected the verification fact?",
     options: [
       "Increase the context window so compaction never happens",
-      "Write verified-identity and case facts to durable session state when they occur, re-inject into the system prompt each request",
+      "Write identity and case facts to durable state, re-inject each request",
       "Instruct the model to always preserve important facts when summarising",
       "Re-verify the customer after every compaction for safety",
     ],
@@ -660,6 +661,10 @@ authz bypass, and unsafe file handling. Report findings as a list of
               </Sec>
 
               <CheckpointQuiz title="Checkpoint quiz — Domain 1" questions={QUIZ} />
+
+              <div className="mt-5">
+                <CourseGlossary compact />
+              </div>
 
               <div className="mt-5 flex flex-wrap gap-3">
                 <Link

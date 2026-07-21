@@ -9,6 +9,7 @@ import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { MarkCompleteButton } from "@/components/course-progress";
 import { LessonToc, LessonChipNav, type TocItem } from "@/components/course-toc";
 import { CheckpointQuiz, type QuizQuestion } from "@/components/course-quiz";
+import { CourseGlossary } from "@/components/course-glossary";
 import { ScenarioDomainMapDiagram, ExamDrawDiagram } from "@/components/course-diagrams-scenarios";
 
 const LESSON_URL = `${SITE.url}${CCAF_BASE}/exam-scenarios`;
@@ -146,7 +147,7 @@ const QUIZ: QuizQuestion[] = [
       "Turn 2 verified the customer's identity. The team's dashboard shows first-contact resolution at 76%, just under the 80% target. A refund request comes in that is 40% over the policy threshold — a case that trips a mandatory escalation trigger. What should happen?",
     options: [
       "Let the agent use its own judgment on whether the case feels resolvable, to protect the resolution-rate metric",
-      "Escalate automatically because the case trips a deterministic policy threshold — the FCR target does not override a mandatory trigger",
+      "Escalate automatically because the case trips a deterministic policy threshold, regardless of the FCR dashboard number",
       "Ask the agent to re-verify the customer's identity again before deciding anything, to buy time",
       "Increase the context window so the agent can reason through the exception in more depth",
     ],
@@ -161,7 +162,7 @@ const QUIZ: QuizQuestion[] = [
       "A 40-person engineering org is rolling out Claude Code. One rule is mandatory for everyone (\"never edit files under infra/prod/\"); other preferences (preferred commit style, personal aliases) should vary developer to developer. Where should each live?",
     options: [
       "Put both in one top-level CLAUDE.md so the whole org reads the same file",
-      "Enforce the mandatory rule with a PreToolUse hook or permission rule at the repo level; let personal preferences live in each developer's user-level CLAUDE.md",
+      "Block it with a repo-level PreToolUse hook or permission rule; leave preferences in each developer's user-level CLAUDE.md",
       "Write the mandatory rule as strongly worded text inside each developer's personal CLAUDE.md",
       "Skip configuration and rely on code review to catch violations after the fact",
     ],
@@ -173,10 +174,10 @@ const QUIZ: QuizQuestion[] = [
     id: "d6-q3",
     scenario: "Multi-Agent Research System",
     question:
-      "A coordinator delegates to search, analysis, synthesis, and reporting subagents. The search subagent finds nothing for one of five sub-queries, and the analysis and synthesis subagents' summaries disagree on a key figure. What should the coordinator do?",
+      "A coordinator delegates to search, analysis, synthesis, and reporting subagents. The search subagent finds nothing for one of its five sub-queries. Separately, the analysis and synthesis subagents' summaries disagree on a key figure. What should the coordinator do?",
     options: [
       "Silently drop the sub-query with no results and use whichever figure the synthesis subagent reported, since it ran last",
-      "Surface the zero-result sub-query as an explicit gap in the final report, and reconcile the conflicting figures by checking each subagent's cited source rather than trusting either one by default",
+      "Surface the zero-result sub-query as a gap in the final report, and reconcile the conflicting figures against each subagent's cited source",
       "Re-run all four subagents from scratch so every number matches",
       "Let the analysis and synthesis subagents message each other directly to settle the discrepancy",
     ],
@@ -188,10 +189,10 @@ const QUIZ: QuizQuestion[] = [
     id: "d6-q4",
     scenario: "Developer Productivity Tools",
     question:
-      "Onboarding automation must find every usage of a deprecated internal API across a 4,000-file monorepo it has never seen, using Grep/Glob/Read plus an MCP server for the ticketing system, then propose a migration plan. How should the exploration be structured to keep the main session usable?",
+      "Onboarding automation must find every usage of a deprecated internal API across a 4,000-file monorepo it has never seen. It has Grep, Glob, and Read, plus an MCP server for the ticketing system, and must also propose a migration plan. How should the exploration be structured to keep the main session usable?",
     options: [
       "Run the entire search and every file read in the main conversation so all context is visible when writing the final plan",
-      "Delegate the noisy exploration (grepping, opening candidate files, checking each usage) to a subagent scoped to read-only tools, and have it return a structured summary of usages plus a proposed plan",
+      "Delegate the noisy exploration to a subagent scoped to read-only tools, and have it return a structured summary of usages plus a proposed plan",
       "Give a single agent every available tool, including Write and Bash, so it never has to ask for anything",
       "Fine-tune a model on the monorepo before starting the search",
     ],
@@ -206,7 +207,7 @@ const QUIZ: QuizQuestion[] = [
       "A pipeline runs Claude Code to review every pull request and generate missing tests. The PR-comment bot needs machine-parseable output, and one PR's run must never carry state into the next PR's run. Which setup satisfies both requirements?",
     options: [
       "Run claude interactively inside the CI container and scrape the terminal transcript with regex",
-      "Run claude -p with --output-format json, starting a brand-new session for every PR so no prior conversation state carries over",
+      "Run claude -p with --output-format json, starting a fresh session for every PR",
       "Reuse one long-lived Claude Code session across every PR that day to save on prompt caching",
       "Have the model write a plain-English summary and have the bot parse it with keyword matching",
     ],
@@ -218,10 +219,10 @@ const QUIZ: QuizQuestion[] = [
     id: "d6-q6",
     scenario: "Structured Data Extraction",
     question:
-      "A team needs 12 fields extracted from 50,000 scanned vendor contracts overnight (an 8-hour deadline), and separately needs 3 fields extracted from a customer email pasted into a live chat widget. Some contracts genuinely lack certain fields (e.g. no renewal clause). What is the correct combination of API choice and schema design?",
+      "A team needs 12 fields extracted overnight from 50,000 scanned vendor contracts, with an 8-hour deadline. Separately, a live chat widget needs 3 fields extracted from a customer's pasted email while they wait. Some contracts genuinely lack certain fields — for example, no renewal clause. What is the correct combination of API choice and schema design?",
     options: [
       "Use the Message Batches API for both jobs, and simply omit any field that might be absent from the schema",
-      "Use the Message Batches API for the overnight bulk job and the real-time API for the live chat extraction, and mark the sometimes-absent fields nullable so the model returns null instead of guessing a value",
+      "Use the Message Batches API for the overnight bulk job, the real-time API for the live chat job, and mark the sometimes-absent fields nullable",
       "Use the real-time API for both jobs since it is simpler to implement, and require every field so the output is never incomplete",
       "Use the Batch API for the live chat widget because it is cheaper, and the real-time API for the bulk job because it is faster",
     ],
@@ -738,6 +739,10 @@ claude -p "Review this diff for security and correctness issues only. \\
               </Sec>
 
               <CheckpointQuiz title="Checkpoint quiz — Exam Scenarios" questions={QUIZ} />
+
+              <div className="mt-5">
+                <CourseGlossary compact />
+              </div>
 
               <div className="mt-5 flex flex-wrap gap-3">
                 <Link

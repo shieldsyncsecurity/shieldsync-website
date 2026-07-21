@@ -9,6 +9,7 @@ import { breadcrumbSchema, webPageSchema } from "@/lib/schema";
 import { MarkCompleteButton } from "@/components/course-progress";
 import { LessonToc, LessonChipNav, type TocItem } from "@/components/course-toc";
 import { CheckpointQuiz, type QuizQuestion } from "@/components/course-quiz";
+import { CourseGlossary } from "@/components/course-glossary";
 import { AntiPatternsOverviewDiagram, EliminationDrillDiagram } from "@/components/course-diagrams-antipatterns";
 
 const LESSON_URL = `${SITE.url}${CCAF_BASE}/anti-patterns`;
@@ -155,7 +156,7 @@ const QUIZ: QuizQuestion[] = [
     options: [
       "Add an instruction telling the agent to escalate 'whenever it feels the situation calls for a human'",
       "Queue the dispute through the Message Batches API and let the customer wait up to 24 hours for the batch to clear before deciding",
-      "Hand off when the dispute crosses the agent's authorised refund limit, the same tool call has failed twice in a row, or the customer explicitly asks for a person",
+      "Hand off when the dispute crosses the agent's refund limit, the same tool call fails twice, or the customer asks for a person",
       "If the refund-lookup tool fails, skip it and let the agent give a generic apology so the conversation keeps moving",
     ],
     answer: 2,
@@ -181,12 +182,12 @@ const QUIZ: QuizQuestion[] = [
     id: "d7-q4",
     scenario: "Multi-Agent Research System",
     question:
-      "The research coordinator's conversation over 40 source documents keeps hitting compaction and losing track of which sources were already checked. What is the correct fix?",
+      "The research coordinator's conversation spans 40 source documents. It keeps hitting compaction and losing track of which sources were already checked. What is the correct fix?",
     options: [
       "Add 'always remember which sources were checked' to the coordinator's system prompt",
       "If a source subagent's fetch fails, return nothing so the coordinator's synthesis step is not interrupted",
       "Let each source subagent forward its summary directly to the next subagent in the writing chain to save a coordinator round-trip",
-      "Decompose: give each source its own subagent that returns a structured summary, and track the checked-source list in durable state outside the conversation",
+      "Give each source its own subagent that returns a structured summary, and track checked sources in durable state outside the conversation",
     ],
     answer: 3,
     explanation:
@@ -196,7 +197,7 @@ const QUIZ: QuizQuestion[] = [
     id: "d7-q5",
     scenario: "Claude Code in CI/CD",
     question:
-      "In a headless -p CI pipeline, a step's Bash tool call to run the test suite fails because the runner ran out of disk space. What should the tool result contain?",
+      "This is a headless, non-interactive CI/CD pipeline (Claude Code's -p mode). A step's Bash tool call to run the test suite fails because the runner ran out of disk space. What should the tool result contain?",
     options: [
       "Escalate to a human reviewer whenever the test-runner subagent's confidence in the results is below 90%",
       "A structured is_error result: category disk_space_exhausted, retryable: true, and a suggestion to clear the cache and retry",
@@ -638,6 +639,10 @@ export default function AntiPatternsLesson() {
               </section>
 
               <CheckpointQuiz title="Checkpoint quiz — The 7 Anti-Patterns" questions={QUIZ} />
+
+              <div className="mt-5">
+                <CourseGlossary compact />
+              </div>
 
               <div className="mt-5 flex flex-wrap gap-3">
                 <Link
