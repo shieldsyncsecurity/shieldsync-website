@@ -179,7 +179,7 @@ const QUIZ: QuizQuestion[] = [
   },
   {
     id: "d1-q3",
-    scenario: "Developer Productivity",
+    scenario: "Developer Productivity with Claude",
     question: "Company policy: Claude must never write to infra/prod/. Where does this rule belong?",
     options: [
       "A PreToolUse hook or permission rule blocking that path",

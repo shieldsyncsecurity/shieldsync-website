@@ -245,8 +245,8 @@ export function ScenarioDomainMapDiagram() {
     s1: { y: 34, cy: 64 }, // Customer Support Resolution Agent
     s2: { y: 108, cy: 138 }, // Code Generation with Claude Code
     s3: { y: 182, cy: 212 }, // Multi-Agent Research System
-    s4: { y: 256, cy: 286 }, // Developer Productivity Tools
-    s5: { y: 330, cy: 360 }, // Claude Code in CI/CD
+    s4: { y: 256, cy: 286 }, // Developer Productivity with Claude
+    s5: { y: 330, cy: 360 }, // Claude Code for Continuous Integration
     s6: { y: 404, cy: 434 }, // Structured Data Extraction
   };
   // domain column (right)

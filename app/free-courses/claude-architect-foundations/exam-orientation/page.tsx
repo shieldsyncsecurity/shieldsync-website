@@ -204,11 +204,11 @@ export default function ExamOrientationLesson() {
                         <td className={TD}>Coordinator/subagent orchestration, context passing, graceful failure handling.</td>
                       </tr>
                       <tr>
-                        <td className={`${TD} font-semibold`}>Developer Productivity</td>
+                        <td className={`${TD} font-semibold`}>Developer Productivity with Claude</td>
                         <td className={TD}>Built-in tools (Read, Grep, Glob, Bash), MCP integration for codebase navigation.</td>
                       </tr>
                       <tr>
-                        <td className={`${TD} font-semibold`}>Claude Code in CI/CD</td>
+                        <td className={`${TD} font-semibold`}>Claude Code for Continuous Integration</td>
                         <td className={TD}>Headless -p mode, --output-format json, session isolation, minimising false positives.</td>
                       </tr>
                       <tr>

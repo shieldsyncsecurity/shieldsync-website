@@ -17,7 +17,7 @@ const LESSON_URL = `${SITE.url}${CCAF_BASE}/exam-scenarios`;
 export const metadata: Metadata = {
   title: "The 6 CCA-F Exam Scenarios, Deconstructed — Free Lesson",
   description:
-    "Free CCA-F lesson: a deep dive into each of the 6 business scenarios the exam is built on — Customer Support Resolution Agent, Code Generation with Claude Code, Multi-Agent Research System, Developer Productivity Tools, Claude Code in CI/CD, and Structured Data Extraction — what each really tests, a mini decision point, and strong vs weak architectural choices.",
+    "Free CCA-F lesson: a deep dive into each of the 6 business scenarios the exam is built on — Customer Support Resolution Agent, Code Generation with Claude Code, Multi-Agent Research System, Developer Productivity with Claude, Claude Code for Continuous Integration, and Structured Data Extraction — what each really tests, a mini decision point, and strong vs weak architectural choices.",
   keywords: [
     "cca-f exam scenarios",
     "claude certified architect scenarios",
@@ -61,8 +61,8 @@ const TOC: TocItem[] = [
   { id: "s1", label: "6.1 Customer Support Resolution Agent", progressId: "d6-s1" },
   { id: "s2", label: "6.2 Code Generation with Claude Code", progressId: "d6-s2" },
   { id: "s3", label: "6.3 Multi-Agent Research System", progressId: "d6-s3" },
-  { id: "s4", label: "6.4 Developer Productivity Tools", progressId: "d6-s4" },
-  { id: "s5", label: "6.5 Claude Code in CI/CD", progressId: "d6-s5" },
+  { id: "s4", label: "6.4 Developer Productivity with Claude", progressId: "d6-s4" },
+  { id: "s5", label: "6.5 Claude Code for Continuous Integration", progressId: "d6-s5" },
   { id: "s6", label: "6.6 Structured Data Extraction", progressId: "d6-s6" },
   { id: "quiz", label: "Checkpoint quiz" },
 ];
@@ -187,7 +187,7 @@ const QUIZ: QuizQuestion[] = [
   },
   {
     id: "d6-q4",
-    scenario: "Developer Productivity Tools",
+    scenario: "Developer Productivity with Claude",
     question:
       "Onboarding automation must find every usage of a deprecated internal API across a 4,000-file monorepo it has never seen. It has Grep, Glob, and Read, plus an MCP server for the ticketing system, and must also propose a migration plan. How should the exploration be structured to keep the main session usable?",
     options: [
@@ -202,7 +202,7 @@ const QUIZ: QuizQuestion[] = [
   },
   {
     id: "d6-q5",
-    scenario: "Claude Code in CI/CD",
+    scenario: "Claude Code for Continuous Integration",
     question:
       "A pipeline runs Claude Code to review every pull request and generate missing tests. The PR-comment bot needs machine-parseable output, and one PR's run must never carry state into the next PR's run. Which setup satisfies both requirements?",
     options: [
@@ -510,8 +510,8 @@ export default function ExamScenariosLesson() {
               <Sec
                 id="s4"
                 pid="d6-s4"
-                title="6.4 Developer Productivity Tools"
-                blueprint='"Developer Productivity Tools scenario"'
+                title="6.4 Developer Productivity with Claude"
+                blueprint='"Developer Productivity with Claude scenario"'
               >
                 <P>
                   <strong>The scenario:</strong> automating codebase navigation and engineering grunt work — finding
@@ -579,8 +579,8 @@ export default function ExamScenariosLesson() {
               <Sec
                 id="s5"
                 pid="d6-s5"
-                title="6.5 Claude Code in CI/CD"
-                blueprint='"Claude Code in CI/CD scenario"'
+                title="6.5 Claude Code for Continuous Integration"
+                blueprint='"Claude Code for Continuous Integration scenario"'
               >
                 <P>
                   <strong>The scenario:</strong> Claude Code runs inside a pipeline — reviewing pull requests,

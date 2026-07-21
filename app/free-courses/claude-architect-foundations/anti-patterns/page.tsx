@@ -135,7 +135,7 @@ const TD = "border border-line px-3 py-2 align-top text-[13.5px] leading-6 text-
 const QUIZ: QuizQuestion[] = [
   {
     id: "d7-q1",
-    scenario: "Developer Productivity",
+    scenario: "Developer Productivity with Claude",
     question:
       "Team policy: Claude Code must never commit directly to main, or write to infra/prod/. Which design guarantees this?",
     options: [
@@ -195,7 +195,7 @@ const QUIZ: QuizQuestion[] = [
   },
   {
     id: "d7-q5",
-    scenario: "Claude Code in CI/CD",
+    scenario: "Claude Code for Continuous Integration",
     question:
       "This is a headless, non-interactive CI/CD pipeline (Claude Code's -p mode). A step's Bash tool call to run the test suite fails because the runner ran out of disk space. What should the tool result contain?",
     options: [

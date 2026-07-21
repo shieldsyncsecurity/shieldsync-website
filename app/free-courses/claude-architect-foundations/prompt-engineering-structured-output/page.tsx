@@ -145,7 +145,7 @@ const TD = "border border-line px-3 py-2 align-top text-[13.5px] leading-6 text-
 const QUIZ: QuizQuestion[] = [
   {
     id: "d4-q1",
-    scenario: "Claude Code in CI/CD",
+    scenario: "Claude Code for Continuous Integration",
     question:
       "A CI pipeline runs Claude against every pull request with the instruction \"review this code for quality issues,\" and the results are inconsistent and hard to grade across 500 PRs a week. What should replace the vague instruction?",
     options: [

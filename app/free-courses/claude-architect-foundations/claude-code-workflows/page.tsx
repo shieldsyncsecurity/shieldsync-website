@@ -163,7 +163,7 @@ const QUIZ: QuizQuestion[] = [
   },
   {
     id: "d3-q2",
-    scenario: "Developer Productivity",
+    scenario: "Developer Productivity with Claude",
     question:
       "One engineer always wants Claude to prefer functional React components and avoid default exports, across every repo they touch — nobody else on the team shares this preference. Where does this belong?",
     options: [
@@ -193,7 +193,7 @@ const QUIZ: QuizQuestion[] = [
   },
   {
     id: "d3-q4",
-    scenario: "Claude Code in CI/CD",
+    scenario: "Claude Code for Continuous Integration",
     question:
       "A security-conscious team builds a custom Agent Skill that reviews dependency-update PRs. They want a frontmatter setting that guarantees the skill can never call Bash or Write while it is active — no matter what tools the parent session otherwise has permission to use. Which frontmatter field actually enforces that?",
     options: [
@@ -208,7 +208,7 @@ const QUIZ: QuizQuestion[] = [
   },
   {
     id: "d3-q5",
-    scenario: "Claude Code in CI/CD",
+    scenario: "Claude Code for Continuous Integration",
     question:
       "A CI pipeline needs Claude Code to review each PR's diff and post structured findings a bot can parse and turn into inline comments. This runs unattended on a shared runner used across many concurrent PRs. Which invocation is correct?",
     options: [
@@ -243,7 +243,7 @@ export default function ClaudeCodeWorkflowsLesson() {
             Everything Domain 3 tests: the <Code>CLAUDE.md</Code> hierarchy, path-scoped rules under{" "}
             <Code>.claude/rules/</Code>, skills and slash commands with real tool-scoping, when to use plan mode versus
             direct execution, and headless <Code>-p</Code> invocation for CI/CD. This is the &quot;Code Generation
-            with Claude Code&quot; and &quot;Claude Code in CI/CD&quot; scenarios, made concrete.
+            with Claude Code&quot; and &quot;Claude Code for Continuous Integration&quot; scenarios, made concrete.
           </p>
         </Container>
       </section>

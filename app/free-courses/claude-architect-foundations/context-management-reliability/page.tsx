@@ -144,7 +144,7 @@ const TD = "border border-line px-3 py-2 align-top text-[13.5px] leading-6 text-
 const QUIZ: QuizQuestion[] = [
   {
     id: "d5-q1",
-    scenario: "Claude Code in CI/CD",
+    scenario: "Claude Code for Continuous Integration",
     question:
       "A coding agent re-sends the same 40,000-token codebase context (system prompt + file tree + tool definitions) on every turn of a long session. Only the latest instruction changes each turn. What should the architect do to control cost and latency?",
     options: [

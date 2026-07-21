@@ -144,7 +144,7 @@ const TD = "border border-line px-3 py-2 align-top text-[13.5px] leading-6 text-
 const QUIZ: QuizQuestion[] = [
   {
     id: "d2-q1",
-    scenario: "Developer Productivity",
+    scenario: "Developer Productivity with Claude",
     question:
       "Your team's MCP server exposes search_docs (\"Searches documentation.\") and search_code (\"Searches the codebase.\"). Claude keeps calling the wrong one for questions like \"where is refund logic implemented?\" What is the architecturally correct fix?",
     options: [
@@ -188,7 +188,7 @@ const QUIZ: QuizQuestion[] = [
   },
   {
     id: "d2-q4",
-    scenario: "Claude Code in CI/CD",
+    scenario: "Claude Code for Continuous Integration",
     question:
       "You're committing a shared .mcp.json for a CI pipeline. One remote MCP server requires a private API key. What should the committed file contain for that key?",
     options: [

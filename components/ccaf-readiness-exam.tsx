@@ -50,7 +50,7 @@ const BANK: Q[] = [
   },
   {
     d: "d2",
-    s: "Developer Productivity",
+    s: "Developer Productivity with Claude",
     q: "Claude keeps picking search_docs when it should call search_code. Both tools work correctly. The first fix to try:",
     opts: [
       "Rewrite both tool descriptions to state precisely when each applies and when it does not",
@@ -63,7 +63,7 @@ const BANK: Q[] = [
   },
   {
     d: "d2",
-    s: "Developer Productivity",
+    s: "Developer Productivity with Claude",
     q: "An MCP server wraps an internal ticket API. A lookup fails because the ticket is archived. The best tool response is:",
     opts: [
       "HTTP 500 with the raw stack trace in the body",
@@ -89,7 +89,7 @@ const BANK: Q[] = [
   },
   {
     d: "d3",
-    s: "Claude Code in CI/CD",
+    s: "Claude Code for Continuous Integration",
     q: "You want Claude Code to review PRs in CI and emit machine-readable findings for a bot to post. The right invocation shape is:",
     opts: [
       "claude in interactive mode on a CI runner with a virtual terminal",
@@ -167,7 +167,7 @@ const BANK: Q[] = [
   },
   {
     d: "d1",
-    s: "Developer Productivity",
+    s: "Developer Productivity with Claude",
     q: "A teammate wants to tell apart three situations from the API response alone: Claude wants to call a tool, the response was cut off before finishing, and Claude declined for a policy reason. Which stop_reason values correspond to those three cases, in order?",
     opts: [
       "end_turn, stop_sequence, refusal",
@@ -206,7 +206,7 @@ const BANK: Q[] = [
   },
   {
     d: "d1",
-    s: "Claude Code in CI/CD",
+    s: "Claude Code for Continuous Integration",
     q: "In a single assistant turn, Claude requests three independent lint checks via three separate tool_use blocks. What is the correct handling?",
     opts: [
       "Execute only the first tool call and ignore the rest to save tokens",
@@ -258,7 +258,7 @@ const BANK: Q[] = [
   },
   {
     d: "d1",
-    s: "Developer Productivity",
+    s: "Developer Productivity with Claude",
     q: "The team wants to guarantee no Claude Code session ever runs a destructive command in production directories, no matter what any prompt says. What enforces this deterministically?",
     opts: [
       "A CLAUDE.md instruction telling the model never to run destructive commands in prod",
@@ -271,7 +271,7 @@ const BANK: Q[] = [
   },
   {
     d: "d2",
-    s: "Developer Productivity",
+    s: "Developer Productivity with Claude",
     q: 'An MCP server exposes a database query capability, a set of read-only project files, and a canned "generate changelog" template. In MCP terms, these map respectively to:',
     opts: [
       "Tools, Prompts, Resources",
@@ -297,7 +297,7 @@ const BANK: Q[] = [
   },
   {
     d: "d2",
-    s: "Claude Code in CI/CD",
+    s: "Claude Code for Continuous Integration",
     q: "An MCP server declared in .mcp.json needs an API key to authenticate. What is the correct way to configure it?",
     opts: [
       "Hardcode the key directly in .mcp.json, since the repository is private",
@@ -349,7 +349,7 @@ const BANK: Q[] = [
   },
   {
     d: "d3",
-    s: "Developer Productivity",
+    s: "Developer Productivity with Claude",
     q: "The team wants a rule about SQL migration conventions to apply only when Claude is editing files under db/migrations/**, not elsewhere in the repo. How should this be scoped?",
     opts: [
       "A single always-loaded instruction in CLAUDE.md telling Claude to only apply it in that folder",
@@ -388,7 +388,7 @@ const BANK: Q[] = [
   },
   {
     d: "d3",
-    s: "Claude Code in CI/CD",
+    s: "Claude Code for Continuous Integration",
     q: "Two separate CI pipeline runs invoke Claude Code headlessly on two different pull requests at the same time. What must NOT happen between them?",
     opts: [
       "One run's session state or context leaking into or affecting the other run",
@@ -414,7 +414,7 @@ const BANK: Q[] = [
   },
   {
     d: "d4",
-    s: "Developer Productivity",
+    s: "Developer Productivity with Claude",
     q: 'A grading prompt asks Claude to rate support transcripts as "good enough" or "needs work." At scale, the labels come back inconsistent run to run. What is the fix?',
     opts: [
       'Add "please be consistent" to the existing prompt',
@@ -453,7 +453,7 @@ const BANK: Q[] = [
   },
   {
     d: "d4",
-    s: "Claude Code in CI/CD",
+    s: "Claude Code for Continuous Integration",
     q: "An extraction pipeline validates each response against a schema and business rules. On failure, what is the recommended recovery pattern?",
     opts: [
       "Retry indefinitely until validation passes, however long that takes",
@@ -492,7 +492,7 @@ const BANK: Q[] = [
   },
   {
     d: "d5",
-    s: "Developer Productivity",
+    s: "Developer Productivity with Claude",
     q: "A pipeline sends the same large policy document and the same tool definitions on every request, with only the user's question changing. How should the request be structured to maximize prompt cache hits?",
     opts: [
       "Put the stable content first and mark it cacheable; put the volatile content last",
