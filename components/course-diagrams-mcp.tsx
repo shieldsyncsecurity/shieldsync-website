@@ -314,8 +314,8 @@ export function ToolSelectionDiagram() {
 export function MCPTransportDiagram() {
   return (
     <Dgm
-      label="Claude Code or an Agent SDK app connects to MCP servers over two transports: stdio for a local subprocess, Streamable HTTP or SSE for a remote shared server"
-      caption="Fig 2.5 - Two MCP transports. stdio spawns a local subprocess (typical for local dev tools); Streamable HTTP/SSE reaches a remote server that can be shared across multiple clients."
+      label="Claude Code or an Agent SDK app connects to MCP servers over two transports: stdio for a local subprocess, Streamable HTTP for a remote shared server"
+      caption="Fig 2.5 - Two MCP transports. stdio spawns a local subprocess (typical for local dev tools); Streamable HTTP reaches a remote server that can be shared across multiple clients (the older standalone SSE transport still works but is deprecated)."
       viewBox="0 0 880 300"
       dots={() => (
         <>
@@ -328,10 +328,10 @@ export function MCPTransportDiagram() {
       <Box x={340} y={30} w={200} h={64} tone="brand" title="Claude Code / Agent SDK app" sub=".mcp.json" d={0} shield />
 
       <Arrow path="M400,94 L205,168" label="stdio (local)" lx={270} ly={136} d={200} tone="brand" />
-      <Arrow path="M480,94 L675,168" label="HTTP / SSE (remote)" lx={610} ly={136} d={350} tone="brand" />
+      <Arrow path="M480,94 L675,168" label="Streamable HTTP (remote)" lx={610} ly={136} d={350} tone="brand" />
 
       <Box x={80} y={172} w={250} h={96} tone="tint" title="Local MCP server" sub="stdio - subprocess" sub2="command + args, same machine" d={300} />
-      <Box x={550} y={172} w={250} h={96} tone="tint" title="Remote MCP server" sub="Streamable HTTP / SSE" sub2="url, shared across clients" d={450} />
+      <Box x={550} y={172} w={250} h={96} tone="tint" title="Remote MCP server" sub="Streamable HTTP" sub2="url + type, shared across clients" d={450} />
 
       <text x={205} y={296} textAnchor="middle" fontFamily={F} fontSize={11} fill={C.muted}>
         most common for local dev tools

@@ -20,16 +20,16 @@ const LESSON_URL = `${SITE.url}${CCAF_BASE}/claude-code-workflows`;
 export const metadata: Metadata = {
   title: "Claude Code Configuration & Workflows — CCA-F Domain 3 (20%) Free Lesson",
   description:
-    "Free CCA-F Domain 3 lesson: the CLAUDE.md hierarchy (user vs project), .claude/rules/ path-scoped instructions, skills and slash commands with allowed-tools scoping, plan mode vs direct execution, and headless -p mode for CI/CD — with animated diagrams and an exam-style quiz.",
+    "Free CCA-F Domain 3 lesson: the CLAUDE.md hierarchy (user vs project), .claude/rules/ path-scoped instructions, skills and slash commands with allowed-tools vs disallowed-tools scoping, plan mode vs direct execution, and headless -p mode for CI/CD — with animated diagrams and an exam-style quiz.",
   keywords: [
     "claude code claude.md",
     "claude code ci cd",
     "claude code headless mode",
     "claude code plan mode",
     "cca-f domain 3",
-    "claude code rules globs",
+    "claude code rules paths",
     "claude code slash commands",
-    "claude agent skills allowed-tools",
+    "claude agent skills disallowed-tools",
   ],
   alternates: { canonical: `${CCAF_BASE}/claude-code-workflows` },
   openGraph: {
@@ -168,7 +168,7 @@ const QUIZ: QuizQuestion[] = [
     options: [
       "That engineer's user-level ~/.claude/CLAUDE.md",
       "Project-level CLAUDE.md, since it is a coding standard",
-      "A .claude/rules/ file with globs matching every .tsx file",
+      "A .claude/rules/ file with paths matching every .tsx file",
       "An Agent Skill invoked manually before each coding session",
     ],
     answer: 0,
@@ -182,7 +182,7 @@ const QUIZ: QuizQuestion[] = [
       "The team wants Claude to always reuse helpers from fixtures/ when editing test files, but this instruction is irrelevant noise when Claude is editing anything else in the repo. What is the architecturally correct way to encode this?",
     options: [
       "Add it to project CLAUDE.md so it is always visible",
-      "A .claude/rules/ file with globs: \"**/*.test.ts\" containing the instruction",
+      "A .claude/rules/ file with paths: [\"**/*.test.ts\"] containing the instruction",
       "Repeat the instruction at the start of every prompt to Claude",
       "Rename fixtures/ so its purpose is self-evident from the path",
     ],
@@ -194,16 +194,16 @@ const QUIZ: QuizQuestion[] = [
     id: "d3-q4",
     scenario: "Claude Code in CI/CD",
     question:
-      "A security-conscious team builds a custom Agent Skill that reviews dependency-update PRs. They want this skill to run its own analysis without being able to touch the Bash tool, Write, or any tool beyond reading files and searching text — regardless of what other tools happen to be available in the parent session. What should the skill's frontmatter specify?",
+      "A security-conscious team builds a custom Agent Skill that reviews dependency-update PRs. They want a frontmatter setting that guarantees the skill can never call Bash or Write while it is active — no matter what tools the parent session otherwise has permission to use. Which frontmatter field actually enforces that?",
     options: [
-      "context: fork only, and rely on the parent session's tool permissions",
-      "allowed-tools restricted to something like Read, Grep, Glob",
+      "allowed-tools: Read, Grep, Glob",
+      "disallowed-tools: Bash, Write",
+      "context: fork only, relying on isolated context to imply restricted tools",
       "A description field warning the model not to use other tools",
-      "Nothing — Agent Skills always inherit a fixed, unconfigurable tool set",
     ],
     answer: 1,
     explanation:
-      "allowed-tools is the real, declarative tool-scoping mechanism for a skill — this is the same principle as anti-pattern #6 (unrestricted tool access) from Domain 1, applied to skills specifically. A only isolates context, not tool access — the parent's broader permissions could still apply. C is prompt-based enforcement of a security boundary, which is a suggestion, not a control. D is simply false; allowed-tools exists precisely to make this configurable.",
+      "disallowed-tools removes the named tools from the skill's available pool while it's active — that's the actual restriction mechanism, and the same principle as anti-pattern #6 (unrestricted tool access) from Domain 1, applied to skills. A is the exam's classic trap: allowed-tools only pre-approves the listed tools so they skip a permission prompt — it does not block anything else, so Bash and Write would still be callable. C isolates context, not tool access, and implies nothing about which tools remain available. D is prompt-based enforcement, a suggestion rather than a control.",
   },
   {
     id: "d3-q5",
@@ -327,12 +327,14 @@ Prefer named exports. Match existing test structure in fixtures/.`}</CodeBlock>
                   CLAUDE.md is blanket context — it loads into every session regardless of what Claude happens to be
                   touching. When an instruction only matters for a subset of files, a blanket instruction is noise the
                   rest of the time. <Code>.claude/rules/</Code> solves this: each rule is a Markdown file with YAML
-                  frontmatter specifying a <Code>globs</Code> pattern, and the instruction body only loads into
-                  context when Claude is working with a matching file.
+                  frontmatter specifying a <Code>paths</Code> field (glob patterns, e.g. <Code>src/api/**/*.ts</Code>),
+                  and the instruction body only loads into context when Claude is working with a matching file. A rule
+                  with no <Code>paths</Code> field loads unconditionally, same as CLAUDE.md.
                 </P>
                 <CodeBlock>{`# .claude/rules/test-fixtures.md
 ---
-globs: "**/*.test.ts"
+paths:
+  - "**/*.test.ts"
 ---
 When editing or adding test files, always reuse the existing helpers in
 fixtures/ (buildUser, buildOrder, mockClock) instead of constructing test
@@ -346,8 +348,9 @@ fixtures/ rather than duplicating setup logic in the test file.`}</CodeBlock>
                 </P>
                 <Callout tone="exam" title="How the exam asks this">
                   A requirement phrased as &quot;only when editing X kind of file, Claude should Y&quot; is a{" "}
-                  <Code>.claude/rules/</Code> question with a glob answer. A requirement phrased as &quot;in this
-                  repo, Claude should always Y&quot; (no file-type qualifier) points back to CLAUDE.md instead.
+                  <Code>.claude/rules/</Code> question with a <Code>paths</Code> answer. A requirement phrased as
+                  &quot;in this repo, Claude should always Y&quot; (no file-type qualifier) points back to CLAUDE.md
+                  instead.
                 </Callout>
               </Sec>
 
@@ -370,10 +373,14 @@ presenting the diff for review.`}</CodeBlock>
                 <H3>Agent Skills — packaged instructions Claude loads when relevant</H3>
                 <P>
                   A Skill is not manually invoked by name — Claude decides to load it when its description matches
-                  what the current task needs. Skill frontmatter carries two fields the exam cares about:{" "}
-                  <Code>context: fork</Code>, which runs the skill in an isolated context (the same context-isolation
-                  idea as subagents in Domain 1, applied to a skill), and <Code>allowed-tools</Code>, which restricts
-                  which tools that skill can use while it is active.
+                  what the current task needs. Skill frontmatter carries three fields the exam likes to test against
+                  each other, because two of them sound like the same thing and are not: <Code>context: fork</Code>{" "}
+                  runs the skill in an isolated context (the same context-isolation idea as subagents in Domain 1,
+                  applied to a skill); <Code>allowed-tools</Code> <strong>pre-approves</strong> the listed tools so
+                  Claude can call them during that turn without a permission prompt — it does <strong>not</strong>{" "}
+                  restrict anything else, every other tool the session is permitted to use remains callable, just with
+                  its normal prompt; <Code>disallowed-tools</Code> is the field that actually removes tools from the
+                  skill&apos;s available pool while it is active — that is the real restriction mechanism.
                 </P>
                 <CodeBlock>{`# .claude/skills/dependency-audit/SKILL.md
 ---
@@ -382,21 +389,25 @@ description: Reviews dependency-update PRs for supply-chain risk —
   new transitive deps, license changes, suspicious postinstall scripts.
   Use when a PR modifies package.json or a lockfile.
 context: fork
-allowed-tools: Read, Grep, Glob
+disallowed-tools: Bash, Write, Edit
 ---
 Examine the diff to package.json and the lockfile. Flag new
 dependencies, license changes, and any postinstall/prepare script
 additions. You have no write access — report findings only.`}</CodeBlock>
                 <P>
-                  <Code>allowed-tools</Code> is a real, declarative security boundary — it ties directly back to
+                  <Code>disallowed-tools</Code> is the real, declarative security boundary — it ties directly back to
                   Domain 1&apos;s anti-pattern #6 (unrestricted tool access): a skill built to review code has no
-                  business holding Bash or Write, regardless of what the parent session is permitted to do.
+                  business holding Bash or Write, regardless of what the parent session is permitted to do.{" "}
+                  <Code>allowed-tools</Code> solves a different problem entirely (skipping approval friction for tools
+                  you already trust the skill to use) and confusing the two is a genuine, exam-tested trap.
                 </P>
                 <Callout tone="trap" title="Distractor pattern">
-                  &quot;Add a warning in the skill&apos;s description telling Claude not to use other tools.&quot; A
-                  description is documentation for when the skill loads, not an enforcement mechanism — it is
-                  prompt-based, and prompt-based tool restriction is exactly the anti-pattern this feature exists to
-                  avoid. <Code>allowed-tools</Code> is the control; a warning is a suggestion.
+                  &quot;Set <Code>allowed-tools: Read, Grep, Glob</Code> so the skill can&apos;t touch Bash or
+                  Write.&quot; This is the exam&apos;s favourite Domain 3 trap: <Code>allowed-tools</Code> only
+                  pre-approves what&apos;s listed, it does not remove anything else from the pool — Bash and Write
+                  would still be callable (just subject to a normal permission prompt). Real restriction is{" "}
+                  <Code>disallowed-tools</Code>. A description-field warning is a separate, weaker trap: that&apos;s
+                  prompt-based enforcement, the anti-pattern this feature exists to avoid.
                 </Callout>
               </Sec>
 

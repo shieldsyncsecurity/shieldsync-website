@@ -382,9 +382,23 @@ export default function AgenticArchitectureLesson() {
                         <td className={TD}>Claude declined the request</td>
                         <td className={TD}>Surface gracefully; do not blind-retry</td>
                       </tr>
+                      <tr>
+                        <td className={TD}><Code>pause_turn</Code></td>
+                        <td className={TD}>A server-tool loop hit its iteration limit mid-turn</td>
+                        <td className={TD}>Resend the assistant response as-is to let Claude resume</td>
+                      </tr>
+                      <tr>
+                        <td className={TD}><Code>model_context_window_exceeded</Code></td>
+                        <td className={TD}>The context window itself was exhausted (distinct from <Code>max_tokens</Code>)</td>
+                        <td className={TD}>Treat as incomplete; trim or restructure context, then retry</td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
+                <p className="mt-2 text-[13px] leading-6 text-muted">
+                  This is the complete current list of seven values &mdash; the exam may test any of them, not just the
+                  four or five that show up in a first tutorial.
+                </p>
                 <H3>Beats 3+4 — execute, return, repeat, and always bound the loop</H3>
                 <CodeBlock>{`import anthropic
 client = anthropic.Anthropic()
@@ -519,12 +533,13 @@ mistyped. Valid IDs look like ORD-#### . Ask the customer to re-check."
                 </Callout>
               </Sec>
 
-              <Sec id="s6" pid="d1-s6" title="1.6 Subagents and context isolation" blueprint='"context forking, Task tool, delegation"'>
+              <Sec id="s6" pid="d1-s6" title="1.6 Subagents and context isolation" blueprint='"context forking, the Agent tool, delegation"'>
                 <P>
                   A subagent is a <em>fresh context window</em> with its own system prompt, its own restricted tool set,
-                  and a one-shot task. In Claude Code / the Agent SDK this is the <strong>Task tool</strong>: the parent
-                  spawns a subagent, the subagent works in isolation, and only its <strong>final report</strong> returns
-                  to the parent.
+                  and a one-shot task. In Claude Code / the Agent SDK this is the <strong>Agent tool</strong> (renamed
+                  from <Code>Task</Code> in Claude Code v2.1.63 — <Code>Task(...)</Code> still works as a legacy alias,
+                  so both names appear in the wild): the parent spawns a subagent, the subagent works in isolation, and
+                  only its <strong>final report</strong> returns to the parent.
                 </P>
                 <ContextIsolationDiagram />
                 <P>Three properties the exam tests:</P>

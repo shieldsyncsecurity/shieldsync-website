@@ -128,8 +128,9 @@ export default function ExamOrientationLesson() {
                 </P>
                 <P>
                   Access note: the exam launched gated to Claude Partner Network members (free to join), with wider
-                  public access expected during 2026. Check the current status on Anthropic Academy before planning a
-                  date.
+                  public access expected during 2026 — still gated as of this writing. Registration is a two-step
+                  flow: eligibility/purchase through Anthropic&apos;s Partner Academy, then scheduling through Pearson
+                  VUE (see 0.2). Check the current status on Anthropic Academy before planning a date.
                 </P>
               </Sec>
 
@@ -155,7 +156,11 @@ export default function ExamOrientationLesson() {
                       </tr>
                       <tr>
                         <td className={`${TD} font-semibold`}>Proctoring</td>
-                        <td className={TD}>Online via ProctorFree: webcam + microphone on, clean desk, no second monitor, no other applications, closed book, <strong>no AI assistance</strong>.</td>
+                        <td className={TD}>Delivered via Pearson VUE (OnVUE online proctoring, or an in-person test center) — closed book, <strong>no AI assistance</strong>. This moved off the exam&apos;s original ProctorFree setup in a June/July 2026 migration, alongside the exam&apos;s formal code becoming CCAR-F (still commonly called CCA-F).</td>
+                      </tr>
+                      <tr>
+                        <td className={`${TD} font-semibold`}>Retakes</td>
+                        <td className={TD}>Up to 4 attempts per rolling 12 months, with escalating waits: 14 days after attempt 1, 30 after attempt 2, 90 after attempt 3. Recertification cycle is 12 months.</td>
                       </tr>
                     </tbody>
                   </table>
@@ -240,11 +245,14 @@ export default function ExamOrientationLesson() {
 
               <Sec id="s5" pid="d0-s5" title="0.5 Registration and the official resources">
                 <P>
-                  You register on <strong>Anthropic Academy</strong> (Anthropic&apos;s Skilljar portal). The
-                  certification page carries three documents worth reading before exam day: the official Exam Guide
-                  (includes sample questions), the Certification Terms, and the Exam Policy. Anthropic also publishes
-                  an <strong>official practice exam</strong> in the real format with explanations — take it after this
-                  course and aim for a comfortable margin above 720 before booking.
+                  You register through <strong>Anthropic&apos;s Partner Academy</strong> for eligibility and purchase,
+                  then schedule the sitting itself through <strong>Pearson VUE</strong>. The certification page
+                  carries three documents worth reading before exam day: the official Exam Guide (includes sample
+                  questions), the Certification Terms, and the Exam Policy. Anthropic&apos;s full-length official
+                  practice exam was retired in the same mid-2026 migration to Pearson VUE — only the Exam
+                  Guide&apos;s sample questions remain official. Our readiness exam and the checkpoint quizzes in
+                  every lesson are the closest full-length substitute; run through this course and aim for a
+                  comfortable, repeated margin above 720 before booking.
                 </P>
                 <P>
                   Anthropic&apos;s free self-paced courses (Claude 101, Building with the Claude API, the MCP courses,
@@ -283,7 +291,7 @@ export default function ExamOrientationLesson() {
                       <tr>
                         <td className={TD}>4</td>
                         <td className={TD}>Lessons 6 + 7 (scenarios, anti-patterns), readiness exam twice</td>
-                        <td className={TD}>Fix your weakest domain from the diagnosis; take Anthropic&apos;s official practice exam; book.</td>
+                        <td className={TD}>Fix your weakest domain from the diagnosis; retake the readiness exam until consistently above 720; book.</td>
                       </tr>
                     </tbody>
                   </table>

@@ -292,6 +292,13 @@ messages = [
                   the prompt with the stable content first (cached) and the changing content last, not a bigger
                   context window, not the Batch API, and not asking the model to compress its own context.
                 </Callout>
+                <P>
+                  Cached entries also <strong>expire</strong>: by default after 5 minutes of inactivity, refreshed at
+                  no extra cost on every hit (a 1-hour TTL is available at double the write cost for less frequent
+                  access patterns). A byte-identical prefix that arrives after too long a gap still misses the cache
+                  — a dropped hit rate doesn&apos;t always mean the prefix changed, it can just mean the requests
+                  spread out too far.
+                </P>
               </Sec>
 
               <Sec id="s2" pid="d5-s2" title="5.2 Handoff patterns between agents and sessions" blueprint='"agent-to-agent and session handoff patterns"'>

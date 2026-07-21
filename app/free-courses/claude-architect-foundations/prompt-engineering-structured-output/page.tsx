@@ -365,8 +365,11 @@ Category:`}</CodeBlock>
                 <P>
                   Giving Claude a <strong>tool definition with a JSON <Code>input_schema</Code></strong> — even when
                   the &quot;tool&quot; isn&apos;t really an external action, just a way to force schema-shaped output
-                  — is the reliable alternative, because <strong>the API validates the tool call arguments against
-                  the schema server-side</strong> before you ever see them.
+                  — is far more reliable than asking for JSON in plain text. One precision worth knowing for the exam:
+                  plain <Code>tool_use</Code> alone is <em>very</em> reliable but does not strictly guarantee
+                  conformance — the model can still infer a value for a missing required field. Adding{" "}
+                  <Code>strict: true</Code> to the tool definition (Strict tool use) is what turns that into a real
+                  guarantee, validating the call arguments against the schema before you ever see them.
                 </P>
                 <StructuredOutputDiagram />
                 <H3>Tool schema for invoice-field extraction</H3>
@@ -393,9 +396,10 @@ Category:`}</CodeBlock>
                 <Callout tone="exam" title="How the exam asks this">
                   &quot;A team asks Claude to respond in JSON as plain text and occasionally gets malformed output at
                   scale. What is the fix?&quot; The correct answer is always a tool definition with an{" "}
-                  <Code>input_schema</Code> (or the structured-outputs <Code>output_config.format</Code> feature) —
-                  never &quot;emphasize the JSON instruction more strongly&quot; or &quot;lower the temperature.&quot;
-                  A prompt-only fix raises the probability of compliance; it never guarantees it.
+                  <Code>input_schema</Code> (add <Code>strict: true</Code> for a hard guarantee, not just high
+                  reliability), or the structured-outputs <Code>output_config.format</Code> feature — never
+                  &quot;emphasize the JSON instruction more strongly&quot; or &quot;lower the temperature.&quot; A
+                  prompt-only fix raises the probability of compliance; it never guarantees it.
                 </Callout>
               </Sec>
 

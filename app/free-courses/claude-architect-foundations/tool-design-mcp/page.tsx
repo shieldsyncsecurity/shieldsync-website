@@ -445,11 +445,18 @@ export default function ToolDesignMCPLesson() {
       "env": { "LINEAR_API_KEY": "\${LINEAR_API_KEY}" }
     },
     "shared-docs": {
+      "type": "http",
       "url": "https://mcp.example.com/docs",
       "headers": { "Authorization": "Bearer \${DOCS_MCP_TOKEN}" }
     }
   }
 }`}</CodeBlock>
+                <Callout tone="trap" title="Classic distractor">
+                  A remote entry with a <Code>url</Code> but no <Code>&quot;type&quot;: &quot;http&quot;</Code> field.
+                  Claude Code reads an untyped entry as a stdio server by default and reports it as misconfigured —
+                  the type field is not optional decoration, it is what makes the entry resolve as a remote server at
+                  all.
+                </Callout>
                 <P>The two entries above show the two transport mechanisms the exam expects you to tell apart:</P>
                 <div className="mt-3 overflow-x-auto">
                   <table className="w-full border-collapse">
@@ -467,9 +474,9 @@ export default function ToolDesignMCPLesson() {
                         <td className={TD}>Local dev tools, most common for individual developer setups</td>
                       </tr>
                       <tr>
-                        <td className={`${TD} font-semibold`}>Streamable HTTP / SSE</td>
-                        <td className={TD}><Code>url</Code> — connects to a remote, network-reachable server</td>
-                        <td className={TD}>Remote or shared servers, reachable by multiple clients at once</td>
+                        <td className={`${TD} font-semibold`}>Streamable HTTP</td>
+                        <td className={TD}><Code>url</Code> + <Code>&quot;type&quot;: &quot;http&quot;</Code> — connects to a remote, network-reachable server</td>
+                        <td className={TD}>Remote or shared servers, reachable by multiple clients at once. The older standalone SSE transport still works but is deprecated in favour of Streamable HTTP.</td>
                       </tr>
                     </tbody>
                   </table>
