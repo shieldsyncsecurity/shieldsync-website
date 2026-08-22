@@ -42,7 +42,7 @@ const VIDEO_MID_PAGE = HOMEPAGE_VIDEO_PLACEMENT === "mid-page";
 export const metadata: Metadata = {
   // NOTE: the layout's title.template does NOT apply to the root page (Next
   // templates only affect child segments), so the brand must be explicit here.
-  title: "AWS Cloud Security Services & Hands-on Labs | ShieldSync Security",
+  title: "ShieldSync Security - AWS Cloud Security Services & Hands-on Labs",
   description:
     "Practitioner-led AWS cloud security — assessments, compliance, and detection — plus hands-on AWS security labs in real, isolated AWS accounts. First lab free.",
   keywords: [
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/" },
   openGraph: {
-    title: "AWS Cloud Security Services & Hands-on Labs | ShieldSync",
+    title: "ShieldSync Security - AWS Cloud Security Services & Hands-on Labs",
     description:
       "AWS security services + hands-on AWS labs in real, isolated AWS accounts. IAM, S3, encryption, GuardDuty, VPC. First lab free.",
     url: SITE.url,
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AWS Cloud Security Services & Hands-on Labs | ShieldSync",
+    title: "ShieldSync Security - AWS Cloud Security Services & Hands-on Labs",
     description: "AWS security services + hands-on AWS labs in real, isolated AWS accounts.",
   },
 };
