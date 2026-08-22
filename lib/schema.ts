@@ -16,6 +16,9 @@ export function organizationSchema() {
     "@type": "Organization",
     "@id": `${SITE.url}/#organization`,
     name: SITE.legalName,
+    // Brand aliases so Google learns "ShieldSync" / "shieldsyncsecurity" as this
+    // entity — the run-together brand query currently returns zero impressions.
+    alternateName: [SITE.nameFull, SITE.name, "shieldsyncsecurity", "Shield Sync"],
     url: SITE.url,
     logo: {
       "@type": "ImageObject",
