@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { SITE, AWS_LABS } from "@/lib/site";
 import { BLOG_POSTS } from "@/lib/blog";
 import { SERVICE_PAGES } from "@/lib/service-pages";
+import { PRODUCT_PAGES } from "@/lib/product-pages";
 import { CCAF_BASE, CCAF_LIVE_ROUTES } from "@/lib/free-courses";
 
 // Required for `output: export` (static Amplify build) — emit a static sitemap.xml
@@ -12,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const base = SITE.url;
   // Site-wide constant for static/lab pages (bump on meaningful content updates).
   // Blog posts use their own `date` field instead — see below.
-  const now = new Date("2026-07-03");
+  const now = new Date("2026-09-04");
 
   return [
     {
@@ -30,6 +31,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${base}/services`,
       lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${base}/products`,
+      lastModified: new Date("2026-08-01"),
       changeFrequency: "monthly",
       priority: 0.9,
     },
@@ -90,6 +97,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...SERVICE_PAGES.map((s) => ({
       url: `${base}/services/${s.slug}`,
       lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
+    ...PRODUCT_PAGES.map((p) => ({
+      url: `${base}/products/${p.slug}`,
+      lastModified: new Date("2026-08-01"),
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),

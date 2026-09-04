@@ -28,7 +28,9 @@ const csp = [
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
+  "style-src-elem 'self' 'unsafe-inline'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.google-analytics.com`,
+  `script-src-elem 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com`,
   // api.web3forms.com = the internship application form's submit endpoint
   // (client-side fetch POST → emails the submission to internship@…).
   // labs.shieldsyncsecurity.com = the /api/geo country lookup the pre-paint
