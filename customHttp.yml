@@ -8,7 +8,9 @@ customHeaders:
   - pattern: "**"
     headers:
       - key: "Content-Security-Policy"
-        value: "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: blob: https:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; script-src-elem 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://api.web3forms.com https://labs.shieldsyncsecurity.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com; upgrade-insecure-requests"
+        value: "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: blob: https:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; script-src-elem 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://api.web3forms.com https://labs.shieldsyncsecurity.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com; media-src 'none'; worker-src 'none'; manifest-src 'self'; upgrade-insecure-requests"
+      - key: "Cross-Origin-Opener-Policy"
+        value: "same-origin"
       - key: "X-Frame-Options"
         value: "DENY"
       - key: "X-Content-Type-Options"
